@@ -39,7 +39,13 @@
         .code-box { background: #fdfbf7; border: 2px solid #3d2a1b; border-radius: 2px; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.1); }
 
         /* 2. 排版修復：更改 screen-panel 為向下擴展而非限制在螢幕內 (去除 inset-0) */
-        .screen-panel { position: absolute; top: 0; left: 0; width: 100%; min-height: 100%; transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        /* 2. 排版修復：移除絕對定位，讓外層容器能正確抓到高度 */
+        .screen-panel { 
+            width: 100%; 
+            min-height: 100%; 
+            flex-grow: 1; 
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
         .screen-enter { opacity: 0; transform: scale(0.95) translateY(15px); pointer-events: none; }
         .screen-active { opacity: 1; transform: scale(1) translateY(0); pointer-events: auto; z-index: 10; }
         .screen-exit { opacity: 0; transform: scale(1.05) translateY(-15px); pointer-events: none; }
@@ -129,9 +135,10 @@
             </div>
         </div>
 
-        <!-- MAIN VIEWPORT (2. 捲動排版修復) -->
+                <!-- MAIN VIEWPORT (2. 捲動排版修復) -->
         <div id="game-viewport" class="flex-1 overflow-y-auto scroll-smooth z-10 w-full custom-scrollbar relative bg-transparent" style="-webkit-overflow-scrolling: touch;">
-            <div class="p-5 pb-viewport-safe min-h-full flex flex-col relative w-full">
+            <!-- ⚠️ 移除這裡原本的 p-5，保留 pb-viewport-safe -->
+            <div class="pb-viewport-safe min-h-full flex flex-col relative w-full">
 
                 <!-- SCREEN 0: ENTRY -->
                 <div id="screen-entry" class="screen-panel screen-active p-5 flex flex-col justify-center bg-transparent">
