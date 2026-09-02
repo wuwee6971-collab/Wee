@@ -817,17 +817,18 @@
                 "https://placehold.co/200/e5d5b5/7c343d?text=Mom",
                 "https://placehold.co/200/e5d5b5/7c343d?text=Student",
                 "https://placehold.co/200/e5d5b5/7c343d?text=Kid",
-                "https://placehold.co/200/e5d5b5/7c343d?text=Singer+1",
-                "https://placehold.co/200/e5d5b5/7c343d?text=Singer+2",
-                "https://placehold.co/200/e5d5b5/7c343d?text=Singer+3",
-                "https://placehold.co/200/e5d5b5/7c343d?text=Singer+4",
+                "images/鄧麗君.png",
+                "images/羅大佑.png",
+                "images/紫薇.png",
+                "images/潘安邦.png",
                 "https://placehold.co/200/e5d5b5/7c343d?text=Grandson",
-                "https://placehold.co/200x200/ffdddd/990000?text=Rose",
-                "https://placehold.co/200x200/f0f0f0/333333?text=Jasmine",
-                "https://placehold.co/200x200/ffeecc/cc6600?text=Flower",
-                "https://placehold.co/200x200/ffffcc/aa8800?text=Osmanthus",
-                "https://placehold.co/200x200/eeeeee/555555?text=Gardenia",
-                "https://placehold.co/200x200/ffe6ee/aa0055?text=Magnolia"
+                "images/桂花.png",
+                "images/玉蘭花.jpg",
+                "images/梔子花.jpg",
+                "images/秀英花.jpg",
+                "images/玫瑰.jpg",
+                "images/茉莉.png",
+                "images/信.png"
             ]
         };
 
@@ -1511,7 +1512,15 @@
             playBeep();
             document.getElementById('modal-stamps').classList.add('hidden');
             document.getElementById('modal-full-letter').classList.remove('hidden');
-            renderPuzzlePieces('full-letter-board', true);
+            
+            // 取消原本呼叫 renderPuzzlePieces 的設定
+            const board = document.getElementById('full-letter-board');
+            
+            // 取消外層原本為了 CSS 拼圖設定的 4:3 固定比例，讓您的圖片自然延展
+            board.style.aspectRatio = 'auto';
+            
+            // 直接放入您上傳的圖片 (請確認檔名與路徑是否一致)
+            board.innerHTML = `<img src="images/信.png" alt="跨越時空的信" class="w-full h-auto object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)] rounded-sm">`;
         }
         
         function closeFullLetter() {
