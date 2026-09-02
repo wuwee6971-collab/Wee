@@ -2,1529 +2,1241 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>三重空軍一村 - 實境解謎</title>
-    
-    <!-- 載入 Tailwind CSS (排版使用) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>眷村實境解謎大冒險</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- 載入 Font Awesome 圖示庫 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
     
-    <!-- 載入 Google 字體 -->
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Serif+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Courier Prime', 'Noto Serif TC', serif; background-color: #d6cebe; color: #1c1917; user-select: none; -webkit-user-select: none; touch-action: manipulation; overscroll-behavior-y: none; }
 
-<style>
-    body { 
-        font-family: 'Courier Prime', 'Noto Serif TC', serif; 
-        background-color: #d6cebe; 
-        color: #1c1917; 
-        user-select: none; 
-        -webkit-user-select: none; 
-        touch-action: manipulation; 
-        overscroll-behavior-y: none; 
-    }
+        /* 背景與材質 */
+        .paper-bg { background-color: #fdfbf7; background-image: radial-gradient(#e2d9c8 0.8px, transparent 0.8px), radial-gradient(#e2d9c8 0.8px, #fdfbf7 0.8px); background-size: 24px 24px; background-position: 0 0, 12px 12px; }
+        .vintage-paper { background-color: #d8c8a7; background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.15"/></svg>'); box-shadow: inset 0 0 30px rgba(101, 75, 41, 0.4); }
 
-    .paper-bg { 
-        background-color: #fdfbf7; 
-        background-image: radial-gradient(#e2d9c8 0.8px, transparent 0.8px), radial-gradient(#e2d9c8 0.8px, #fdfbf7 0.8px); 
-        background-size: 24px 24px; 
-        background-position: 0 0, 12px 12px; 
-    }
-    
-    .vintage-paper { 
-        background-color: #d8c8a7; 
-        background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.15"/></svg>'); 
-        box-shadow: inset 0 0 30px rgba(101, 75, 41, 0.4); 
-    }
+        /* 按鈕全域樣式 (去框線、柔和陰影) */
+        .military-btn { background: #ffffff; border: 1px solid #d6cebe; color: #3b3632; box-shadow: 0 3px 6px rgba(0,0,0,0.05); transition: all 0.15s ease; }
+        .military-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 2px rgba(0,0,0,0.05); background: #fdfbf7; }
+        
+        .primary-btn { background: #7c343d; border: none; color: #ffffff; box-shadow: 0 4px 12px rgba(124,52,61,0.3); transition: all 0.15s ease; }
+        .primary-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 4px rgba(124,52,61,0.3); background: #5e262d; }
+        button:disabled { opacity: 0.5; filter: grayscale(50%); box-shadow: none !important; transform: none !important; cursor: not-allowed; }
 
-    /* 統一按鈕手感與陰影 */
-    .military-btn { 
-        background: #ffffff; 
-        border: 2px solid #292524; 
-        color: #1c1917; 
-        box-shadow: 0 4px 0 #292524; 
-        transition: transform 0.1s, box-shadow 0.1s; 
-    }
-    .military-btn:active:not(:disabled) { 
-        transform: translateY(4px); 
-        box-shadow: 0 0px 0 #292524; 
-        background: #f1f5f9; 
-    }
+        /* 卡片設計 (去外框，改用陰影與頂部飾條) */
+        .level-card { background: #ffffff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); overflow: hidden; border-top: 6px solid #7c343d; }
+        .level-card.l2 { border-top-color: #047857; }
+        .level-card.l3 { border-top-color: #a04b1e; }
+        .level-card.l7 { background: #2b2626; border-top-color: #e5d5b5; color: #e5d5b5; box-shadow: 0 12px 32px rgba(0,0,0,0.3); }
 
-    .primary-btn { 
-        background: #7c343d; 
-        border: 2px solid #4a1f24; 
-        color: #ffffff; 
-        box-shadow: 0 4px 0 #4a1f24; 
-        transition: transform 0.1s, box-shadow 0.1s; 
-    }
-    .primary-btn:active:not(:disabled) { 
-        transform: translateY(4px); 
-        box-shadow: 0 0px 0 #4a1f24; 
-        background: #5e262d; 
-    }
-    .primary-btn:disabled { 
-        opacity: 0.5; 
-        box-shadow: none; 
-        transform: none; 
-    }
+        /* 選項按鈕樣式 */
+        .opt-btn { width: 100%; padding: 16px 20px; background: #ffffff; border: 1px solid #e2d9c8; border-radius: 12px; font-weight: 700; text-align: left; color: #3b3632; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.15s ease; }
+        .opt-btn:active:not(:disabled) { background: #fdfbf7; transform: scale(0.98); }
+        .opt-btn.l2-opt:active:not(:disabled) { background: #f0fdf4; border-color: #047857; color: #047857; }
+        .opt-btn.l3-opt { background: #fdfbf7; border-color: #d6cebe; }
+        .opt-btn.l3-opt:active:not(:disabled) { background: #f5f0e8; border-color: #a04b1e; color: #a04b1e; }
 
-    .back-btn { 
-        background: #f8f2e6; 
-        border: 2px solid #7c343d; 
-        color: #7c343d; 
-        box-shadow: 0 4px 0 #7c343d; 
-        transition: transform 0.1s, box-shadow 0.1s; 
-    }
-    .back-btn:active:not(:disabled) { 
-        transform: translateY(4px); 
-        box-shadow: 0 0px 0 #7c343d; 
-        background: #e2d9c8; 
-    }
+        .code-box { background: #fdfbf7; border: 1px solid #d6cebe; border-radius: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
 
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
+        /* 動畫與其他 */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 0px; display: none; }
+        
+        /* 圖鑑四宮格 */
+        .char-card-grid { border: 1px solid #e2d9c8; border-radius: 12px; overflow: hidden; background: #fff; display: flex; flex-direction: column; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .char-card-flex { border: 1px solid #e2d9c8; border-radius: 12px; overflow: hidden; background: #fff; display: flex; flex-direction: row; align-items: stretch; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .char-img-box { background: #e5d5b5; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .char-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* 碎片樣式模擬 */
+        .torn-piece { position: relative; background: #d8c8a7; box-shadow: 0 2px 6px rgba(0,0,0,0.15); border-radius: 2px; }
+        .torn-piece::after { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><filter id="r"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="3"/><feDisplacementMap in="SourceGraphic" scale="5"/></filter><rect width="100%" height="100%" filter="url(%23r)" fill="none" stroke="%23fdfbf7" stroke-width="4"/></svg>'); pointer-events: none; }
 
-    .code-box { 
-        background: #ffffff; 
-        border: 2px solid #44403c; 
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08), 0 3px 0 #a8a29e; 
-        transition: all 0.2s; 
-    }
-    
-    .glass-card { 
-        background: rgba(255, 255, 255, 0.95); 
-        border: 1px solid rgba(124, 52, 61, 0.2); 
-        box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.06); 
-        border-radius: 16px; 
-    }
-
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    .fade-in { animation: fadeIn 0.35s ease-out forwards; }
-    
-    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 4px; }
-    
-    .char-card { 
-        border: 1px solid rgba(124, 52, 61, 0.25); 
-        border-radius: 12px; 
-        overflow: hidden; 
-        background: #fff; 
-        display: flex; 
-        flex-direction: column; 
-        box-shadow: 0 4px 6px rgba(0,0,0,0.04); 
-    }
-    .char-img-box { 
-        width: 100%; 
-        aspect-ratio: 1/1; 
-        background: #e5d5b5; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        overflow: hidden; 
-        border-bottom: 1px solid rgba(124, 52, 61, 0.15);
-    }
-    .char-img-box img { width: 100%; height: 100%; object-fit: cover; }
-    
-    .flower-card { 
-        border: 2px solid rgba(124, 52, 61, 0.25); 
-        border-radius: 12px; 
-        overflow: hidden; 
-        background: #fff; 
-        cursor: pointer; 
-        transition: all 0.2s; 
-        box-shadow: 0 3px 5px rgba(0,0,0,0.05); 
-    }
-    .flower-card.selected { 
-        border-width: 3px; 
-        border-color: #7c343d; 
-        transform: scale(0.96); 
-        box-shadow: 0 0 12px rgba(124,52,61,0.35); 
-    }
-
-    .l7-bg { background-color: #2b2626; color: #e5d5b5; }
-</style>
+        #app-loader { transition: opacity 0.6s ease; }
+    </style>
 </head>
+<body class="min-h-[100dvh] flex items-center justify-center p-0 sm:p-4 bg-stone-300 overflow-x-hidden">
 
-<body class="flex items-center justify-center min-h-[100dvh]">
-
-<div class="relative w-full max-w-[430px] h-[100dvh] sm:h-[860px] paper-bg sm:rounded-[32px] border-0 sm:border-[8px] border-stone-800 shadow-2xl flex flex-col overflow-hidden fade-in">
-
-    <!-- HEADER (隊伍名稱靠左、關卡名稱置中、拼圖與音效靠右) -->
-    <div class="bg-[#7c343d] border-b-4 border-[#4a1f24] px-4 py-3.5 flex items-center justify-between text-sm text-[#f8f2e6] z-40 shrink-0 shadow-lg relative">
-        <div class="flex items-center space-x-1.5 w-1/3 truncate">
-            <i class="fa-solid fa-users opacity-80 text-xs"></i>
-            <span id="header-team-name" class="font-bold truncate text-sm">請建立隊伍</span>
-        </div>
-        <div id="header-level-title" class="absolute left-1/2 transform -translate-x-1/2 font-black text-base tracking-widest text-center w-1/3 truncate text-amber-200">
-            任務總部
-        </div>
-        <div class="flex items-center justify-end space-x-2.5 w-1/3">
-            <div class="font-mono text-xs font-black flex items-center bg-[#5e262d] px-2 py-1 rounded shadow-inner cursor-pointer" onclick="openStampsDrawer()">
-                <i class="fa-solid fa-puzzle-piece text-yellow-400 mr-1.5"></i><span id="header-puzzle-text">0/7</span>
-            </div>
-            <button id="sound-toggle" class="p-1 hover:scale-110 transition flex items-center justify-center" title="聲音開關">
-                <i id="sound-icon" class="fa-solid fa-volume-high text-yellow-300 text-lg"></i>
-            </button>
-        </div>
+    <!-- 系統載入遮罩 (解決 GitHub Loading 問題) -->
+    <div id="app-loader" class="fixed inset-0 bg-[#fdfbf7] z-[9999] flex flex-col items-center justify-center">
+        <i class="fa-solid fa-compass fa-spin text-5xl text-[#7c343d] mb-4"></i>
+        <p class="text-[#3b3632] font-bold tracking-widest animate-pulse">系統載入中...</p>
     </div>
 
-    <!-- MAIN VIEWPORT -->
-    <div id="game-viewport" class="flex-1 relative overflow-y-auto custom-scrollbar text-[#3b3632] p-4 pb-28 flex flex-col z-10 scroll-smooth">
-        <!-- ================= SCREEN 0: ENTRY ================= -->
-        <div id="screen-entry" class="space-y-5 transition-all duration-300 fade-in py-6">
-            <div class="text-center py-4 border-y-2 border-[#7c343d] bg-white/60 rounded-lg">
-                <h1 class="text-2xl font-black tracking-widest text-[#7c343d]">三重空軍一村</h1>
-                <p class="text-sm font-bold mt-1 text-stone-600">實境解謎大冒險 ‧ 拼湊歷史碎片</p>
+    <div class="relative w-full max-w-[430px] h-[100dvh] sm:h-[860px] paper-bg sm:rounded-[32px] border-0 sm:border-[8px] border-stone-800 shadow-2xl flex flex-col overflow-hidden pb-safe">
+
+        <!-- 頂部紅色導覽列 -->
+        <div class="bg-[#7c343d] px-4 py-3.5 flex items-center justify-between z-40 shrink-0 shadow-md relative text-[#f8f2e6]">
+            <!-- 左側：隊伍名稱 -->
+            <div class="flex items-center space-x-1.5 w-1/3 truncate">
+                <i class="fa-solid fa-users text-xs opacity-80"></i>
+                <span id="header-team-name" class="font-bold text-sm truncate">尚未登入</span>
             </div>
-            <div class="glass-card p-6 space-y-5">
-                <div class="flex items-center space-x-2 border-b border-stone-200 pb-2">
-                    <i class="fa-solid fa-id-card text-[#7c343d] text-xl"></i><h2 class="text-lg font-black">建立調查隊伍資料</h2>
-                </div>
-                <div class="space-y-2">
-                    <label class="text-sm font-bold block">請輸入隊伍名稱 (必填)：</label>
-                    <input type="text" id="input-team-name" maxlength="15" placeholder="例：探險小隊" class="w-full border-2 border-stone-400 rounded-xl px-4 py-3 text-base font-bold focus:border-[#7c343d] outline-none transition bg-white/80">
-                </div>
-                <div class="space-y-2 pt-2">
-                    <label class="text-sm font-bold flex items-center justify-between">
-                        <span>選擇起始關卡：</span><span class="text-xs text-[#7c343d] font-mono font-bold">路線分流</span>
-                    </label>
-                    <select id="start-level-select" class="w-full border-2 border-stone-400 rounded-xl p-3 text-base font-bold bg-white/80 outline-none text-[#7c343d]">
-                        <option value="1">關卡 1 (防砲陣地)</option><option value="2">關卡 2 (眷村眷舍)</option>
-                        <option value="3" selected>關卡 3 (村長的家)</option><option value="4">關卡 4 (榕樹廣場)</option>
-                        <option value="5">關卡 5 (群星之夜)</option><option value="6">關卡 6 (時光膠囊)</option>
-                    </select>
-                </div>
-                <button id="btn-start-game" class="w-full py-4 primary-btn font-black text-lg rounded-xl flex items-center justify-center space-x-2 mt-4">
-                    <i class="fa-solid fa-play text-yellow-300"></i><span>開啟檔案 ‧ 啟動倒數</span>
+            <!-- 中間：關卡名稱 -->
+            <div id="header-level-title" class="absolute left-1/2 transform -translate-x-1/2 font-black text-base tracking-widest text-center w-1/3 truncate text-amber-200">
+                任務總部
+            </div>
+            <!-- 右側：聲音開關與拼圖 -->
+            <div class="flex items-center justify-end space-x-3 w-1/3">
+                <button id="sound-toggle" class="p-1 hover:text-yellow-300 transition" title="聲音開關">
+                    <i id="sound-icon" class="fa-solid fa-volume-high text-yellow-400 text-base"></i>
                 </button>
-            </div>
-        </div>
-
-        <!-- ================= SCREEN: MAIN (總部主畫面) ================= -->
-        <div id="screen-main" class="hidden flex-col space-y-5 fade-in">
-            <!-- 隊伍狀態區塊 -->
-            <div class="glass-card p-5 flex flex-col space-y-3 shrink-0">
-                <div class="flex justify-between items-center border-b border-stone-200 pb-2">
-                    <span class="font-bold text-sm text-stone-600">隊伍名稱：</span>
-                    <span id="main-team-name" class="text-[#7c343d] font-black text-lg"></span>
-                </div>
-                <div class="flex justify-between items-center border-b border-stone-200 pb-2">
-                    <span class="font-bold text-sm text-stone-600">剩餘調查時間：</span>
-                    <span id="main-timer" class="text-[#7c343d] font-mono font-black text-xl">02:00:00</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="font-bold text-sm text-stone-600">碎片收集進度：</span>
-                    <span id="main-progress" class="text-[#7c343d] font-black text-lg">[0/7]</span>
-                </div>
-            </div>
-
-            <!-- 當前任務區塊 (上方) -->
-            <div class="glass-card p-6 text-center border-l-8 border-l-[#7c343d] shrink-0">
-                <div class="text-sm font-bold text-stone-600 mb-2">當前任務：請前往</div>
-                <div class="text-3xl font-black text-[#7c343d] mb-3">【 <span id="main-active-title"></span> 】</div>
-                <div class="text-xs text-stone-500 font-bold mb-5">（抵達現場後，請點擊下方按鈕繼續）</div>
-                <button id="btn-goto-current" class="w-full py-4 primary-btn font-black text-xl rounded-xl shadow-md">
-                    開啟當前調查任務
-                </button>
-            </div>
-
-            <!-- 地圖區塊 (下方) -->
-            <div class="glass-card p-4 flex-1 flex flex-col items-center min-h-[250px]">
-                <span class="text-[#7c343d] font-black mb-3 text-base border-b-2 border-[#7c343d] pb-1 px-4">【三重一村地圖】</span>
-                <div class="w-full flex-1 bg-stone-200 border border-stone-300 rounded-lg flex items-center justify-center overflow-hidden">
-                    <img src="https://placehold.co/400x300/e5d5b5/7c343d?text=%E4%B8%89%E9%87%8D%E4%B8%80%E6%9D%91%E5%9C%B0%E5%9C%96" alt="三重一村地圖" class="w-full h-full object-cover">
+                <div class="font-mono text-xs font-black flex items-center bg-[#5e262d] px-2 py-1 rounded border border-[#4a1f24] shadow-inner cursor-pointer" onclick="openStampsDrawer()">
+                    <i class="fa-solid fa-puzzle-piece text-yellow-400 mr-1"></i><span id="header-puzzle-text">0/7</span>
                 </div>
             </div>
         </div>
 
-        <!-- ================= LEVEL 1: 防砲陣地 ================= -->
-        <div id="screen-level-1" class="hidden flex-col space-y-4 fade-in">
-            <div id="l1-p1" class="flex flex-col space-y-5 fade-in">
-                <div class="text-center py-4 glass-card mb-1 shrink-0">
-                    <h1 class="text-3xl font-black tracking-widest text-[#7c343d]">防砲陣地</h1>
-                    <p class="text-sm font-bold mt-1 text-stone-600">機密檔案</p>
-                </div>
-                <div class="glass-card p-5 space-y-4 shrink-0">
-                    <p class="text-lg text-[#7c343d] font-black leading-relaxed text-center border-b border-stone-200 pb-2">任務一：尋找指定地點</p>
-                    <p class="text-sm font-bold text-stone-600 text-center">點擊打卡獲取密碼碎片</p>
-                    <div class="grid grid-cols-2 gap-3 mt-1" id="l1-locations-grid">
-                        <button class="l1-loc-btn military-btn py-5 rounded-xl text-base font-black flex flex-col items-center justify-center" data-idx="0"><i class="fa-solid fa-map-pin mb-2 text-[#7c343d] text-2xl"></i>通氣孔</button>
-                        <button class="l1-loc-btn military-btn py-5 rounded-xl text-base font-black flex flex-col items-center justify-center" data-idx="1"><i class="fa-solid fa-map-pin mb-2 text-[#7c343d] text-2xl"></i>包砲建屋</button>
-                        <button class="l1-loc-btn military-btn py-5 rounded-xl text-base font-black flex flex-col items-center justify-center" data-idx="2"><i class="fa-solid fa-map-pin mb-2 text-[#7c343d] text-2xl"></i>砲座遺跡</button>
-                        <button class="l1-loc-btn military-btn py-5 rounded-xl text-base font-black flex flex-col items-center justify-center" data-idx="3"><i class="fa-solid fa-map-pin mb-2 text-[#7c343d] text-2xl"></i>預備門數</button>
-                    </div>
-                </div>
-                <div class="glass-card p-5 space-y-4 relative shrink-0">
-                    <div id="l1-keypad-overlay" class="absolute inset-0 bg-stone-900/40 backdrop-blur-[2px] z-20 flex items-center justify-center rounded-2xl transition-opacity">
-                        <span class="bg-[#7c343d] text-white text-base font-bold px-5 py-3 rounded-xl shadow-xl">請先完成 4 個地點打卡</span>
-                    </div>
-                    <p class="text-lg text-[#7c343d] font-black text-center border-b border-stone-200 pb-2 relative z-10">任務二：終止軍事用途年份</p>
-                    <div id="l1-code-container" class="grid grid-cols-4 gap-2 max-w-[280px] mx-auto mt-3 relative z-10">
-                        <div class="code-box h-14 rounded-xl flex items-center justify-center text-3xl font-black font-mono text-[#7c343d]"></div><div class="code-box h-14 rounded-xl flex items-center justify-center text-3xl font-black font-mono text-[#7c343d]"></div><div class="code-box h-14 rounded-xl flex items-center justify-center text-3xl font-black font-mono text-[#7c343d]"></div><div class="code-box h-14 rounded-xl flex items-center justify-center text-3xl font-black font-mono text-[#7c343d]"></div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-3 text-center pt-3 max-w-[300px] mx-auto relative z-10">
-                        <button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="1">1</button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="2">2</button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="3">3</button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="4">4</button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="5">5</button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="6">6</button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="7">7</button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="8">8</button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="9">9</button>
-                        <button id="l1-btn-del" class="military-btn py-3 rounded-xl text-2xl font-black text-[#7c343d] bg-red-50"><i class="fa-solid fa-delete-left"></i></button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="0">0</button><button id="l1-btn-submit" class="military-btn py-3 rounded-xl text-2xl font-black text-emerald-800 bg-emerald-50"><i class="fa-solid fa-check"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- MAIN VIEWPORT -->
+        <div id="game-viewport" class="flex-1 overflow-y-auto scroll-smooth z-10 w-full custom-scrollbar relative">
+            <div class="p-5 pb-32 min-h-full flex flex-col">
 
-        <!-- ================= LEVEL 2: 眷村眷舍 ================= -->
-        <div id="screen-level-2" class="hidden flex-col space-y-4 fade-in">
-            <div id="l2-p1" class="flex flex-col space-y-5 fade-in justify-center py-6">
-                <div class="text-center py-5 glass-card shadow-sm">
-                    <h1 class="text-3xl font-black tracking-widest text-[#7c343d]">眷村空間與建築</h1>
-                    <p class="text-sm font-bold mt-2 text-stone-600">紅磚牆與眷舍解謎</p>
+                <!-- SCREEN 0: ENTRY -->
+                <div id="screen-entry" class="hidden space-y-6 transition-all duration-300 fade-in flex-1 flex-col justify-center">
+                    <div class="text-center py-6">
+                        <h1 class="text-3xl font-black tracking-widest text-[#7c343d] mb-2 drop-shadow-sm">三重空軍一村</h1>
+                        <p class="text-sm text-[#3b3632] font-bold tracking-wide">實境解謎大冒險 ‧ 拼湊歷史碎片</p>
+                    </div>
+                    <div class="level-card p-6 space-y-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-[#3b3632] block">請輸入隊伍名稱 (必填)：</label>
+                            <input type="text" id="input-team-name" maxlength="15" placeholder="例：眷村探險小隊" class="w-full bg-[#fdfbf7] border border-[#d6cebe] rounded-xl px-4 py-4 text-base font-bold outline-none focus:border-[#7c343d] focus:ring-1 focus:ring-[#7c343d]">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-[#3b3632] block">選擇起始關卡：</label>
+                            <select id="start-level-select" class="w-full bg-[#fdfbf7] border border-[#d6cebe] rounded-xl p-4 text-base font-bold text-[#7c343d] outline-none">
+                                <option value="1">關卡 1 (防砲陣地)</option><option value="2">關卡 2 (眷村眷舍)</option>
+                                <option value="3" selected>關卡 3 (村長的家)</option><option value="4">關卡 4 (榕樹廣場)</option>
+                                <option value="5">關卡 5 (群星之夜)</option><option value="6">關卡 6 (時光膠囊)</option>
+                            </select>
+                        </div>
+                        <button id="btn-start-game" class="w-full py-4 primary-btn font-black text-lg rounded-xl flex items-center justify-center space-x-2 mt-2">
+                            <i class="fa-solid fa-play"></i><span>開啟檔案 ‧ 啟動倒數</span>
+                        </button>
+                    </div>
                 </div>
-                <button class="w-full py-4 primary-btn font-black text-xl rounded-xl shadow-md" onclick="goToSubPage(2, 2, 2)">開始解謎 <i class="fa-solid fa-arrow-right ml-2"></i></button>
-            </div>
-            <div id="l2-p2" class="hidden flex-col flex-1 fade-in space-y-3">
-                <div class="text-center shrink-0"><span class="px-5 py-2 bg-white border-2 border-[#7c343d] rounded-full text-base font-black text-[#7c343d]" id="l2-q-counter">題目 1 / 5</span></div>
-                <div class="glass-card p-5 flex-1 flex flex-col text-stone-800">
-                    <div id="l2-photo-section" class="hidden bg-white/60 p-4 rounded-xl border border-stone-300 mb-5 text-center shrink-0 shadow-inner">
-                        <p id="l2-photo-req-text" class="text-sm font-bold text-[#7c343d] mb-4"></p>
-                        <label for="l2-camera-input" class="w-full py-4 primary-btn font-black text-lg rounded-xl flex items-center justify-center space-x-2 cursor-pointer shadow-md">
-                            <i id="l2-cam-icon" class="fa-solid fa-camera-retro text-2xl"></i><span id="l2-cam-text">點擊拍攝</span>
+
+                <!-- SCREEN: MAIN (總部主畫面) -->
+                <div id="screen-main" class="hidden flex-col space-y-6 fade-in flex-1">
+                    <!-- 時間狀態 -->
+                    <div class="level-card p-5 text-center flex flex-col items-center justify-center border-t-0 shadow-sm">
+                        <div class="text-sm font-bold text-stone-500 mb-1">剩餘調查時間</div>
+                        <div id="main-timer" class="text-4xl font-mono font-black text-[#7c343d] tracking-wider">02:00:00</div>
+                    </div>
+
+                    <!-- 地圖區塊 -->
+                    <div class="level-card p-4 flex flex-col items-center border-t-0 shadow-sm">
+                        <span class="text-[#3b3632] font-black mb-3 text-sm tracking-widest">【 三重一村地圖 】</span>
+                        <div class="w-full h-56 bg-stone-200 rounded-lg flex items-center justify-center overflow-hidden">
+                            <!-- 替換照片：三重一村地圖圖片 -->
+                            <img src="https://via.placeholder.com/400x300/e5d5b5/7c343d?text=[Image of 三重一村地圖]" alt="三重一村地圖" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+
+                    <!-- 當前任務區塊 -->
+                    <div class="level-card p-6 text-center shadow-md bg-[#fdfbf7]">
+                        <div class="text-sm font-bold text-stone-500 mb-2">當前任務：請前往</div>
+                        <div class="text-3xl font-black text-[#7c343d] mb-5 tracking-widest">【 <span id="main-active-title"></span> 】</div>
+                        <button id="btn-goto-current" class="w-full py-4 primary-btn font-black text-xl rounded-xl">
+                            開啟當前調查任務
+                        </button>
+                    </div>
+                </div>
+
+                <!-- LEVEL 1: 防砲陣地 -->
+                <div id="screen-level-1" class="hidden flex-col space-y-6 fade-in flex-1">
+                    <div class="level-card p-5 space-y-5">
+                        <h2 class="text-lg text-[#7c343d] font-black text-center border-b border-stone-200 pb-3">任務一：尋找指定地點</h2>
+                        <p class="text-sm font-bold text-stone-500 text-center mb-2">點擊打卡獲取密碼碎片（可重複點擊回放提示）</p>
+                        <div class="grid grid-cols-2 gap-3" id="l1-locations-grid">
+                            <button class="l1-loc-btn military-btn py-5 rounded-xl text-base font-black flex flex-col items-center justify-center" data-idx="0"><i class="fa-solid fa-map-pin mb-2 text-[#7c343d] text-xl"></i>通氣孔</button>
+                            <button class="l1-loc-btn military-btn py-5 rounded-xl text-base font-black flex flex-col items-center justify-center" data-idx="1"><i class="fa-solid fa-map-pin mb-2 text-[#7c343d] text-xl"></i>包砲建屋</button>
+                            <button class="l1-loc-btn military-btn py-5 rounded-xl text-base font-black flex flex-col items-center justify-center" data-idx="2"><i class="fa-solid fa-map-pin mb-2 text-[#7c343d] text-xl"></i>砲座遺跡</button>
+                            <button class="l1-loc-btn military-btn py-5 rounded-xl text-base font-black flex flex-col items-center justify-center" data-idx="3"><i class="fa-solid fa-map-pin mb-2 text-[#7c343d] text-xl"></i>預備門數</button>
+                        </div>
+                    </div>
+                    <div class="level-card p-5 space-y-5 relative">
+                        <div id="l1-keypad-overlay" class="absolute inset-0 bg-[#fdfbf7]/80 backdrop-blur-[2px] z-20 flex items-center justify-center transition-opacity">
+                            <span class="bg-[#3b3632] text-white text-sm font-bold px-6 py-3 rounded-full shadow-lg">請先完成 4 個地點打卡</span>
+                        </div>
+                        <h2 class="text-lg text-[#7c343d] font-black text-center border-b border-stone-200 pb-3 relative z-10">任務二：終止軍事用途年份</h2>
+                        <div id="l1-code-container" class="grid grid-cols-4 gap-3 max-w-[260px] mx-auto mt-2 relative z-10">
+                            <div class="code-box h-14 rounded-xl flex items-center justify-center text-3xl font-black font-mono text-[#7c343d]"></div><div class="code-box h-14 rounded-xl flex items-center justify-center text-3xl font-black font-mono text-[#7c343d]"></div><div class="code-box h-14 rounded-xl flex items-center justify-center text-3xl font-black font-mono text-[#7c343d]"></div><div class="code-box h-14 rounded-xl flex items-center justify-center text-3xl font-black font-mono text-[#7c343d]"></div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-3 text-center pt-2 max-w-[280px] mx-auto relative z-10">
+                            <button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="1">1</button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="2">2</button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="3">3</button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="4">4</button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="5">5</button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="6">6</button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="7">7</button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="8">8</button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="9">9</button>
+                            <button id="l1-btn-del" class="military-btn py-3 rounded-xl text-2xl font-black text-[#7c343d] bg-red-50"><i class="fa-solid fa-delete-left"></i></button><button class="l1-key military-btn py-3 rounded-xl text-2xl font-mono font-black" data-val="0">0</button><button id="l1-btn-submit" class="military-btn py-3 rounded-xl text-2xl font-black text-emerald-700 bg-emerald-50"><i class="fa-solid fa-check"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LEVEL 2: 眷村眷舍 -->
+                <div id="screen-level-2" class="hidden flex-col space-y-5 fade-in flex-1">
+                    <div class="level-card l2 p-6 flex-1 flex flex-col">
+                        <div class="text-center mb-6 shrink-0"><span class="px-5 py-2 bg-[#f0fdf4] rounded-full text-sm font-black text-[#047857]" id="l2-q-counter">題目 1 / 5</span></div>
+                        <div id="l2-photo-section" class="hidden bg-[#f0fdf4] p-5 rounded-xl border border-dashed border-[#047857] mb-6 text-center shrink-0">
+                            <p id="l2-photo-req-text" class="text-sm font-bold text-[#064e3b] mb-4"></p>
+                            <label for="l2-camera-input" class="w-full py-4 bg-[#047857] text-white font-black text-lg rounded-xl flex items-center justify-center space-x-2 cursor-pointer shadow-md transition-transform active:scale-95">
+                                <i id="l2-cam-icon" class="fa-solid fa-camera-retro text-xl"></i><span>點擊拍攝</span>
+                            </label>
+                            <input type="file" accept="image/*" capture="environment" id="l2-camera-input" class="hidden">
+                        </div>
+                        <div id="l2-question-text" class="text-base font-bold leading-relaxed mb-6 whitespace-pre-line text-[#3b3632] shrink-0 text-justify"></div>
+                        <div id="l2-options-container" class="space-y-3 flex-1 flex flex-col justify-end"></div>
+                    </div>
+                </div>
+
+                <!-- LEVEL 3: 村長的家 -->
+                <div id="screen-level-3" class="hidden flex-col space-y-5 fade-in flex-1">
+                    <div id="l3-photo-section" class="level-card l3 p-8 text-center flex flex-col justify-center flex-1">
+                        <p class="text-lg font-bold leading-relaxed text-[#4d3e2e] mb-8">請先拍攝現場「村長的家」照片，解鎖眷村菜單解謎。</p>
+                        <label for="l3-camera-input" class="w-full py-5 bg-[#a04b1e] text-white font-black text-xl rounded-xl flex items-center justify-center space-x-3 cursor-pointer shadow-md transition-transform active:scale-95">
+                            <i id="l3-cam-icon" class="fa-solid fa-camera-retro text-2xl"></i><span>拍攝村長的家</span>
                         </label>
-                        <input type="file" accept="image/*" capture="environment" id="l2-camera-input" class="hidden">
+                        <input type="file" accept="image/*" capture="environment" id="l3-camera-input" class="hidden">
                     </div>
-                    <div id="l2-question-text" class="text-base font-bold leading-relaxed mb-5 whitespace-pre-line text-stone-900 shrink-0 text-justify"></div>
-                    <div id="l2-options-container" class="space-y-3 flex-1"></div>
+                    <div id="l3-qa-section" class="hidden flex-1 flex flex-col">
+                        <div class="level-card l3 p-6 flex-1 flex flex-col relative">
+                            <div class="text-center mb-6 shrink-0"><span class="px-5 py-2 bg-[#f5f0e8] rounded-full text-sm font-black text-[#a04b1e]" id="l3-q-counter"></span></div>
+                            <div id="l3-audio-hint" class="absolute top-5 right-5 left-5 bg-amber-100 text-amber-800 text-sm font-bold p-3 rounded-xl text-center border border-amber-300 animate-pulse z-10 shadow-sm">
+                                ⚠️ 點擊聽完語音後解鎖選項！
+                            </div>
+                            <div class="mt-8 flex flex-col items-center justify-center shrink-0 mb-6">
+                                <button id="l3-btn-voice" class="w-24 h-24 rounded-full bg-[#a04b1e] text-white flex items-center justify-center shadow-lg transition-transform active:scale-95">
+                                    <i id="l3-voice-icon" class="fa-solid fa-volume-high text-4xl"></i>
+                                </button>
+                                <audio id="l3-audio-player" class="hidden"></audio>
+                            </div>
+                            <p id="l3-question-text" class="text-lg font-black text-center leading-relaxed mb-6 text-[#4d3e2e]"></p>
+                            <div id="l3-options-container" class="space-y-3 flex-1 flex flex-col justify-end"></div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- ================= LEVEL 3: 村長的家 ================= -->
-        <div id="screen-level-3" class="hidden flex-col space-y-4 fade-in">
-            <div id="l3-p1" class="flex flex-col space-y-5 fade-in justify-center py-6">
-                <div class="text-center py-5 glass-card shadow-sm">
-                    <h1 class="text-3xl font-black tracking-widest text-[#7c343d]">村長的家</h1>
-                    <p class="text-sm font-bold mt-2 text-stone-600">眷村家鄉味解謎</p>
-                </div>
-                <div class="glass-card p-6 text-center shadow-sm">
-                    <p class="text-base font-bold leading-relaxed text-center mb-6">請先拍攝現場「村長的家」照片，解鎖眷村菜單解謎。</p>
-                    <label for="l3-camera-input" class="w-full py-5 primary-btn font-black text-xl rounded-xl flex items-center justify-center space-x-3 cursor-pointer shadow-md">
-                        <i id="l3-cam-icon" class="fa-solid fa-camera-retro text-2xl"></i><span id="l3-cam-text">拍攝村長的家</span>
-                    </label>
-                    <input type="file" accept="image/*" capture="environment" id="l3-camera-input" class="hidden">
-                </div>
-            </div>
-            <div id="l3-p2" class="hidden flex-col flex-1 fade-in space-y-3">
-                <div class="text-center shrink-0"><span class="px-5 py-2 bg-white border-2 border-[#7c343d] rounded-full text-base font-black text-[#7c343d]" id="l3-q-counter">題目 1 / 5</span></div>
-                <div class="glass-card p-5 flex-1 flex flex-col relative">
-                    <div id="l3-audio-hint" class="bg-amber-100 text-amber-900 text-sm font-bold p-3 rounded-lg text-center border border-amber-300 animate-pulse shadow-sm mb-4">
-                        ⚠️ 點擊聽完語音後解鎖作答！
+                <!-- LEVEL 4: 榕樹廣場 -->
+                <div id="screen-level-4" class="hidden flex-col h-full fade-in">
+                    <!-- Page 1 (Intro) -->
+                    <div id="l4-p1" class="level-card p-6 flex flex-col justify-center min-h-[70vh] fade-in">
+                        <div class="text-base leading-loose font-bold text-[#3b3632] text-justify flex-1">
+                            <p>大時代的動盪，讓無數家庭在戰亂中遷徙來台。窄小的屋舍、悶熱的夏日，讓鄰居們習慣搬著竹椅聚在村子裡的巨大榕樹下乘涼、聊家常。</p><br>
+                            <p>對我們而言，這棵老榕樹下的廣場不只是公共客廳，更是凝聚所有人情感、度過童年時光的避風港。<br><br>今天，請跟著我們一起走入這座充滿人情味的榕樹廣場，回到那段克難卻溫暖的歲月。</p>
+                        </div>
+                        <button class="w-full py-4 primary-btn font-black text-lg rounded-xl mt-6" onclick="goToSubPage(4, 2, 4)">繼續</button>
                     </div>
-                    <div class="flex flex-col items-center justify-center mb-5 shrink-0">
-                        <button id="l3-btn-voice" class="w-20 h-20 rounded-full primary-btn flex items-center justify-center shadow-lg transition-transform active:scale-95 border-2 border-[#4a1f24]">
-                            <i id="l3-voice-icon" class="fa-solid fa-volume-high text-4xl"></i>
+                    <!-- Page 2 (人物圖鑑 2x2 四宮格) -->
+                    <div id="l4-p2" class="hidden flex-col min-h-full fade-in">
+                        <div class="flex items-center mb-4">
+                            <button onclick="goToSubPage(4, 1, 4)" class="text-[#7c343d] font-bold py-2 px-3 bg-white rounded-lg shadow-sm"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-xl pr-10">人物圖鑑</h2>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 flex-1">
+                            <div class="char-card-grid">
+                                <div class="char-img-box w-full aspect-square"><img src="https://via.placeholder.com/150/e5d5b5/7c343d?text=[Image of 奶奶]" alt="奶奶"></div>
+                                <div class="p-3 text-xs flex-1 flex flex-col text-center">
+                                    <b class="text-sm text-[#7c343d] mb-1">奶奶 (60歲)</b>
+                                    <span class="text-stone-500 text-[10px] mb-2">碎花上衣/蒲扇</span>
+                                    <span class="font-bold leading-tight">負責歷史講解與關卡互動。</span>
+                                </div>
+                            </div>
+                            <div class="char-card-grid">
+                                <div class="char-img-box w-full aspect-square"><img src="https://via.placeholder.com/150/e5d5b5/7c343d?text=[Image of 翠芳]" alt="媽媽翠芳"></div>
+                                <div class="p-3 text-xs flex-1 flex flex-col text-center">
+                                    <b class="text-sm text-[#7c343d] mb-1">媽媽・翠芳</b>
+                                    <span class="text-stone-500 text-[10px] mb-2">旗袍/高跟鞋</span>
+                                    <span class="font-bold leading-tight">負責開場串場，引導團聚。</span>
+                                </div>
+                            </div>
+                            <div class="char-card-grid">
+                                <div class="char-img-box w-full aspect-square"><img src="https://via.placeholder.com/150/e5d5b5/7c343d?text=[Image of 中學生]" alt="中學生"></div>
+                                <div class="p-3 text-xs flex-1 flex flex-col text-center">
+                                    <b class="text-sm text-[#7c343d] mb-1">中學生</b>
+                                    <span class="text-stone-500 text-[10px] mb-2">制服/軍綠包</span>
+                                    <span class="font-bold leading-tight">帶領進行「編繩子」關卡。</span>
+                                </div>
+                            </div>
+                            <div class="char-card-grid">
+                                <div class="char-img-box w-full aspect-square"><img src="https://via.placeholder.com/150/e5d5b5/7c343d?text=[Image of 小孩]" alt="小孩"></div>
+                                <div class="p-3 text-xs flex-1 flex flex-col text-center">
+                                    <b class="text-sm text-[#7c343d] mb-1">在地兒童</b>
+                                    <span class="text-stone-500 text-[10px] mb-2">黃帽/直笛</span>
+                                    <span class="font-bold leading-tight">邀請跳橡皮筋繩融入生活。</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="w-full py-4 primary-btn font-black text-lg rounded-xl mt-4" onclick="goToSubPage(4, 3, 4)">繼續</button>
+                    </div>
+                    <!-- Page 3 -->
+                    <div id="l4-p3" class="hidden flex-col min-h-full fade-in">
+                        <div class="flex items-center mb-4">
+                            <button onclick="goToSubPage(4, 2, 4)" class="text-[#7c343d] font-bold py-2 px-3 bg-white rounded-lg shadow-sm"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-xl pr-10">實體活動指引</h2>
+                        </div>
+                        <div class="level-card p-6 flex-1 flex flex-col justify-center">
+                            <p class="mb-4 text-base font-bold text-[#3b3632]">歡迎來到榕樹廣場！在接下來的活動中，你們將扮演眷村裡的鄰家小孩。</p>
+                            <ul class="list-disc pl-5 space-y-4 text-base font-bold text-[#3b3632] text-justify">
+                                <li><b>活動體驗：</b>現場將準備瓜子與水果讓大家邊吃邊聊，並有編繩子、跳繩、猜字謎等復古互動。</li>
+                                <li><b>注意事項：</b>請放輕鬆，跟著 NPC 的引導融入情境。一起幫忙照顧身邊的「鄰居」們！</li>
+                            </ul>
+                        </div>
+                        <button class="w-full py-4 primary-btn font-black text-lg rounded-xl mt-4" onclick="goToSubPage(4, 4, 4)">準備好了，開始闖關</button>
+                    </div>
+                    <!-- Page 4 -->
+                    <div id="l4-p4" class="hidden flex-col min-h-full fade-in">
+                        <div class="flex items-center mb-4">
+                            <button onclick="goToSubPage(4, 3, 4)" class="text-[#7c343d] font-bold py-2 px-3 bg-white rounded-lg shadow-sm"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-xl pr-10">知識小測驗</h2>
+                        </div>
+                        <div class="level-card p-6 space-y-6 flex-1 flex flex-col justify-center">
+                            <div class="space-y-3">
+                                <label class="text-base font-bold text-[#3b3632] block">1. 眷村婦女縫製衣服與裁縫的核心工具：</label>
+                                <div id="l4-q1-container" class="space-y-2"></div>
+                            </div>
+                            <div class="space-y-3 mt-4">
+                                <label class="text-base font-bold text-[#3b3632] block">2. 昔日眷村居民領取生活主食憑證：</label>
+                                <div id="l4-q2-container" class="space-y-2"></div>
+                            </div>
+                            <button id="l4-btn-verify" class="w-full py-4 primary-btn font-black text-lg rounded-xl mt-8">提交答案</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LEVEL 5: 群星之夜 -->
+                <div id="screen-level-5" class="hidden flex-col h-full fade-in">
+                    <!-- Page 1 (Intro) -->
+                    <div id="l5-p1" class="level-card p-6 flex flex-col justify-center min-h-[70vh] fade-in">
+                        <div class="text-base leading-loose font-bold text-[#3b3632] text-justify flex-1">
+                            <p class="text-center text-[#7c343d] text-lg mb-4 font-black">歡迎來到 1950–1980 年代的黃金娛樂時光！</p>
+                            <p>當黑膠唱片旋轉、霓虹燈光閃爍，空氣中流淌著老歌與電影的熟悉旋律。這裡不只是歷史的記憶，更是我們今晚一同尋找青春與鄉愁的冒險舞台。</p>
+                            <hr class="my-4 border-[#e2d9c8]">
+                            <p>1950至1980年代，三重天台廣場曾是北台灣最繁華的娛樂地標，歌廳、戲院、夜總會林立。第一代外省移民在眷村裡，用歌聲撫平離鄉背井的鄉愁；而年輕人們則相約在燈光下聽歌、看電影。</p>
+                            <p class="mt-2">今晚，我們將透過一場「接歌挑戰」，帶領大家走入這段熱鬧又帶點感傷的青春歲月。</p>
+                        </div>
+                        <button class="w-full py-4 primary-btn font-black text-lg rounded-xl mt-6" onclick="goToSubPage(5, 2, 4)">繼續</button>
+                    </div>
+                    <!-- Page 2 -->
+                    <div id="l5-p2" class="hidden flex-col min-h-full fade-in">
+                        <div class="flex items-center mb-4">
+                            <button onclick="goToSubPage(5, 1, 4)" class="text-[#7c343d] font-bold py-2 px-3 bg-white rounded-lg shadow-sm"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-xl pr-10">群星圖鑑</h2>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 flex-1 content-start">
+                            <div class="char-card-grid">
+                                <div class="char-img-box"><img src="https://via.placeholder.com/200/e5d5b5/7c343d?text=[Image of 紫薇]"></div>
+                                <div class="p-3 text-xs flex-1 flex flex-col text-center">
+                                    <b class="text-sm text-[#7c343d] mb-1">紫薇</b>
+                                    <span class="text-[10px] text-stone-500 mb-2 border-b border-stone-200 pb-1">國語歌壇大姊大</span>
+                                    <span class="font-bold flex-1 leading-relaxed">《綠島小夜曲》—撫慰離鄉背井的移民。</span>
+                                </div>
+                            </div>
+                            <div class="char-card-grid">
+                                <div class="char-img-box"><img src="https://via.placeholder.com/200/e5d5b5/7c343d?text=[Image of 潘安邦]"></div>
+                                <div class="p-3 text-xs flex-1 flex flex-col text-center">
+                                    <b class="text-sm text-[#7c343d] mb-1">潘安邦</b>
+                                    <span class="text-[10px] text-stone-500 mb-2 border-b border-stone-200 pb-1">永遠的軍歌王子</span>
+                                    <span class="font-bold flex-1 leading-relaxed">《外婆的澎湖灣》—訴說眷村童年點滴。</span>
+                                </div>
+                            </div>
+                            <div class="char-card-grid">
+                                <div class="char-img-box"><img src="https://via.placeholder.com/200/e5d5b5/7c343d?text=[Image of 鄧麗君]"></div>
+                                <div class="p-3 text-xs flex-1 flex flex-col text-center">
+                                    <b class="text-sm text-[#7c343d] mb-1">鄧麗君</b>
+                                    <span class="text-[10px] text-stone-500 mb-2 border-b border-stone-200 pb-1">時代巨星</span>
+                                    <span class="font-bold flex-1 leading-relaxed">《月亮代表我的心》—用歌聲串起情感。</span>
+                                </div>
+                            </div>
+                            <div class="char-card-grid">
+                                <div class="char-img-box"><img src="https://via.placeholder.com/200/e5d5b5/7c343d?text=[Image of 羅大佑]"></div>
+                                <div class="p-3 text-xs flex-1 flex flex-col text-center">
+                                    <b class="text-sm text-[#7c343d] mb-1">羅大佑</b>
+                                    <span class="text-[10px] text-stone-500 mb-2 border-b border-stone-200 pb-1">時代創作者</span>
+                                    <span class="font-bold flex-1 leading-relaxed">《光陰的故事》—契合眷村改建的懷念。</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="w-full py-4 primary-btn font-black text-lg rounded-xl mt-4" onclick="goToSubPage(5, 3, 4)">繼續</button>
+                    </div>
+                    <!-- Page 3 -->
+                    <div id="l5-p3" class="hidden flex-col min-h-full fade-in">
+                        <div class="flex items-center mb-4">
+                            <button onclick="goToSubPage(5, 2, 4)" class="text-[#7c343d] font-bold py-2 px-3 bg-white rounded-lg shadow-sm"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-xl pr-10">遊戲玩法與規則</h2>
+                        </div>
+                        <div class="level-card p-6 flex-1 flex flex-col justify-center">
+                            <ol class="list-decimal pl-5 space-y-5 text-base font-bold text-[#3b3632] text-justify">
+                                <li><b>接歌挑戰：</b>關主將隨機播放眷村年代的老歌。</li>
+                                <li><b>搶答與接唱：</b>當音樂播到副歌突然暫停時，請接唱下一句或哼出大致旋律。</li>
+                                <li><b>求救機制：</b>不會唱也沒關係！可以向現場其他玩家「求救」，互相幫助。</li>
+                                <li><b>通關條件：</b>全體合力完成 3 首歌，即可獲得密語，解鎖完整故事！</li>
+                            </ol>
+                        </div>
+                        <button class="w-full py-4 primary-btn font-black text-lg rounded-xl mt-4" onclick="goToSubPage(5, 4, 4)">準備好了，開始闖關</button>
+                    </div>
+                    <!-- Page 4 -->
+                    <div id="l5-p4" class="hidden flex-col min-h-full fade-in">
+                        <div class="flex items-center mb-4">
+                            <button onclick="goToSubPage(5, 3, 4)" class="text-[#7c343d] font-bold py-2 px-3 bg-white rounded-lg shadow-sm"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-xl pr-10">通關密語</h2>
+                        </div>
+                        <div class="level-card p-6 flex-1 flex flex-col justify-center">
+                            <p class="text-base font-bold text-stone-600 mb-4 text-center">請輸入現場獲取的三位數密語</p>
+                            <div id="l5-code-container" class="grid grid-cols-3 gap-3 max-w-[240px] mx-auto mt-2">
+                                <div class="code-box h-16 rounded-xl flex items-center justify-center text-4xl font-black font-mono text-[#7c343d]"></div>
+                                <div class="code-box h-16 rounded-xl flex items-center justify-center text-4xl font-black font-mono text-[#7c343d]"></div>
+                                <div class="code-box h-16 rounded-xl flex items-center justify-center text-4xl font-black font-mono text-[#7c343d]"></div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3 pt-6 max-w-[280px] mx-auto w-full">
+                                <button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="1">1</button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="2">2</button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="3">3</button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="4">4</button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="5">5</button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="6">6</button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="7">7</button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="8">8</button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="9">9</button>
+                                <button id="l5-btn-del" class="military-btn py-4 rounded-xl text-2xl font-black text-[#7c343d] bg-[#fdfbf7]"><i class="fa-solid fa-delete-left"></i></button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="0">0</button><button id="l5-btn-submit" class="military-btn py-4 rounded-xl text-2xl font-black text-emerald-800 bg-[#fdfbf7]"><i class="fa-solid fa-check"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LEVEL 6: 時光膠囊 -->
+                <div id="screen-level-6" class="hidden flex-col h-full fade-in">
+                    <!-- Page 1 (Intro) -->
+                    <div id="l6-p1" class="level-card p-6 flex flex-col justify-center min-h-[70vh] fade-in">
+                        <div class="text-base leading-loose font-bold text-[#3b3632] text-justify flex-1">
+                            <h2 class="text-xl font-black text-[#7c343d] mb-4 text-center">歡迎來到空軍三重一村！</h2>
+                            <p>這裡曾是充滿人情味與時代記憶的眷村。在物資缺乏的年代裡，空氣中總是飄著淡淡的花香，街頭巷尾也流淌著動人的歌聲。</p><br>
+                            <p>今天，我們將跟著老居民奶奶的腳步，打開珍藏多年的木盒，一起找回三重過去被遺忘的產業與溫暖回憶。</p>
+                        </div>
+                        <button class="w-full py-4 primary-btn font-black text-lg rounded-xl mt-6" onclick="goToSubPage(6, 2, 4)">繼續</button>
+                    </div>
+                    <!-- Page 2 (人物：水平卡片，佔滿空白) -->
+                    <div id="l6-p2" class="hidden flex-col min-h-full fade-in">
+                        <div class="flex items-center mb-4">
+                            <button onclick="goToSubPage(6, 1, 4)" class="text-[#7c343d] font-bold py-2 px-3 bg-white rounded-lg shadow-sm"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-xl pr-10">角色介紹</h2>
+                        </div>
+                        <div class="flex-1 flex flex-col space-y-3 min-h-0">
+                            <div class="char-card-flex flex-1">
+                                <div class="char-img-box w-1/3 shrink-0 border-r border-[#e2d9c8]"><img src="https://via.placeholder.com/150/e5d5b5/7c343d?text=[Image of 奶奶]" alt="奶奶"></div>
+                                <div class="p-4 text-[#3b3632] flex-1 flex flex-col justify-center bg-white">
+                                    <b class="text-lg text-[#7c343d] mb-2 border-b border-stone-200 pb-1">奶奶 (NPC)</b>
+                                    <span class="font-bold text-sm leading-relaxed text-justify">三重一村老居民，負責帶出過去產業與回憶。</span>
+                                </div>
+                            </div>
+                            <div class="char-card-flex flex-1">
+                                <div class="char-img-box w-1/3 shrink-0 border-r border-[#e2d9c8]"><img src="https://via.placeholder.com/150/e5d5b5/7c343d?text=[Image of 孫子]" alt="孫子"></div>
+                                <div class="p-4 text-[#3b3632] flex-1 flex flex-col justify-center bg-white">
+                                    <b class="text-lg text-[#7c343d] mb-2 border-b border-stone-200 pb-1">孫子 (NPC)</b>
+                                    <span class="font-bold text-sm leading-relaxed text-justify">混在遊客中參與遊戲，陪大家討論帶氣氛。</span>
+                                </div>
+                            </div>
+                            <div class="char-card-flex flex-1">
+                                <div class="char-img-box w-1/3 shrink-0 border-r border-[#e2d9c8] text-4xl text-[#7c343d] opacity-50 bg-[#fdfbf7]"><i class="fa-solid fa-user-astronaut"></i></div>
+                                <div class="p-4 text-[#3b3632] flex-1 flex flex-col justify-center bg-white">
+                                    <b class="text-lg text-[#7c343d] mb-2 border-b border-stone-200 pb-1">遊客 (你)</b>
+                                    <span class="font-bold text-sm leading-relaxed text-justify">本次闖關者，跟著奶奶認識花香與歌聲。</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="w-full py-4 primary-btn font-black text-lg rounded-xl mt-4" onclick="goToSubPage(6, 3, 4)">繼續</button>
+                    </div>
+                    <!-- Page 3 -->
+                    <div id="l6-p3" class="hidden flex-col min-h-full fade-in">
+                        <div class="flex items-center mb-3">
+                            <button onclick="goToSubPage(6, 2, 4)" class="text-[#7c343d] font-bold py-2 px-3 bg-white rounded-lg shadow-sm"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-xl pr-10">藏在花露水裡的花</h2>
+                        </div>
+                        <div class="level-card p-4 flex-1 flex flex-col">
+                            <p class="text-sm font-bold bg-[#fdfbf7] p-3 rounded-lg border border-[#e2d9c8] mb-4 shrink-0 text-justify leading-relaxed">奶奶：「桌上有瓶明星花露水，裡面藏著哪些花香？畫面上有六種花，找的只有兩種，快從中把它們找出來吧！」</p>
+                            <div class="grid grid-cols-3 gap-2 flex-1 items-center min-h-0" id="flower-grid">
+                                <div class="flower-card flex flex-col h-[95%]" onclick="toggleFlower(this, '玫瑰')">
+                                    <div class="flex-1 bg-rose-50 flex items-center justify-center overflow-hidden"><img src="https://via.placeholder.com/200x200/ffdddd/990000?text=[Image of 玫瑰]" class="h-full w-full object-cover"></div>
+                                    <div class="text-center text-sm font-bold py-2 bg-white text-rose-900 shrink-0 border-t border-[#e2d9c8]">玫瑰</div>
+                                </div>
+                                <div class="flower-card flex flex-col h-[95%]" onclick="toggleFlower(this, '茉莉')">
+                                    <div class="flex-1 bg-stone-50 flex items-center justify-center overflow-hidden"><img src="https://via.placeholder.com/200x200/f0f0f0/333333?text=[Image of 茉莉]" class="h-full w-full object-cover"></div>
+                                    <div class="text-center text-sm font-bold py-2 bg-white text-stone-900 shrink-0 border-t border-[#e2d9c8]">茉莉</div>
+                                </div>
+                                <div class="flower-card flex flex-col h-[95%]" onclick="toggleFlower(this, '秀英花')">
+                                    <div class="flex-1 bg-orange-50 flex items-center justify-center overflow-hidden"><img src="https://via.placeholder.com/200x200/ffeecc/cc6600?text=[Image of 秀英花]" class="h-full w-full object-cover"></div>
+                                    <div class="text-center text-sm font-bold py-2 bg-white text-orange-900 shrink-0 border-t border-[#e2d9c8]">秀英花</div>
+                                </div>
+                                <div class="flower-card flex flex-col h-[95%]" onclick="toggleFlower(this, '桂花')">
+                                    <div class="flex-1 bg-yellow-50 flex items-center justify-center overflow-hidden"><img src="https://via.placeholder.com/200x200/ffffcc/aa8800?text=[Image of 桂花]" class="h-full w-full object-cover"></div>
+                                    <div class="text-center text-sm font-bold py-2 bg-white text-yellow-900 shrink-0 border-t border-[#e2d9c8]">桂花</div>
+                                </div>
+                                <div class="flower-card flex flex-col h-[95%]" onclick="toggleFlower(this, '梔子花')">
+                                    <div class="flex-1 bg-neutral-50 flex items-center justify-center overflow-hidden"><img src="https://via.placeholder.com/200x200/eeeeee/555555?text=[Image of 梔子花]" class="h-full w-full object-cover"></div>
+                                    <div class="text-center text-sm font-bold py-2 bg-white text-neutral-900 shrink-0 border-t border-[#e2d9c8]">梔子花</div>
+                                </div>
+                                <div class="flower-card flex flex-col h-[95%]" onclick="toggleFlower(this, '玉蘭花')">
+                                    <div class="flex-1 bg-pink-50 flex items-center justify-center overflow-hidden"><img src="https://via.placeholder.com/200x200/ffe6ee/aa0055?text=[Image of 玉蘭花]" class="h-full w-full object-cover"></div>
+                                    <div class="text-center text-sm font-bold py-2 bg-white text-pink-900 shrink-0 border-t border-[#e2d9c8]">玉蘭花</div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between mt-4 items-center shrink-0">
+                                <div class="space-x-2 flex">
+                                    <button class="bg-[#fdfbf7] border border-[#d6cebe] text-[#3b3632] text-sm px-4 py-2.5 rounded-lg font-bold shadow-sm" onclick="showL6Clue(1)">線索一</button>
+                                    <button class="bg-[#fdfbf7] border border-[#d6cebe] text-[#3b3632] text-sm px-4 py-2.5 rounded-lg font-bold shadow-sm" onclick="showL6Clue(2)">線索二</button>
+                                </div>
+                                <button class="primary-btn text-base px-6 py-2.5 rounded-xl font-black" onclick="verifyFlowers()">確認</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Page 4 -->
+                    <div id="l6-p4" class="hidden flex-col min-h-full fade-in">
+                        <div class="flex items-center mb-3">
+                            <button onclick="goToSubPage(6, 3, 4)" class="text-[#7c343d] font-bold py-2 px-3 bg-white rounded-lg shadow-sm"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-xl pr-10">點播時代金曲</h2>
+                        </div>
+                        <div class="level-card p-5 flex-1 flex flex-col">
+                            <p class="text-sm font-bold bg-[#fdfbf7] p-4 rounded-lg border border-[#e2d9c8] mb-5 leading-relaxed text-justify">奶奶：「以前三重讓人記得的，可不只有花香，還有熱鬧的唱片產業。這裡準備了三首歌，選一首你現在最想聽的聽聽看吧！」</p>
+                            <div class="space-y-4">
+                                <button class="l6-song-btn opt-btn flex justify-between items-center" data-song="0">
+                                    <div><div class="font-black text-lg text-[#7c343d] mb-1">《安童哥買菜》</div><div class="text-xs text-stone-500 font-normal">劉福助｜曲風活潑、充滿生活感。</div></div><i class="fa-solid fa-play text-[#7c343d] text-xl opacity-60"></i>
+                                </button>
+                                <button class="l6-song-btn opt-btn flex justify-between items-center" data-song="1">
+                                    <div><div class="font-black text-lg text-[#7c343d] mb-1">《相思河畔》</div><div class="text-xs text-stone-500 font-normal">吳靜嫻｜氣氛浪漫、充滿復古情懷。</div></div><i class="fa-solid fa-play text-[#7c343d] text-xl opacity-60"></i>
+                                </button>
+                                <button class="l6-song-btn opt-btn flex justify-between items-center" data-song="2">
+                                    <div><div class="font-black text-lg text-[#7c343d] mb-1">《鄉間的小路》</div><div class="text-xs text-stone-500 font-normal">葉佳修｜帶有民歌時代的清新感。</div></div><i class="fa-solid fa-play text-[#7c343d] text-xl opacity-60"></i>
+                                </button>
+                            </div>
+                            <div id="l6-player" class="hidden mt-auto p-4 bg-[#fdfbf7] rounded-xl border border-[#e2d9c8] text-center relative overflow-hidden shrink-0">
+                                <div class="text-xs font-bold text-stone-400 mb-2 animate-pulse"><i class="fa-solid fa-record-vinyl fa-spin mr-1"></i>現正播放</div>
+                                <div id="l6-song-title" class="text-lg font-black mb-2 text-[#7c343d]"></div>
+                                <p id="l6-lyrics" class="text-sm italic text-[#3b3632] h-10 flex items-center justify-center font-bold"></p>
+                                <div class="w-full bg-stone-200 h-2 rounded-full mt-3 overflow-hidden">
+                                    <div id="l6-progress" class="h-full w-0 transition-all duration-100 ease-linear bg-[#7c343d]"></div>
+                                </div>
+                                <audio id="l6-audio-player" class="hidden"></audio>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LEVEL 7: 最後一封信 (Immersive Theater) -->
+                <div id="screen-level-7" class="hidden flex-col h-full fade-in relative">
+                    <!-- Page 1 -->
+                    <div id="l7-p1" class="level-card l7 p-6 flex flex-col justify-center min-h-[70vh] fade-in text-center relative z-10">
+                        <h1 class="text-4xl font-black tracking-widest text-[#e5d5b5] mb-2" style="text-shadow: 0 4px 10px rgba(0,0,0,0.8);">最後一封信</h1>
+                        <p class="text-base font-bold text-[#e5d5b5]/80">最終關卡：沉浸式劇場</p>
+                        <div class="bg-black/30 p-6 rounded-xl border border-[#e5d5b5]/20 shadow-inner my-8">
+                            <p class="text-lg font-bold text-[#e5d5b5] leading-relaxed">
+                                歷史的最後一塊拼圖，藏在回憶的最深處。<br><br>請前往指定場域觀賞《最後一封信》。<br>感受那段跨越時空的思念。
+                            </p>
+                        </div>
+                        <button class="w-full py-5 bg-[#e5d5b5] text-[#2b2626] font-black text-xl rounded-xl shadow-lg transition-transform active:scale-95" onclick="goToSubPage(7, 2, 4)">已到達 <i class="fa-solid fa-location-dot ml-2"></i></button>
+                    </div>
+                    <!-- Page 2 -->
+                    <div id="l7-p2" class="hidden flex-col min-h-full fade-in">
+                        <div class="flex items-center mb-4">
+                            <button onclick="goToSubPage(7, 1, 4)" class="text-[#e5d5b5] font-bold py-2 px-3 bg-white/10 rounded-lg"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#e5d5b5] text-xl pr-10">故事前言</h2>
+                        </div>
+                        <div class="level-card l7 p-6 flex-1 flex flex-col justify-center text-base leading-loose font-bold text-[#e5d5b5] text-justify">
+                            <p>民國三十八年，三重空軍一村迎來了一群年輕的軍人與眷屬。紅磚牆瓦、巷弄交錯，這裡原本只是他們落腳的臨時停靠站，卻在時代的洪流中，成了一生落地生根的家。</p>
+                            <p class="my-4">然而，一場突如其來的緊急警報，打破了平靜。飛行員林志遠抓起飛行夾克奔向基地，這一別，便成了永別。</p>
+                            <p>幾十年後的今天，當你們再次踏入這座村子，空氣中彷彿還留著當年的期盼與遺憾。在導覽員的帶領下，你們將作為時空的「穿越者與見證者」，協助留在民國50年代、獨自守候家園的妻子阿秀，找回那封遲到了半個世紀的信件，完成一場跨越時空的告別。</p>
+                        </div>
+                        <button class="w-full py-4 bg-[#e5d5b5] text-[#2b2626] font-black text-lg rounded-xl mt-4 transition-transform active:scale-95" onclick="goToSubPage(7, 3, 4)">繼續</button>
+                    </div>
+                    <!-- Page 3 -->
+                    <div id="l7-p3" class="hidden flex-col min-h-full fade-in">
+                        <div class="flex items-center mb-4">
+                            <button onclick="goToSubPage(7, 2, 4)" class="text-[#e5d5b5] font-bold py-2 px-3 bg-white/10 rounded-lg"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#e5d5b5] text-xl pr-10">人物圖鑑</h2>
+                        </div>
+                        <div class="flex-1 flex flex-col space-y-3">
+                            <div class="flex-1 flex bg-[#3a3333] rounded-xl p-4 items-center shadow-md">
+                                <div class="text-sm"><b class="text-lg text-[#e5d5b5] block mb-1">玩家 (穿越者／見證者)</b><span class="font-normal text-[#d6cebe] leading-relaxed">劇情的推動者與歷史的見證者。穿梭於現代與五十年代之間，搜集線索、拼湊真相。</span></div>
+                            </div>
+                            <div class="flex-1 flex bg-[#3a3333] rounded-xl p-4 items-center shadow-md">
+                                <div class="text-sm"><b class="text-lg text-[#e5d5b5] block mb-1">林志遠 (空軍軍人)</b><span class="font-normal text-[#d6cebe] leading-relaxed">深情、堅毅、富有責任感。對國家忠誠，對妻子懷抱無盡溫柔與歉疚。</span></div>
+                            </div>
+                            <div class="flex-1 flex bg-[#3a3333] rounded-xl p-4 items-center shadow-md">
+                                <div class="text-sm"><b class="text-lg text-[#e5d5b5] block mb-1">阿秀 (軍人妻子)</b><span class="font-normal text-[#d6cebe] leading-relaxed">外柔內剛、執著而深情。儘管歲月流逝、人心惶惶，仍選擇獨自堅守紅磚瓦屋，等待丈夫歸來。</span></div>
+                            </div>
+                            <div class="flex-1 flex bg-[#3a3333] rounded-xl p-4 items-center shadow-md">
+                                <div class="text-sm"><b class="text-lg text-[#e5d5b5] block mb-1">導覽員 (引導者)</b><span class="font-normal text-[#d6cebe] leading-relaxed">帶領大家走入歷史現場、開啟時空序幕的關鍵人物。</span></div>
+                            </div>
+                        </div>
+                        <button class="w-full py-4 bg-[#e5d5b5] text-[#2b2626] font-black text-lg rounded-xl mt-4 transition-transform active:scale-95" onclick="goToSubPage(7, 4, 4)">繼續</button>
+                    </div>
+                    <!-- Page 4 -->
+                    <div id="l7-p4" class="hidden flex-col min-h-full fade-in text-center justify-center">
+                        <div class="flex items-center mb-8 absolute top-0 left-0 w-full">
+                            <button onclick="goToSubPage(7, 3, 4)" class="text-[#e5d5b5] font-bold py-2 px-3 bg-white/10 rounded-lg"><i class="fa-solid fa-chevron-left"></i> 返回</button>
+                        </div>
+                        <div class="bg-[#3a3333] p-8 rounded-3xl shadow-2xl">
+                            <i class="fa-solid fa-door-open text-6xl text-[#e5d5b5] mb-6 opacity-80"></i>
+                            <p class="text-xl font-black text-[#e5d5b5] leading-relaxed">
+                                準備好展開這段尋找記憶與承諾的旅程了嗎？<br><br>請保持好奇心，留意巷弄間的蛛絲馬跡，我們即將出發！
+                            </p>
+                        </div>
+                        <button class="w-full py-5 mt-10 bg-[#e5d5b5] text-[#2b2626] font-black text-2xl rounded-2xl shadow-[0_0_25px_rgba(229,213,181,0.3)] transition-transform active:scale-95" onclick="handleLevelSuccess(7)">
+                            已通關 <i class="fa-solid fa-check-circle ml-2"></i>
                         </button>
-                        <audio id="l3-audio-player" class="hidden"></audio>
                     </div>
-                    <p id="l3-question-text" class="text-lg font-black text-center leading-relaxed mb-5 text-stone-900 shrink-0"></p>
-                    <div id="l3-options-container" class="space-y-3 flex-1"></div>
                 </div>
+
+                <!-- SCREEN: FINAL CERTIFICATE -->
+                <div id="screen-certificate" class="hidden flex-col justify-center transition-all duration-300 fade-in flex-1">
+                    <div class="level-card p-6 text-center shadow-2xl border-none ring-4 ring-[#7c343d] ring-offset-4 ring-offset-[#fdfbf7]">
+                        <div class="text-6xl text-[#7c343d] mb-4 drop-shadow-md"><i class="fa-solid fa-award"></i></div>
+                        <h2 class="text-2xl font-black text-[#3b3632] tracking-widest mb-6 border-b border-stone-200 pb-4">調查結案憑證</h2>
+                        
+                        <div class="bg-[#fdfbf7] p-5 rounded-xl border border-[#e2d9c8] text-sm font-bold space-y-4 mb-6 text-left">
+                            <div class="flex justify-between text-stone-600 border-b border-stone-200 pb-2"><span>時空座標：</span><span class="text-[#7c343d] font-black text-base">三重空軍一村</span></div>
+                            <div class="flex justify-between text-stone-600 border-b border-stone-200 pb-2 items-center"><span>任務狀態：</span><span id="cert-status" class="text-emerald-700 font-black text-right"></span></div>
+                            <div class="flex justify-between text-stone-600 border-b border-stone-200 pb-2 items-center"><span>總耗費時間：</span><span id="cert-time" class="text-[#7c343d] font-mono font-black text-right text-base"></span></div>
+                            <div class="flex justify-between text-stone-600 items-center"><span>結案評定：</span><span id="cert-rank" class="text-2xl font-black text-[#7c343d] text-right"></span></div>
+                        </div>
+                        
+                        <div id="cert-msg" class="text-base font-bold text-[#3b3632] leading-relaxed mb-6 text-justify"></div>
+                        
+                        <div class="bg-amber-50 p-5 rounded-xl border border-amber-200 text-sm text-amber-900 font-bold mb-6 text-left shadow-sm">
+                            <div class="flex items-center space-x-2 text-[#7c343d] mb-2 font-black text-base"><i class="fa-solid fa-gift"></i><span>兌獎引導</span></div>
+                            請「截圖保留」此認證畫面，並出示您獲得的【跨越時空的信】（點擊下方拼圖收集查看），前往起點服務台領取專屬獎勵！
+                        </div>
+
+                        <button id="btn-restart-game" class="w-full py-4 military-btn font-black text-base rounded-xl">清除檔案並重新開始</button>
+                    </div>
+                </div>
+
             </div>
         </div>
 
-        <!-- ================= LEVEL 4: 榕樹廣場 ================= -->
-        <div id="screen-level-4" class="hidden flex-col fade-in">
-            <!-- Page 1 (Intro) -->
-            <div id="l4-p1" class="flex flex-col space-y-5 fade-in justify-center py-4">
-                <div class="text-center py-5 glass-card shadow-sm shrink-0">
-                    <h1 class="text-3xl font-black tracking-widest text-[#7c343d]">榕樹廣場</h1>
-                    <p class="text-sm font-bold mt-2 text-stone-600">時光倒流的眷村日常</p>
+        <!-- 底部導覽列 -->
+        <div class="border-t border-[#d6cebe] p-3 text-sm font-bold flex items-center justify-around text-[#3b3632] bg-[#fdfbf7] z-30 absolute bottom-0 w-full left-0 pb-[env(safe-area-inset-bottom,12px)] shadow-[0_-4px_15px_rgba(0,0,0,0.03)]">
+            <button id="btn-nav-hq" class="hover:text-[#7c343d] transition flex items-center space-x-2 py-2 px-4 rounded-lg active:scale-95"><i class="fa-solid fa-house"></i><span>回主畫面</span></button>
+            <span class="text-stone-300">|</span>
+            <button id="btn-nav-stamps" class="hover:text-[#7c343d] transition flex items-center space-x-2 py-2 px-4 rounded-lg text-[#7c343d] active:scale-95" onclick="openStampsDrawer()"><i class="fa-solid fa-puzzle-piece"></i><span>拼圖收集</span></button>
+        </div>
+
+        <!-- MODAL: ALERT (底層重寫，保證 100% 靈敏) -->
+        <div id="modal-alert" class="fixed inset-0 bg-stone-900/60 z-[999] flex items-center justify-center p-6 hidden backdrop-blur-sm transition-opacity">
+            <div class="bg-white p-6 rounded-2xl max-w-[340px] w-full text-center space-y-4 shadow-2xl flex flex-col">
+                <div id="alert-icon" class="shrink-0 mb-1"></div>
+                <h3 id="alert-title" class="text-xl font-black text-[#7c343d] shrink-0 border-b border-stone-200 pb-2">提示</h3>
+                <div class="py-2 text-center">
+                    <p id="alert-desc" class="text-base text-[#3b3632] font-bold leading-relaxed whitespace-pre-line"></p>
                 </div>
-                <div class="glass-card p-6 text-base leading-loose font-bold text-[#3b3632] shadow-sm text-justify">
-                    <p>大時代的動盪，讓無數家庭在戰亂中遷徙來台。窄小的屋舍、悶熱的夏日，讓鄰居們習慣搬著竹椅聚在村子裡的巨大榕樹下乘涼、聊家常。</p><br>
-                    <p>對我們而言，這棵老榕樹下的廣場不只是公共客廳，更是凝聚所有人情感、度過童年時光的避風港。<br><br>今天，請跟著我們一起走入這座充滿人情味的榕樹廣場，回到那段克難卻溫暖的歲月。</p>
-                </div>
-                <button class="w-full py-4 primary-btn font-black text-lg rounded-xl shadow-md shrink-0" onclick="goToSubPage(4, 2, 4)">繼續 <i class="fa-solid fa-arrow-right ml-2"></i></button>
-            </div>
-            <!-- Page 2 (四宮格) -->
-            <div id="l4-p2" class="hidden flex-col flex-1 space-y-4 fade-in">
-                <div class="grid grid-cols-2 gap-3 content-start pt-1">
-                    <div class="char-card shadow-sm">
-                        <div class="char-img-box"><img src="https://placehold.co/150/e5d5b5/7c343d?text=%E5%A5%B6%E5%A5%B6" alt="奶奶"></div>
-                        <div class="p-3 text-xs flex-1 flex flex-col bg-white">
-                            <b class="text-sm text-[#7c343d] mb-1">奶奶 (60歲)</b>
-                            <span class="text-stone-500 text-[10px] mb-2 border-b border-stone-100 pb-1">碎花上衣/蒲扇</span>
-                            <span class="font-bold leading-tight">負責歷史講解與關卡互動。</span>
-                        </div>
-                    </div>
-                    <div class="char-card shadow-sm">
-                        <div class="char-img-box"><img src="https://placehold.co/150/e5d5b5/7c343d?text=%E7%BF%A0%E8%8A%B3" alt="媽媽翠芳"></div>
-                        <div class="p-3 text-xs flex-1 flex flex-col bg-white">
-                            <b class="text-sm text-[#7c343d] mb-1">媽媽・翠芳</b>
-                            <span class="text-stone-500 text-[10px] mb-2 border-b border-stone-100 pb-1">旗袍/高跟鞋</span>
-                            <span class="font-bold leading-tight">負責開場串場，引導團聚。</span>
-                        </div>
-                    </div>
-                    <div class="char-card shadow-sm">
-                        <div class="char-img-box"><img src="https://placehold.co/150/e5d5b5/7c343d?text=%E4%B8%AD%E5%AD%B8%E7%94%9F" alt="中學生"></div>
-                        <div class="p-3 text-xs flex-1 flex flex-col bg-white">
-                            <b class="text-sm text-[#7c343d] mb-1">中學生</b>
-                            <span class="text-stone-500 text-[10px] mb-2 border-b border-stone-100 pb-1">制服/軍綠包</span>
-                            <span class="font-bold leading-tight">帶領大家進行「編繩子」關卡。</span>
-                        </div>
-                    </div>
-                    <div class="char-card shadow-sm">
-                        <div class="char-img-box"><img src="https://placehold.co/150/e5d5b5/7c343d?text=%E5%B0%8F%E5%AD%A9" alt="小孩"></div>
-                        <div class="p-3 text-xs flex-1 flex flex-col bg-white">
-                            <b class="text-sm text-[#7c343d] mb-1">在地兒童</b>
-                            <span class="text-stone-500 text-[10px] mb-2 border-b border-stone-100 pb-1">黃帽/直笛</span>
-                            <span class="font-bold leading-tight">邀請大家跳橡皮筋繩。</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex space-x-3 shrink-0 pt-2">
-                    <button class="w-1/3 py-4 back-btn font-black text-lg rounded-xl shadow-md" onclick="goToSubPage(4, 1, 4)">返回</button>
-                    <button class="w-2/3 py-4 primary-btn font-black text-lg rounded-xl shadow-md" onclick="goToSubPage(4, 3, 4)">繼續 <i class="fa-solid fa-arrow-right ml-1"></i></button>
-                </div>
-            </div>
-            <!-- Page 3 -->
-            <div id="l4-p3" class="hidden flex-col justify-center space-y-6 fade-in py-6">
-                <div class="glass-card p-6 text-base leading-relaxed font-bold text-[#3b3632] shadow-sm">
-                    <h2 class="text-xl font-black text-[#7c343d] mb-5 text-center border-b border-stone-200 pb-3">實體活動指引</h2>
-                    <p class="mb-4">歡迎來到榕樹廣場！在接下來的活動中，你們將扮演眷村裡的鄰家小孩。</p>
-                    <ul class="list-disc pl-5 space-y-4 text-justify">
-                        <li><b>活動體驗：</b>現場將準備瓜子與水果讓大家邊吃邊聊，並有編繩子、跳繩、猜字謎等復古互動。</li>
-                        <li><b>注意事項：</b>請放輕鬆，跟著 NPC 的引導融入情境。一起幫忙照顧身邊的「鄰居」們！</li>
-                    </ul>
-                </div>
-                <div class="flex space-x-3 shrink-0">
-                    <button class="w-1/3 py-4 back-btn font-black text-lg rounded-xl shadow-md" onclick="goToSubPage(4, 2, 4)">返回</button>
-                    <button class="w-2/3 py-4 primary-btn font-black text-lg rounded-xl shadow-md" onclick="goToSubPage(4, 4, 4)">準備好了 <i class="fa-solid fa-check ml-1"></i></button>
-                </div>
-            </div>
-            <!-- Page 4 -->
-            <div id="l4-p4" class="hidden flex-col justify-center space-y-4 fade-in py-6">
-                <div class="glass-card p-6 space-y-6 shadow-sm">
-                    <h2 class="font-black text-center text-[#7c343d] border-b border-stone-200 pb-3 text-xl">知識小測驗</h2>
-                    <div class="space-y-3">
-                        <label class="text-base font-bold text-[#3b3632] block">1. 眷村婦女縫製衣服與裁縫的核心工具：</label>
-                        <select id="l4-q1" class="w-full p-4 text-base font-bold border-2 border-stone-300 rounded-xl bg-white outline-none"><option value="" disabled selected>請選擇...</option></select>
-                    </div>
-                    <div class="space-y-3">
-                        <label class="text-base font-bold text-[#3b3632] block">2. 昔日眷村居民領取生活主食憑證：</label>
-                        <select id="l4-q2" class="w-full p-4 text-base font-bold border-2 border-stone-300 rounded-xl bg-white outline-none"><option value="" disabled selected>請選擇...</option></select>
-                    </div>
-                </div>
-                <div class="flex space-x-3 shrink-0 pt-2">
-                    <button class="w-1/3 py-4 back-btn font-black text-lg rounded-xl shadow-md" onclick="goToSubPage(4, 3, 4)">返回</button>
-                    <button id="l4-btn-verify" class="w-2/3 py-4 primary-btn font-black text-lg rounded-xl shadow-md">提交答案</button>
+                <div class="pt-3 shrink-0">
+                    <button id="alert-btn" class="w-full py-3.5 primary-btn font-black text-lg rounded-xl shadow-sm">確認</button>
                 </div>
             </div>
         </div>
-
-        <!-- ================= LEVEL 5: 群星之夜 ================= -->
-        <div id="screen-level-5" class="hidden flex-col fade-in">
-            <!-- Page 1 -->
-            <div id="l5-p1" class="space-y-5 fade-in flex flex-col justify-center py-4">
-                <div class="text-center py-5 glass-card shadow-sm shrink-0">
-                    <h1 class="text-3xl font-black tracking-widest text-[#7c343d]">群星之夜</h1>
-                    <p class="text-sm font-bold mt-2 text-stone-600">黃金娛樂時光</p>
+        
+        <!-- MODAL: STAMPS (碎紙片拼圖) -->
+        <div id="modal-stamps" class="fixed inset-0 bg-stone-900/80 backdrop-blur-sm z-[990] flex items-end justify-center hidden transition-opacity">
+            <div class="w-full max-w-[430px] bg-[#292524] rounded-t-3xl p-5 space-y-4 h-[85%] flex flex-col shadow-2xl relative pb-[env(safe-area-inset-bottom,20px)]">
+                <div class="flex justify-between items-center border-b border-stone-600 pb-3 shrink-0">
+                    <h3 class="font-black text-amber-100 text-lg flex items-center space-x-2"><i class="fa-solid fa-puzzle-piece text-yellow-500"></i><span>歷史碎片收納盒</span></h3>
+                    <button id="close-stamps" class="text-stone-400 hover:text-white p-2 active:scale-90 transition"><i class="fa-solid fa-xmark text-2xl"></i></button>
                 </div>
-                <div class="glass-card p-6 text-base leading-loose font-bold text-[#3b3632] shadow-sm text-justify">
-                    <p>當黑膠唱片旋轉、霓虹燈光閃爍，空氣中流淌著老歌與電影的熟悉旋律。這裡不只是歷史的記憶，更是我們今晚一同尋找青春與鄉愁的冒險舞台。</p>
-                    <hr class="my-4 border-stone-200">
-                    <p>1950至1980年代，三重天台廣場曾是北台灣最繁華的娛樂地標，歌廳、戲院、夜總會林立。第一代外省移民在眷村裡，用歌聲撫平離鄉背井的鄉愁；而年輕人們則相約在燈光下聽歌、看電影。</p>
-                </div>
-                <button class="w-full py-4 primary-btn font-black text-lg rounded-xl shadow-md shrink-0" onclick="goToSubPage(5, 2, 4)">繼續 <i class="fa-solid fa-arrow-right ml-2"></i></button>
-            </div>
-            <!-- Page 2 (四宮格) -->
-            <div id="l5-p2" class="hidden flex-col flex-1 space-y-4 fade-in py-1">
-                <div class="grid grid-cols-2 gap-3 content-start">
-                    <div class="char-card shadow-sm">
-                        <div class="char-img-box"><img src="https://placehold.co/200/e5d5b5/7c343d?text=%E7%B4%AB%E8%96%87"></div>
-                        <div class="p-2.5 text-xs flex-1 flex flex-col bg-white">
-                            <b class="text-sm text-[#7c343d] mb-0.5">紫薇</b>
-                            <span class="text-[10px] text-stone-500 mb-1 border-b border-stone-100 pb-1">國語歌壇大姊大</span>
-                            <span class="font-bold flex-1 leading-tight text-justify">《綠島小夜曲》撫慰無數離鄉背井的移民。</span>
-                        </div>
-                    </div>
-                    <div class="char-card shadow-sm">
-                        <div class="char-img-box"><img src="https://placehold.co/200/e5d5b5/7c343d?text=%E6%BD%98%E5%AE%89%E9%82%A6"></div>
-                        <div class="p-2.5 text-xs flex-1 flex flex-col bg-white">
-                            <b class="text-sm text-[#7c343d] mb-0.5">潘安邦</b>
-                            <span class="text-[10px] text-stone-500 mb-1 border-b border-stone-100 pb-1">永遠的軍歌王子</span>
-                            <span class="font-bold flex-1 leading-tight text-justify">《外婆的澎湖灣》訴說眷村童年點滴。</span>
-                        </div>
-                    </div>
-                    <div class="char-card shadow-sm">
-                        <div class="char-img-box"><img src="https://placehold.co/200/e5d5b5/7c343d?text=%E9%84%Ainternal%E9%BA%97%E5%90%9B"></div>
-                        <div class="p-2.5 text-xs flex-1 flex flex-col bg-white">
-                            <b class="text-sm text-[#7c343d] mb-0.5">鄧麗君</b>
-                            <span class="text-[10px] text-stone-500 mb-1 border-b border-stone-100 pb-1">時代巨星</span>
-                            <span class="font-bold flex-1 leading-tight text-justify">《月亮代表我的心》用歌聲串起所有情感。</span>
-                        </div>
-                    </div>
-                    <div class="char-card shadow-sm">
-                        <div class="char-img-box"><img src="https://placehold.co/200/e5d5b5/7c343d?text=%E7%BE%85%E5%A4%A7%E4%BD%91"></div>
-                        <div class="p-2.5 text-xs flex-1 flex flex-col bg-white">
-                            <b class="text-sm text-[#7c343d] mb-0.5">羅大佑</b>
-                            <span class="text-[10px] text-stone-500 mb-1 border-b border-stone-100 pb-1">時代創作者</span>
-                            <span class="font-bold flex-1 leading-tight text-justify">《光陰的故事》契合眷村改建的懷念。</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex space-x-3 shrink-0 pt-2">
-                    <button class="w-1/3 py-4 back-btn font-black text-lg rounded-xl shadow-md" onclick="goToSubPage(5, 1, 4)">返回</button>
-                    <button class="w-2/3 py-4 primary-btn font-black text-lg rounded-xl shadow-md" onclick="goToSubPage(5, 3, 4)">繼續 <i class="fa-solid fa-arrow-right ml-1"></i></button>
-                </div>
-            </div>
-            <!-- Page 3 -->
-            <div id="l5-p3" class="hidden flex-col justify-center space-y-6 fade-in py-6">
-                <div class="glass-card p-6 text-base leading-relaxed font-bold text-[#3b3632] shadow-sm">
-                    <h2 class="text-xl font-black text-[#7c343d] mb-5 text-center border-b border-stone-200 pb-3">遊戲玩法與規則</h2>
-                    <ol class="list-decimal pl-5 space-y-4 text-justify">
-                        <li><b>接歌挑戰：</b>關主（主持人）將隨機播放眷村年代的經典老歌。</li>
-                        <li><b>搶答與接唱：</b>當音樂播到副歌或熟悉處突然暫停時，請接唱下一句或哼出大致旋律。</li>
-                        <li><b>求救機制：</b>不會唱也沒關係！你可以向現場其他玩家「求救」，互相幫助。</li>
-                        <li><b>通關條件：</b>全體合力完成 3 首歌，即可獲得密語，解鎖完整故事！</li>
-                    </ol>
-                </div>
-                <div class="flex space-x-3 shrink-0">
-                    <button class="w-1/3 py-4 back-btn font-black text-lg rounded-xl shadow-md" onclick="goToSubPage(5, 2, 4)">返回</button>
-                    <button class="w-2/3 py-4 primary-btn font-black text-lg rounded-xl shadow-md" onclick="goToSubPage(5, 4, 4)">準備好了 <i class="fa-solid fa-check ml-1"></i></button>
-                </div>
-            </div>
-            <!-- Page 4 -->
-            <div id="l5-p4" class="hidden flex-col justify-center space-y-6 fade-in py-6">
-                <div class="glass-card p-6 space-y-6 shadow-sm text-center">
-                    <p class="text-lg font-black text-[#7c343d] mb-2 border-b border-stone-200 pb-3">請輸入現場獲取的三位數密語</p>
-                    <div id="l5-code-container" class="grid grid-cols-3 gap-3 max-w-[260px] mx-auto mt-6">
-                        <div class="code-box h-16 rounded-xl flex items-center justify-center text-4xl font-black font-mono text-[#7c343d]"></div><div class="code-box h-16 rounded-xl flex items-center justify-center text-4xl font-black font-mono text-[#7c343d]"></div><div class="code-box h-16 rounded-xl flex items-center justify-center text-4xl font-black font-mono text-[#7c343d]"></div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-3 pt-6 max-w-[280px] mx-auto">
-                        <button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="1">1</button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="2">2</button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="3">3</button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="4">4</button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="5">5</button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="6">6</button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="7">7</button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="8">8</button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="9">9</button>
-                        <button id="l5-btn-del" class="military-btn py-4 rounded-xl text-2xl font-black text-[#7c343d] bg-red-50"><i class="fa-solid fa-delete-left"></i></button><button class="l5-key military-btn py-4 rounded-xl text-2xl font-mono font-black" data-val="0">0</button><button id="l5-btn-submit" class="military-btn py-4 rounded-xl text-2xl font-black text-emerald-800 bg-emerald-50"><i class="fa-solid fa-check"></i></button>
-                    </div>
-                </div>
-                <div class="flex space-x-3 shrink-0">
-                    <button class="w-full py-4 back-btn font-black text-lg rounded-xl shadow-md" onclick="goToSubPage(5, 3, 4)">返回上一頁</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= LEVEL 6: 時光膠囊 ================= -->
-        <div id="screen-level-6" class="hidden flex-col fade-in">
-            <!-- Page 1 -->
-            <div id="l6-p1" class="space-y-5 fade-in flex flex-col justify-center py-4">
-                <div class="text-center py-5 glass-card shadow-sm shrink-0">
-                    <h1 class="text-3xl font-black tracking-widest text-[#7c343d]">時光膠囊</h1>
-                    <p class="text-sm font-bold mt-2 text-stone-600">尋找花香與歌聲</p>
-                </div>
-                <div class="glass-card p-6 text-base leading-loose font-bold text-[#3b3632] shadow-sm text-justify">
-                    <p>歡迎來到空軍三重一村！</p>
-                    <p>這裡曾是充滿人情味與時代記憶的眷村。在物資缺乏的年代裡，空氣中總是飄著淡淡的花香，街頭巷尾也流淌著動人的歌聲。</p><br>
-                    <p>今天，我們將跟著老居民奶奶的腳步，打開珍藏多年的木盒，一起找回三重過去被遺忘的產業與溫暖回憶。</p>
-                </div>
-                <button class="w-full py-4 primary-btn font-black text-lg rounded-xl shadow-md mt-4 shrink-0" onclick="goToSubPage(6, 2, 4)">繼續 <i class="fa-solid fa-arrow-right ml-2"></i></button>
-            </div>
-            <!-- Page 2 (人物卡片滿版伸展) -->
-            <div id="l6-p2" class="hidden flex-col space-y-4 fade-in py-2">
-                <div class="flex flex-col space-y-4">
-                    <div class="flex glass-card p-4 items-center space-x-4 shadow-sm">
-                        <img src="https://placehold.co/150/e5d5b5/7c343d?text=%E5%A5%B6%E5%A5%B6" class="w-24 h-24 rounded-xl object-cover border border-stone-200 shrink-0">
-                        <div class="text-sm text-[#3b3632] flex-1"><b class="text-lg text-[#7c343d] mb-1 block">奶奶 (NPC)</b><span class="font-bold leading-relaxed text-stone-600">三重一村老居民，負責帶出過去產業與回憶。</span></div>
-                    </div>
-                    <div class="flex glass-card p-4 items-center space-x-4 shadow-sm">
-                        <img src="https://placehold.co/150/e5d5b5/7c343d?text=%E5%AD%AB%E5%AD%90" class="w-24 h-24 rounded-xl object-cover border border-stone-200 shrink-0">
-                        <div class="text-sm text-[#3b3632] flex-1"><b class="text-lg text-[#7c343d] mb-1 block">孫子 (NPC)</b><span class="font-bold leading-relaxed text-stone-600">混在遊客之中參與遊戲，陪大家討論帶氣氛。</span></div>
-                    </div>
-                    <div class="flex glass-card p-4 items-center space-x-4 shadow-sm">
-                        <div class="w-24 h-24 rounded-xl bg-stone-200 border border-stone-300 flex items-center justify-center text-4xl text-stone-500 shrink-0"><i class="fa-solid fa-user-astronaut"></i></div>
-                        <div class="text-sm text-[#3b3632] flex-1"><b class="text-lg text-[#7c343d] mb-1 block">遊客 (你)</b><span class="font-bold leading-relaxed text-stone-600">本次闖關者，跟著奶奶認識花香與歌聲。</span></div>
-                    </div>
-                </div>
-                <div class="flex space-x-3 shrink-0 mt-4">
-                    <button class="w-1/3 py-4 back-btn font-black text-lg rounded-xl shadow-md" onclick="goToSubPage(6, 1, 4)">返回</button>
-                    <button class="w-2/3 py-4 primary-btn font-black text-lg rounded-xl shadow-md" onclick="goToSubPage(6, 3, 4)">繼續 <i class="fa-solid fa-arrow-right ml-1"></i></button>
-                </div>
-            </div>
-            <!-- Page 3 -->
-            <div id="l6-p3" class="hidden flex-col space-y-4 fade-in py-2">
-                <div class="glass-card p-5 flex-1 flex flex-col shadow-sm">
-                    <p class="text-sm font-bold bg-stone-100 p-4 rounded-xl border border-stone-200 mb-4 shrink-0 text-justify leading-relaxed">奶奶：「桌上有瓶明星花露水，裡面藏著哪些花香？畫面上有六種花，找的只有兩種，快從中把它們找出來吧！」</p>
-                    <div class="grid grid-cols-3 gap-3 flex-1 items-center" id="flower-grid">
-                        <div class="flower-card flex flex-col h-full" onclick="toggleFlower(this, '玫瑰')">
-                            <div class="flex-1 bg-rose-50 flex items-center justify-center overflow-hidden"><img src="https://placehold.co/200x200/ffdddd/990000?text=%E7%8E%AB%E7%91%B0" class="h-full w-full object-cover"></div>
-                            <div class="text-center text-xs font-bold py-2 bg-rose-100 text-rose-900 shrink-0 border-t border-rose-200">玫瑰</div>
-                        </div>
-                        <div class="flower-card flex flex-col h-full" onclick="toggleFlower(this, '茉莉')">
-                            <div class="flex-1 bg-stone-50 flex items-center justify-center overflow-hidden"><img src="https://placehold.co/200x200/f0f0f0/333333?text=%E8%8C%89%E8%8E%89" class="h-full w-full object-cover"></div>
-                            <div class="text-center text-xs font-bold py-2 bg-stone-200 text-stone-900 shrink-0 border-t border-stone-300">茉莉</div>
-                        </div>
-                        <div class="flower-card flex flex-col h-full" onclick="toggleFlower(this, '秀英花')">
-                            <div class="flex-1 bg-orange-50 flex items-center justify-center overflow-hidden"><img src="https://placehold.co/200x200/ffeecc/cc6600?text=%E7%A7%80%E8%8B%B1%E8%8A%B1" class="h-full w-full object-cover"></div>
-                            <div class="text-center text-xs font-bold py-2 bg-orange-100 text-orange-900 shrink-0 border-t border-orange-200">秀英花</div>
-                        </div>
-                        <div class="flower-card flex flex-col h-full" onclick="toggleFlower(this, '桂花')">
-                            <div class="flex-1 bg-yellow-50 flex items-center justify-center overflow-hidden"><img src="https://placehold.co/200x200/ffffcc/aa8800?text=%E6%A1%82%E8%8A%B1" class="h-full w-full object-cover"></div>
-                            <div class="text-center text-xs font-bold py-2 bg-yellow-100 text-yellow-900 shrink-0 border-t border-yellow-200">桂花</div>
-                        </div>
-                        <div class="flower-card flex flex-col h-full" onclick="toggleFlower(this, '梔子花')">
-                            <div class="flex-1 bg-neutral-50 flex items-center justify-center overflow-hidden"><img src="https://placehold.co/200x200/eeeeee/555555?text=%E6%A0%80%E5%AD%90%E8%8A%B1" class="h-full w-full object-cover"></div>
-                            <div class="text-center text-xs font-bold py-2 bg-neutral-200 text-neutral-900 shrink-0 border-t border-neutral-300">梔子花</div>
-                        </div>
-                        <div class="flower-card flex flex-col h-full" onclick="toggleFlower(this, '玉蘭花')">
-                            <div class="flex-1 bg-pink-50 flex items-center justify-center overflow-hidden"><img src="https://placehold.co/200x200/ffe6ee/aa0055?text=%E7%8E%89%E8%98%AD%E8%8A%B1" class="h-full w-full object-cover"></div>
-                            <div class="text-center text-xs font-bold py-2 bg-pink-100 text-pink-900 shrink-0 border-t border-pink-200">玉蘭花</div>
-                        </div>
-                    </div>
-                    <div class="flex justify-between mt-5 items-center shrink-0">
-                        <div class="space-x-2 flex">
-                            <button class="bg-[#3b3632] text-white text-sm px-4 py-3 rounded-lg font-bold shadow-md" onclick="showL6Clue(1)">線索一</button>
-                            <button class="bg-[#3b3632] text-white text-sm px-4 py-3 rounded-lg font-bold shadow-md" onclick="showL6Clue(2)">線索二</button>
-                        </div>
-                        <button class="primary-btn text-base px-6 py-3 rounded-xl font-black shadow-md" onclick="verifyFlowers()">確認</button>
-                    </div>
-                </div>
-                <div class="flex space-x-3 shrink-0">
-                    <button class="w-full py-4 back-btn font-black text-lg rounded-xl shadow-md" onclick="goToSubPage(6, 2, 4)">返回上一頁</button>
-                </div>
-            </div>
-            <!-- Page 4 -->
-            <div id="l6-p4" class="hidden flex-col space-y-4 fade-in py-2">
-                <div class="glass-card p-5 flex-1 flex flex-col shadow-sm">
-                    <p class="text-sm font-bold bg-[#f8f2e6] p-4 rounded-xl border border-stone-200 mb-5 leading-relaxed text-justify">奶奶：「以前三重讓人記得的，可不只有花香，還有熱鬧的唱片產業。這裡準備了三首歌，選一首你現在最想聽的聽聽看吧！」</p>
-                    <div class="space-y-4">
-                        <button class="l6-song-btn w-full bg-white border border-stone-300 py-4 rounded-xl text-left px-5 shadow-sm transition-transform active:scale-95" data-song="0">
-                            <div class="flex justify-between items-center"><span class="font-black text-lg text-[#7c343d]">《安童哥買菜》</span><i class="fa-solid fa-play text-[#7c343d] text-xl"></i></div>
-                            <div class="text-sm mt-2 font-bold text-stone-500">劉福助｜曲風活潑、充滿生活感。</div>
-                        </button>
-                        <button class="l6-song-btn w-full bg-white border border-stone-300 py-4 rounded-xl text-left px-5 shadow-sm transition-transform active:scale-95" data-song="1">
-                            <div class="flex justify-between items-center"><span class="font-black text-lg text-[#7c343d]">《相思河畔》</span><i class="fa-solid fa-play text-[#7c343d] text-xl"></i></div>
-                            <div class="text-sm mt-2 font-bold text-stone-500">吳靜嫻｜氣氛浪漫、充滿復古情懷。</div>
-                        </button>
-                        <button class="l6-song-btn w-full bg-white border border-stone-300 py-4 rounded-xl text-left px-5 shadow-sm transition-transform active:scale-95" data-song="2">
-                            <div class="flex justify-between items-center"><span class="font-black text-lg text-[#7c343d]">《鄉間的小路》</span><i class="fa-solid fa-play text-[#7c343d] text-xl"></i></div>
-                            <div class="text-sm mt-2 font-bold text-stone-500">葉佳修｜帶有民歌時代的清新感。</div>
+                <div class="flex-1 overflow-y-auto pt-1" style="-webkit-overflow-scrolling: touch;">
+                    <div class="grid grid-cols-2 gap-4 pb-4" id="stamps-grid-container"></div>
+                    <!-- 完整信件專屬按鈕 (第7關破關後顯示) -->
+                    <div id="full-letter-btn-container" class="hidden mt-6 text-center pb-8 border-t border-stone-600 pt-6">
+                        <button onclick="openFullLetter()" class="w-full py-4 bg-[#e5d5b5] text-[#2b2626] font-black text-lg rounded-xl shadow-[0_0_15px_rgba(229,213,181,0.2)] transition-transform active:scale-95">
+                            <i class="fa-solid fa-scroll mr-2 text-[#7c343d]"></i>閱讀《跨越時空的信》
                         </button>
                     </div>
-                    <div id="l6-player" class="hidden mt-6 p-5 bg-[#f8f2e6] rounded-xl border border-stone-200 text-center relative overflow-hidden shrink-0">
-                        <div class="text-sm font-bold text-stone-500 mb-2 animate-pulse"><i class="fa-solid fa-record-vinyl fa-spin mr-1"></i>現正播放</div>
-                        <div id="l6-song-title" class="text-xl font-black mb-3 text-[#7c343d]"></div>
-                        <p id="l6-lyrics" class="text-base italic text-[#3b3632] h-12 flex items-center justify-center font-bold"></p>
-                        <div class="w-full bg-stone-300 h-2 rounded-full mt-4 overflow-hidden">
-                            <div id="l6-progress" class="h-full w-0 transition-all duration-100 ease-linear bg-[#7c343d]"></div>
-                        </div>
-                        <audio id="l6-audio-player" class="hidden"></audio>
-                    </div>
-                </div>
-                <div class="flex space-x-3 shrink-0">
-                    <button class="w-full py-4 back-btn font-black text-lg rounded-xl shadow-md" onclick="goToSubPage(6, 3, 4)">返回上一頁</button>
                 </div>
             </div>
         </div>
 
-        <!-- ================= LEVEL 7: 最後一封信 ================= -->
-        <div id="screen-level-7" class="hidden flex-col l7-bg transition-all duration-300 rounded-3xl p-5 relative overflow-hidden shadow-2xl fade-in border border-stone-700">
-            <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at center, #fff 0%, transparent 70%);"></div>
-            <div class="flex-1 relative flex flex-col z-10">
-                <!-- Page 1 -->
-                <div id="l7-p1" class="flex-1 flex flex-col justify-center space-y-6 fade-in text-center pb-8">
-                    <h1 class="text-5xl font-black tracking-widest text-[#e5d5b5]" style="text-shadow: 0 4px 10px rgba(0,0,0,0.8);">最後一封信</h1>
-                    <p class="text-lg font-bold text-[#e5d5b5]/80">最終關卡：沉浸式劇場</p>
-                    <div class="bg-black/40 p-6 rounded-2xl border border-stone-600 shadow-inner my-8">
-                        <p class="text-lg font-bold text-[#e5d5b5] leading-relaxed">
-                            歷史的最後一塊拼圖，藏在回憶的最深處。<br><br>請前往指定場域觀賞《最後一封信》。<br>感受那段跨越時空的思念。
-                        </p>
-                    </div>
-                    <button class="w-full py-5 bg-[#7c343d] text-white font-black text-xl rounded-xl shadow-[0_0_20px_rgba(124,52,61,0.6)] active:scale-95 transition" onclick="goToSubPage(7, 2, 4)">已到達 <i class="fa-solid fa-location-dot ml-2"></i></button>
+        <!-- MODAL: FULL LETTER -->
+        <div id="modal-full-letter" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[1000] flex items-center justify-center p-4 hidden">
+            <div class="w-full max-w-[380px] vintage-paper p-8 rounded-sm shadow-[0_0_30px_rgba(0,0,0,0.8)] relative border border-[#8a7251] fade-in max-h-[90vh] flex flex-col">
+                <button class="absolute top-4 right-4 text-[#4a3525] opacity-50 hover:opacity-100 text-2xl active:scale-90" onclick="closeFullLetter()"><i class="fa-solid fa-xmark"></i></button>
+                <div class="absolute -right-2 -top-2 w-14 h-14 bg-red-800 rounded-full flex items-center justify-center text-red-950 font-black shadow-md border border-red-900 transform rotate-12 z-20 pointer-events-none">
+                    <i class="fa-solid fa-stamp text-2xl opacity-60"></i>
                 </div>
-                <!-- Page 2 -->
-                <div id="l7-p2" class="hidden flex-1 flex flex-col justify-center space-y-6 fade-in py-2">
-                    <div class="bg-[#e5d5b5] p-6 rounded-2xl text-base leading-loose font-bold text-[#3b3632] shadow-2xl text-justify">
-                        <p>民國三十八年，三重空軍一村迎來了一群年輕的軍人與眷屬。紅磚牆瓦、巷弄交錯，這裡原本只是他們落腳的臨時停靠站，卻在時代的洪流中，成了一生落地生根的家。</p>
-                        <p class="my-4">然而，一場突如其來的緊急警報，打破了平靜。飛行員林志遠抓起飛行夾克奔向基地，這一別，便成了永別。</p>
-                        <p>幾十年後的今天，當你們再次踏入這座村子，空氣中彷彿還留著當年的期盼與遺憾。在導覽員的帶領下，你們將作為時空的「穿越者與見證者」，協助留在民國50年代、獨自守候家園的妻子阿秀，找回那封遲到了半個世紀的信件，完成一場跨越時空的告別。</p>
-                    </div>
-                    <div class="flex space-x-3 mt-4 shrink-0">
-                        <button class="w-1/3 py-4 bg-stone-700 text-white font-black text-lg rounded-xl shadow-md active:scale-95 transition" onclick="goToSubPage(7, 1, 4)">返回</button>
-                        <button class="w-2/3 py-4 bg-[#7c343d] text-white font-black text-lg rounded-xl shadow-md active:scale-95 transition" onclick="goToSubPage(7, 3, 4)">繼續 <i class="fa-solid fa-arrow-right ml-1"></i></button>
-                    </div>
-                </div>
-                <!-- Page 3 -->
-                <div id="l7-p3" class="hidden flex-col space-y-3 fade-in py-2">
-                    <div class="flex flex-col space-y-3 pb-2">
-                        <div class="bg-[#e5d5b5] rounded-xl p-4 shadow-md">
-                            <div class="text-[#3b3632] text-sm"><b class="text-lg text-[#7c343d] block mb-1 border-b border-[#7c343d]/30 pb-1">玩家 (穿越者／見證者)</b><span class="font-bold leading-relaxed">穿梭於現代與五十年代之間，搜集線索、拼湊真相。</span></div>
-                        </div>
-                        <div class="bg-[#e5d5b5] rounded-xl p-4 shadow-md">
-                            <div class="text-[#3b3632] text-sm"><b class="text-lg text-[#7c343d] block mb-1 border-b border-[#7c343d]/30 pb-1">林志遠 (空軍軍人)</b><span class="font-bold leading-relaxed">深情、堅毅、對國家忠誠，對妻子懷抱無盡溫柔與歉疚。</span></div>
-                        </div>
-                        <div class="bg-[#e5d5b5] rounded-xl p-4 shadow-md">
-                            <div class="text-[#3b3632] text-sm"><b class="text-lg text-[#7c343d] block mb-1 border-b border-[#7c343d]/30 pb-1">阿秀 (軍人妻子)</b><span class="font-bold leading-relaxed">外柔內剛，獨自堅守紅磚瓦屋，等待丈夫歸來。</span></div>
-                        </div>
-                        <div class="bg-[#e5d5b5] rounded-xl p-4 shadow-md">
-                            <div class="text-[#3b3632] text-sm"><b class="text-lg text-[#7c343d] block mb-1 border-b border-[#7c343d]/30 pb-1">導覽員 (引導者)</b><span class="font-bold leading-relaxed">帶領大家走入歷史現場、開啟時空序幕的關鍵人物。</span></div>
+                <h3 class="text-center font-black text-2xl mb-6 text-[#4a3525] tracking-widest border-b border-[#4a3525]/30 pb-3 shrink-0">跨越時空的信</h3>
+                <div class="flex-1 overflow-y-auto pr-2 pb-4 custom-scrollbar">
+                    <div class="text-[#3b2a1a] font-serif text-base leading-8 tracking-wide space-y-6 text-justify" style="font-family: 'Noto Serif TC', serif; font-weight: 700;">
+                        <p>阿秀，對不起，我可能沒辦法遵守回家的約定了。</p>
+                        <p>還記得你做的那盤回鍋肉嗎?<br>每次走到巷口，聞到那個味道，我就知道，我到家了。</p>
+                        <p>我總想著，等一切結束，要陪你慢慢吃一輩子的飯。</p>
+                        <p>答應我，別再站在門口等我了。你要好好生活，替我守著我們的家。<br>別難過，因為不管我去到多遠，我從來沒有忘記回家的方向。</p>
+                        <p class="text-center mt-8 text-xl">阿秀，我永遠愛你。</p>
+                        <div class="text-right mt-10">
+                            <p class="text-sm opacity-80 mb-1">「半世戎馬，一生清風」</p>
+                            <p class="text-lg">—— 永遠想回家的志遠</p>
                         </div>
                     </div>
-                    <div class="flex space-x-3 mt-2 shrink-0">
-                        <button class="w-1/3 py-4 bg-stone-700 text-white font-black text-lg rounded-xl shadow-md active:scale-95 transition" onclick="goToSubPage(7, 2, 4)">返回</button>
-                        <button class="w-2/3 py-4 bg-[#7c343d] text-white font-black text-lg rounded-xl shadow-md active:scale-95 transition" onclick="goToSubPage(7, 4, 4)">繼續 <i class="fa-solid fa-arrow-right ml-1"></i></button>
-                    </div>
-                </div>
-                <!-- Page 4 -->
-                <div id="l7-p4" class="hidden flex-1 flex flex-col justify-center space-y-8 fade-in text-center py-4">
-                    <div class="bg-black/60 p-8 rounded-3xl border border-stone-600 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
-                        <i class="fa-solid fa-door-open text-6xl text-[#e5d5b5] mb-6"></i>
-                        <p class="text-xl font-black text-[#e5d5b5] leading-relaxed">
-                            準備好展開這段尋找記憶與承諾的旅程了嗎？<br><br>請保持好奇心，留意巷弄間的蛛絲馬跡，我們即專出發！
-                        </p>
-                    </div>
-                    <div class="flex space-x-3 shrink-0">
-                        <button class="w-1/3 py-5 bg-stone-700 text-white font-black text-xl rounded-2xl shadow-md active:scale-95 transition" onclick="goToSubPage(7, 3, 4)">返回</button>
-                        <button class="w-2/3 py-5 bg-[#7c343d] text-white font-black text-2xl rounded-2xl shadow-[0_0_25px_rgba(124,52,61,0.9)] active:scale-95 transition" onclick="completeLevel7()">已通關 <i class="fa-solid fa-check ml-1"></i></button>
-                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- ================= SCREEN: FINAL CERTIFICATE ================= -->
-        <div id="screen-certificate" class="hidden space-y-6 transition-all duration-300 fade-in py-4">
-            <div class="bg-white border-[6px] double border-[#7c343d] p-6 rounded-2xl text-center shadow-2xl">
-                <div class="text-6xl text-[#7c343d] mb-4"><i class="fa-solid fa-award"></i></div>
-                <h2 class="text-2xl font-black text-[#3b3632] tracking-widest mb-4">調查結案憑證</h2>
-                
-                <div class="bg-stone-50 p-4 rounded-xl border border-stone-200 text-sm font-bold space-y-3 mb-6 shadow-inner text-left">
-                    <div class="flex justify-between text-stone-700 border-b border-stone-200 pb-2"><span>時空座標：</span><span class="text-[#7c343d] font-black text-base">三重空軍一村</span></div>
-                    <div class="flex justify-between text-stone-700 border-b border-stone-200 pb-2 items-center"><span>任務狀態：</span><span id="cert-status" class="text-emerald-700 font-black text-right"></span></div>
-                    <div class="flex justify-between text-stone-700 border-b border-stone-200 pb-2 items-center"><span>總耗費時間：</span><span id="cert-time" class="text-[#7c343d] font-mono font-black text-right text-base"></span></div>
-                    <div class="flex justify-between text-stone-700 items-center"><span>結案評定：</span><span id="cert-rank" class="text-xl font-black text-[#7c343d] text-right"></span></div>
-                </div>
-                
-                <div id="cert-msg" class="text-base font-bold text-[#3b3632] leading-relaxed mb-6 bg-stone-100 p-4 rounded-lg border border-stone-200 text-justify"></div>
-                
-                <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 text-sm text-amber-900 font-bold mb-6 text-left shadow-sm">
-                    <div class="flex items-center space-x-2 text-red-800 mb-2 font-black text-base"><i class="fa-solid fa-gift"></i><span>兌獎引導</span></div>
-                    請「截圖保留」此認證畫面，並出示您在卷宗內獲得的【跨越時空的信】（點擊下方拼圖收集查看），前往起點服務台領取專屬獎勵！
-                </div>
-
-                <button onclick="confirmRestart()" class="w-full py-4 military-btn font-black text-base rounded-xl mt-2">清除檔案並重新開始</button>
-            </div>
-        </div>
-
     </div>
 
-    <!-- FIXED FOOTER -->
-    <div class="border-t-2 border-dashed border-[#3b3632]/40 p-3 text-base font-mono font-bold flex items-center justify-around text-[#3b3632] shrink-0 bg-[#f8f2e6]/95 rounded-b-[24px] z-30 pb-safe shadow-[0_-4px_10px_rgba(0,0,0,0.05)] absolute bottom-0 w-full left-0">
-        <button id="btn-nav-hq" class="hover:text-[#7c343d] transition flex items-center space-x-2 py-2 px-4 rounded-lg hover:bg-stone-200"><i class="fa-solid fa-house"></i><span>回主畫面</span></button>
-        <span class="text-stone-400 text-lg">|</span>
-        <button id="btn-nav-stamps" class="hover:text-[#7c343d] transition flex items-center space-x-2 py-2 px-4 rounded-lg hover:bg-stone-200 text-[#7c343d]" onclick="openStampsDrawer()"><i class="fa-solid fa-puzzle-piece"></i><span>拼圖收集</span></button>
-    </div>
+    <style>
+        @supports (padding-bottom: env(safe-area-inset-bottom)) { .pb-safe { padding-bottom: env(safe-area-inset-bottom); } }
+    </style>
 
-    <!-- MODAL: ALERT -->
-    <div id="modal-alert" class="fixed inset-0 bg-stone-900/80 z-[999] flex items-center justify-center p-6 hidden backdrop-blur-sm transition-opacity">
-        <div class="glass-card p-6 rounded-2xl max-w-[340px] w-full text-center space-y-4 shadow-2xl relative flex flex-col max-h-[85vh]">
-            <div id="alert-icon" class="shrink-0 mb-1"></div>
-            <h3 id="alert-title" class="text-xl font-black text-stone-900 shrink-0 border-b border-stone-200 pb-2">提示</h3>
-            <div class="overflow-y-auto custom-scrollbar flex-1 py-3 text-center">
-                <p id="alert-desc" class="text-base text-stone-700 font-bold leading-relaxed whitespace-pre-line"></p>
-            </div>
-            <div class="pt-2 shrink-0">
-                <button id="alert-btn" class="w-full py-4 primary-btn font-black text-lg rounded-xl transition shadow-md">確認</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- MODAL: CONFIRM RESTART -->
-    <div id="modal-confirm" class="fixed inset-0 bg-stone-900/80 z-[999] flex items-center justify-center p-6 hidden backdrop-blur-sm transition-opacity">
-        <div class="glass-card p-6 rounded-2xl max-w-[340px] w-full text-center space-y-4 shadow-2xl">
-            <i class="fa-solid fa-triangle-exclamation text-5xl text-amber-500 mb-2"></i>
-            <h3 class="text-xl font-black text-stone-900 border-b border-stone-200 pb-2">確定重新開始？</h3>
-            <p class="text-base text-stone-700 font-bold leading-relaxed py-2">這將會清除您目前所有的遊玩進度與收集到的拼圖，且無法還原。</p>
-            <div class="flex space-x-3 pt-2">
-                <button onclick="closeConfirmModal()" class="w-1/2 py-4 military-btn font-black text-base rounded-xl">取消</button>
-                <button onclick="executeRestart()" class="w-1/2 py-4 primary-btn font-black text-base rounded-xl">確認清除</button>
-            </div>
-        </div>
-    </div>
+    <script>
+        // 版本升級至 v15
+        const LOCAL_STORAGE_KEY = 'sanchong_game_state_v15';
+        const L5_PASSCODE = "999"; 
 
-    <!-- MODAL: STAMPS (PUZZLES) -->
-    <div id="modal-stamps" class="fixed inset-0 bg-stone-900/80 backdrop-blur-sm z-[990] flex items-end justify-center hidden transition-opacity">
-        <div class="w-full max-w-[430px] bg-[#292524] border-t-4 border-[#7c343d] rounded-t-3xl p-5 space-y-4 h-[85%] flex flex-col shadow-2xl">
-            <div class="flex justify-between items-center border-b border-stone-600 pb-4 shrink-0">
-                <h3 class="font-black text-amber-100 text-xl flex items-center space-x-2"><i class="fa-solid fa-puzzle-piece text-yellow-500"></i><span>歷史碎片收納盒</span></h3>
-                <button id="close-stamps" onclick="closeStampsDrawer()" class="text-stone-400 hover:text-white p-2 transition active:scale-90"><i class="fa-solid fa-xmark text-3xl"></i></button>
-            </div>
-            <div class="flex-1 overflow-y-auto pt-2 custom-scrollbar pr-1 pb-safe">
-                <div class="grid grid-cols-2 gap-3 pb-8" id="stamps-grid-container"></div>
-            </div>
-        </div>
-    </div>
+        const LEVEL_DATA = [
+            { id: 1, name: '防砲陣地' }, { id: 2, name: '眷村空間與建築' }, { id: 3, name: '村長的家' },
+            { id: 4, name: '榕樹廣場' }, { id: 5, name: '群星之夜' }, { id: 6, name: '時光膠囊' }, { id: 7, name: '最後一封信' }
+        ];
 
-    <!-- MODAL: FULL LETTER -->
-    <div id="modal-full-letter" class="fixed inset-0 bg-black/95 backdrop-blur-md z-[1000] flex items-center justify-center p-4 hidden transition-opacity">
-        <div class="w-full max-w-[380px] vintage-paper p-6 rounded-sm shadow-[0_0_30px_rgba(0,0,0,0.8)] relative border border-[#8a7251] fade-in max-h-[90vh] flex flex-col">
-            <div class="absolute -right-2 -top-2 w-14 h-14 bg-red-800 rounded-full flex items-center justify-center text-red-950 font-black shadow-md border border-red-900 transform rotate-12 z-20">
-                <i class="fa-solid fa-stamp text-2xl opacity-60"></i>
-            </div>
-            <h3 class="text-center font-black text-2xl mb-4 text-[#4a3525] tracking-widest border-b border-[#4a3525]/30 pb-3 shrink-0">跨越時空的信</h3>
-            <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-2">
-                <div class="text-[#3b2a1a] font-serif text-base leading-8 tracking-wide space-y-5 text-justify">
-                    <p>阿秀，對不起，我可能沒辦法遵守回家的約定了。</p>
-                    <p>還記得你做的那盤回鍋肉嗎?<br>每次走到巷口，聞到那個味道，我就知道，我到家了。</p>
-                    <p>我總想著，等一切結束，要陪你慢慢吃一輩子的飯。</p>
-                    <p>答應我，別再站在門口等我了。你要好好生活，替我守著我們的家。<br>別難過，因為不管我去到多遠，我從來沒有忘記回家的方向。</p>
-                    <p class="text-center mt-8 text-lg">阿秀，我永遠愛你。</p>
-                    <div class="text-right mt-8 pr-4">
-                        <p class="text-sm opacity-80 mb-1">「半世戎馬，一生清風」</p>
-                        <p class="text-lg">—— 永遠想回家的志遠</p>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-4 text-center shrink-0 border-t border-[#4a3525]/30 pt-4">
-                <button id="btn-close-letter" class="w-full py-4 military-btn bg-stone-100 font-black text-lg rounded-xl transition shadow-md">將信件珍藏並結案</button>
-            </div>
-        </div>
-    </div>
+        const PUZZLE_TEXTS = [
+            "阿秀，拍勢啦\n我可能沒辦法遵守回家的約定了。",
+            "每次走到巷口，聞到那個味道，我就知道，我到家了。",
+            "我總想著，等一切結束，要陪你慢慢吃一輩子的飯。",
+            "答應我，你要好好生活，替我多看看我們的家。",
+            "別難過，因為不管我飛得多遠，我從來沒有忘記回家的方向。",
+            "阿秀，我永遠愛\n你。",
+            "「半世戎馬，一生清風」\n—— 永遠想回家的志遠"
+        ];
 
-</div>
-
-<script>
-    const LOCAL_STORAGE_KEY = 'sanchong_game_state_v17';
-    const L5_PASSCODE = "999"; 
-
-    const LEVEL_DATA = [
-        { id: 1, name: '防砲陣地' }, { id: 2, name: '眷村空間與建築' }, { id: 3, name: '村長的家' },
-        { id: 4, name: '榕樹廣場' }, { id: 5, name: '群星之夜' }, { id: 6, name: '時光膠囊' }, { id: 7, name: '最後一封信' }
-    ];
-
-    const PUZZLE_TEXTS = [
-        "摯愛的 阿秀：\n\n阿秀，拍勢啦\n我可能沒辦法遵守回家的約定了。",
-        "每次走到巷口，聞到那個味道，\n我就知道，我到家了。",
-        "我總想著，等一切結束，\n要陪你慢慢吃一輩子的飯。",
-        "答應我，你要好好生活，\n替我多看看我們的家。",
-        "別難過，因為不管我飛得多遠，\n我從來沒有忘記回家的方向。",
-        "阿秀，我永遠愛\n你。",
-        "「半世戎馬，一生清風」\n—— 永遠想回家的志遠"
-    ];
-
-    let gameState = {
-        teamName: null, startLevel: 3, customSequence: [3, 4, 5, 6, 1, 2, 7],
-        startTime: null, endTime: null, stamps: [false, false, false, false, false, false, false],
-        currentStageIndex: 0, soundEnabled: true,
-        l1Input: [], l1Collected: [false, false, false, false],
-        l2Photos: [false, false, false, false, false], l2CurrentQ: 0,
-        l3PhotoDone: false, l3CurrentQ: 0, l5Input: []
-    };
-
-    function saveGameState() { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(gameState)); }
-    function loadGameState() {
-        try { 
-            const data = localStorage.getItem(LOCAL_STORAGE_KEY); 
-            if (data) { 
-                gameState = { ...gameState, ...JSON.parse(data) }; 
-                return true; 
-            } 
-        } catch(e) { 
-            localStorage.removeItem(LOCAL_STORAGE_KEY); 
-        } 
-        return false;
-    }
-
-    // 隨機亂序函數
-    function shuffle(array) {
-        const arr = [...array];
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
-    }
-
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function initAudio() { if(audioCtx.state === 'suspended') audioCtx.resume(); }
-    
-    function playBeep(freq = 600, duration = 0.05, type = 'sine') {
-        if (!gameState.soundEnabled) return;
-        try {
-            initAudio();
-            const osc = audioCtx.createOscillator(); 
-            const gain = audioCtx.createGain();
-            osc.type = type; 
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.08, audioCtx.currentTime); 
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-            osc.connect(gain); 
-            gain.connect(audioCtx.destination);
-            osc.start(); 
-            osc.stop(audioCtx.currentTime + duration);
-        } catch (e) {}
-    }
-    function playSuccessSound() { playBeep(523, 0.08); setTimeout(() => playBeep(659, 0.08), 90); setTimeout(() => playBeep(784, 0.15), 180); }
-    function playErrorSound() { playBeep(220, 0.12, 'sawtooth'); setTimeout(() => playBeep(180, 0.18, 'sawtooth'), 120); }
-
-    function syncAudioPlayers() {
-        const players = document.querySelectorAll('audio');
-        players.forEach(p => {
-            p.muted = !gameState.soundEnabled;
-        });
-    }
-
-    // 音效切換事件
-    document.getElementById('sound-toggle').onclick = () => {
-        gameState.soundEnabled = !gameState.soundEnabled;
-        const icon = document.getElementById('sound-icon');
-        if (gameState.soundEnabled) {
-            icon.className = "fa-solid fa-volume-high text-yellow-300 text-lg";
-            playBeep(600, 0.05);
-        } else {
-            icon.className = "fa-solid fa-volume-xmark text-stone-400 text-lg";
-        }
-        syncAudioPlayers();
-        saveGameState();
-    };
-
-    function showAlert(title, desc, iconClass = "", colorClass = "text-[#7c343d]", callback = null, btnText = "確認") {
-        document.getElementById('alert-title').textContent = title;
-        document.getElementById('alert-desc').textContent = desc;
-        const iconEl = document.getElementById('alert-icon');
-        if (iconClass) { 
-            iconEl.innerHTML = `<i class="fa-solid ${iconClass}"></i>`; 
-            iconEl.className = `text-5xl ${colorClass} shrink-0 mb-1`; 
-            iconEl.style.display = 'block'; 
-        } else { 
-            iconEl.style.display = 'none'; 
-        }
-        const btn = document.getElementById('alert-btn');
-        btn.textContent = btnText;
-        btn.onclick = () => {
-            playBeep(400, 0.05);
-            document.getElementById('modal-alert').classList.add('hidden');
-            if (callback) callback();
+        let gameState = {
+            teamName: null, startLevel: 3, customSequence: [3, 4, 5, 6, 1, 2, 7],
+            startTime: null, endTime: null, stamps: [false, false, false, false, false, false, false],
+            currentStageIndex: 0, soundEnabled: true,
+            l1Input: [], l1Collected: [false, false, false, false],
+            l2Photos: [false, false, false, false, false], l2CurrentQ: 0,
+            l3PhotoDone: false, l3CurrentQ: 0, l5Input: []
         };
-        document.getElementById('modal-alert').classList.remove('hidden');
-    }
 
-    function confirmRestart() {
-        playBeep();
-        document.getElementById('modal-confirm').classList.remove('hidden');
-    }
-    function closeConfirmModal() {
-        playBeep();
-        document.getElementById('modal-confirm').classList.add('hidden');
-    }
-    function executeRestart() {
-        localStorage.removeItem(LOCAL_STORAGE_KEY);
-        location.reload();
-    }
-
-    function goToSubPage(level, targetPage, totalPages) {
-        playBeep();
-        for (let i = 1; i <= totalPages; i++) { 
-            const el = document.getElementById(`l${level}-p${i}`); 
-            if (el) el.classList.add('hidden'); 
-        }
-        const targetEl = document.getElementById(`l${level}-p${targetPage}`);
-        if (targetEl) targetEl.classList.remove('hidden');
-        document.getElementById('game-viewport').scrollTop = 0;
-    }
-
-    function showScreen(screenId) {
-        ['entry', 'main', 'level-1', 'level-2', 'level-3', 'level-4', 'level-5', 'level-6', 'level-7', 'certificate'].forEach(s => {
-            const el = document.getElementById(`screen-${s}`); 
-            if (el) el.classList.add('hidden');
-        });
-        document.getElementById(`screen-${screenId}`).classList.remove('hidden');
-        document.getElementById('game-viewport').scrollTop = 0;
-        document.getElementById('modal-stamps').classList.add('hidden');
-
-        updateTopHeader(screenId);
-
-        if (screenId === 'certificate') renderCertificate();
-        if (screenId === 'main') renderMain();
-        if (screenId === 'level-1') renderL1();
-        if (screenId === 'level-2') renderL2();
-        if (screenId === 'level-3') renderL3();
-        if (screenId === 'level-4') { goToSubPage(4, 1, 4); renderL4Selects(); }
-        if (screenId === 'level-5') { goToSubPage(5, 1, 4); updateL5Display(); }
-        if (screenId === 'level-6') goToSubPage(6, 1, 4);
-        
-        updateStampBadgeCount();
-    }
-
-    function updateTopHeader(screenId) {
-        const teamEl = document.getElementById('header-team-name');
-        const titleEl = document.getElementById('header-level-title');
-        teamEl.textContent = gameState.teamName || "未建立隊伍";
-
-        if (screenId === 'entry') titleEl.textContent = "任務報到";
-        else if (screenId === 'main') titleEl.textContent = "任務總部";
-        else if (screenId === 'certificate') titleEl.textContent = "結案報告";
-        else {
-            const lvlNum = parseInt(screenId.replace('level-', ''));
-            const data = LEVEL_DATA.find(l => l.id === lvlNum);
-            titleEl.textContent = data ? data.name : "調查任務";
-        }
-    }
-
-    function updateStampBadgeCount() {
-        const count = gameState.stamps.filter(Boolean).length;
-        document.getElementById('header-puzzle-text').textContent = `${count}/7`;
-        renderStampsDrawer(); 
-    }
-
-    function handleLevelSuccess(lvlNum) {
-        playSuccessSound();
-        gameState.stamps[lvlNum - 1] = true;
-        if (gameState.currentStageIndex < 6 && gameState.customSequence[gameState.currentStageIndex] === lvlNum) {
-            gameState.currentStageIndex++;
-        }
-        saveGameState();
-        
-        if (lvlNum === 7) {
-            if(!gameState.endTime) gameState.endTime = Date.now(); 
-            saveGameState();
-            document.getElementById('modal-full-letter').classList.remove('hidden');
-        } else {
-            let msg = "獲得一塊拼圖碎片，請準備進入下一階段。";
-            if (lvlNum === 1) msg = "我們將蒐集到的暗號數字重組成關鍵年份「1945 年」——這正是二次世界大戰結束、防砲陣地完成歷史使命的轉折點。\n\n獲得一塊拼圖碎片！";
-            if (lvlNum === 2) msg = "眷村空間演變記錄了『人用生活塑造建築，建築也見證了人』的歷史。\n\n從軍階決定的坪數大小、防洪引發的閣樓，到家庭人口增長促成的一線天，每一處擴建都是居民適應環境的智慧與見證。\n\n獲得一塊拼圖碎片！";
-            if (lvlNum === 6) msg = "您已獲得第6塊碎片。\n\n請前往觀賞《最後一封信》沉浸式劇場，解鎖最後一塊拼圖碎片！";
+        // --- Loader ---
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('app-loader');
+            loader.style.opacity = '0';
+            setTimeout(() => loader.remove(), 600);
             
-            showAlert("調查成功", msg, "", "", () => showScreen('main'), "返回主畫面");
-        }
-    }
-
-    function renderMain() {
-        document.getElementById('main-team-name').textContent = gameState.teamName || '探險小隊';
-        const count = gameState.stamps.filter(Boolean).length;
-        document.getElementById('main-progress').textContent = `[${count}/7]`;
-        const currentLvlId = gameState.customSequence[gameState.currentStageIndex];
-        document.getElementById('main-active-title').textContent = LEVEL_DATA.find(l => l.id === currentLvlId).name;
-    }
-
-    // --- LEVEL 1 ---
-    const l1Locations = [
-        { title: "#通氣孔", task: "尋找小廣場周圍牆腳的金屬通氣孔或地面排氣井蓋，觀察其標示，記錄下暗號數字。", desc: "透過地面通氣孔連結地下甬道的歷史存在，了解二戰防禦機制。" },
-        { title: "#包砲建屋", task: "觀察廣場緊鄰的眷舍牆角，尋找日治紅磚掩體與戰後眷村牆面交接處，找出構造辨識編號。", desc: "體會這片土地從「日治軍事要塞」轉變為「戰後眷村家園」的歷史層次。" },
-        { title: "#砲座遺跡", task: "觀察地上保存最完整的圓形高射砲座遺跡，看看旁邊標示牌上記錄的「核心砲座代號」。", desc: "認識日治時期三重防砲陣地的核心軍事設施。" },
-        { title: "#預備門數", task: "閱讀廣場旁的歷史解說牌，找出日治時期防砲部隊在此預計配置的「高射砲預備門數」。", desc: "理解三重防砲陣地的高射砲火網配置規模與戰略地位。" }
-    ];
-
-    function renderL1() {
-        document.querySelectorAll('.l1-loc-btn').forEach((btn) => {
-            const idx = parseInt(btn.dataset.idx);
-            const isDone = gameState.l1Collected[idx];
-            
-            if (isDone) {
-                btn.classList.add('bg-teal-100', 'border-teal-600', 'text-teal-800');
-                btn.innerHTML = `<i class="fa-solid fa-check text-teal-600 text-2xl mb-2"></i>已收集`;
+            if (loadGameState() && gameState.teamName) {
+                if(globalTimerInterval) clearInterval(globalTimerInterval);
+                globalTimerInterval = setInterval(updateTimerDisplay, 1000); updateTimerDisplay();
+                // 聲音圖示同步
+                const icon = document.getElementById('sound-icon');
+                if(!gameState.soundEnabled) icon.className = "fa-solid fa-volume-xmark text-stone-400 text-base";
+                if (gameState.stamps.filter(Boolean).length === 7) showScreen('certificate'); else showScreen('main');
+            } else {
+                showScreen('entry');
             }
-            
-            // 允許反覆點擊重看任務說明
-            btn.onclick = () => {
-                playBeep(600, 0.05); 
-                const loc = l1Locations[idx];
-                showAlert(loc.title, `【任務】\n${loc.task}\n\n【說明】\n${loc.desc}`, "fa-map-location-dot", "text-[#7c343d]", () => {
-                    if (!isDone) { 
-                        gameState.l1Collected[idx] = true; 
-                        saveGameState(); 
-                        renderL1(); 
-                    }
-                }, isDone ? "關閉" : "完成打卡記錄");
-            };
         });
-        const cCount = gameState.l1Collected.filter(Boolean).length;
-        document.getElementById('l1-keypad-overlay').classList.toggle('hidden', cCount === 4);
-        updateL1Display();
-    }
 
-    document.querySelectorAll('.l1-key').forEach(b => b.onclick = () => { 
-        if(gameState.l1Input.length < 4) { 
-            playBeep(); 
-            gameState.l1Input.push(b.dataset.val); 
-            updateL1Display(); 
+        function saveGameState() { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(gameState)); }
+        function loadGameState() {
+            try { const data = localStorage.getItem(LOCAL_STORAGE_KEY); if (data) { gameState = { ...gameState, ...JSON.parse(data) }; return true; } } 
+            catch(e) { localStorage.removeItem(LOCAL_STORAGE_KEY); } return false;
         }
-    });
-    document.getElementById('l1-btn-del').onclick = () => { 
-        if(gameState.l1Input.length > 0) { 
-            playBeep(400); 
-            gameState.l1Input.pop(); 
-            updateL1Display(); 
-        }
-    };
-    document.getElementById('l1-btn-submit').onclick = () => {
-        if(gameState.l1Input.join('') !== "1945") {
-            playErrorSound(); 
-            showAlert("驗證失敗", "請確認是否收集齊所有地點，並輸入正確年份。", "fa-circle-xmark", "text-red-600");
-            gameState.l1Input = []; 
-            updateL1Display();
-        } else {
-            handleLevelSuccess(1);
-        }
-    };
-    function updateL1Display() { 
-        document.querySelectorAll('#l1-code-container .code-box').forEach((box, i) => box.textContent = gameState.l1Input[i] || ''); 
-    }
 
-    // --- LEVEL 2 ---
-    const l2Data = [
-        { q: "依據軍階與家庭成員分配房舍。請對照地圖找到特級眷舍，高階軍官的家擁有哪一個最明顯的建築特徵？", opts: ["A. 獨立庭院與紅色大門", "B. 只能側身通過的窄巷", "C. 蓋在屋頂上的小閣樓", "D. 共用牆壁的連棟小屋"], a: 0, photo: true, photoText: "請尋找該建築特徵並拍照上傳", desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門；基層官兵則多居住於共用牆壁的連棟窄房。" },
-        { q: "為什麼防洪樓裡會有小閣樓？", opts: ["A. 放雜物", "B. 放武器", "C. 洪水來時避難", "D. 養鴿子"], a: 2, photo: false, desc: "過去經常受淡水河洪患，於1960年代興建「防洪樓」作為避難空間。樓內保留當時為躲避水災增建的小閣樓。" },
-        { q: "「一線天」是眷村特殊的狹窄巷道景觀。造成一線天形成的主要原因為何？\n\n【線索】：兩側皆有眷舍/巷道狹窄/抬頭見一線天", opts: ["A. 建村時為了節省土地設計", "B. 居民居住空間不足向前後院擴建", "C. 為了讓鄰居方便交流", "D. 為了遮陽避雨刻意縮小"], a: 1, photo: true, photoText: "請在眷村中找到「一線天」拍照上傳", desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成今日緊鄰樣貌。" },
-        { q: "請依照村長家的演變順序排列下列事件。\n① 興建防洪樓，增加避難空間\n② 黑瓦竹泥牆平房\n③ 全面改建為三層樓\n④ 加蓋二樓增加空間", opts: ["A. ① → ② → ③ → ④", "B. ② → ① → ④ → ③", "C. ② → ④ → ① → ③", "D. ① → ③ → ② → ④"], a: 1, photo: false, desc: "村長的家經歷了 7 次改建，從最初的平房，一路上蓋到三層樓。" },
-        { q: "為什麼隨著時間過去，眷村的房屋開始出現更多門窗、鐵窗，生活空間逐漸移回屋內？", opts: ["A. 居民開始重視與鄰居保持距離", "B. 居民確定無法短期返回大陸，長久生活", "C. 政府規定必須將生活空間封閉", "D. 為了防止敵人進入眷村"], a: 1, photo: true, photoText: "請尋找建築上的鐵窗拍照上傳", desc: "隨著回大陸希望渺茫及人口增加，居民擴建將生活機能移入屋內並加裝鐵窗。眷村逐漸從開放轉為獨立住宅。" }
-    ];
-
-    document.getElementById('l2-camera-input').addEventListener('change', function(e) {
-        if (this.files && this.files.length > 0) {
-            const icon = document.getElementById('l2-cam-icon'); 
-            icon.className = "fa-solid fa-circle-notch fa-spin text-2xl";
-            setTimeout(() => { 
-                playSuccessSound(); 
-                gameState.l2Photos[gameState.l2CurrentQ] = true; 
-                saveGameState(); 
-                renderL2(); 
-                this.value = ''; 
-                icon.className = "fa-solid fa-camera-retro text-2xl"; 
-            }, 500);
+        // --- 亂數洗牌函數 (Fisher-Yates) ---
+        function shuffleArray(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex); currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
         }
-    });
 
-    function renderL2() {
-        const qData = l2Data[gameState.l2CurrentQ];
-        document.getElementById('l2-q-counter').textContent = `題目 ${gameState.l2CurrentQ + 1} / 5`;
-        document.getElementById('l2-question-text').textContent = qData.q;
-        const cont = document.getElementById('l2-options-container');
-        const pSect = document.getElementById('l2-photo-section');
-        cont.innerHTML = '';
-        
-        if (qData.photo && !gameState.l2Photos[gameState.l2CurrentQ]) {
-            pSect.classList.remove('hidden'); 
-            document.getElementById('l2-photo-req-text').textContent = "📸 " + qData.photoText;
-        } else {
-            pSect.classList.add('hidden');
+        // --- Audio System (全局同步) ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function initAudio() { if(audioCtx.state === 'suspended') audioCtx.resume(); }
+        function stopAllMedia() {
+            document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
+            const l3Icon = document.getElementById('l3-voice-icon'); if(l3Icon) l3Icon.className = "fa-solid fa-volume-high text-4xl";
+            const l3Btn = document.getElementById('l3-btn-voice'); if(l3Btn) l3Btn.disabled = false;
+        }
+        function playBeep(freq = 600, duration = 0.05, type = 'sine') {
+            if (!gameState.soundEnabled) return;
+            try {
+                initAudio(); const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+                osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {}
+        }
+        function playSuccessSound() { playBeep(523, 0.08); setTimeout(() => playBeep(659, 0.08), 90); setTimeout(() => playBeep(784, 0.15), 180); }
+        function playErrorSound() { playBeep(220, 0.12, 'sawtooth'); setTimeout(() => playBeep(180, 0.18, 'sawtooth'), 120); }
+
+        // --- UI Helpers (動態綁定事件，防止失效) ---
+        function showAlert(title, desc, iconClass = "", colorClass = "text-[#7c343d]", callback = null, btnText = "確認") {
+            document.getElementById('alert-title').textContent = title;
+            document.getElementById('alert-desc').textContent = desc;
+            const iconEl = document.getElementById('alert-icon');
+            if(iconClass) { iconEl.innerHTML = `<i class="fa-solid ${iconClass}"></i>`; iconEl.className = `text-5xl ${colorClass} shrink-0 mb-2`; iconEl.style.display = 'block'; } 
+            else { iconEl.style.display = 'none'; }
             
-            // 選項打亂隨機洗牌
-            const shuffledOpts = shuffle(qData.opts.map((text, idx) => ({ text, isCorrect: idx === qData.a })));
+            const btn = document.getElementById('alert-btn');
+            btn.textContent = btnText;
+            btn.onclick = () => {
+                playBeep(400, 0.05); document.getElementById('modal-alert').classList.add('hidden');
+                if (callback) callback();
+            };
+            document.getElementById('modal-alert').classList.remove('hidden');
+        }
+
+        function updateHeader(screenId) {
+            const teamEl = document.getElementById('header-team-name');
+            const titleEl = document.getElementById('header-level-title');
+            teamEl.textContent = gameState.teamName || "未登入";
+            if (screenId === 'entry') titleEl.textContent = "任務報到";
+            else if (screenId === 'main') titleEl.textContent = "任務總部";
+            else if (screenId === 'certificate') titleEl.textContent = "結案報告";
+            else {
+                const lvlNum = parseInt(screenId.replace('level-', ''));
+                const data = LEVEL_DATA.find(l => l.id === lvlNum);
+                titleEl.textContent = data ? data.name : "調查任務";
+            }
+        }
+
+        function goToSubPage(level, targetPage, totalPages) {
+            playBeep();
+            for(let i=1; i<=totalPages; i++) { const el = document.getElementById(`l${level}-p${i}`); if(el) el.classList.add('hidden'); }
+            const targetEl = document.getElementById(`l${level}-p${targetPage}`);
+            if(targetEl) targetEl.classList.remove('hidden');
+            document.getElementById('game-viewport').scrollTop = 0;
+        }
+
+        function showScreen(screenId) {
+            stopAllMedia(); // 切換畫面自動停止音樂
+            ['entry', 'main', 'level-1', 'level-2', 'level-3', 'level-4', 'level-5', 'level-6', 'level-7', 'certificate'].forEach(s => {
+                const el = document.getElementById(`screen-${s}`); if (el) el.classList.add('hidden');
+            });
+            document.getElementById(`screen-${screenId}`).classList.remove('hidden');
+            document.getElementById('game-viewport').scrollTop = 0;
+            document.getElementById('modal-stamps').classList.add('hidden');
+
+            updateHeader(screenId);
+
+            if (screenId === 'certificate') renderCertificate();
+            if (screenId === 'main') renderMain();
+            if (screenId === 'level-1') renderL1();
+            if (screenId === 'level-2') renderL2();
+            if (screenId === 'level-3') renderL3();
+            if (screenId === 'level-4') goToSubPage(4, 1, 4);
+            if (screenId === 'level-5') { goToSubPage(5, 1, 4); updateL5Display(); }
+            if (screenId === 'level-6') goToSubPage(6, 1, 4);
+            if (screenId === 'level-7') goToSubPage(7, 1, 4);
             
-            shuffledOpts.forEach(item => {
-                const btn = document.createElement('button');
-                btn.className = "w-full py-4 bg-white border-2 border-stone-300 hover:border-[#7c343d] rounded-xl font-bold text-base text-left px-5 hover:bg-red-50 text-stone-900 shadow-sm transition-transform active:scale-95";
-                btn.textContent = item.text;
+            updateStampBadgeCount();
+        }
+
+        function updateStampBadgeCount() {
+            const count = gameState.stamps.filter(Boolean).length;
+            document.getElementById('header-puzzle-text').textContent = `${count}/7`;
+        }
+
+        function handleLevelSuccess(lvlNum) {
+            playSuccessSound();
+            gameState.stamps[lvlNum - 1] = true;
+            if (gameState.currentStageIndex < 6 && gameState.customSequence[gameState.currentStageIndex] === lvlNum) {
+                gameState.currentStageIndex++;
+            }
+            saveGameState();
+            
+            if (lvlNum === 7) {
+                if(!gameState.endTime) gameState.endTime = Date.now(); saveGameState();
+                openFullLetter();
+            } else {
+                let msg = "獲得一塊拼圖碎片，請準備進入下一階段。";
+                if (lvlNum === 1) msg = "蒐集的暗號數字重組成「1945 年」——這正是防砲陣地完成歷史使命的轉折點。\n\n獲得一塊拼圖碎片！";
+                if (lvlNum === 2) msg = "眷村空間演變記錄了『人用生活塑造建築，建築也見證了人』的歷史。\n\n獲得一塊拼圖碎片！";
+                if (lvlNum === 6) msg = "您已獲得第6塊碎片。\n\n請前往觀賞《最後一封信》沉浸式劇場，解鎖最後一塊拼圖碎片！";
+                showAlert("調查成功", msg, "", "", () => showScreen('main'), "返回主畫面");
+            }
+        }
+
+        function renderMain() {
+            const currentLvlId = parseInt(gameState.customSequence[gameState.currentStageIndex]) || 1;
+            const lvlData = LEVEL_DATA.find(l => l.id === currentLvlId) || LEVEL_DATA[0];
+            document.getElementById('main-active-title').textContent = lvlData.name;
+        }
+
+        // --- LEVEL 1 ---
+        const l1Locations = [
+            { title: "#通氣孔", task: "尋找小廣場周圍牆腳的金屬通氣孔或地面排氣井蓋，觀察其標示，記錄下暗號數字。", desc: "透過地面通氣孔連結地下甬道的歷史存在，了解二戰防禦機制。" },
+            { title: "#包砲建屋", task: "觀察廣場緊鄰的眷舍牆角，尋找日治紅磚掩體與戰後眷村牆面交接處，找出構造辨識編號。", desc: "體會這片土地從「日治軍事要塞」轉變為「戰後眷村家園」的歷史層次。" },
+            { title: "#砲座遺跡", task: "觀察地上保存最完整的圓形高射砲座遺跡，看看旁邊標示牌上記錄的「核心砲座代號」。", desc: "認識日治時期三重防砲陣地的核心軍事設施。" },
+            { title: "#預備門數", task: "閱讀廣場旁的歷史解說牌，找出日治時期防砲部隊在此預計配置的「高射砲預備門數」。", desc: "理解三重防砲陣地的高射砲火網配置規模與戰略地位。" }
+        ];
+
+        function renderL1() {
+            document.querySelectorAll('.l1-loc-btn').forEach((btn) => {
+                const idx = parseInt(btn.dataset.idx);
+                if(gameState.l1Collected[idx]) {
+                    btn.classList.add('bg-teal-100', 'border-teal-600', 'text-teal-800');
+                    btn.innerHTML = `<i class="fa-solid fa-check text-teal-600 text-xl mb-1.5"></i>已收集`;
+                }
+                // 即便收集過了，也保留 onclick，讓玩家可以重新回顧說明 (但不再觸發 save)
                 btn.onclick = () => {
-                    if (item.isCorrect) {
-                        playSuccessSound();
-                        showAlert("答對了！", qData.desc, "fa-circle-check", "text-emerald-700", () => {
-                            if (gameState.l2CurrentQ < 4) { 
-                                gameState.l2CurrentQ++; 
-                                saveGameState(); 
-                                renderL2(); 
-                            } else {
-                                handleLevelSuccess(2);
-                            }
+                    playBeep(600, 0.05); const loc = l1Locations[idx];
+                    showAlert(loc.title, `【任務】\n${loc.task}\n\n【說明】\n${loc.desc}`, "fa-map-location-dot", "text-[#7c343d]", () => {
+                        if(!gameState.l1Collected[idx]) { gameState.l1Collected[idx] = true; saveGameState(); renderL1(); }
+                    }, gameState.l1Collected[idx] ? "關閉" : "完成打卡記錄");
+                };
+            });
+            const cCount = gameState.l1Collected.filter(Boolean).length;
+            const overlay = document.getElementById('l1-keypad-overlay');
+            if (cCount === 4) overlay.classList.add('hidden'); else overlay.classList.remove('hidden');
+            updateL1Display();
+        }
+
+        document.querySelectorAll('.l1-key').forEach(b => b.onclick = () => { if(gameState.l1Input.length < 4) { playBeep(); gameState.l1Input.push(b.dataset.val); updateL1Display(); }});
+        document.getElementById('l1-btn-del').onclick = () => { if(gameState.l1Input.length > 0) { playBeep(400); gameState.l1Input.pop(); updateL1Display(); }};
+        document.getElementById('l1-btn-submit').onclick = () => {
+            if(gameState.l1Input.join('') !== "1945") {
+                playErrorSound(); showAlert("驗證失敗", "請確認是否收集齊所有地點，並輸入正確年份。", "fa-circle-xmark", "text-red-600");
+                gameState.l1Input = []; updateL1Display();
+            } else handleLevelSuccess(1);
+        };
+        function updateL1Display() { document.querySelectorAll('#l1-code-container .code-box').forEach((box, i) => box.textContent = gameState.l1Input[i] || ''); }
+
+        // --- LEVEL 2 ---
+        const l2Data = [
+            { q: "依據軍階與家庭成員分配房舍。請對照地圖找到特級眷舍，高階軍官的家擁有哪一個最明顯的建築特徵？", opts: ["獨立庭院與紅色大門", "只能側身通過的窄巷", "蓋在屋頂上的小閣樓", "共用牆壁的連棟小屋"], a: 0, photo: true, photoText: "請尋找該建築特徵並拍照上傳", desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門；基層官兵則多居住於共用牆壁的連棟窄房。" },
+            { q: "為什麼防洪樓裡會有小閣樓？", opts: ["放雜物", "放武器", "洪水來時避難", "養鴿子"], a: 2, photo: false, desc: "過去經常受淡水河洪患，於1960年代興建「防洪樓」作為避難空間。樓內保留當時為躲避水災增建的小閣樓。" },
+            { q: "「一線天」是眷村特殊的狹窄巷道景觀。造成一線天形成的主要原因為何？\n\n【線索】：兩側皆有眷舍/巷道狹窄/抬頭見一線天", opts: ["建村時為了節省土地設計", "居民居住空間不足向前後院擴建", "為了讓鄰居方便交流", "為了遮陽避雨刻意縮小"], a: 1, photo: true, photoText: "請在眷村中找到「一線天」拍照上傳", desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成今日緊鄰樣貌。" },
+            { q: "請依照村長家的演變順序排列下列事件。\n① 興建防洪樓，增加避難空間\n② 黑瓦竹泥牆平房\n③ 全面改建為三層樓\n④ 加蓋二樓增加空間", opts: ["① → ② → ③ → ④", "② → ① → ④ → ③", "② → ④ → ① → ③", "① → ③ → ② → ④"], a: 1, photo: false, desc: "村長的家經歷了 7 次改建，從最初的平房，一路上蓋到三層樓。" },
+            { q: "為什麼隨著時間過去，眷村的房屋開始出現更多門窗、鐵窗，生活空間逐漸移回屋內？", opts: ["居民開始重視與鄰居保持距離", "居民確定無法短期返回大陸，長久生活", "政府規定必須將生活空間封閉", "為了防止敵人進入眷村"], a: 1, photo: true, photoText: "請尋找建築上的鐵窗拍照上傳", desc: "隨著回大陸希望渺茫及人口增加，居民擴建將生活機能移入屋內並加裝鐵窗。眷村逐漸從開放轉為獨立住宅。" }
+        ];
+
+        document.getElementById('l2-camera-input').addEventListener('change', function(e) {
+            if(this.files && this.files.length > 0) {
+                const icon = document.getElementById('l2-cam-icon'); icon.className = "fa-solid fa-circle-notch fa-spin text-xl";
+                setTimeout(() => { playSuccessSound(); gameState.l2Photos[gameState.l2CurrentQ] = true; saveGameState(); renderL2(); this.value = ''; icon.className = "fa-solid fa-camera-retro text-xl"; }, 500);
+            }
+        });
+
+        function renderL2() {
+            const qData = l2Data[gameState.l2CurrentQ];
+            document.getElementById('l2-q-counter').textContent = `題目 ${gameState.l2CurrentQ + 1} / 5`;
+            document.getElementById('l2-question-text').textContent = qData.q;
+            const cont = document.getElementById('l2-options-container'), pSect = document.getElementById('l2-photo-section');
+            cont.innerHTML = ''; 
+            
+            if(qData.photo && !gameState.l2Photos[gameState.l2CurrentQ]) {
+                pSect.classList.remove('hidden'); document.getElementById('l2-photo-req-text').textContent = "📸 " + qData.photoText;
+            } else {
+                pSect.classList.add('hidden');
+                
+                // 選項洗牌邏輯
+                let optionsWithIndex = qData.opts.map((opt, index) => ({ text: opt, isCorrect: index === qData.a }));
+                let shuffledOptions = shuffleArray([...optionsWithIndex]);
+
+                shuffledOptions.forEach((o) => {
+                    const btn = document.createElement('button');
+                    btn.className = "opt-btn l2-opt";
+                    btn.textContent = o.text;
+                    btn.onclick = () => {
+                        if(o.isCorrect) {
+                            playSuccessSound(); 
+                            showAlert("答對了！", qData.desc, "fa-check-circle", "text-emerald-700", () => {
+                                if(gameState.l2CurrentQ < 4) { gameState.l2CurrentQ++; saveGameState(); renderL2(); } else handleLevelSuccess(2);
+                            }, "下一題");
+                        } else {
+                            playErrorSound(); 
+                            showAlert("答錯了！", "請再試一次。", "fa-xmark-circle", "text-red-700", null, "重試");
+                        }
+                    };
+                    cont.appendChild(btn);
+                });
+            }
+        }
+
+        // --- LEVEL 3 ---
+        const l3AudioFiles = ["https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3", "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"];
+        const l3Data = [
+            { q: "請問語音中提到的料理是哪一道？", opts: ["麻婆豆腐", "回鍋肉", "水煮魚", "宮保雞丁"], a: 1, desc: "回鍋肉是四川經典家常菜，呈現四川料理麻、辣、香風味。" },
+            { q: "請問語音中提到的料理是哪一道？", opts: ["酸菜魚", "剁椒魚頭", "清蒸鱸魚", "糖醋魚"], a: 1, desc: "剁椒魚頭是湖南料理，搭配剁椒蒸製，展現鮮、辣、香特色。" },
+            { q: "請問語音中提到的料理是哪一道？", opts: ["安徽板麵", "蘭州拉麵", "刀削麵", "牛肉麵"], a: 0, desc: "安徽板麵是具地方特色的麵食，搭配香辣濃郁醬汁。" },
+            { q: "請問語音中提到的料理是哪一道？", opts: ["打滷麵", "擔擔麵", "炸醬麵", "蔥油拌麵"], a: 2, desc: "炸醬麵是北方代表家常麵食。濃郁炸醬形成鹹香厚重風味。" },
+            { q: "請問語音中提到的料理是哪一道？", opts: ["山東煎餅", "韭菜盒子", "蔥油餅", "牛肉餡餅"], a: 1, desc: "韭菜盒子是常見北方家常麵食，適合家庭分享。" }
+        ];
+
+        document.getElementById('l3-camera-input').addEventListener('change', function(e) {
+            if(this.files && this.files.length > 0) {
+                const icon = document.getElementById('l3-cam-icon'); icon.className = "fa-solid fa-circle-notch fa-spin text-2xl";
+                setTimeout(() => { playSuccessSound(); gameState.l3PhotoDone = true; saveGameState(); renderL3(); this.value = ''; icon.className = "fa-solid fa-camera-retro text-2xl"; }, 500);
+            }
+        });
+
+        function renderL3() {
+            if(!gameState.l3PhotoDone) { document.getElementById('l3-photo-section').classList.remove('hidden'); document.getElementById('l3-qa-section').classList.add('hidden'); }
+            else { document.getElementById('l3-photo-section').classList.add('hidden'); document.getElementById('l3-qa-section').classList.remove('hidden'); showL3Question(); }
+        }
+
+        function showL3Question() {
+            const qData = l3Data[gameState.l3CurrentQ];
+            if(!qData) return;
+            document.getElementById('l3-q-counter').textContent = `題目 ${gameState.l3CurrentQ + 1} / 5`;
+            document.getElementById('l3-question-text').textContent = qData.q;
+            document.getElementById('l3-audio-hint').classList.remove('hidden');
+            document.getElementById('l3-audio-player').src = l3AudioFiles[gameState.l3CurrentQ];
+            const cont = document.getElementById('l3-options-container'); cont.innerHTML = '';
+            
+            // 選項洗牌
+            let optionsWithIndex = qData.opts.map((opt, index) => ({ text: opt, isCorrect: index === qData.a }));
+            let shuffledOptions = shuffleArray([...optionsWithIndex]);
+
+            shuffledOptions.forEach((o) => {
+                const btn = document.createElement('button');
+                btn.className = "opt-btn l3-opt l3-opt-btn"; // custom class for disabling logic
+                btn.textContent = o.text;
+                btn.disabled = true; // 鎖定直到播放
+                btn.onclick = () => {
+                    if(o.isCorrect) {
+                        playSuccessSound(); 
+                        showAlert("答對了！", qData.desc, "fa-check-circle", "text-emerald-700", () => {
+                            if(gameState.l3CurrentQ < 4) { gameState.l3CurrentQ++; saveGameState(); showL3Question(); }
+                            else showAlert("調查成功", "從四川的麻辣香氣、湖南的辣椒鮮味，到江南的清甜湯品與北方的麵食文化，每一道料理都不只是味道，更是一段跨越距離的生活記憶。\n\n當不同省份的人們帶著家鄉味來到台灣，眷村廚房也成為文化交流的場所。", "", "text-[#a04b1e]", () => handleLevelSuccess(3));
                         }, "下一題");
                     } else {
-                        playErrorSound();
-                        showAlert("答錯了！", "請再仔細思考一次。", "fa-circle-xmark", "text-red-700", null, "重試");
+                        playErrorSound(); 
+                        showAlert("答錯了！", "請再試一次。", "fa-xmark-circle", "text-red-700", null, "重試");
                     }
                 };
                 cont.appendChild(btn);
             });
         }
-    }
 
-    // --- LEVEL 3 ---
-    const l3AudioFiles = [
-        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", 
-        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", 
-        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", 
-        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3", 
-        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
-    ];
-    const l3Data = [
-        { q: "請問語音中提到的料理是哪一道？", opts: ["麻婆豆腐", "回鍋肉", "水煮魚", "宮保雞丁"], a: 1, desc: "回鍋肉是四川經典家常菜，呈現四川料理麻、辣、香風味。" },
-        { q: "請問語音中提到的料理是哪一道？", opts: ["酸菜魚", "剁椒魚頭", "清蒸鱸魚", "糖醋魚"], a: 1, desc: "剁椒魚頭是湖南料理，搭配剁椒蒸製，展現鮮、辣、香特色。" },
-        { q: "請問語音中提到的料理是哪一道？", opts: ["安徽板麵", "蘭州拉麵", "刀削麵", "牛肉麵"], a: 0, desc: "安徽板麵是具地方特色的麵食，搭配香辣濃郁醬汁。" },
-        { q: "請問語音中提到的料理是哪一道？", opts: ["打滷麵", "擔擔麵", "炸醬麵", "蔥油拌麵"], a: 2, desc: "炸醬麵是北方代表家常麵食。濃郁炸醬形成鹹香厚重風味。" },
-        { q: "請問語音中提到的料理是哪一道？", opts: ["山東煎餅", "韭菜盒子", "蔥油餅", "牛肉餡餅"], a: 1, desc: "韭菜盒子是常見北方家常麵食，適合家庭分享。" }
-    ];
+        document.getElementById('l3-btn-voice').onclick = () => {
+            const btnVoice = document.getElementById('l3-btn-voice'), icon = document.getElementById('l3-voice-icon'), player = document.getElementById('l3-audio-player');
+            if(btnVoice.disabled || !gameState.soundEnabled) {
+                // 如果是靜音狀態，直接解鎖防呆
+                if(!gameState.soundEnabled) {
+                    document.getElementById('l3-audio-hint').classList.add('hidden'); document.querySelectorAll('.l3-opt-btn').forEach(b => b.disabled = false);
+                }
+                return;
+            }
+            initAudio(); playBeep(); 
+            icon.className = "fa-solid fa-spinner fa-spin text-4xl"; btnVoice.disabled = true;
+            
+            player.play().then(() => {
+                document.getElementById('l3-audio-hint').classList.add('hidden'); document.querySelectorAll('.l3-opt-btn').forEach(b => b.disabled = false);
+                setTimeout(() => { icon.className = "fa-solid fa-volume-high text-4xl"; btnVoice.disabled = false; }, 2000);
+            }).catch((err)=>{
+                icon.className = "fa-solid fa-volume-high text-4xl"; btnVoice.disabled = false;
+                // 防呆：即便語音無法播放，也強制解鎖選項按鈕！
+                document.getElementById('l3-audio-hint').classList.add('hidden'); document.querySelectorAll('.l3-opt-btn').forEach(b => b.disabled = false);
+                showAlert("播放失敗", "因網路不穩或瀏覽器設定阻擋音效，已為您直接解鎖作答選項。", "fa-wifi", "text-amber-600");
+            });
+        };
 
-    document.getElementById('l3-camera-input').addEventListener('change', function(e) {
-        if (this.files && this.files.length > 0) {
-            const icon = document.getElementById('l3-cam-icon'); 
-            icon.className = "fa-solid fa-circle-notch fa-spin text-2xl";
-            setTimeout(() => { 
-                playSuccessSound(); 
-                gameState.l3PhotoDone = true; 
-                saveGameState(); 
-                renderL3(); 
-                this.value = ''; 
-                icon.className = "fa-solid fa-camera-retro text-2xl"; 
-            }, 500);
+        // --- LEVEL 4 ---
+        // 選項會在顯示前洗牌
+        const l4Q1Opts = [{t:"老式黑膠唱片機", c:false}, {t:"勝家腳踏縫紉機", c:true}, {t:"煤油爐", c:false}];
+        const l4Q2Opts = [{t:"戰備電影票", c:false}, {t:"米糧油鹽配給證", c:true}, {t:"郵政儲蓄存折", c:false}];
+
+        function renderL4Questions() {
+            const q1Select = document.getElementById('l4-q1');
+            const q2Select = document.getElementById('l4-q2');
+            
+            let s1 = shuffleArray([...l4Q1Opts]);
+            let s2 = shuffleArray([...l4Q2Opts]);
+
+            q1Select.innerHTML = '<option value="" disabled selected>請選擇...</option>';
+            s1.forEach(o => q1Select.innerHTML += `<option value="${o.c ? 'correct' : 'wrong'}">${o.t}</option>`);
+
+            q2Select.innerHTML = '<option value="" disabled selected>請選擇...</option>';
+            s2.forEach(o => q2Select.innerHTML += `<option value="${o.c ? 'correct' : 'wrong'}">${o.t}</option>`);
         }
-    });
+        
+        // 綁定 L4 進入頁面時渲染問題 (在 goToSubPage 中若為 L4 P4 會觸發)
+        document.getElementById('l4-btn-verify').onclick = () => {
+            const q1 = document.getElementById('l4-q1').value, q2 = document.getElementById('l4-q2').value;
+            if(q1 === 'correct' && q2 === 'correct') handleLevelSuccess(4);
+            else { playErrorSound(); showAlert("驗證失敗", "選擇有誤，請再試一次！", "fa-circle-xmark", "text-red-600"); }
+        };
 
-    function renderL3() {
-        if (!gameState.l3PhotoDone) { 
-            document.getElementById('l3-photo-section').classList.remove('hidden'); 
-            document.getElementById('l3-qa-section').classList.add('hidden'); 
-        } else { 
-            document.getElementById('l3-photo-section').classList.add('hidden'); 
-            document.getElementById('l3-qa-section').classList.remove('hidden'); 
-            showL3Question(); 
+        // --- LEVEL 5 ---
+        document.querySelectorAll('.l5-key').forEach(btn => btn.onclick = () => { if(gameState.l5Input.length < 3) { playBeep(); gameState.l5Input.push(btn.dataset.val); updateL5Display(); }});
+        document.getElementById('l5-btn-del').onclick = () => { if(gameState.l5Input.length > 0) { playBeep(400); gameState.l5Input.pop(); updateL5Display(); }};
+        document.getElementById('l5-btn-submit').onclick = () => {
+            if(gameState.l5Input.join('').trim() === L5_PASSCODE) handleLevelSuccess(5);
+            else { playErrorSound(); showAlert("驗證失敗", "通關密語錯誤！請重新確認。", "fa-circle-xmark", "text-red-600"); gameState.l5Input = []; updateL5Display(); }
+        };
+        function updateL5Display() { document.querySelectorAll('#l5-code-container .code-box').forEach((box, i) => box.textContent = gameState.l5Input[i] || ''); }
+
+        // --- LEVEL 6 ---
+        let l6SelectedFlowers = [];
+        function toggleFlower(el, fName) {
+            playBeep();
+            if(el.classList.contains('selected')) { el.classList.remove('selected'); l6SelectedFlowers = l6SelectedFlowers.filter(f => f !== fName); }
+            else { el.classList.add('selected'); l6SelectedFlowers.push(fName); }
         }
-    }
-
-    function showL3Question() {
-        const qData = l3Data[gameState.l3CurrentQ];
-        if (!qData) return;
-        document.getElementById('l3-q-counter').textContent = `題目 ${gameState.l3CurrentQ + 1} / 5`;
-        document.getElementById('l3-question-text').textContent = qData.q;
-        document.getElementById('l3-audio-hint').classList.remove('hidden');
+        function showL6Clue(num) {
+            playBeep();
+            if(num===1) showAlert("線索一", "花瓣層層疊疊，枝條上常帶著刺，也經常被人們拿來代表愛情。（玫瑰）", "fa-seedling");
+            else showAlert("線索二", "花朵小巧潔白，花瓣通常層層展開，夜晚時香氣尤其明顯，常被人們用來製茶與提取香氣。（茉莉）", "fa-seedling");
+        }
+        function verifyFlowers() {
+            if(l6SelectedFlowers.length===2 && l6SelectedFlowers.includes('玫瑰') && l6SelectedFlowers.includes('茉莉')) { playSuccessSound(); showAlert("找對了！", "成功找出了隱藏的玫瑰與茉莉花香！前往下一關。", "", "text-[#7c343d]", () => goToSubPage(6, 4, 4)); }
+            else { playErrorSound(); showAlert("選擇有誤", "請確認是否剛好選擇了正確的【兩種】花卉喔！", "fa-circle-xmark", "text-red-600"); }
+        }
         
-        const player = document.getElementById('l3-audio-player');
-        player.src = l3AudioFiles[gameState.l3CurrentQ];
-        player.muted = !gameState.soundEnabled;
-        
-        const cont = document.getElementById('l3-options-container'); 
-        cont.innerHTML = '';
-        
-        // 選項洗牌打亂
-        const shuffledOpts = shuffle(qData.opts.map((text, idx) => ({ text, isCorrect: idx === qData.a })));
-        
-        shuffledOpts.forEach(item => {
-            const btn = document.createElement('button');
-            btn.className = "l3-opt-btn w-full py-4 bg-white border-2 border-stone-300 rounded-xl font-bold text-base text-left px-5 shadow-sm text-stone-900 transition";
-            btn.textContent = item.text;
-            btn.disabled = true; // 預設鎖定，播放語音後解鎖
+        const l6Songs = [
+            { title: "《安童哥買菜》", lyric: "安童哥仔囉，哩哩囉囉...", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
+            { title: "《相思河畔》", lyric: "自從相思河畔見了你...", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" },
+            { title: "《鄉間的小路》", lyric: "走在鄉間的小路上...", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" }
+        ];
+        let l6SongInterval = null;
+        document.querySelectorAll('.l6-song-btn').forEach(btn => {
             btn.onclick = () => {
-                if (item.isCorrect) {
-                    playSuccessSound();
-                    showAlert("答對了！", qData.desc, "fa-circle-check", "text-emerald-700", () => {
-                        if (gameState.l3CurrentQ < 4) { 
-                            gameState.l3CurrentQ++; 
-                            saveGameState(); 
-                            showL3Question(); 
-                        } else {
-                            showAlert("調查成功", "從四川的麻辣香氣、湖南的辣椒鮮味，到江南的清甜湯品與北方的麵食文化，每一道料理都不只是味道，更是一段跨越距離的生活記憶。\n\n當不同省份的人們帶著家鄉味來到台灣，眷村廚房也成為文化交流的場所。", "", "text-[#7c343d]", () => handleLevelSuccess(3));
-                        }
-                    }, "下一題");
+                if(!gameState.soundEnabled) return showAlert("靜音中", "請先開啟右上角的音量開關。");
+                if(l6SongInterval) { clearInterval(l6SongInterval); document.getElementById('l6-audio-player').pause(); } 
+                initAudio(); playBeep(800, 0.1);
+                
+                const idx = parseInt(btn.dataset.song), pUI = document.getElementById('l6-player'), audioEl = document.getElementById('l6-audio-player');
+                pUI.classList.remove('hidden'); document.getElementById('l6-song-title').textContent = l6Songs[idx].title; document.getElementById('l6-lyrics').textContent = l6Songs[idx].lyric;
+                const prog = document.getElementById('l6-progress'); prog.style.width = '0%';
+                
+                audioEl.src = l6Songs[idx].audio; 
+                audioEl.play().catch(e => { console.log("Audio block", e); });
+                
+                let w = 0;
+                l6SongInterval = setInterval(() => {
+                    w+=2; prog.style.width = `${w}%`;
+                    if(w>=100) { 
+                        clearInterval(l6SongInterval); audioEl.pause(); 
+                        setTimeout(() => showAlert("歌曲播放完畢", "請至背景牆前將您的推薦詞貼上去與大家分享！", "", "text-[#7c343d]", () => handleLevelSuccess(6)), 300); 
+                    }
+                }, 100);
+            };
+        });
+
+        // --- LEVEL 7 ---
+        document.getElementById('btn-close-letter').onclick = () => { playBeep(500, 0.1); document.getElementById('modal-full-letter').classList.add('hidden'); showScreen('certificate'); };
+
+        // --- STAMPS DRAWER (碎片收納盒) ---
+        function openStampsDrawer() {
+            playBeep();
+            renderStampsDrawer();
+            document.getElementById('modal-stamps').classList.remove('hidden');
+        }
+
+        function renderStampsDrawer() {
+            const container = document.getElementById('stamps-grid-container');
+            const letterBtnContainer = document.getElementById('full-letter-btn-container');
+            if(!container) return; container.innerHTML = '';
+            
+            gameState.customSequence.forEach((lvlId, i) => {
+                const isUnlocked = gameState.stamps[lvlId - 1]; 
+                const div = document.createElement('div');
+                
+                if (isUnlocked) {
+                    div.className = "torn-piece p-3 flex flex-col justify-center min-h-[110px] cursor-pointer transition active:scale-95";
+                    div.innerHTML = `<span class="text-xs font-bold text-[#4a3525] relative z-10 leading-relaxed text-justify opacity-80 pointer-events-none px-1">${PUZZLE_TEXTS[lvlId - 1].replace(/\n/g, '<br>')}</span>`;
+                    div.onclick = () => {
+                        playBeep();
+                        document.getElementById('modal-stamps').classList.add('hidden');
+                        showScreen(`level-${lvlId}`);
+                    };
                 } else {
-                    playErrorSound();
-                    showAlert("答錯了！", "請再試一次。", "fa-circle-xmark", "text-red-700", null, "重試");
+                    div.className = "bg-stone-800 p-3 rounded-lg text-center flex flex-col justify-center items-center space-y-2 min-h-[110px] opacity-50";
+                    div.innerHTML = `<i class="fa-solid fa-lock text-stone-500 text-2xl"></i><span class="text-[10px] text-stone-400 font-bold">未解鎖</span>`;
                 }
-            };
-            cont.appendChild(btn);
-        });
-    }
-
-    document.getElementById('l3-btn-voice').onclick = () => {
-        const btnVoice = document.getElementById('l3-btn-voice');
-        const icon = document.getElementById('l3-voice-icon');
-        const player = document.getElementById('l3-audio-player');
-        
-        if (btnVoice.disabled) return;
-        initAudio(); 
-        playBeep(); 
-        icon.className = "fa-solid fa-spinner fa-spin text-4xl"; 
-        btnVoice.disabled = true;
-        
-        player.muted = !gameState.soundEnabled;
-        player.play().then(() => {
-            document.getElementById('l3-audio-hint').classList.add('hidden'); 
-            document.querySelectorAll('.l3-opt-btn').forEach(b => {
-                b.disabled = false;
-                b.classList.add('hover:border-[#7c343d]', 'hover:bg-red-50');
+                container.appendChild(div);
             });
-            setTimeout(() => { 
-                icon.className = "fa-solid fa-volume-high text-4xl"; 
-                btnVoice.disabled = false; 
-            }, 2000);
-        }).catch((err) => {
-            icon.className = "fa-solid fa-volume-high text-4xl"; 
-            btnVoice.disabled = false;
-            // 容錯機制：若被瀏覽器拒絕自動播放，強制解鎖選項防卡關
-            document.getElementById('l3-audio-hint').classList.add('hidden'); 
-            document.querySelectorAll('.l3-opt-btn').forEach(b => {
-                b.disabled = false;
-                b.classList.add('hover:border-[#7c343d]', 'hover:bg-red-50');
-            });
-            showAlert("播放提示", "因瀏覽器限制音訊播放，已直接為您解鎖選項。", "", "text-amber-700");
-        });
-    };
 
-    // --- LEVEL 4 ---
-    function renderL4Selects() {
-        const s1 = document.getElementById('l4-q1');
-        s1.innerHTML = '<option value="" disabled selected>請選擇...</option>';
-        shuffle([
-            { v: 'wrong', t: '老式黑膠唱片機' }, 
-            { v: 'correct', t: '勝家腳踏縫紉機' }, 
-            { v: 'wrong', t: '煤油爐' }
-        ]).forEach(o => s1.add(new Option(o.t, o.v)));
-        
-        const s2 = document.getElementById('l4-q2');
-        s2.innerHTML = '<option value="" disabled selected>請選擇...</option>';
-        shuffle([
-            { v: 'wrong', t: '戰備電影票' }, 
-            { v: 'correct', t: '米糧油鹽配給證' }, 
-            { v: 'wrong', t: '郵政儲蓄存折' }
-        ]).forEach(o => s2.add(new Option(o.t, o.v)));
-    }
-
-    document.getElementById('l4-btn-verify').onclick = () => {
-        const q1 = document.getElementById('l4-q1').value;
-        const q2 = document.getElementById('l4-q2').value;
-        if (q1 === 'correct' && q2 === 'correct') {
-            handleLevelSuccess(4);
-        } else { 
-            playErrorSound(); 
-            showAlert("驗證失敗", "選擇有誤，請再試一次！", "fa-circle-xmark", "text-red-600"); 
-        }
-    };
-
-    // --- LEVEL 5 ---
-    document.querySelectorAll('.l5-key').forEach(btn => {
-        btn.onclick = () => { 
-            if (gameState.l5Input.length < 3) { 
-                playBeep(); 
-                gameState.l5Input.push(btn.dataset.val); 
-                updateL5Display(); 
-            }
-        };
-    });
-    document.getElementById('l5-btn-del').onclick = () => { 
-        if (gameState.l5Input.length > 0) { 
-            playBeep(400); 
-            gameState.l5Input.pop(); 
-            updateL5Display(); 
-        }
-    };
-    document.getElementById('l5-btn-submit').onclick = () => {
-        if (gameState.l5Input.join('').trim() === L5_PASSCODE) {
-            handleLevelSuccess(5);
-        } else { 
-            playErrorSound(); 
-            showAlert("驗證失敗", "通關密語錯誤！請重新確認。", "fa-circle-xmark", "text-red-600"); 
-            gameState.l5Input = []; 
-            updateL5Display(); 
-        }
-    };
-    function updateL5Display() { 
-        document.querySelectorAll('#l5-code-container .code-box').forEach((box, i) => {
-            box.textContent = gameState.l5Input[i] || '';
-        }); 
-    }
-
-    // --- LEVEL 6 ---
-    let l6SelectedFlowers = [];
-    function toggleFlower(el, fName) {
-        playBeep();
-        if (el.classList.contains('selected')) { 
-            el.classList.remove('selected'); 
-            l6SelectedFlowers = l6SelectedFlowers.filter(f => f !== fName); 
-        } else { 
-            el.classList.add('selected'); 
-            l6SelectedFlowers.push(fName); 
-        }
-    }
-    function showL6Clue(num) {
-        playBeep();
-        if (num === 1) showAlert("線索一", "花瓣層層疊疊，枝條上常帶著刺，也經常被人們拿來代表愛情。（玫瑰）", "");
-        else showAlert("線索二", "花朵小巧潔白，花瓣通常層層展開，夜晚時香氣尤其明顯，常被人們用來製茶與提取香氣。（茉莉）", "");
-    }
-    function verifyFlowers() {
-        if (l6SelectedFlowers.length === 2 && l6SelectedFlowers.includes('玫瑰') && l6SelectedFlowers.includes('茉莉')) { 
-            playSuccessSound(); 
-            showAlert("找對了！", "成功找出了隱藏的玫瑰與茉莉花香！前往下一頁。", "", "text-[#7c343d]", () => goToSubPage(6, 4, 4)); 
-        } else { 
-            playErrorSound(); 
-            showAlert("選擇有誤", "請確認是否剛好選擇了正確的【兩種】花卉喔！", "fa-circle-xmark", "text-red-600"); 
-        }
-    }
-    
-    const l6Songs = [
-        { title: "《安童哥買菜》", lyric: "安童哥仔囉，哩哩囉囉...", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
-        { title: "《相思河畔》", lyric: "自從相思河畔見了你...", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" },
-        { title: "《鄉間的小路》", lyric: "走在鄉間的小路上...", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" }
-    ];
-    let l6SongInterval = null;
-    document.querySelectorAll('.l6-song-btn').forEach(btn => {
-        btn.onclick = () => {
-            if (l6SongInterval) { 
-                clearInterval(l6SongInterval); 
-                document.getElementById('l6-audio-player').pause(); 
-            } 
-            initAudio(); 
-            playBeep(800, 0.1);
-            
-            const idx = parseInt(btn.dataset.song);
-            const pUI = document.getElementById('l6-player');
-            const audioEl = document.getElementById('l6-audio-player');
-            
-            pUI.classList.remove('hidden'); 
-            document.getElementById('l6-song-title').textContent = l6Songs[idx].title; 
-            document.getElementById('l6-lyrics').textContent = l6Songs[idx].lyric;
-            const prog = document.getElementById('l6-progress'); 
-            prog.style.width = '0%';
-            
-            audioEl.src = l6Songs[idx].audio; 
-            audioEl.muted = !gameState.soundEnabled;
-            audioEl.play().catch(e => console.log("Song play blocked", e));
-            
-            let w = 0;
-            l6SongInterval = setInterval(() => {
-                w += 2; 
-                prog.style.width = `${w}%`;
-                if (w >= 100) { 
-                    clearInterval(l6SongInterval); 
-                    audioEl.pause(); 
-                    setTimeout(() => showAlert("歌曲播放完畢", "請至背景牆前將您的推薦詞貼上去與大家分享！", "", "text-[#7c343d]", () => handleLevelSuccess(6)), 300); 
-                }
-            }, 100);
-        };
-    });
-
-    // --- LEVEL 7 ---
-    function completeLevel7() { 
-        handleLevelSuccess(7); 
-    }
-    document.getElementById('btn-close-letter').onclick = () => { 
-        playBeep(500, 0.1); 
-        document.getElementById('modal-full-letter').classList.add('hidden'); 
-        showScreen('certificate'); 
-    };
-
-    // --- STAMPS DRAWER (點擊直接跳轉) ---
-    function openStampsDrawer() {
-        playBeep(); 
-        renderStampsDrawer(); 
-        document.getElementById('modal-stamps').classList.remove('hidden');
-    }
-    function closeStampsDrawer() {
-        playBeep(300, 0.05);
-        document.getElementById('modal-stamps').classList.add('hidden');
-    }
-
-    function renderStampsDrawer() {
-        const container = document.getElementById('stamps-grid-container');
-        if (!container) return; 
-        container.innerHTML = '';
-        
-        gameState.customSequence.forEach((lvlId, i) => {
-            const isUnlocked = gameState.stamps[lvlId - 1]; 
-            const div = document.createElement('div');
-            
-            if (isUnlocked) {
-                div.className = "vintage-paper p-4 rounded-xl text-sm text-[#3b2a1a] shadow-inner font-bold flex flex-col justify-center min-h-[120px] border border-[#a68c63] transition active:scale-95 cursor-pointer";
-                div.innerHTML = `<span class="opacity-95 leading-relaxed pointer-events-none">${PUZZLE_TEXTS[lvlId - 1].replace(/\n/g, '<br>')}</span>`;
-                div.onclick = () => { 
-                    playBeep(); 
-                    document.getElementById('modal-stamps').classList.add('hidden'); 
-                    showScreen(`level-${lvlId}`); 
-                };
+            // 判斷是否顯示完整信件按鈕 (破關條件：獲得第7塊)
+            if(gameState.stamps[6]) {
+                letterBtnContainer.classList.remove('hidden');
             } else {
-                div.className = "bg-stone-800 border-2 border-dashed border-stone-600 p-4 rounded-xl text-center flex flex-col justify-center items-center space-y-2 min-h-[120px] opacity-70";
-                div.innerHTML = `<i class="fa-solid fa-lock text-stone-500 text-3xl"></i><span class="text-sm text-stone-400 font-bold mt-2">未解鎖碎片 ${i+1}</span>`;
+                letterBtnContainer.classList.add('hidden');
             }
-            container.appendChild(div);
+        }
+
+        function openFullLetter() {
+            playBeep();
+            document.getElementById('modal-stamps').classList.add('hidden');
+            document.getElementById('modal-full-letter').classList.remove('hidden');
+        }
+        function closeFullLetter() {
+            playBeep();
+            document.getElementById('modal-full-letter').classList.add('hidden');
+        }
+
+        document.getElementById('close-stamps').onclick = () => {
+            playBeep();
+            document.getElementById('modal-stamps').classList.add('hidden');
+        };
+
+        // --- GLOBAL START & TIMER ---
+        let globalTimerInterval = null;
+        document.getElementById('btn-start-game').addEventListener('click', () => {
+            const nameInput = document.getElementById('input-team-name');
+            const name = nameInput.value.trim();
+            if (!name) return showAlert("錯誤", "請輸入隊伍名稱！", "fa-triangle-exclamation");
+            
+            initAudio(); playBeep(700, 0.05); 
+            gameState.teamName = name.substring(0, 15);
+            gameState.startLevel = parseInt(document.getElementById('start-level-select').value);
+            gameState.customSequence = Array.from({length:6}, (_,i) => ((gameState.startLevel-1+i)%6)+1); gameState.customSequence.push(7);
+            if(!gameState.startTime) gameState.startTime = Date.now(); 
+            saveGameState();
+            
+            if(globalTimerInterval) clearInterval(globalTimerInterval);
+            globalTimerInterval = setInterval(updateTimerDisplay, 1000); updateTimerDisplay();
+            showScreen('main');
         });
 
-        // 若第7關已通關，下方常駐顯示「閱讀《跨越時空的信》」按鈕
-        if (gameState.stamps[6]) {
-            const letterBtn = document.createElement('button');
-            letterBtn.className = "col-span-2 w-full mt-3 py-4 bg-[#7c343d] text-[#f8f2e6] font-black text-lg rounded-xl shadow-md flex items-center justify-center space-x-2 fade-in";
-            letterBtn.innerHTML = '<i class="fa-solid fa-envelope-open-text"></i><span>閱讀《跨越時空的信》</span>';
-            letterBtn.onclick = () => { 
-                playBeep(); 
-                document.getElementById('modal-stamps').classList.add('hidden'); 
-                document.getElementById('modal-full-letter').classList.remove('hidden'); 
-            };
-            container.appendChild(letterBtn);
+        document.getElementById('btn-goto-current').addEventListener('click', () => {
+            initAudio(); playBeep(600, 0.05);
+            const targetLvl = gameState.customSequence[gameState.currentStageIndex];
+            if(targetLvl === 4) renderL4Questions(); // L4 專屬亂數渲染
+            showScreen(`level-${targetLvl}`);
+        });
+
+        function updateTimerDisplay() {
+            if (!gameState.startTime) return;
+            const now = gameState.endTime ? gameState.endTime : Date.now();
+            let elapsed = Math.floor((now - gameState.startTime) / 1000);
+            const totalSecs = 2 * 3600; let remain = totalSecs - elapsed; if (remain < 0) remain = 0;
+            const h = String(Math.floor(remain / 3600)).padStart(2, '0'), m = String(Math.floor((remain % 3600) / 60)).padStart(2, '0'), s = String(remain % 60).padStart(2, '0');
+            const text = `${h}:${m}:${s}`;
+            const mainTimerEl = document.getElementById('main-timer');
+            if(mainTimerEl) mainTimerEl.textContent = text;
         }
-    }
 
-    // --- GLOBAL START & TIMER ---
-    let globalTimerInterval = null;
-    document.getElementById('btn-start-game').addEventListener('click', () => {
-        const nameInput = document.getElementById('input-team-name');
-        const name = nameInput.value.trim();
-        if (!name) return showAlert("提示", "請輸入隊伍名稱！", "fa-triangle-exclamation");
-        
-        initAudio(); 
-        playBeep(700, 0.05); 
-        gameState.teamName = name.substring(0, 15);
-        gameState.startLevel = parseInt(document.getElementById('start-level-select').value);
-        gameState.customSequence = Array.from({ length: 6 }, (_, i) => ((gameState.startLevel - 1 + i) % 6) + 1); 
-        gameState.customSequence.push(7);
-        if (!gameState.startTime) gameState.startTime = Date.now(); 
-        saveGameState();
-        
-        if (globalTimerInterval) clearInterval(globalTimerInterval);
-        globalTimerInterval = setInterval(updateTimerDisplay, 1000); 
-        updateTimerDisplay();
-        showScreen('main');
-    });
-
-    document.getElementById('btn-goto-current').addEventListener('click', () => {
-        initAudio(); 
-        playBeep(600, 0.05);
-        showScreen(`level-${gameState.customSequence[gameState.currentStageIndex]}`);
-    });
-
-    document.getElementById('btn-nav-hq').addEventListener('click', () => {
-        playBeep(); 
-        showScreen(gameState.teamName ? 'main' : 'entry');
-    });
-
-    function updateTimerDisplay() {
-        if (!gameState.startTime) return;
-        const now = gameState.endTime ? gameState.endTime : Date.now();
-        let elapsed = Math.floor((now - gameState.startTime) / 1000);
-        const totalSecs = 2 * 3600; 
-        let remain = totalSecs - elapsed; 
-        if (remain < 0) remain = 0;
-        const h = String(Math.floor(remain / 3600)).padStart(2, '0');
-        const m = String(Math.floor((remain % 3600) / 60)).padStart(2, '0');
-        const s = String(remain % 60).padStart(2, '0');
-        const text = `${h}:${m}:${s}`;
-        const mainTimerEl = document.getElementById('main-timer');
-        if (mainTimerEl) mainTimerEl.textContent = text;
-    }
-
-    function renderCertificate() {
-        const elapsed = Math.floor(((gameState.endTime || Date.now()) - gameState.startTime) / 1000);
-        const h = String(Math.floor(elapsed / 3600)).padStart(2, '0');
-        const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
-        const s = String(elapsed % 60).padStart(2, '0');
-        const timeStr = `${h}:${m}:${s}`;
-        const isSClass = elapsed <= 7200; // 2 小時內
-        
-        document.getElementById('cert-time').textContent = isSClass ? `${timeStr} (時限內)` : timeStr;
-        document.getElementById('cert-status').textContent = isSClass ? '所有委託全數偵破' : '委託已完成（時空延遲）';
-        document.getElementById('cert-rank').textContent = isSClass ? '【S級結案】' : '【堅毅探尋】';
-        document.getElementById('cert-status').className = isSClass ? 'text-emerald-700 font-black text-right' : 'text-amber-700 font-black text-right';
-        
-        const msgEl = document.getElementById('cert-msg');
-        if (isSClass) {
-            msgEl.innerHTML = '恭喜完成所有委託！<br>您成功解開了眷村深埋的記憶，讓跨越時空的思念得以圓滿。';
-        } else {
-            msgEl.innerHTML = '雖然耗費了較多時間，但真相終究水落石出。<br>這段歲月記憶因你的堅持而完整。';
+        function renderCertificate() {
+            const elapsed = Math.floor(((gameState.endTime||Date.now()) - gameState.startTime) / 1000);
+            const h = String(Math.floor(elapsed / 3600)).padStart(2, '0'), m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0'), s = String(elapsed % 60).padStart(2, '0');
+            const timeStr = `${h}:${m}:${s}`;
+            const isSClass = elapsed <= 7200; // 2 hours
+            
+            document.getElementById('cert-time').textContent = isSClass ? `${timeStr} (時限內)` : timeStr;
+            document.getElementById('cert-status').textContent = isSClass ? '所有委託全數偵破' : '委託已完成（時空延遲）';
+            document.getElementById('cert-rank').textContent = isSClass ? '【S級結案】' : '【堅毅探尋】';
+            document.getElementById('cert-status').className = isSClass ? 'text-emerald-700 font-black text-right' : 'text-amber-700 font-black text-right';
+            
+            const msgEl = document.getElementById('cert-msg');
+            if(isSClass) msgEl.innerHTML = '恭喜完成所有委託！<br>您成功解開了眷村深埋的記憶，讓跨越時空的思念得以圓滿。';
+            else msgEl.innerHTML = '雖然耗費了較多時間，但真相終究水落石出。<br>這段歲月記憶因你的堅持而完整。';
         }
-    }
 
-    window.onload = () => {
-        if (loadGameState() && gameState.teamName) {
-            if (globalTimerInterval) clearInterval(globalTimerInterval);
-            globalTimerInterval = setInterval(updateTimerDisplay, 1000); 
-            updateTimerDisplay();
-            document.getElementById('sound-icon').className = gameState.soundEnabled ? "fa-solid fa-volume-high text-yellow-300 text-lg" : "fa-solid fa-volume-xmark text-stone-400 text-lg";
-            syncAudioPlayers();
-            if (gameState.stamps.filter(Boolean).length === 7) showScreen('certificate'); 
-            else showScreen('main');
-        } else {
-            showScreen('entry');
-        }
-    };
-</script>
+        // 重新開始防呆 (自製 Alert，因為原生 confirm 會被部分 WebView 擋住)
+        document.getElementById('btn-restart-game').onclick = () => {
+            showAlert("重新開始", "確定要清除目前遊玩檔案，重新開始嗎？所有的進度與拼圖都將重置。", "fa-triangle-exclamation", "text-amber-600", () => {
+                localStorage.removeItem(LOCAL_STORAGE_KEY); location.reload();
+            }, "確認清除");
+        };
+
+        document.getElementById('btn-nav-hq').onclick = () => { playBeep(); showScreen(gameState.teamName ? 'main' : 'entry'); };
+        
+        // --- 聲音全域同步開關 ---
+        document.getElementById('sound-toggle').onclick = () => { 
+            gameState.soundEnabled = !gameState.soundEnabled; 
+            const icon = document.getElementById('sound-icon');
+            if(gameState.soundEnabled) {
+                icon.className = "fa-solid fa-volume-high text-yellow-400 text-base";
+            } else {
+                icon.className = "fa-solid fa-volume-xmark text-stone-400 text-base";
+                stopAllMedia(); // 立即靜音並停止當前播放
+            }
+            saveGameState();
+        };
+
+    </script>
 </body>
 </html>
