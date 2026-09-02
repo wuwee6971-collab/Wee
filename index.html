@@ -11,88 +11,86 @@
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Courier Prime', 'Noto Serif TC', serif; background-color: #3b2a1a; color: #2b1f16; user-select: none; -webkit-user-select: none; touch-action: manipulation; overscroll-behavior-y: none; }
+        body { font-family: 'Courier Prime', 'Noto Serif TC', serif; background-color: #2b1f16; color: #1a110a; user-select: none; -webkit-user-select: none; touch-action: manipulation; overscroll-behavior-y: none; }
 
         /* 背景與材質：復古牛皮紙質/泛黃公文 */
         .paper-bg { background-color: #e6dfcc; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.08"/></svg>'); }
         .vintage-paper { background-color: #d8c8a7; background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.15"/></svg>'); box-shadow: inset 0 0 30px rgba(90, 60, 30, 0.4); }
-        .text-blend { mix-blend-mode: color-burn; } /* 墨水浸潤效果 */
-
-        /* 按鈕手感重塑：機械頓挫感、銳利陰影 */
-        .military-btn { background: #fdfbf7; border: 2px solid #5c4738; color: #2b1f16; box-shadow: 4px 4px 0 #5c4738; transition: transform 0.1s ease, box-shadow 0.1s ease; border-radius: 2px; }
-        .military-btn:active:not(:disabled) { transform: translate(3px, 3px) scale(0.98); box-shadow: 1px 1px 0 #5c4738, inset 2px 2px 4px rgba(0,0,0,0.15); }
         
-        .primary-btn { background: #7c343d; border: 2px solid #3a151b; color: #fdfbf7; box-shadow: 4px 4px 0 #3a151b; transition: transform 0.1s ease, box-shadow 0.1s ease; border-radius: 2px; }
-        .primary-btn:active:not(:disabled) { transform: translate(3px, 3px) scale(0.98); box-shadow: 1px 1px 0 #3a151b, inset 3px 3px 6px rgba(0,0,0,0.5); background: #682932; }
+        /* 1. 視覺對比度優化：移除原本會導致文字在強光下過淡的 mix-blend-mode，保留為類別但清空屬性以防報錯 */
+        .text-blend { /* 刻意留空，確保文字為最高對比度實色 */ } 
+
+        /* 按鈕手感重塑：機械頓挫感、銳利陰影、確保最小觸控熱區 44px */
+        .military-btn { background: #fdfbf7; border: 2px solid #3d2a1b; color: #1a110a; box-shadow: 4px 4px 0 #3d2a1b; transition: transform 0.1s ease, box-shadow 0.1s ease; border-radius: 2px; min-height: 44px; min-width: 44px; }
+        .military-btn:active:not(:disabled) { transform: translate(3px, 3px) scale(0.98); box-shadow: 1px 1px 0 #3d2a1b, inset 2px 2px 4px rgba(0,0,0,0.15); }
+        
+        .primary-btn { background: #6a2932; border: 2px solid #291014; color: #fdfbf7; box-shadow: 4px 4px 0 #291014; transition: transform 0.1s ease, box-shadow 0.1s ease; border-radius: 2px; min-height: 44px; }
+        .primary-btn:active:not(:disabled) { transform: translate(3px, 3px) scale(0.98); box-shadow: 1px 1px 0 #291014, inset 3px 3px 6px rgba(0,0,0,0.5); background: #551d24; }
         
         button:disabled { opacity: 0.5; filter: grayscale(50%); box-shadow: none !important; transform: none !important; cursor: not-allowed; }
 
-        /* 卡片設計：去除現代圓角，銳利粗糙陰影 */
-        .level-card { background: #fcfaf5; border-radius: 2px; box-shadow: 6px 6px 0px rgba(60, 45, 30, 0.5); border: 2px solid #5c4738; overflow: hidden; border-top: 8px solid #7c343d; }
+        .level-card { background: #fcfaf5; border-radius: 2px; box-shadow: 6px 6px 0px rgba(60, 45, 30, 0.5); border: 2px solid #3d2a1b; overflow: hidden; border-top: 8px solid #6a2932; }
         .level-card.l2 { border-top-color: #047857; }
         .level-card.l3 { border-top-color: #a04b1e; }
         .level-card.l7 { background: #2b2626; border-top-color: #e5d5b5; color: #e5d5b5; box-shadow: 8px 8px 0px rgba(0,0,0,0.7); }
 
-        /* 選項按鈕樣式 */
-        .opt-btn { width: 100%; padding: 16px 20px; background: #fcfaf5; border: 2px solid #8a7251; border-radius: 2px; font-weight: 700; text-align: left; color: #2b1f16; box-shadow: 4px 4px 0 #8a7251; transition: all 0.1s ease; mix-blend-mode: multiply; }
+        .opt-btn { width: 100%; padding: 16px 20px; background: #fcfaf5; border: 2px solid #8a7251; border-radius: 2px; font-weight: 700; text-align: left; color: #1a110a; box-shadow: 4px 4px 0 #8a7251; transition: all 0.1s ease; }
         .opt-btn:active:not(:disabled) { background: #f5eedf; transform: translate(3px, 3px) scale(0.98); box-shadow: 1px 1px 0 #8a7251, inset 2px 2px 5px rgba(0,0,0,0.15); }
+        .code-box { background: #fdfbf7; border: 2px solid #3d2a1b; border-radius: 2px; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.1); }
 
-        .code-box { background: #fdfbf7; border: 2px solid #5c4738; border-radius: 2px; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.1); }
-
-        /* 滑順過場動畫 (Page Transitions) */
-        .screen-panel { transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; }
+        /* 2. 排版修復：更改 screen-panel 為向下擴展而非限制在螢幕內 (去除 inset-0) */
+        .screen-panel { position: absolute; top: 0; left: 0; width: 100%; min-height: 100%; transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .screen-enter { opacity: 0; transform: scale(0.95) translateY(15px); pointer-events: none; }
-        .screen-active { opacity: 1; transform: scale(1) translateY(0); pointer-events: auto; }
+        .screen-active { opacity: 1; transform: scale(1) translateY(0); pointer-events: auto; z-index: 10; }
         .screen-exit { opacity: 0; transform: scale(1.05) translateY(-15px); pointer-events: none; }
 
         .custom-scrollbar::-webkit-scrollbar { width: 0px; display: none; }
         
-        /* 復古相片與佔位符 */
         .vintage-photo { border: 8px solid #fdfbf7; border-bottom-width: 24px; box-shadow: 3px 3px 6px rgba(40,30,20,0.4); filter: sepia(0.4) contrast(1.1); background-color: #d8c8a7; position: relative; overflow: hidden; }
         .skeleton-bg { background: #cbbba0; background-image: repeating-linear-gradient(45deg, #cbbba0 25%, #c0af94 25%, #c0af94 50%, #cbbba0 50%, #cbbba0 75%, #c0af94 75%, #c0af94 100%); background-size: 20px 20px; }
-        .skeleton-bg::after { content: '檔案調閱中...'; white-space: pre-wrap; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 900; color: #8c2626; opacity: 0.8; border: 4px solid #8c2626; transform: rotate(-10deg) scale(0.7); mix-blend-mode: multiply; border-radius: 4px; padding: 4px; z-index: 1; }
-        /* 圖片載入完成後淡入，覆蓋骨架 */
+        .skeleton-bg::after { content: '檔案調閱中...'; white-space: pre-wrap; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 900; color: #6a2932; opacity: 0.8; border: 4px solid #6a2932; transform: rotate(-10deg) scale(0.7); border-radius: 4px; padding: 4px; z-index: 1; }
         .vintage-photo img { position: relative; z-index: 2; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.4s ease; }
         .vintage-photo img.loaded { opacity: 1; }
         
-        /* 圖鑑四宮格復古化 */
-        .char-card-grid { border: 2px solid #5c4738; border-radius: 2px; overflow: hidden; background: #fdfbf7; display: flex; flex-direction: column; box-shadow: 4px 4px 0 rgba(60,45,30,0.4); }
-        .char-card-flex { border: 2px solid #5c4738; border-radius: 2px; overflow: hidden; background: #fdfbf7; display: flex; flex-direction: row; align-items: stretch; box-shadow: 4px 4px 0 rgba(60,45,30,0.4); }
-        .char-img-box { background: #e5d5b5; display: flex; align-items: center; justify-content: center; overflow: hidden; border-bottom: 2px solid #5c4738; }
+        .char-card-grid { border: 2px solid #3d2a1b; border-radius: 2px; overflow: hidden; background: #fdfbf7; display: flex; flex-direction: column; box-shadow: 4px 4px 0 rgba(60,45,30,0.4); }
+        .char-card-flex { border: 2px solid #3d2a1b; border-radius: 2px; overflow: hidden; background: #fdfbf7; display: flex; flex-direction: row; align-items: stretch; box-shadow: 4px 4px 0 rgba(60,45,30,0.4); }
+        .char-img-box { background: #e5d5b5; display: flex; align-items: center; justify-content: center; overflow: hidden; border-bottom: 2px solid #3d2a1b; position: relative; }
         
-        /* 破碎拼圖樣式設計 (RWD 容器與 SVG Clip-Path) */
         #puzzle-drawer-board, #full-letter-board { container-type: inline-size; aspect-ratio: 4 / 3; width: 100%; position: relative; }
         
+        /* 5. 碎片防遮擋優化 */
         .puzzle-piece {
-            position: absolute;
-            background-color: #d8c8a7;
+            position: absolute; background-color: #d8c8a7;
             background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.15"/></svg>');
             display: flex; align-items: center; justify-content: center; text-align: center;
-            color: #3b2a1a; font-family: 'Noto Serif TC', serif; font-weight: 900;
-            transition: all 0.3s ease; cursor: pointer;
+            color: #1a110a; font-family: 'Noto Serif TC', serif; font-weight: 900;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;
             filter: url(#torn-edge) drop-shadow(3px 4px 2px rgba(60,40,20,0.4));
             box-shadow: inset 0 0 15px rgba(101, 75, 41, 0.2); z-index: 10;
         }
+        /* 點擊或觸控時放大並提升層級 */
+        .puzzle-piece:active, .puzzle-piece:hover { transform: scale(1.1); z-index: 50 !important; filter: url(#torn-edge) drop-shadow(5px 6px 4px rgba(60,40,20,0.6)); }
+        .puzzle-piece.locked { background-color: #3a2e26; background-image: none; color: #665243; filter: url(#torn-edge) grayscale(1); box-shadow: none; pointer-events: none; }
+        /* 文字加上微背景保護層 */
+        .puzzle-piece span { padding: 4%; pointer-events: none; line-height: 1.5; letter-spacing: 0.5px; font-size: max(10px, 3.5cqi); background: rgba(216, 200, 167, 0.6); box-shadow: 0 0 6px rgba(216,200,167,0.7); border-radius: 4px; }
         
-        .puzzle-piece:active { transform: scale(0.95); z-index: 20; filter: url(#torn-edge) drop-shadow(1px 1px 1px rgba(60,40,20,0.5)); }
-        .puzzle-piece.locked { background-color: #3a2e26; background-image: none; color: #665243; filter: url(#torn-edge) grayscale(1); box-shadow: none; }
-        .puzzle-piece span { padding: 8%; pointer-events: none; line-height: 1.5; letter-spacing: 0.5px; font-size: max(10px, 3.5cqi); mix-blend-mode: color-burn; }
-        
-        /* 碎片形狀：基於比例計算，適應任何裝置寬度 */
-        .piece-1 { top: -1%; left: 0%; width: 42%; height: 44%; clip-path: polygon(0 0, 95% 8%, 85% 100%, 0 92%); transform: rotate(-1deg); }
-        .piece-2 { top: -2%; left: 35%; width: 40%; height: 46%; clip-path: polygon(10% 0, 100% 4%, 85% 100%, 0 95%); transform: rotate(1.5deg); }
-        .piece-3 { top: 3%; left: 68%; width: 32%; height: 42%; clip-path: polygon(5% 5%, 100% 0, 95% 95%, 0 100%); transform: rotate(-0.5deg); }
-        .piece-4 { top: 40%; left: -2%; width: 38%; height: 60%; clip-path: polygon(0 5%, 90% 0, 100% 100%, 5% 95%); transform: rotate(0.5deg); }
+        .piece-1 { top: 0%; left: 0%; width: 42%; height: 44%; clip-path: polygon(0 0, 95% 8%, 85% 100%, 0 92%); transform: rotate(-1deg); }
+        .piece-2 { top: 0%; left: 35%; width: 40%; height: 46%; clip-path: polygon(10% 0, 100% 4%, 85% 100%, 0 95%); transform: rotate(1.5deg); }
+        .piece-3 { top: 5%; left: 68%; width: 32%; height: 42%; clip-path: polygon(5% 5%, 100% 0, 95% 95%, 0 100%); transform: rotate(-0.5deg); }
+        .piece-4 { top: 40%; left: 0%; width: 38%; height: 60%; clip-path: polygon(0 5%, 90% 0, 100% 100%, 5% 95%); transform: rotate(0.5deg); }
         .piece-5 { top: 42%; left: 32%; width: 35%; height: 58%; clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%); transform: rotate(-1deg); }
-        .piece-6 { top: 40%; left: 60%; width: 25%; height: 62%; clip-path: polygon(0 5%, 95% 0, 100% 100%, 5% 95%); transform: rotate(1deg); }
-        .piece-7 { top: 42%; left: 78%; width: 22%; height: 60%; clip-path: polygon(5% 0, 100% 5%, 90% 100%, 0 95%); transform: rotate(-1.5deg); }
+        .piece-6 { top: 40%; left: 62%; width: 25%; height: 62%; clip-path: polygon(0 5%, 95% 0, 100% 100%, 5% 95%); transform: rotate(1deg); }
+        .piece-7 { top: 44%; left: 78%; width: 22%; height: 56%; clip-path: polygon(5% 0, 100% 5%, 90% 100%, 0 95%); transform: rotate(-1.5deg); }
 
         #app-loader { transition: opacity 0.6s ease; }
+        
+        /* 動態安全區下邊距 (預留給底部導覽列與 iOS 橫條) */
+        .pb-viewport-safe { padding-bottom: calc(90px + env(safe-area-inset-bottom, 20px)); }
     </style>
 </head>
 <body class="min-h-[100dvh] flex items-center justify-center p-0 sm:p-4 overflow-x-hidden">
 
-    <!-- 撕裂邊緣 SVG 濾鏡 (提供給拼圖使用) -->
+    <!-- 撕裂邊緣 SVG 濾鏡 -->
     <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
         <filter id="torn-edge" x="-10%" y="-10%" width="120%" height="120%">
             <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
@@ -100,59 +98,55 @@
         </filter>
     </svg>
 
-    <!-- 真實圖片預載器畫面 -->
     <div id="app-loader" class="fixed inset-0 bg-[#e6dfcc] vintage-paper z-[9999] flex flex-col items-center justify-center">
         <div class="relative w-24 h-24 flex items-center justify-center mb-6">
-            <i class="fa-solid fa-compass fa-spin text-6xl text-[#7c343d] opacity-80"></i>
-            <i class="fa-solid fa-gear fa-spin-reverse absolute text-2xl text-[#5c4738]"></i>
+            <i class="fa-solid fa-compass fa-spin text-6xl text-[#6a2932] opacity-80"></i>
+            <i class="fa-solid fa-gear fa-spin-reverse absolute text-2xl text-[#3d2a1b]"></i>
         </div>
-        <p class="text-[#2b1f16] font-black tracking-widest text-xl mb-2 text-blend">機密檔案調閱中</p>
-        <div class="text-3xl font-mono font-black text-[#7c343d] tracking-widest text-blend" id="loader-progress">0%</div>
+        <p class="text-[#1a110a] font-black tracking-widest text-xl mb-2">機密檔案調閱中</p>
+        <div class="text-3xl font-mono font-black text-[#6a2932] tracking-widest" id="loader-progress">0%</div>
     </div>
 
     <!-- 主容器框架 -->
-    <div class="relative w-full max-w-[430px] h-[100dvh] sm:h-[860px] paper-bg sm:border-[8px] border-stone-900 shadow-2xl flex flex-col overflow-hidden pb-safe">
+    <div class="relative w-full max-w-[430px] h-[100dvh] sm:h-[860px] paper-bg sm:border-[8px] border-stone-900 shadow-2xl flex flex-col overflow-hidden bg-white">
 
-        <!-- 頂部紅色導覽列 (復古金屬銘牌感) -->
-        <div class="bg-[#7c343d] border-b-4 border-[#3a151b] px-4 py-3.5 flex items-center justify-between z-40 shrink-0 shadow-[0_4px_10px_rgba(0,0,0,0.5)] relative text-[#f8f2e6]">
-            <!-- 左側：隊伍名稱 -->
+        <!-- 頂部紅色導覽列 -->
+        <div class="bg-[#6a2932] border-b-4 border-[#291014] px-4 py-3.5 flex items-center justify-between z-40 shrink-0 shadow-[0_4px_10px_rgba(0,0,0,0.5)] relative text-[#f8f2e6]">
             <div class="flex items-center space-x-1.5 w-1/3 truncate">
                 <i class="fa-solid fa-id-badge text-xs opacity-80"></i>
                 <span id="header-team-name" class="font-bold text-sm truncate font-serif">尚未登入</span>
             </div>
-            <!-- 中間：關卡名稱 -->
-            <div id="header-level-title" class="absolute left-1/2 transform -translate-x-1/2 font-black text-base tracking-widest text-center w-1/3 truncate text-[#e5d5b5]" style="text-shadow: 2px 2px 0 #3a151b;">
+            <div id="header-level-title" class="absolute left-1/2 transform -translate-x-1/2 font-black text-base tracking-widest text-center w-1/3 truncate text-[#e5d5b5]" style="text-shadow: 2px 2px 0 #291014;">
                 任務總部
             </div>
-            <!-- 右側：聲音開關與拼圖 -->
             <div class="flex items-center justify-end space-x-3 w-1/3">
-                <button id="sound-toggle" class="p-1 hover:text-yellow-300 transition" title="聲音開關">
+                <button id="sound-toggle" class="p-1 hover:text-yellow-300 transition min-w-[32px] min-h-[32px] flex justify-center items-center" title="聲音開關">
                     <i id="sound-icon" class="fa-solid fa-volume-high text-yellow-400 text-base"></i>
                 </button>
-                <div class="font-mono text-xs font-black flex items-center bg-[#5e262d] px-2 py-1 rounded-sm border-2 border-[#3a151b] shadow-inner cursor-pointer transition active:scale-95" onclick="openStampsDrawer()">
+                <div class="font-mono text-xs font-black flex items-center bg-[#4a1c22] px-2 py-1 rounded-sm border-2 border-[#291014] shadow-inner cursor-pointer transition active:scale-95" onclick="openStampsDrawer()">
                     <i class="fa-solid fa-puzzle-piece text-yellow-400 mr-1"></i><span id="header-puzzle-text">0/7</span>
                 </div>
             </div>
         </div>
 
-        <!-- MAIN VIEWPORT -->
-        <div id="game-viewport" class="flex-1 overflow-y-auto scroll-smooth z-10 w-full custom-scrollbar relative bg-transparent">
-            <div class="p-5 pb-32 min-h-full flex flex-col relative">
+        <!-- MAIN VIEWPORT (2. 捲動排版修復) -->
+        <div id="game-viewport" class="flex-1 overflow-y-auto scroll-smooth z-10 w-full custom-scrollbar relative bg-transparent" style="-webkit-overflow-scrolling: touch;">
+            <div class="p-5 pb-viewport-safe min-h-full flex flex-col relative w-full">
 
                 <!-- SCREEN 0: ENTRY -->
-                <div id="screen-entry" class="screen-panel screen-active absolute inset-0 p-5 flex flex-col justify-center bg-transparent">
+                <div id="screen-entry" class="screen-panel screen-active p-5 flex flex-col justify-center bg-transparent">
                     <div class="text-center py-6 mb-4">
-                        <h1 class="text-4xl font-black tracking-widest text-[#7c343d] mb-3 drop-shadow-md text-blend font-serif">三重空軍一村</h1>
-                        <p class="text-base text-[#2b1f16] font-bold tracking-widest text-blend">實境解謎大冒險 ‧ 歷史檔案解密</p>
+                        <h1 class="text-4xl font-black tracking-widest text-[#6a2932] mb-3 drop-shadow-md font-serif">三重空軍一村</h1>
+                        <p class="text-base text-[#1a110a] font-bold tracking-widest">實境解謎大冒險 ‧ 歷史檔案解密</p>
                     </div>
                     <div class="level-card p-6 space-y-6">
                         <div class="space-y-2">
-                            <label class="text-sm font-bold text-[#5c4738] block text-blend">隊伍代號 (必填)：</label>
-                            <input type="text" id="input-team-name" maxlength="15" placeholder="例：眷村探險小隊" class="w-full bg-[#fdfbf7] border-2 border-[#5c4738] rounded-sm px-4 py-4 text-base font-bold outline-none focus:border-[#7c343d] shadow-inner">
+                            <label class="text-sm font-bold text-[#3d2a1b] block">隊伍代號 (必填)：</label>
+                            <input type="text" id="input-team-name" maxlength="15" placeholder="例：眷村探險小隊" class="w-full bg-[#fdfbf7] border-2 border-[#3d2a1b] rounded-sm px-4 py-4 text-base font-bold outline-none focus:border-[#6a2932] shadow-inner text-black">
                         </div>
                         <div class="space-y-2">
-                            <label class="text-sm font-bold text-[#5c4738] block text-blend">起始調查區域：</label>
-                            <select id="start-level-select" class="w-full bg-[#fdfbf7] border-2 border-[#5c4738] rounded-sm p-4 text-base font-bold text-[#7c343d] outline-none shadow-inner">
+                            <label class="text-sm font-bold text-[#3d2a1b] block">起始調查區域：</label>
+                            <select id="start-level-select" class="w-full bg-[#fdfbf7] border-2 border-[#3d2a1b] rounded-sm p-4 text-base font-bold text-[#6a2932] outline-none shadow-inner">
                                 <option value="1">任務 1 (防砲陣地)</option><option value="2">任務 2 (眷舍空間)</option>
                                 <option value="3" selected>任務 3 (村長的家)</option><option value="4">任務 4 (榕樹廣場)</option>
                                 <option value="5">任務 5 (群星之夜)</option><option value="6">任務 6 (時光膠囊)</option>
@@ -165,25 +159,22 @@
                 </div>
 
                 <!-- SCREEN: MAIN (總部主畫面) -->
-                <div id="screen-main" class="screen-panel hidden absolute inset-0 p-5 flex flex-col space-y-6">
-                    <!-- 時間狀態 -->
+                <div id="screen-main" class="screen-panel hidden p-5 flex flex-col space-y-6">
                     <div class="level-card p-5 text-center flex flex-col items-center justify-center shadow-md">
-                        <div class="text-sm font-bold text-[#5c4738] mb-1 text-blend">委託剩餘時間</div>
-                        <div id="main-timer" class="text-4xl font-mono font-black text-[#7c343d] tracking-wider text-blend" style="text-shadow: 1px 1px 0 rgba(0,0,0,0.1);">02:00:00</div>
+                        <div class="text-sm font-bold text-[#3d2a1b] mb-1">委託剩餘時間</div>
+                        <div id="main-timer" class="text-4xl font-mono font-black text-[#6a2932] tracking-wider" style="text-shadow: 1px 1px 0 rgba(0,0,0,0.1);">02:00:00</div>
                     </div>
-                    <!-- 地圖區塊 -->
                     <div class="level-card p-4 flex flex-col items-center shadow-md">
-                        <span class="text-[#2b1f16] font-black mb-4 text-base tracking-widest text-blend border-b-2 border-dashed border-[#5c4738] pb-2 w-full text-center">【 空照地圖 】</span>
+                        <span class="text-[#1a110a] font-black mb-4 text-base tracking-widest border-b-2 border-dashed border-[#3d2a1b] pb-2 w-full text-center">【 空照地圖 】</span>
                         <div class="w-full aspect-[4/3] vintage-photo flex items-center justify-center">
                             <div class="skeleton-bg absolute inset-0"></div>
-                            <!-- [需替換]: 三重一村地圖網址 -->
-                            <img src="https://placehold.co/400x300/e5d5b5/7c343d?text=Map" alt="三重一村地圖" onload="this.classList.add('loaded')">
+                            <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 800 x 600，說明: 三重一村空照地圖 -->
+                            <img src="https://placehold.co/400x300/e5d5b5/7c343d?text=Map" alt="三重一村地圖" onload="this.parentElement.querySelector('.skeleton-bg').classList.add('hidden'); this.classList.add('loaded')">
                         </div>
                     </div>
-                    <!-- 當前任務區塊 -->
                     <div class="level-card p-6 text-center shadow-lg bg-[#fcfaf5] border-t-4">
-                        <div class="text-sm font-bold text-[#5c4738] mb-2 text-blend">下一步，請前往</div>
-                        <div class="text-2xl font-black text-[#7c343d] mb-6 tracking-widest text-blend">《 <span id="main-active-title"></span> 》</div>
+                        <div class="text-sm font-bold text-[#3d2a1b] mb-2">下一步，請前往</div>
+                        <div class="text-2xl font-black text-[#6a2932] mb-6 tracking-widest">《 <span id="main-active-title"></span> 》</div>
                         <button id="btn-goto-current" class="w-full py-4 primary-btn font-black text-xl tracking-widest">
                             拆開任務信封
                         </button>
@@ -191,78 +182,68 @@
                 </div>
 
                 <!-- LEVEL 1: 防砲陣地 -->
-                <div id="screen-level-1" class="screen-panel hidden absolute inset-0 p-5 flex flex-col space-y-6">
+                <div id="screen-level-1" class="screen-panel hidden p-5 flex flex-col space-y-6">
                     <div class="level-card p-5 space-y-5">
-                        <h2 class="text-xl text-[#7c343d] font-black text-center border-b-2 border-[#5c4738] pb-3 text-blend font-serif">任務一：陣地巡查</h2>
-                        <p class="text-sm font-bold text-[#5c4738] text-center mb-2">點擊完成定點打卡（可重複查看指示）</p>
+                        <h2 class="text-xl text-[#6a2932] font-black text-center border-b-2 border-[#3d2a1b] pb-3 font-serif">任務一：陣地巡查</h2>
+                        <p class="text-sm font-bold text-[#3d2a1b] text-center mb-2">點擊完成定點打卡（可重複查看指示）</p>
                         <div class="grid grid-cols-2 gap-4" id="l1-locations-grid">
-                            <button class="l1-loc-btn military-btn py-5 text-base font-black flex flex-col items-center justify-center" data-idx="0"><i class="fa-solid fa-map-pin mb-2 text-[#7c343d] text-xl"></i>通氣孔</button>
-                            <button class="l1-loc-btn military-btn py-5 text-base font-black flex flex-col items-center justify-center" data-idx="1"><i class="fa-solid fa-map-pin mb-2 text-[#7c343d] text-xl"></i>包砲建屋</button>
-                            <button class="l1-loc-btn military-btn py-5 text-base font-black flex flex-col items-center justify-center" data-idx="2"><i class="fa-solid fa-map-pin mb-2 text-[#7c343d] text-xl"></i>砲座遺跡</button>
-                            <button class="l1-loc-btn military-btn py-5 text-base font-black flex flex-col items-center justify-center" data-idx="3"><i class="fa-solid fa-map-pin mb-2 text-[#7c343d] text-xl"></i>預備門數</button>
+                            <button class="l1-loc-btn military-btn py-5 text-base font-black flex flex-col items-center justify-center" data-idx="0"><i class="fa-solid fa-map-pin mb-2 text-[#6a2932] text-xl"></i>通氣孔</button>
+                            <button class="l1-loc-btn military-btn py-5 text-base font-black flex flex-col items-center justify-center" data-idx="1"><i class="fa-solid fa-map-pin mb-2 text-[#6a2932] text-xl"></i>包砲建屋</button>
+                            <button class="l1-loc-btn military-btn py-5 text-base font-black flex flex-col items-center justify-center" data-idx="2"><i class="fa-solid fa-map-pin mb-2 text-[#6a2932] text-xl"></i>砲座遺跡</button>
+                            <button class="l1-loc-btn military-btn py-5 text-base font-black flex flex-col items-center justify-center" data-idx="3"><i class="fa-solid fa-map-pin mb-2 text-[#6a2932] text-xl"></i>預備門數</button>
                         </div>
                     </div>
                     <div class="level-card p-5 space-y-5 relative">
-                        <div id="l1-keypad-overlay" class="absolute inset-0 bg-[#e6dfcc]/80 backdrop-blur-[2px] z-20 flex items-center justify-center transition-opacity">
-                            <div class="bg-[#2b1f16] text-[#e5d5b5] text-base font-bold px-6 py-4 rounded-sm shadow-xl border-2 border-[#e5d5b5]">機密鎖定：請先完成巡查</div>
+                        <div id="l1-keypad-overlay" class="absolute inset-0 bg-[#e6dfcc]/90 backdrop-blur-[2px] z-20 flex items-center justify-center transition-opacity">
+                            <div class="bg-[#1a110a] text-[#e5d5b5] text-base font-bold px-6 py-4 rounded-sm shadow-xl border-2 border-[#e5d5b5]">機密鎖定：請先完成巡查</div>
                         </div>
-                        <h2 class="text-xl text-[#7c343d] font-black text-center border-b-2 border-[#5c4738] pb-3 relative z-10 text-blend font-serif">任務二：終戰年份密碼</h2>
+                        <h2 class="text-xl text-[#6a2932] font-black text-center border-b-2 border-[#3d2a1b] pb-3 relative z-10 font-serif">任務二：終戰年份密碼</h2>
                         <div id="l1-code-container" class="grid grid-cols-4 gap-3 max-w-[260px] mx-auto mt-4 relative z-10">
-                            <div class="code-box h-16 flex items-center justify-center text-3xl font-black font-mono text-[#7c343d]"></div><div class="code-box h-16 flex items-center justify-center text-3xl font-black font-mono text-[#7c343d]"></div><div class="code-box h-16 flex items-center justify-center text-3xl font-black font-mono text-[#7c343d]"></div><div class="code-box h-16 flex items-center justify-center text-3xl font-black font-mono text-[#7c343d]"></div>
+                            <div class="code-box h-16 flex items-center justify-center text-3xl font-black font-mono text-[#6a2932]"></div><div class="code-box h-16 flex items-center justify-center text-3xl font-black font-mono text-[#6a2932]"></div><div class="code-box h-16 flex items-center justify-center text-3xl font-black font-mono text-[#6a2932]"></div><div class="code-box h-16 flex items-center justify-center text-3xl font-black font-mono text-[#6a2932]"></div>
                         </div>
                         <div class="grid grid-cols-3 gap-3 text-center pt-4 max-w-[280px] mx-auto relative z-10">
                             <button class="l1-key military-btn py-4 text-2xl font-mono font-black" data-val="1">1</button><button class="l1-key military-btn py-4 text-2xl font-mono font-black" data-val="2">2</button><button class="l1-key military-btn py-4 text-2xl font-mono font-black" data-val="3">3</button><button class="l1-key military-btn py-4 text-2xl font-mono font-black" data-val="4">4</button><button class="l1-key military-btn py-4 text-2xl font-mono font-black" data-val="5">5</button><button class="l1-key military-btn py-4 text-2xl font-mono font-black" data-val="6">6</button><button class="l1-key military-btn py-4 text-2xl font-mono font-black" data-val="7">7</button><button class="l1-key military-btn py-4 text-2xl font-mono font-black" data-val="8">8</button><button class="l1-key military-btn py-4 text-2xl font-mono font-black" data-val="9">9</button>
-                            <button id="l1-btn-del" class="military-btn py-4 text-2xl font-black text-[#7c343d]"><i class="fa-solid fa-delete-left"></i></button><button class="l1-key military-btn py-4 text-2xl font-mono font-black" data-val="0">0</button><button id="l1-btn-submit" class="military-btn py-4 text-2xl font-black text-emerald-800"><i class="fa-solid fa-check"></i></button>
+                            <button id="l1-btn-del" class="military-btn py-4 text-2xl font-black text-[#6a2932]"><i class="fa-solid fa-delete-left"></i></button><button class="l1-key military-btn py-4 text-2xl font-mono font-black" data-val="0">0</button><button id="l1-btn-submit" class="military-btn py-4 text-2xl font-black text-emerald-800"><i class="fa-solid fa-check"></i></button>
                         </div>
                     </div>
                 </div>
 
                 <!-- LEVEL 2: 眷村眷舍 -->
-                <div id="screen-level-2" class="screen-panel hidden absolute inset-0 p-5 flex flex-col space-y-5">
+                <div id="screen-level-2" class="screen-panel hidden p-5 flex flex-col space-y-5">
                     <div class="level-card l2 p-6 flex-1 flex flex-col relative">
-                        <!-- 上一題與題號 -->
                         <div class="text-center mb-6 shrink-0 relative flex justify-between items-center border-b-2 border-dashed border-[#047857]/40 pb-4">
-                            <button onclick="prevL2Question()" class="text-[#047857] font-bold px-3 py-1 bg-[#e0f2e9] border border-[#047857] rounded-sm hidden shadow-[2px_2px_0_#047857] active:translate-y-px active:translate-x-px" id="btn-l2-prev"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button onclick="prevL2Question()" class="military-btn text-[#047857] px-3 py-1 bg-[#e0f2e9] border-[#047857] hidden shadow-[2px_2px_0_#047857] flex items-center justify-center" id="btn-l2-prev"><i class="fa-solid fa-chevron-left"></i></button>
                             <span class="px-4 py-2 bg-[#e0f2e9] border-2 border-[#047857] rounded-sm text-sm font-black text-[#047857] shadow-[2px_2px_0_#047857] mx-auto" id="l2-q-counter">測驗 1 / 5</span>
                         </div>
-                        
-                        <!-- 拍照需求區域 -->
                         <div id="l2-photo-section" class="hidden bg-[#e0f2e9] p-5 rounded-sm border-2 border-dashed border-[#047857] mb-6 text-center shrink-0">
-                            <p id="l2-photo-req-text" class="text-sm font-bold text-[#064e3b] mb-4 text-blend"></p>
+                            <p id="l2-photo-req-text" class="text-sm font-bold text-[#064e3b] mb-4"></p>
                             <label for="l2-camera-input" class="w-full py-4 bg-[#047857] border-2 border-[#064e3b] text-[#fdfbf7] shadow-[4px_4px_0_#064e3b] font-black text-lg flex items-center justify-center space-x-2 cursor-pointer transition active:translate-y-1 active:translate-x-1 active:shadow-[1px_1px_0_#064e3b]">
                                 <i id="l2-cam-icon" class="fa-solid fa-camera-retro text-xl"></i><span>啟動相機取證</span>
                             </label>
                             <input type="file" accept="image/*" capture="environment" id="l2-camera-input" class="hidden">
                         </div>
-                        
-                        <!-- 題目文字 -->
-                        <div id="l2-question-text" class="text-lg font-bold leading-[1.8] mb-8 whitespace-pre-line text-[#2b1f16] shrink-0 text-justify text-blend"></div>
-                        
-                        <!-- 選項容器 -->
+                        <div id="l2-question-text" class="text-lg font-bold leading-[1.8] mb-8 whitespace-pre-line text-[#1a110a] shrink-0 text-justify"></div>
                         <div id="l2-options-container" class="space-y-4 flex-1 flex flex-col justify-end pb-4"></div>
                     </div>
                 </div>
 
                 <!-- LEVEL 3: 村長的家 -->
-                <div id="screen-level-3" class="screen-panel hidden absolute inset-0 p-5 flex flex-col space-y-5">
-                    <!-- 拍照任務 -->
+                <div id="screen-level-3" class="screen-panel hidden p-5 flex flex-col space-y-5">
                     <div id="l3-photo-section" class="level-card l3 p-8 text-center flex flex-col justify-center flex-1">
                         <div class="vintage-photo w-48 h-48 mx-auto mb-8 flex items-center justify-center">
-                            <i class="fa-solid fa-house-chimney text-6xl text-[#5c4738] opacity-50"></i>
+                            <i class="fa-solid fa-house-chimney text-6xl text-[#3d2a1b] opacity-50"></i>
                         </div>
-                        <p class="text-xl font-bold leading-[1.8] text-[#2b1f16] mb-8 text-blend">請先拍攝現場「村長的家」作為調查記錄，以解鎖眷村味覺檔案。</p>
+                        <p class="text-xl font-bold leading-[1.8] text-[#1a110a] mb-8">請先拍攝現場「村長的家」作為調查記錄，以解鎖眷村味覺檔案。</p>
                         <label for="l3-camera-input" class="w-full py-5 bg-[#a04b1e] border-2 border-[#5c2a10] text-white shadow-[4px_4px_0_#5c2a10] font-black text-xl flex items-center justify-center space-x-3 cursor-pointer transition active:translate-y-1 active:translate-x-1 active:shadow-[1px_1px_0_#5c2a10]">
                             <i id="l3-cam-icon" class="fa-solid fa-camera-retro text-2xl"></i><span>拍攝村長的家</span>
                         </label>
                         <input type="file" accept="image/*" capture="environment" id="l3-camera-input" class="hidden">
                     </div>
                     
-                    <!-- 問答與收音機 -->
                     <div id="l3-qa-section" class="hidden flex-1 flex flex-col">
                         <div class="level-card l3 p-6 flex-1 flex flex-col relative">
-                            <!-- 上一題與題號 -->
                             <div class="text-center mb-6 shrink-0 relative flex justify-between items-center border-b-2 border-dashed border-[#a04b1e]/40 pb-4">
-                                <button onclick="prevL3Question()" class="text-[#a04b1e] font-bold px-3 py-1 bg-[#f5f0e8] border border-[#a04b1e] rounded-sm hidden shadow-[2px_2px_0_#a04b1e] active:translate-y-px active:translate-x-px" id="btn-l3-prev"><i class="fa-solid fa-chevron-left"></i></button>
+                                <button onclick="prevL3Question()" class="military-btn text-[#a04b1e] px-3 py-1 bg-[#f5f0e8] border-[#a04b1e] hidden shadow-[2px_2px_0_#a04b1e] flex items-center justify-center" id="btn-l3-prev"><i class="fa-solid fa-chevron-left"></i></button>
                                 <span class="px-4 py-2 bg-[#f5f0e8] border-2 border-[#a04b1e] rounded-sm text-sm font-black text-[#a04b1e] shadow-[2px_2px_0_#a04b1e] mx-auto" id="l3-q-counter"></span>
                             </div>
                             
@@ -270,111 +251,107 @@
                                 ⚠ 點擊播放收音機，聆聽線索解鎖檔案
                             </div>
                             <div class="mt-8 flex flex-col items-center justify-center shrink-0 mb-8 relative">
-                                <button id="l3-btn-voice" class="w-28 h-28 bg-[#d8c8a7] border-4 border-[#5c4738] rounded-full text-[#5c4738] flex items-center justify-center shadow-[0_8px_0_#5c4738] transition-transform active:translate-y-2 active:shadow-[0_0px_0_#5c4738]">
+                                <button id="l3-btn-voice" class="w-28 h-28 bg-[#d8c8a7] border-4 border-[#3d2a1b] rounded-full text-[#3d2a1b] flex items-center justify-center shadow-[0_8px_0_#3d2a1b] transition-transform active:translate-y-2 active:shadow-[0_0px_0_#3d2a1b]">
                                     <i id="l3-voice-icon" class="fa-solid fa-radio text-5xl"></i>
                                 </button>
                                 <audio id="l3-audio-player" class="hidden"></audio>
                             </div>
-                            <p id="l3-question-text" class="text-xl font-black text-center leading-[1.8] mb-8 text-[#2b1f16] text-blend font-serif"></p>
+                            <p id="l3-question-text" class="text-xl font-black text-center leading-[1.8] mb-8 text-[#1a110a] font-serif"></p>
                             <div id="l3-options-container" class="space-y-4 flex-1 flex flex-col justify-end pb-4"></div>
                         </div>
                     </div>
                 </div>
 
                 <!-- LEVEL 4: 榕樹廣場 -->
-                <div id="screen-level-4" class="screen-panel hidden absolute inset-0 p-5 flex flex-col">
-                    <!-- Page 1 (Intro) -->
+                <div id="screen-level-4" class="screen-panel hidden p-5 flex flex-col">
                     <div id="l4-p1" class="level-card p-8 flex flex-col justify-center min-h-full">
-                        <div class="text-lg leading-[1.8] font-bold text-[#2b1f16] text-justify flex-1 text-blend font-serif flex flex-col justify-center">
+                        <div class="text-lg leading-[1.8] font-bold text-[#1a110a] text-justify flex-1 font-serif flex flex-col justify-center">
                             <p>大時代的動盪，讓無數家庭在戰亂中遷徙來台。窄小的屋舍、悶熱的夏日，讓鄰居們習慣搬著竹椅聚在村子裡的巨大榕樹下乘涼、聊家常。</p>
-                            <div class="text-center my-6 text-[#5c4738] opacity-60 tracking-[0.5em] text-sm">··· ✦ ···</div>
+                            <div class="text-center my-6 text-[#3d2a1b] opacity-60 tracking-[0.5em] text-sm">··· ✦ ···</div>
                             <p>對我們而言，這棵老榕樹下的廣場不只是公共客廳，更是凝聚所有人情感、度過童年時光的避風港。<br><br>今天，請跟著我們一起走入這座充滿人情味的榕樹廣場，回到那段克難卻溫暖的歲月。</p>
                         </div>
                         <button class="w-full py-4 primary-btn font-black text-xl mt-6 tracking-widest" onclick="transitionSubPage(4, 1, 2)">展開圖鑑</button>
                     </div>
-                    <!-- Page 2 (人物圖鑑 2x2 四宮格) -->
                     <div id="l4-p2" class="hidden flex-col min-h-full">
                         <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(4, 2, 1)" class="military-btn py-2 px-3"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-2xl pr-12 text-blend font-serif">人物圖鑑</h2>
+                            <button onclick="transitionSubPage(4, 2, 1)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-2xl pr-[44px] font-serif">人物圖鑑</h2>
                         </div>
                         <div class="grid grid-cols-2 gap-4 flex-1">
                             <div class="char-card-grid">
-                                <!-- [需替換]: L4人物 奶奶 圖片網址 -->
+                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 200，說明: 奶奶角色圖 -->
                                 <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2">
-                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandma" alt="奶奶" onload="this.classList.add('loaded')">
+                                    <img src="https://placehold.co/200/e5d5b5/7c343d?text=Grandma" alt="奶奶" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
                                 </div>
                                 <div class="p-3 text-xs flex-1 flex flex-col text-center">
-                                    <b class="text-sm text-[#7c343d] mb-1 text-blend">奶奶 (60歲)</b>
-                                    <span class="text-[#5c4738] text-[10px] mb-2 border-b border-dashed border-[#5c4738]/30 pb-1">碎花上衣/蒲扇</span>
-                                    <span class="font-bold leading-[1.5] text-[#2b1f16] text-blend">負責歷史講解與關卡互動。</span>
+                                    <b class="text-sm text-[#6a2932] mb-1">奶奶 (60歲)</b>
+                                    <span class="text-[#3d2a1b] text-[10px] mb-2 border-b border-dashed border-[#3d2a1b]/30 pb-1">碎花上衣/蒲扇</span>
+                                    <span class="font-bold leading-[1.5] text-[#1a110a]">負責歷史講解與關卡互動。</span>
                                 </div>
                             </div>
                             <div class="char-card-grid">
-                                <!-- [需替換]: L4人物 媽媽翠芳 圖片網址 -->
+                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 200，說明: 媽媽角色圖 -->
                                 <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2">
-                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Mom" alt="媽媽翠芳" onload="this.classList.add('loaded')">
+                                    <img src="https://placehold.co/200/e5d5b5/7c343d?text=Mom" alt="媽媽翠芳" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
                                 </div>
                                 <div class="p-3 text-xs flex-1 flex flex-col text-center">
-                                    <b class="text-sm text-[#7c343d] mb-1 text-blend">媽媽・翠芳</b>
-                                    <span class="text-[#5c4738] text-[10px] mb-2 border-b border-dashed border-[#5c4738]/30 pb-1">旗袍/高跟鞋</span>
-                                    <span class="font-bold leading-[1.5] text-[#2b1f16] text-blend">負責開場串場，引導團聚。</span>
+                                    <b class="text-sm text-[#6a2932] mb-1">媽媽・翠芳</b>
+                                    <span class="text-[#3d2a1b] text-[10px] mb-2 border-b border-dashed border-[#3d2a1b]/30 pb-1">旗袍/高跟鞋</span>
+                                    <span class="font-bold leading-[1.5] text-[#1a110a]">負責開場串場，引導團聚。</span>
                                 </div>
                             </div>
                             <div class="char-card-grid">
-                                <!-- [需替換]: L4人物 中學生 圖片網址 -->
+                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 200，說明: 中學生角色圖 -->
                                 <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2">
-                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Student" alt="中學生" onload="this.classList.add('loaded')">
+                                    <img src="https://placehold.co/200/e5d5b5/7c343d?text=Student" alt="中學生" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
                                 </div>
                                 <div class="p-3 text-xs flex-1 flex flex-col text-center">
-                                    <b class="text-sm text-[#7c343d] mb-1 text-blend">中學生</b>
-                                    <span class="text-[#5c4738] text-[10px] mb-2 border-b border-dashed border-[#5c4738]/30 pb-1">制服/軍綠包</span>
-                                    <span class="font-bold leading-[1.5] text-[#2b1f16] text-blend">帶領進行「編繩子」關卡。</span>
+                                    <b class="text-sm text-[#6a2932] mb-1">中學生</b>
+                                    <span class="text-[#3d2a1b] text-[10px] mb-2 border-b border-dashed border-[#3d2a1b]/30 pb-1">制服/軍綠包</span>
+                                    <span class="font-bold leading-[1.5] text-[#1a110a]">帶領進行「編繩子」關卡。</span>
                                 </div>
                             </div>
                             <div class="char-card-grid">
-                                <!-- [需替換]: L4人物 小孩 圖片網址 -->
+                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 200，說明: 兒童角色圖 -->
                                 <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2">
-                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Kid" alt="小孩" onload="this.classList.add('loaded')">
+                                    <img src="https://placehold.co/200/e5d5b5/7c343d?text=Kid" alt="小孩" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
                                 </div>
                                 <div class="p-3 text-xs flex-1 flex flex-col text-center">
-                                    <b class="text-sm text-[#7c343d] mb-1 text-blend">在地兒童</b>
-                                    <span class="text-[#5c4738] text-[10px] mb-2 border-b border-dashed border-[#5c4738]/30 pb-1">黃帽/直笛</span>
-                                    <span class="font-bold leading-[1.5] text-[#2b1f16] text-blend">邀請跳橡皮筋繩融入生活。</span>
+                                    <b class="text-sm text-[#6a2932] mb-1">在地兒童</b>
+                                    <span class="text-[#3d2a1b] text-[10px] mb-2 border-b border-dashed border-[#3d2a1b]/30 pb-1">黃帽/直笛</span>
+                                    <span class="font-bold leading-[1.5] text-[#1a110a]">邀請跳橡皮筋繩融入生活。</span>
                                 </div>
                             </div>
                         </div>
                         <button class="w-full py-4 primary-btn font-black text-xl mt-6 tracking-widest" onclick="transitionSubPage(4, 2, 3)">查看指引</button>
                     </div>
-                    <!-- Page 3 -->
                     <div id="l4-p3" class="hidden flex-col min-h-full">
                         <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(4, 3, 2)" class="military-btn py-2 px-3"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-2xl pr-12 text-blend font-serif">活動指引</h2>
+                            <button onclick="transitionSubPage(4, 3, 2)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-2xl pr-[44px] font-serif">活動指引</h2>
                         </div>
                         <div class="level-card p-8 flex-1 flex flex-col justify-center">
-                            <p class="mb-6 text-lg font-bold text-[#2b1f16] text-blend font-serif">歡迎來到榕樹廣場！在接下來的活動中，你們將扮演眷村裡的鄰家小孩。</p>
-                            <ul class="list-disc pl-5 space-y-5 text-base font-bold text-[#2b1f16] text-justify leading-[1.8] text-blend">
+                            <p class="mb-6 text-lg font-bold text-[#1a110a] font-serif">歡迎來到榕樹廣場！在接下來的活動中，你們將扮演眷村裡的鄰家小孩。</p>
+                            <ul class="list-disc pl-5 space-y-5 text-base font-bold text-[#1a110a] text-justify leading-[1.8]">
                                 <li><b>活動體驗：</b>現場將準備瓜子與水果讓大家邊吃邊聊，並有編繩子、跳繩、猜字謎等復古互動。</li>
                                 <li><b>注意事項：</b>請放輕鬆，跟著 NPC 的引導融入情境。一起幫忙照顧身邊的「鄰居」們！</li>
                             </ul>
                         </div>
                         <button class="w-full py-4 primary-btn font-black text-xl mt-6 tracking-widest" onclick="transitionSubPage(4, 3, 4)">進入測驗</button>
                     </div>
-                    <!-- Page 4 -->
                     <div id="l4-p4" class="hidden flex-col min-h-full">
                         <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(4, 4, 3)" class="military-btn py-2 px-3"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-2xl pr-12 text-blend font-serif">知識測驗</h2>
+                            <button onclick="transitionSubPage(4, 4, 3)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-2xl pr-[44px] font-serif">知識測驗</h2>
                         </div>
                         <div class="level-card p-6 space-y-8 flex-1 flex flex-col justify-center bg-[#fcfaf5]">
                             <div class="space-y-4">
-                                <label class="text-lg font-bold text-[#2b1f16] block text-blend font-serif" id="l4-q1-label"></label>
-                                <select id="l4-q1" class="w-full bg-[#fdfbf7] border-2 border-[#5c4738] rounded-sm p-4 text-base font-bold text-[#7c343d] shadow-[4px_4px_0_#5c4738] outline-none"></select>
+                                <label class="text-lg font-bold text-[#1a110a] block font-serif" id="l4-q1-label"></label>
+                                <select id="l4-q1" class="w-full bg-[#fdfbf7] border-2 border-[#3d2a1b] rounded-sm p-4 text-base font-bold text-[#6a2932] shadow-[4px_4px_0_#3d2a1b] outline-none text-black"></select>
                             </div>
                             <div class="space-y-4">
-                                <label class="text-lg font-bold text-[#2b1f16] block text-blend font-serif" id="l4-q2-label"></label>
-                                <select id="l4-q2" class="w-full bg-[#fdfbf7] border-2 border-[#5c4738] rounded-sm p-4 text-base font-bold text-[#7c343d] shadow-[4px_4px_0_#5c4738] outline-none"></select>
+                                <label class="text-lg font-bold text-[#1a110a] block font-serif" id="l4-q2-label"></label>
+                                <select id="l4-q2" class="w-full bg-[#fdfbf7] border-2 border-[#3d2a1b] rounded-sm p-4 text-base font-bold text-[#6a2932] shadow-[4px_4px_0_#3d2a1b] outline-none text-black"></select>
                             </div>
                             <button id="l4-btn-verify" class="w-full py-4 primary-btn font-black text-xl mt-8 tracking-widest"><i class="fa-solid fa-stamp mr-2"></i>提交檔案</button>
                         </div>
@@ -382,72 +359,69 @@
                 </div>
 
                 <!-- LEVEL 5: 群星之夜 -->
-                <div id="screen-level-5" class="screen-panel hidden absolute inset-0 p-5 flex flex-col">
-                    <!-- Page 1 (Intro) -->
+                <div id="screen-level-5" class="screen-panel hidden p-5 flex flex-col">
                     <div id="l5-p1" class="level-card p-8 flex flex-col justify-center min-h-full">
-                        <div class="text-lg leading-[1.8] font-bold text-[#2b1f16] text-justify flex-1 text-blend font-serif flex flex-col justify-center">
-                            <p class="text-center text-[#7c343d] text-2xl mb-6 font-black border-b-2 border-dashed border-[#5c4738] pb-4">黃金娛樂時光</p>
+                        <div class="text-lg leading-[1.8] font-bold text-[#1a110a] text-justify flex-1 font-serif flex flex-col justify-center">
+                            <p class="text-center text-[#6a2932] text-2xl mb-6 font-black border-b-2 border-dashed border-[#3d2a1b] pb-4">黃金娛樂時光</p>
                             <p>當黑膠唱片旋轉、霓虹燈光閃爍，空氣中流淌著老歌與電影的熟悉旋律。這裡不只是歷史的記憶，更是我們今晚一同尋找青春與鄉愁的舞台。</p>
-                            <div class="text-center my-6 text-[#5c4738] opacity-60 tracking-[0.5em] text-sm">··· ✦ ···</div>
+                            <div class="text-center my-6 text-[#3d2a1b] opacity-60 tracking-[0.5em] text-sm">··· ✦ ···</div>
                             <p>1950至1980年代，三重天台廣場曾是北台灣最繁華的娛樂地標，歌廳、戲院、夜總會林立。第一代外省移民在眷村裡，用歌聲撫平離鄉背井的鄉愁。</p>
                             <p class="mt-4">今晚，我們將透過一場「接歌挑戰」，帶領大家走入這段熱鬧又帶點感傷的青春歲月。</p>
                         </div>
                         <button class="w-full py-4 primary-btn font-black text-xl mt-6 tracking-widest" onclick="transitionSubPage(5, 1, 2)">查閱群星</button>
                     </div>
-                    <!-- Page 2 -->
                     <div id="l5-p2" class="hidden flex-col min-h-full">
                         <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(5, 2, 1)" class="military-btn py-2 px-3"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-2xl pr-12 text-blend font-serif">群星圖鑑</h2>
+                            <button onclick="transitionSubPage(5, 2, 1)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-2xl pr-[44px] font-serif">群星圖鑑</h2>
                         </div>
                         <div class="grid grid-cols-2 gap-4 flex-1 content-start">
                             <div class="char-card-grid">
-                                <!-- [需替換]: L5歌手 紫薇 圖片網址 -->
-                                <div class="char-img-box skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2 aspect-[4/5]"><img src="https://placehold.co/200/e5d5b5/7c343d?text=Singer+1" onload="this.classList.add('loaded')"></div>
+                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 250，說明: 歌手紫薇 -->
+                                <div class="char-img-box skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2 aspect-[4/5]"><img src="https://placehold.co/200/e5d5b5/7c343d?text=Singer+1" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                 <div class="p-3 text-xs flex-1 flex flex-col text-center">
-                                    <b class="text-sm text-[#7c343d] mb-1 text-blend">紫薇</b>
-                                    <span class="text-[10px] text-[#5c4738] mb-2 border-b border-dashed border-[#5c4738]/30 pb-1">國語歌壇大姊大</span>
-                                    <span class="font-bold flex-1 leading-[1.5] text-blend">《綠島小夜曲》—撫慰移民。</span>
+                                    <b class="text-sm text-[#6a2932] mb-1">紫薇</b>
+                                    <span class="text-[10px] text-[#3d2a1b] mb-2 border-b border-dashed border-[#3d2a1b]/30 pb-1">國語歌壇大姊大</span>
+                                    <span class="font-bold flex-1 leading-[1.5]">《綠島小夜曲》—撫慰移民。</span>
                                 </div>
                             </div>
                             <div class="char-card-grid">
-                                <!-- [需替換]: L5歌手 潘安邦 圖片網址 -->
-                                <div class="char-img-box skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2 aspect-[4/5]"><img src="https://placehold.co/200/e5d5b5/7c343d?text=Singer+2" onload="this.classList.add('loaded')"></div>
+                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 250，說明: 歌手潘安邦 -->
+                                <div class="char-img-box skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2 aspect-[4/5]"><img src="https://placehold.co/200/e5d5b5/7c343d?text=Singer+2" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                 <div class="p-3 text-xs flex-1 flex flex-col text-center">
-                                    <b class="text-sm text-[#7c343d] mb-1 text-blend">潘安邦</b>
-                                    <span class="text-[10px] text-[#5c4738] mb-2 border-b border-dashed border-[#5c4738]/30 pb-1">軍歌王子</span>
-                                    <span class="font-bold flex-1 leading-[1.5] text-blend">《外婆的澎湖灣》—訴說眷村。</span>
+                                    <b class="text-sm text-[#6a2932] mb-1">潘安邦</b>
+                                    <span class="text-[10px] text-[#3d2a1b] mb-2 border-b border-dashed border-[#3d2a1b]/30 pb-1">軍歌王子</span>
+                                    <span class="font-bold flex-1 leading-[1.5]">《外婆的澎湖灣》—訴說眷村。</span>
                                 </div>
                             </div>
                             <div class="char-card-grid">
-                                <!-- [需替換]: L5歌手 鄧麗君 圖片網址 -->
-                                <div class="char-img-box skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2 aspect-[4/5]"><img src="https://placehold.co/200/e5d5b5/7c343d?text=Singer+3" onload="this.classList.add('loaded')"></div>
+                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 250，說明: 歌手鄧麗君 -->
+                                <div class="char-img-box skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2 aspect-[4/5]"><img src="https://placehold.co/200/e5d5b5/7c343d?text=Singer+3" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                 <div class="p-3 text-xs flex-1 flex flex-col text-center">
-                                    <b class="text-sm text-[#7c343d] mb-1 text-blend">鄧麗君</b>
-                                    <span class="text-[10px] text-[#5c4738] mb-2 border-b border-dashed border-[#5c4738]/30 pb-1">時代巨星</span>
-                                    <span class="font-bold flex-1 leading-[1.5] text-blend">《月亮代表我的心》—串起情感。</span>
+                                    <b class="text-sm text-[#6a2932] mb-1">鄧麗君</b>
+                                    <span class="text-[10px] text-[#3d2a1b] mb-2 border-b border-dashed border-[#3d2a1b]/30 pb-1">時代巨星</span>
+                                    <span class="font-bold flex-1 leading-[1.5]">《月亮代表我的心》—串起情感。</span>
                                 </div>
                             </div>
                             <div class="char-card-grid">
-                                <!-- [需替換]: L5歌手 羅大佑 圖片網址 -->
-                                <div class="char-img-box skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2 aspect-[4/5]"><img src="https://placehold.co/200/e5d5b5/7c343d?text=Singer+4" onload="this.classList.add('loaded')"></div>
+                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 250，說明: 歌手羅大佑 -->
+                                <div class="char-img-box skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2 aspect-[4/5]"><img src="https://placehold.co/200/e5d5b5/7c343d?text=Singer+4" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                 <div class="p-3 text-xs flex-1 flex flex-col text-center">
-                                    <b class="text-sm text-[#7c343d] mb-1 text-blend">羅大佑</b>
-                                    <span class="text-[10px] text-[#5c4738] mb-2 border-b border-dashed border-[#5c4738]/30 pb-1">時代創作者</span>
-                                    <span class="font-bold flex-1 leading-[1.5] text-blend">《光陰的故事》—懷念過往。</span>
+                                    <b class="text-sm text-[#6a2932] mb-1">羅大佑</b>
+                                    <span class="text-[10px] text-[#3d2a1b] mb-2 border-b border-dashed border-[#3d2a1b]/30 pb-1">時代創作者</span>
+                                    <span class="font-bold flex-1 leading-[1.5]">《光陰的故事》—懷念過往。</span>
                                 </div>
                             </div>
                         </div>
                         <button class="w-full py-4 primary-btn font-black text-xl mt-6 tracking-widest" onclick="transitionSubPage(5, 2, 3)">查看規則</button>
                     </div>
-                    <!-- Page 3 -->
                     <div id="l5-p3" class="hidden flex-col min-h-full">
                         <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(5, 3, 2)" class="military-btn py-2 px-3"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-2xl pr-12 text-blend font-serif">遊戲規則</h2>
+                            <button onclick="transitionSubPage(5, 3, 2)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-2xl pr-[44px] font-serif">遊戲規則</h2>
                         </div>
                         <div class="level-card p-8 flex-1 flex flex-col justify-center">
-                            <ol class="list-decimal pl-5 space-y-6 text-lg font-bold text-[#2b1f16] text-justify leading-[1.8] text-blend font-serif">
+                            <ol class="list-decimal pl-5 space-y-6 text-lg font-bold text-[#1a110a] text-justify leading-[1.8] font-serif">
                                 <li><b>接歌挑戰：</b>關主將隨機播放眷村年代的老歌。</li>
                                 <li><b>搶答接唱：</b>當音樂播到副歌突然暫停時，請接唱下一句或哼出大致旋律。</li>
                                 <li><b>求助機制：</b>不會唱也沒關係！可以向現場其他玩家「求助」，互相幫助。</li>
@@ -456,119 +430,117 @@
                         </div>
                         <button class="w-full py-4 primary-btn font-black text-xl mt-6 tracking-widest" onclick="transitionSubPage(5, 3, 4)">輸入密碼</button>
                     </div>
-                    <!-- Page 4 -->
                     <div id="l5-p4" class="hidden flex-col min-h-full">
                         <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(5, 4, 3)" class="military-btn py-2 px-3"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-2xl pr-12 text-blend font-serif">通關密語</h2>
+                            <button onclick="transitionSubPage(5, 4, 3)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-2xl pr-[44px] font-serif">通關密語</h2>
                         </div>
                         <div class="level-card p-6 flex-1 flex flex-col justify-center">
-                            <p class="text-lg font-bold text-[#5c4738] mb-6 text-center text-blend font-serif">請輸入現場獲取的三位數密碼</p>
+                            <p class="text-lg font-bold text-[#3d2a1b] mb-6 text-center font-serif">請輸入現場獲取的三位數密碼</p>
                             <div id="l5-code-container" class="grid grid-cols-3 gap-4 max-w-[240px] mx-auto mt-2">
-                                <div class="code-box h-20 flex items-center justify-center text-5xl font-black font-mono text-[#7c343d]"></div>
-                                <div class="code-box h-20 flex items-center justify-center text-5xl font-black font-mono text-[#7c343d]"></div>
-                                <div class="code-box h-20 flex items-center justify-center text-5xl font-black font-mono text-[#7c343d]"></div>
+                                <div class="code-box h-20 flex items-center justify-center text-5xl font-black font-mono text-[#6a2932]"></div>
+                                <div class="code-box h-20 flex items-center justify-center text-5xl font-black font-mono text-[#6a2932]"></div>
+                                <div class="code-box h-20 flex items-center justify-center text-5xl font-black font-mono text-[#6a2932]"></div>
                             </div>
                             <div class="grid grid-cols-3 gap-4 pt-10 max-w-[280px] mx-auto w-full">
                                 <button class="l5-key military-btn py-5 text-3xl font-mono font-black" data-val="1">1</button><button class="l5-key military-btn py-5 text-3xl font-mono font-black" data-val="2">2</button><button class="l5-key military-btn py-5 text-3xl font-mono font-black" data-val="3">3</button><button class="l5-key military-btn py-5 text-3xl font-mono font-black" data-val="4">4</button><button class="l5-key military-btn py-5 text-3xl font-mono font-black" data-val="5">5</button><button class="l5-key military-btn py-5 text-3xl font-mono font-black" data-val="6">6</button><button class="l5-key military-btn py-5 text-3xl font-mono font-black" data-val="7">7</button><button class="l5-key military-btn py-5 text-3xl font-mono font-black" data-val="8">8</button><button class="l5-key military-btn py-5 text-3xl font-mono font-black" data-val="9">9</button>
-                                <button id="l5-btn-del" class="military-btn py-5 text-2xl font-black text-[#7c343d]"><i class="fa-solid fa-delete-left"></i></button><button class="l5-key military-btn py-5 text-3xl font-mono font-black" data-val="0">0</button><button id="l5-btn-submit" class="military-btn py-5 text-2xl font-black text-emerald-800"><i class="fa-solid fa-check"></i></button>
+                                <button id="l5-btn-del" class="military-btn py-5 text-2xl font-black text-[#6a2932]"><i class="fa-solid fa-delete-left"></i></button><button class="l5-key military-btn py-5 text-3xl font-mono font-black" data-val="0">0</button><button id="l5-btn-submit" class="military-btn py-5 text-2xl font-black text-emerald-800"><i class="fa-solid fa-check"></i></button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- LEVEL 6: 時光膠囊 -->
-                <div id="screen-level-6" class="screen-panel hidden absolute inset-0 p-5 flex flex-col">
-                    <!-- Page 1 (Intro) -->
+                <div id="screen-level-6" class="screen-panel hidden p-5 flex flex-col">
                     <div id="l6-p1" class="level-card p-8 flex flex-col justify-center min-h-full">
-                        <div class="text-lg leading-[1.8] font-bold text-[#2b1f16] text-justify flex-1 text-blend font-serif flex flex-col justify-center">
-                            <h2 class="text-2xl font-black text-[#7c343d] mb-6 text-center border-b-2 border-dashed border-[#5c4738] pb-4">時光膠囊</h2>
+                        <div class="text-lg leading-[1.8] font-bold text-[#1a110a] text-justify flex-1 font-serif flex flex-col justify-center">
+                            <h2 class="text-2xl font-black text-[#6a2932] mb-6 text-center border-b-2 border-dashed border-[#3d2a1b] pb-4">時光膠囊</h2>
                             <p>這裡曾是充滿人情味與時代記憶的眷村。在物資缺乏的年代裡，空氣中總是飄著淡淡的花香，街頭巷尾也流淌著動人的歌聲。</p>
-                            <div class="text-center my-6 text-[#5c4738] opacity-60 tracking-[0.5em] text-sm">··· ✦ ···</div>
+                            <div class="text-center my-6 text-[#3d2a1b] opacity-60 tracking-[0.5em] text-sm">··· ✦ ···</div>
                             <p>今天，我們將跟著老居民奶奶的腳步，打開珍藏多年的木盒，一起找回三重過去被遺忘的產業與溫暖回憶。</p>
                         </div>
                         <button class="w-full py-4 primary-btn font-black text-xl mt-6 tracking-widest" onclick="transitionSubPage(6, 1, 2)">認識角色</button>
                     </div>
-                    <!-- Page 2 (人物 - 改為左圖右文) -->
                     <div id="l6-p2" class="hidden flex-col min-h-full">
                         <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(6, 2, 1)" class="military-btn py-2 px-3"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-2xl pr-12 text-blend font-serif">角色介紹</h2>
+                            <button onclick="transitionSubPage(6, 2, 1)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-2xl pr-[44px] font-serif">角色介紹</h2>
                         </div>
                         <div class="flex-1 flex flex-col space-y-4 min-h-0">
                             <div class="char-card-flex flex-1">
-                                <!-- [需替換]: L6人物 奶奶 圖片網址 -->
-                                <div class="char-img-box w-1/3 shrink-0 border-r-2 border-[#5c4738] skeleton-bg">
-                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandma" alt="奶奶" onload="this.classList.add('loaded')" class="w-full h-full object-cover">
+                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 200，說明: 奶奶角色圖 (L6) -->
+                                <div class="char-img-box w-1/3 shrink-0 border-r-2 border-[#3d2a1b] skeleton-bg relative">
+                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandma" alt="奶奶" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
                                 </div>
-                                <div class="p-4 text-[#2b1f16] flex-1 flex flex-col justify-center bg-[#fdfbf7]">
-                                    <b class="text-lg text-[#7c343d] mb-2 border-b border-dashed border-[#5c4738]/30 pb-1 text-blend">奶奶 (NPC)</b>
-                                    <span class="font-bold text-sm leading-[1.6] text-justify text-blend">三重一村老居民，負責帶出過去產業與回憶。</span>
-                                </div>
-                            </div>
-                            <div class="char-card-flex flex-1">
-                                <!-- [需替換]: L6人物 孫子 圖片網址 -->
-                                <div class="char-img-box w-1/3 shrink-0 border-r-2 border-[#5c4738] skeleton-bg">
-                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandson" alt="孫子" onload="this.classList.add('loaded')" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-4 text-[#2b1f16] flex-1 flex flex-col justify-center bg-[#fdfbf7]">
-                                    <b class="text-lg text-[#7c343d] mb-2 border-b border-dashed border-[#5c4738]/30 pb-1 text-blend">孫子 (NPC)</b>
-                                    <span class="font-bold text-sm leading-[1.6] text-justify text-blend">參與遊戲，陪大家討論帶氣氛。</span>
+                                <div class="p-4 text-[#1a110a] flex-1 flex flex-col justify-center bg-[#fdfbf7]">
+                                    <b class="text-lg text-[#6a2932] mb-2 border-b border-dashed border-[#3d2a1b]/30 pb-1">奶奶 (NPC)</b>
+                                    <span class="font-bold text-sm leading-[1.6] text-justify">三重一村老居民，負責帶出過去產業與回憶。</span>
                                 </div>
                             </div>
                             <div class="char-card-flex flex-1">
-                                <div class="char-img-box w-1/3 shrink-0 border-r-2 border-[#5c4738] text-5xl text-[#7c343d] opacity-50 bg-[#e6dfcc]">
+                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 200，說明: 孫子角色圖 -->
+                                <div class="char-img-box w-1/3 shrink-0 border-r-2 border-[#3d2a1b] skeleton-bg relative">
+                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandson" alt="孫子" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
+                                </div>
+                                <div class="p-4 text-[#1a110a] flex-1 flex flex-col justify-center bg-[#fdfbf7]">
+                                    <b class="text-lg text-[#6a2932] mb-2 border-b border-dashed border-[#3d2a1b]/30 pb-1">孫子 (NPC)</b>
+                                    <span class="font-bold text-sm leading-[1.6] text-justify">參與遊戲，陪大家討論帶氣氛。</span>
+                                </div>
+                            </div>
+                            <div class="char-card-flex flex-1">
+                                <div class="char-img-box w-1/3 shrink-0 border-r-2 border-[#3d2a1b] text-5xl text-[#6a2932] opacity-50 bg-[#e6dfcc]">
                                     <i class="fa-solid fa-user-astronaut"></i>
                                 </div>
-                                <div class="p-4 text-[#2b1f16] flex-1 flex flex-col justify-center bg-[#fdfbf7]">
-                                    <b class="text-lg text-[#7c343d] mb-2 border-b border-dashed border-[#5c4738]/30 pb-1 text-blend">遊客 (你)</b>
-                                    <span class="font-bold text-sm leading-[1.6] text-justify text-blend">本次闖關者，跟著奶奶認識花香與歌聲。</span>
+                                <div class="p-4 text-[#1a110a] flex-1 flex flex-col justify-center bg-[#fdfbf7]">
+                                    <b class="text-lg text-[#6a2932] mb-2 border-b border-dashed border-[#3d2a1b]/30 pb-1">遊客 (你)</b>
+                                    <span class="font-bold text-sm leading-[1.6] text-justify">本次闖關者，跟著奶奶認識花香與歌聲。</span>
                                 </div>
                             </div>
                         </div>
                         <button class="w-full py-4 primary-btn font-black text-xl mt-6 tracking-widest" onclick="transitionSubPage(6, 2, 3)">進入調查</button>
                     </div>
-                    <!-- Page 3 -->
+                    <!-- 3. 「藏在花露水裡的花」六宮格重構為 2欄位並增加高度 -->
                     <div id="l6-p3" class="hidden flex-col min-h-full">
                         <div class="flex items-center mb-4">
-                            <button onclick="transitionSubPage(6, 3, 2)" class="military-btn py-2 px-3"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-xl pr-12 text-blend font-serif">藏在花露水裡的花</h2>
+                            <button onclick="transitionSubPage(6, 3, 2)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-xl pr-[44px] font-serif">藏在花露水裡的花</h2>
                         </div>
-                        <div class="level-card p-4 flex-1 flex flex-col">
-                            <p class="text-sm font-bold bg-[#fdfbf7] p-3 rounded-sm border-2 border-[#5c4738] mb-4 shrink-0 text-justify leading-relaxed text-blend">奶奶：「桌上有瓶明星花露水，裡面藏著哪些花香？畫面上有六種花，找的只有兩種，快從中把它們找出來吧！」</p>
-                            <div class="grid grid-cols-3 gap-3 flex-1 items-center min-h-0" id="flower-grid">
-                                <div class="flower-card flex flex-col h-full border-2 border-[#5c4738] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#5c4738] transition active:scale-95" onclick="toggleFlower(this, '玫瑰')">
-                                    <!-- [需替換]: 花朵 玫瑰 圖片網址 -->
-                                    <div class="flex-1 bg-rose-50 flex items-center justify-center relative skeleton-bg"><img src="https://placehold.co/200x200/ffdddd/990000?text=Rose" class="absolute inset-0 w-full h-full object-cover" onload="this.classList.add('loaded')"></div>
-                                    <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-[#7c343d] shrink-0 border-t-2 border-[#5c4738]">玫瑰</div>
+                        <div class="level-card p-4 flex-1 flex flex-col overflow-y-auto">
+                            <p class="text-sm font-bold bg-[#fdfbf7] p-3 rounded-sm border-2 border-[#3d2a1b] mb-4 shrink-0 text-justify leading-relaxed">奶奶：「桌上有瓶明星花露水，裡面藏著哪些花香？畫面上有六種花，找的只有兩種，快從中把它們找出來吧！」</p>
+                            <!-- 變更為 2欄位 -->
+                            <div class="grid grid-cols-2 gap-4 flex-1 items-stretch min-h-0 pb-4" id="flower-grid">
+                                <div class="flower-card flex flex-col border-2 border-[#3d2a1b] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#3d2a1b] transition active:scale-95" onclick="toggleFlower(this, '玫瑰')">
+                                    <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 300 x 300，說明: 玫瑰花圖片 -->
+                                    <div class="bg-rose-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="https://placehold.co/200x200/ffdddd/990000?text=Rose" class="absolute inset-0 w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
+                                    <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-[#6a2932] shrink-0 border-t-2 border-[#3d2a1b]">玫瑰</div>
                                 </div>
-                                <div class="flower-card flex flex-col h-full border-2 border-[#5c4738] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#5c4738] transition active:scale-95" onclick="toggleFlower(this, '茉莉')">
-                                    <!-- [需替換]: 花朵 茉莉 圖片網址 -->
-                                    <div class="flex-1 bg-stone-50 flex items-center justify-center relative skeleton-bg"><img src="https://placehold.co/200x200/f0f0f0/333333?text=Jasmine" class="absolute inset-0 w-full h-full object-cover" onload="this.classList.add('loaded')"></div>
-                                    <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-stone-900 shrink-0 border-t-2 border-[#5c4738]">茉莉</div>
+                                <div class="flower-card flex flex-col border-2 border-[#3d2a1b] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#3d2a1b] transition active:scale-95" onclick="toggleFlower(this, '茉莉')">
+                                    <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 300 x 300，說明: 茉莉花圖片 -->
+                                    <div class="bg-stone-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="https://placehold.co/200x200/f0f0f0/333333?text=Jasmine" class="absolute inset-0 w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
+                                    <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-stone-900 shrink-0 border-t-2 border-[#3d2a1b]">茉莉</div>
                                 </div>
-                                <div class="flower-card flex flex-col h-full border-2 border-[#5c4738] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#5c4738] transition active:scale-95" onclick="toggleFlower(this, '秀英花')">
-                                    <!-- [需替換]: 花朵 秀英花 圖片網址 -->
-                                    <div class="flex-1 bg-orange-50 flex items-center justify-center relative skeleton-bg"><img src="https://placehold.co/200x200/ffeecc/cc6600?text=Flower" class="absolute inset-0 w-full h-full object-cover" onload="this.classList.add('loaded')"></div>
-                                    <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-orange-900 shrink-0 border-t-2 border-[#5c4738]">秀英花</div>
+                                <div class="flower-card flex flex-col border-2 border-[#3d2a1b] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#3d2a1b] transition active:scale-95" onclick="toggleFlower(this, '秀英花')">
+                                    <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 300 x 300，說明: 秀英花圖片 -->
+                                    <div class="bg-orange-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="https://placehold.co/200x200/ffeecc/cc6600?text=Flower" class="absolute inset-0 w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
+                                    <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-orange-900 shrink-0 border-t-2 border-[#3d2a1b]">秀英花</div>
                                 </div>
-                                <div class="flower-card flex flex-col h-full border-2 border-[#5c4738] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#5c4738] transition active:scale-95" onclick="toggleFlower(this, '桂花')">
-                                    <!-- [需替換]: 花朵 桂花 圖片網址 -->
-                                    <div class="flex-1 bg-yellow-50 flex items-center justify-center relative skeleton-bg"><img src="https://placehold.co/200x200/ffffcc/aa8800?text=Osmanthus" class="absolute inset-0 w-full h-full object-cover" onload="this.classList.add('loaded')"></div>
-                                    <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-yellow-900 shrink-0 border-t-2 border-[#5c4738]">桂花</div>
+                                <div class="flower-card flex flex-col border-2 border-[#3d2a1b] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#3d2a1b] transition active:scale-95" onclick="toggleFlower(this, '桂花')">
+                                    <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 300 x 300，說明: 桂花圖片 -->
+                                    <div class="bg-yellow-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="https://placehold.co/200x200/ffffcc/aa8800?text=Osmanthus" class="absolute inset-0 w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
+                                    <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-yellow-900 shrink-0 border-t-2 border-[#3d2a1b]">桂花</div>
                                 </div>
-                                <div class="flower-card flex flex-col h-full border-2 border-[#5c4738] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#5c4738] transition active:scale-95" onclick="toggleFlower(this, '梔子花')">
-                                    <!-- [需替換]: 花朵 梔子花 圖片網址 -->
-                                    <div class="flex-1 bg-neutral-50 flex items-center justify-center relative skeleton-bg"><img src="https://placehold.co/200x200/eeeeee/555555?text=Gardenia" class="absolute inset-0 w-full h-full object-cover" onload="this.classList.add('loaded')"></div>
-                                    <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-neutral-900 shrink-0 border-t-2 border-[#5c4738]">梔子花</div>
+                                <div class="flower-card flex flex-col border-2 border-[#3d2a1b] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#3d2a1b] transition active:scale-95" onclick="toggleFlower(this, '梔子花')">
+                                    <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 300 x 300，說明: 梔子花圖片 -->
+                                    <div class="bg-neutral-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="https://placehold.co/200x200/eeeeee/555555?text=Gardenia" class="absolute inset-0 w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
+                                    <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-neutral-900 shrink-0 border-t-2 border-[#3d2a1b]">梔子花</div>
                                 </div>
-                                <div class="flower-card flex flex-col h-full border-2 border-[#5c4738] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#5c4738] transition active:scale-95" onclick="toggleFlower(this, '玉蘭花')">
-                                    <!-- [需替換]: 花朵 玉蘭花 圖片網址 -->
-                                    <div class="flex-1 bg-pink-50 flex items-center justify-center relative skeleton-bg"><img src="https://placehold.co/200x200/ffe6ee/aa0055?text=Magnolia" class="absolute inset-0 w-full h-full object-cover" onload="this.classList.add('loaded')"></div>
-                                    <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-pink-900 shrink-0 border-t-2 border-[#5c4738]">玉蘭花</div>
+                                <div class="flower-card flex flex-col border-2 border-[#3d2a1b] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#3d2a1b] transition active:scale-95" onclick="toggleFlower(this, '玉蘭花')">
+                                    <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 300 x 300，說明: 玉蘭花圖片 -->
+                                    <div class="bg-pink-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="https://placehold.co/200x200/ffe6ee/aa0055?text=Magnolia" class="absolute inset-0 w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
+                                    <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-pink-900 shrink-0 border-t-2 border-[#3d2a1b]">玉蘭花</div>
                                 </div>
                             </div>
-                            <div class="flex justify-between mt-5 items-center shrink-0">
+                            <div class="flex justify-between mt-2 items-center shrink-0 pt-2 border-t-2 border-[#3d2a1b]/10">
                                 <div class="space-x-2 flex">
                                     <button class="military-btn text-sm px-4 py-3 font-bold" onclick="showL6Clue(1)">線索一</button>
                                     <button class="military-btn text-sm px-4 py-3 font-bold" onclick="showL6Clue(2)">線索二</button>
@@ -577,21 +549,20 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Page 4 -->
                     <div id="l6-p4" class="hidden flex-col min-h-full">
                         <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(6, 4, 3)" class="military-btn py-2 px-3"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#7c343d] text-2xl pr-12 text-blend font-serif">點播時代金曲</h2>
+                            <button onclick="transitionSubPage(6, 4, 3)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-2xl pr-[44px] font-serif">點播時代金曲</h2>
                         </div>
                         <div class="level-card p-6 flex-1 flex flex-col">
-                            <p class="text-base font-bold bg-[#fdfbf7] p-4 rounded-sm border-2 border-[#5c4738] mb-6 leading-relaxed text-justify text-blend">奶奶：「以前三重讓人記得的，可不只有花香，還有熱鬧的唱片產業。這裡準備了三首歌，選一首你現在最想聽的聽聽看吧！」</p>
+                            <p class="text-base font-bold bg-[#fdfbf7] p-4 rounded-sm border-2 border-[#3d2a1b] mb-6 leading-relaxed text-justify">奶奶：「以前三重讓人記得的，可不只有花香，還有熱鬧的唱片產業。這裡準備了三首歌，選一首你現在最想聽的聽聽看吧！」</p>
                             <div class="space-y-4" id="l6-songs-container"></div>
-                            <div id="l6-player" class="hidden mt-auto p-5 bg-[#fdfbf7] rounded-sm border-2 border-[#5c4738] text-center relative overflow-hidden shrink-0 shadow-[4px_4px_0_#5c4738]">
-                                <div class="text-xs font-bold text-[#5c4738] mb-2 animate-pulse"><i class="fa-solid fa-record-vinyl fa-spin mr-1"></i>現正播放</div>
-                                <div id="l6-song-title" class="text-xl font-black mb-2 text-[#7c343d] text-blend font-serif"></div>
-                                <p id="l6-lyrics" class="text-sm italic text-[#2b1f16] h-10 flex items-center justify-center font-bold text-blend"></p>
-                                <div class="w-full bg-[#e6dfcc] h-3 border-2 border-[#5c4738] mt-3 overflow-hidden rounded-full">
-                                    <div id="l6-progress" class="h-full w-0 transition-all duration-100 ease-linear bg-[#7c343d]"></div>
+                            <div id="l6-player" class="hidden mt-auto p-5 bg-[#fdfbf7] rounded-sm border-2 border-[#3d2a1b] text-center relative overflow-hidden shrink-0 shadow-[4px_4px_0_#3d2a1b]">
+                                <div class="text-xs font-bold text-[#3d2a1b] mb-2 animate-pulse"><i class="fa-solid fa-record-vinyl fa-spin mr-1"></i>現正播放</div>
+                                <div id="l6-song-title" class="text-xl font-black mb-2 text-[#6a2932] font-serif"></div>
+                                <p id="l6-lyrics" class="text-sm italic text-[#1a110a] h-10 flex items-center justify-center font-bold"></p>
+                                <div class="w-full bg-[#e6dfcc] h-3 border-2 border-[#3d2a1b] mt-3 overflow-hidden rounded-full">
+                                    <div id="l6-progress" class="h-full w-0 transition-all duration-100 ease-linear bg-[#6a2932]"></div>
                                 </div>
                                 <audio id="l6-audio-player" class="hidden"></audio>
                             </div>
@@ -600,9 +571,8 @@
                 </div>
 
                 <!-- LEVEL 7: 最後一封信 (Immersive Theater) -->
-                <div id="screen-level-7" class="screen-panel hidden absolute inset-0 flex flex-col">
-                    <!-- Page 1 -->
-                    <div id="l7-p1" class="level-card l7 p-8 flex flex-col justify-center min-h-full text-center relative z-10 m-5">
+                <div id="screen-level-7" class="screen-panel hidden p-5 flex flex-col">
+                    <div id="l7-p1" class="level-card l7 p-8 flex flex-col justify-center min-h-full text-center relative z-10 w-full h-full">
                         <h1 class="text-5xl font-black tracking-widest text-[#e5d5b5] mb-4 font-serif" style="text-shadow: 0 4px 15px rgba(0,0,0,0.9);">最後一封信</h1>
                         <p class="text-lg font-bold text-[#e5d5b5]/80 tracking-widest">最終關卡：沉浸式劇場</p>
                         <div class="bg-[#1a1515] p-6 border-2 border-dashed border-[#e5d5b5]/30 shadow-inner my-10">
@@ -612,11 +582,10 @@
                         </div>
                         <button class="w-full py-5 bg-[#e5d5b5] text-[#2b2626] border-2 border-[#1a1515] shadow-[6px_6px_0_#1a1515] font-black text-2xl transition active:translate-y-1 active:translate-x-1 active:shadow-[2px_2px_0_#1a1515]" onclick="transitionSubPage(7, 1, 2)">已到達 <i class="fa-solid fa-location-dot ml-2"></i></button>
                     </div>
-                    <!-- Page 2 -->
-                    <div id="l7-p2" class="hidden flex-col min-h-full p-5">
-                        <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(7, 2, 1)" class="bg-[#2b2626] border-2 border-[#e5d5b5] text-[#e5d5b5] shadow-[3px_3px_0_#e5d5b5] py-2 px-3 font-bold active:translate-y-px active:shadow-[1px_1px_0_#e5d5b5]"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#e5d5b5] text-2xl pr-12 font-serif">故事前言</h2>
+                    <div id="l7-p2" class="hidden flex-col min-h-full">
+                        <div class="flex items-center mb-6 shrink-0">
+                            <button onclick="transitionSubPage(7, 2, 1)" class="bg-[#2b2626] border-2 border-[#e5d5b5] text-[#e5d5b5] shadow-[3px_3px_0_#e5d5b5] py-2 px-3 font-bold active:translate-y-px active:shadow-[1px_1px_0_#e5d5b5] min-w-[44px] min-h-[44px] flex items-center justify-center"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#e5d5b5] text-2xl pr-[44px] font-serif">故事前言</h2>
                         </div>
                         <div class="level-card l7 p-8 flex-1 flex flex-col justify-center text-lg leading-[1.8] font-bold text-[#e5d5b5] text-justify font-serif">
                             <p>民國三十八年，三重空軍一村迎來了一群年輕的軍人與眷屬。紅磚牆瓦、巷弄交錯，這裡原本只是他們落腳的臨時停靠站，卻在時代的洪流中，成了一生落地生根的家。</p>
@@ -625,64 +594,62 @@
                             <div class="text-center my-6 text-[#e5d5b5] opacity-40 tracking-[0.5em] text-sm">··· ✦ ···</div>
                             <p>幾十年後的今天，當你們再次踏入這座村子，空氣中彷彿還留著當年的期盼與遺憾。在導覽員的帶領下，你們將作為時空的「穿越者與見證者」，協助留在民國50年代、獨自守候家園的妻子阿秀，找回那封遲到了半個世紀的信件，完成一場跨越時空的告別。</p>
                         </div>
-                        <button class="w-full py-4 mt-6 bg-[#e5d5b5] text-[#2b2626] border-2 border-[#1a1515] shadow-[4px_4px_0_#1a1515] font-black text-xl transition active:translate-y-1 active:shadow-[1px_1px_0_#1a1515]" onclick="transitionSubPage(7, 2, 3)">檢視圖鑑</button>
+                        <button class="w-full py-4 mt-6 bg-[#e5d5b5] text-[#2b2626] border-2 border-[#1a1515] shadow-[4px_4px_0_#1a1515] font-black text-xl transition active:translate-y-1 active:shadow-[1px_1px_0_#1a1515] shrink-0" onclick="transitionSubPage(7, 2, 3)">檢視圖鑑</button>
                     </div>
-                    <!-- Page 3 -->
-                    <div id="l7-p3" class="hidden flex-col min-h-full p-5">
-                        <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(7, 3, 2)" class="bg-[#2b2626] border-2 border-[#e5d5b5] text-[#e5d5b5] shadow-[3px_3px_0_#e5d5b5] py-2 px-3 font-bold active:translate-y-px active:shadow-[1px_1px_0_#e5d5b5]"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#e5d5b5] text-2xl pr-12 font-serif">人物圖鑑</h2>
+                    <div id="l7-p3" class="hidden flex-col min-h-full">
+                        <div class="flex items-center mb-6 shrink-0">
+                            <button onclick="transitionSubPage(7, 3, 2)" class="bg-[#2b2626] border-2 border-[#e5d5b5] text-[#e5d5b5] shadow-[3px_3px_0_#e5d5b5] py-2 px-3 font-bold active:translate-y-px active:shadow-[1px_1px_0_#e5d5b5] min-w-[44px] min-h-[44px] flex items-center justify-center"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-[#e5d5b5] text-2xl pr-[44px] font-serif">人物圖鑑</h2>
                         </div>
                         <div class="flex-1 flex flex-col space-y-4">
-                            <div class="flex-1 flex bg-[#3a3333] border-2 border-[#5c4738] p-5 items-center shadow-lg">
+                            <div class="flex-1 flex bg-[#3a3333] border-2 border-[#3d2a1b] p-5 items-center shadow-lg">
                                 <div class="text-base"><b class="text-xl text-[#e5d5b5] block mb-2 font-serif border-b border-dashed border-[#e5d5b5]/30 pb-1">玩家 (見證者)</b><span class="font-normal text-[#d6cebe] leading-[1.6]">劇情的推動者與歷史的見證者。穿梭於現代與五十年代之間，搜集線索、拼湊真相。</span></div>
                             </div>
-                            <div class="flex-1 flex bg-[#3a3333] border-2 border-[#5c4738] p-5 items-center shadow-lg">
+                            <div class="flex-1 flex bg-[#3a3333] border-2 border-[#3d2a1b] p-5 items-center shadow-lg">
                                 <div class="text-base"><b class="text-xl text-[#e5d5b5] block mb-2 font-serif border-b border-dashed border-[#e5d5b5]/30 pb-1">林志遠 (軍人)</b><span class="font-normal text-[#d6cebe] leading-[1.6]">深情、堅毅、富有責任感。對國家忠誠，對妻子懷抱無盡溫柔與歉疚。</span></div>
                             </div>
-                            <div class="flex-1 flex bg-[#3a3333] border-2 border-[#5c4738] p-5 items-center shadow-lg">
+                            <div class="flex-1 flex bg-[#3a3333] border-2 border-[#3d2a1b] p-5 items-center shadow-lg">
                                 <div class="text-base"><b class="text-xl text-[#e5d5b5] block mb-2 font-serif border-b border-dashed border-[#e5d5b5]/30 pb-1">阿秀 (軍人妻子)</b><span class="font-normal text-[#d6cebe] leading-[1.6]">外柔內剛、執著而深情。儘管歲月流逝，仍選擇獨自堅守紅磚瓦屋，等待丈夫歸來。</span></div>
                             </div>
-                            <div class="flex-1 flex bg-[#3a3333] border-2 border-[#5c4738] p-5 items-center shadow-lg">
+                            <div class="flex-1 flex bg-[#3a3333] border-2 border-[#3d2a1b] p-5 items-center shadow-lg">
                                 <div class="text-base"><b class="text-xl text-[#e5d5b5] block mb-2 font-serif border-b border-dashed border-[#e5d5b5]/30 pb-1">導覽員 (引導者)</b><span class="font-normal text-[#d6cebe] leading-[1.6]">帶領大家走入歷史現場、開啟時空序幕的關鍵人物。</span></div>
                             </div>
                         </div>
-                        <button class="w-full py-4 mt-6 bg-[#e5d5b5] text-[#2b2626] border-2 border-[#1a1515] shadow-[4px_4px_0_#1a1515] font-black text-xl transition active:translate-y-1 active:shadow-[1px_1px_0_#1a1515]" onclick="transitionSubPage(7, 3, 4)">準備出發</button>
+                        <button class="w-full py-4 mt-6 bg-[#e5d5b5] text-[#2b2626] border-2 border-[#1a1515] shadow-[4px_4px_0_#1a1515] font-black text-xl transition active:translate-y-1 active:shadow-[1px_1px_0_#1a1515] shrink-0" onclick="transitionSubPage(7, 3, 4)">準備出發</button>
                     </div>
-                    <!-- Page 4 -->
-                    <div id="l7-p4" class="hidden flex-col min-h-full p-5 text-center justify-center relative">
-                        <div class="flex items-center mb-8 absolute top-5 left-5 w-full">
-                            <button onclick="transitionSubPage(7, 4, 3)" class="bg-[#2b2626] border-2 border-[#e5d5b5] text-[#e5d5b5] shadow-[3px_3px_0_#e5d5b5] py-2 px-3 font-bold active:translate-y-px active:shadow-[1px_1px_0_#e5d5b5]"><i class="fa-solid fa-chevron-left"></i> 返回</button>
+                    <div id="l7-p4" class="hidden flex-col min-h-full text-center justify-center relative">
+                        <div class="flex items-center mb-8 absolute top-0 left-0 w-full z-20">
+                            <button onclick="transitionSubPage(7, 4, 3)" class="bg-[#2b2626] border-2 border-[#e5d5b5] text-[#e5d5b5] shadow-[3px_3px_0_#e5d5b5] px-4 py-3 font-bold active:translate-y-px active:shadow-[1px_1px_0_#e5d5b5] flex items-center justify-center space-x-2"><i class="fa-solid fa-chevron-left"></i> <span>返回</span></button>
                         </div>
-                        <div class="bg-[#1a1515] p-8 border-2 border-[#e5d5b5]/30 shadow-2xl mt-12">
+                        <div class="bg-[#1a1515] p-8 border-2 border-[#e5d5b5]/30 shadow-2xl mt-12 z-10 w-full">
                             <i class="fa-solid fa-door-open text-6xl text-[#e5d5b5] mb-8 opacity-80 drop-shadow-[0_0_10px_rgba(229,213,181,0.5)]"></i>
                             <p class="text-xl font-black text-[#e5d5b5] leading-[1.8] font-serif">
                                 準備好展開這段尋找記憶與承諾的旅程了嗎？<br><br>請保持好奇心，留意巷弄間的蛛絲馬跡，我們即將出發！
                             </p>
                         </div>
-                        <button class="w-full py-6 mt-12 bg-[#e5d5b5] text-[#2b2626] border-2 border-[#1a1515] shadow-[6px_6px_0_#1a1515] font-black text-2xl transition active:translate-y-1 active:translate-x-1 active:shadow-[2px_2px_0_#1a1515]" onclick="handleLevelSuccess(7)">
+                        <button class="w-full py-6 mt-12 bg-[#e5d5b5] text-[#2b2626] border-2 border-[#1a1515] shadow-[6px_6px_0_#1a1515] font-black text-2xl transition active:translate-y-1 active:translate-x-1 active:shadow-[2px_2px_0_#1a1515] z-10 shrink-0" onclick="handleLevelSuccess(7)">
                             已通關 <i class="fa-solid fa-check-circle ml-2"></i>
                         </button>
                     </div>
                 </div>
 
                 <!-- SCREEN: FINAL CERTIFICATE -->
-                <div id="screen-certificate" class="screen-panel hidden absolute inset-0 p-5 flex flex-col justify-center">
-                    <div class="level-card p-8 text-center shadow-2xl border-[6px] border-[#7c343d]">
-                        <div class="text-6xl text-[#7c343d] mb-6 drop-shadow-md"><i class="fa-solid fa-award"></i></div>
-                        <h2 class="text-3xl font-black text-[#2b1f16] tracking-widest mb-6 border-b-2 border-dashed border-[#5c4738]/50 pb-4 text-blend font-serif">結案憑證</h2>
+                <div id="screen-certificate" class="screen-panel hidden p-5 flex flex-col justify-center">
+                    <div class="level-card p-8 text-center shadow-2xl border-[6px] border-[#6a2932]">
+                        <div class="text-6xl text-[#6a2932] mb-6 drop-shadow-md"><i class="fa-solid fa-award"></i></div>
+                        <h2 class="text-3xl font-black text-[#1a110a] tracking-widest mb-6 border-b-2 border-dashed border-[#3d2a1b]/50 pb-4 font-serif">結案憑證</h2>
                         
-                        <div class="bg-[#fdfbf7] p-5 rounded-sm border-2 border-[#5c4738] text-base font-bold space-y-5 mb-8 text-left shadow-[4px_4px_0_#5c4738]">
-                            <div class="flex justify-between text-[#5c4738] border-b border-dashed border-[#5c4738]/30 pb-2"><span>時空座標：</span><span class="text-[#7c343d] font-black">三重空軍一村</span></div>
-                            <div class="flex justify-between text-[#5c4738] border-b border-dashed border-[#5c4738]/30 pb-2 items-center"><span>任務狀態：</span><span id="cert-status" class="text-emerald-700 font-black text-right"></span></div>
-                            <div class="flex justify-between text-[#5c4738] border-b border-dashed border-[#5c4738]/30 pb-2 items-center"><span>總耗費時間：</span><span id="cert-time" class="text-[#7c343d] font-mono font-black text-right"></span></div>
-                            <div class="flex justify-between text-[#5c4738] items-center pt-2"><span>結案評定：</span><span id="cert-rank" class="text-3xl font-black text-[#7c343d] text-right font-serif"></span></div>
+                        <div class="bg-[#fdfbf7] p-5 rounded-sm border-2 border-[#3d2a1b] text-base font-bold space-y-5 mb-8 text-left shadow-[4px_4px_0_#3d2a1b]">
+                            <div class="flex justify-between text-[#3d2a1b] border-b border-dashed border-[#3d2a1b]/30 pb-2"><span>時空座標：</span><span class="text-[#6a2932] font-black">三重空軍一村</span></div>
+                            <div class="flex justify-between text-[#3d2a1b] border-b border-dashed border-[#3d2a1b]/30 pb-2 items-center"><span>任務狀態：</span><span id="cert-status" class="text-emerald-700 font-black text-right"></span></div>
+                            <div class="flex justify-between text-[#3d2a1b] border-b border-dashed border-[#3d2a1b]/30 pb-2 items-center"><span>總耗費時間：</span><span id="cert-time" class="text-[#6a2932] font-mono font-black text-right"></span></div>
+                            <div class="flex justify-between text-[#3d2a1b] items-center pt-2"><span>結案評定：</span><span id="cert-rank" class="text-3xl font-black text-[#6a2932] text-right font-serif"></span></div>
                         </div>
                         
-                        <div id="cert-msg" class="text-lg font-bold text-[#2b1f16] leading-[1.8] mb-8 text-justify text-blend font-serif"></div>
+                        <div id="cert-msg" class="text-lg font-bold text-[#1a110a] leading-[1.8] mb-8 text-justify font-serif"></div>
                         
                         <div class="bg-amber-100 p-5 rounded-sm border-2 border-[#8a7251] text-base text-[#5c2a10] font-bold mb-8 text-left shadow-inner">
-                            <div class="flex items-center space-x-2 text-[#7c343d] mb-3 font-black text-lg border-b border-[#8a7251]/40 pb-2"><i class="fa-solid fa-gift"></i><span>兌獎引導</span></div>
+                            <div class="flex items-center space-x-2 text-[#6a2932] mb-3 font-black text-lg border-b border-[#8a7251]/40 pb-2"><i class="fa-solid fa-gift"></i><span>兌獎引導</span></div>
                             請「截圖保留」此認證畫面，並出示您獲得的【跨越時空的信】（點擊下方拼圖收集查看），前往起點服務台領取專屬獎勵！
                         </div>
 
@@ -694,27 +661,26 @@
         </div>
 
         <!-- 底部導覽列 -->
-        <div class="border-t-4 border-[#3a151b] p-3 text-base font-bold flex items-center justify-around text-[#2b1f16] bg-[#e6dfcc] z-30 absolute bottom-0 w-full left-0 pb-[env(safe-area-inset-bottom,12px)] shadow-[0_-4px_15px_rgba(0,0,0,0.2)]">
-            <button id="btn-nav-hq" class="hover:text-[#7c343d] transition flex items-center space-x-2 py-2 px-4 rounded-sm active:scale-95 border-2 border-transparent active:border-[#5c4738]"><i class="fa-solid fa-house"></i><span>回主畫面</span></button>
-            <span class="text-[#5c4738] opacity-50">|</span>
-            <button id="btn-nav-stamps" class="hover:text-[#7c343d] transition flex items-center space-x-2 py-2 px-4 rounded-sm text-[#7c343d] active:scale-95 border-2 border-transparent active:border-[#5c4738]" onclick="openStampsDrawer()"><i class="fa-solid fa-puzzle-piece"></i><span>拼圖收集</span></button>
+        <div class="border-t-4 border-[#291014] p-3 text-base font-bold flex items-center justify-around text-[#1a110a] bg-[#e6dfcc] z-30 absolute bottom-0 w-full left-0 pb-[calc(12px+env(safe-area-inset-bottom,12px))] shadow-[0_-4px_15px_rgba(0,0,0,0.2)]">
+            <button id="btn-nav-hq" class="hover:text-[#6a2932] transition flex items-center space-x-2 py-3 px-4 rounded-sm active:scale-95 border-2 border-transparent active:border-[#3d2a1b]"><i class="fa-solid fa-house"></i><span>回主畫面</span></button>
+            <span class="text-[#3d2a1b] opacity-50">|</span>
+            <button id="btn-nav-stamps" class="hover:text-[#6a2932] transition flex items-center space-x-2 py-3 px-4 rounded-sm text-[#6a2932] active:scale-95 border-2 border-transparent active:border-[#3d2a1b]" onclick="openStampsDrawer()"><i class="fa-solid fa-puzzle-piece"></i><span>拼圖收集</span></button>
         </div>
 
-        <!-- MODAL: ALERT (復古泛黃公文風格) -->
+        <!-- MODAL: ALERT -->
         <div id="modal-alert" class="fixed inset-0 bg-stone-900/80 z-[999] flex items-center justify-center p-6 hidden backdrop-blur-sm transition-opacity">
             <div class="vintage-paper p-8 rounded-sm max-w-[340px] w-full text-center space-y-5 shadow-[0_0_20px_rgba(0,0,0,0.5)] border-2 border-[#8a7251] flex flex-col relative">
-                <!-- 紅色印章裝飾 -->
-                <div class="absolute -right-3 -top-3 w-16 h-16 bg-[#7c343d] text-[#fdfbf7] rounded-full flex items-center justify-center font-black shadow-md border-2 border-[#5e262d] transform rotate-12 z-20 pointer-events-none opacity-90 border-dashed">
+                <div class="absolute -right-3 -top-3 w-16 h-16 bg-[#6a2932] text-[#fdfbf7] rounded-full flex items-center justify-center font-black shadow-md border-2 border-[#4a1c22] transform rotate-12 z-20 pointer-events-none opacity-90 border-dashed">
                     <i class="fa-solid fa-stamp text-2xl"></i>
                 </div>
                 
                 <div id="alert-icon" class="shrink-0 mb-2"></div>
-                <h3 id="alert-title" class="text-2xl font-black text-[#5c4738] shrink-0 border-b-2 border-dashed border-[#5c4738]/40 pb-3 font-serif text-blend">提示</h3>
+                <h3 id="alert-title" class="text-2xl font-black text-[#3d2a1b] shrink-0 border-b-2 border-dashed border-[#3d2a1b]/40 pb-3 font-serif">提示</h3>
                 <div class="py-2 text-center">
-                    <p id="alert-desc" class="text-lg text-[#2b1f16] font-bold leading-[1.8] whitespace-pre-line text-blend font-serif"></p>
+                    <p id="alert-desc" class="text-lg text-[#1a110a] font-bold leading-[1.8] whitespace-pre-line font-serif"></p>
                 </div>
                 <div class="pt-4 shrink-0" id="alert-btn-container">
-                    <button id="alert-btn" class="w-full py-4 bg-[#7c343d] text-[#fdfbf7] border-2 border-[#3a151b] font-black text-xl tracking-widest shadow-[4px_4px_0_#3a151b] transition-transform active:translate-y-1 active:translate-x-1 active:shadow-[1px_1px_0_#3a151b]">確認</button>
+                    <button id="alert-btn" class="w-full py-4 bg-[#6a2932] text-[#fdfbf7] border-2 border-[#291014] font-black text-xl tracking-widest shadow-[4px_4px_0_#291014] transition-transform active:translate-y-1 active:translate-x-1 active:shadow-[1px_1px_0_#291014]">確認</button>
                 </div>
             </div>
         </div>
@@ -724,19 +690,17 @@
             <div class="w-full max-w-[430px] bg-[#292524] border-t-4 border-[#8a7251] rounded-t-sm p-6 space-y-4 h-[85%] flex flex-col shadow-2xl relative pb-[env(safe-area-inset-bottom,20px)]">
                 <div class="flex justify-between items-center border-b-2 border-dashed border-stone-600 pb-4 shrink-0">
                     <h3 class="font-black text-[#e5d5b5] text-xl flex items-center space-x-3 font-serif"><i class="fa-solid fa-puzzle-piece text-yellow-500"></i><span>歷史碎片收納盒</span></h3>
-                    <button id="close-stamps" class="text-stone-400 hover:text-white p-2 active:scale-90 transition border-2 border-transparent active:border-stone-500 rounded-sm"><i class="fa-solid fa-xmark text-2xl"></i></button>
+                    <button id="close-stamps" class="text-stone-400 hover:text-white p-2 active:scale-90 transition border-2 border-transparent active:border-stone-500 rounded-sm min-w-[44px] min-h-[44px]"><i class="fa-solid fa-xmark text-2xl"></i></button>
                 </div>
                 <div class="flex-1 overflow-y-auto pt-2 flex flex-col items-center custom-scrollbar" style="-webkit-overflow-scrolling: touch;">
                     
-                    <!-- 拼圖主要版面 (使用 aspect-ratio: 4/3 完美適應 RWD) -->
                     <div id="puzzle-drawer-board" class="bg-black/40 rounded-sm overflow-hidden mt-4 shadow-inner border-2 border-stone-700">
                         <!-- 拼圖碎片將由 JS 動態生成 -->
                     </div>
                     
-                    <!-- 完整信件專屬按鈕 -->
                     <div id="full-letter-btn-container" class="hidden mt-8 text-center pb-8 border-t-2 border-dashed border-stone-700 pt-8 w-full">
                         <button onclick="openFullLetter()" class="w-full py-5 bg-[#e5d5b5] text-[#2b2626] font-black text-xl border-2 border-[#1a1515] shadow-[4px_4px_0_#1a1515] transition active:translate-y-1 active:translate-x-1 active:shadow-[1px_1px_0_#1a1515] font-serif tracking-widest">
-                            <i class="fa-solid fa-scroll mr-2 text-[#7c343d]"></i>閱讀《跨越時空的信》
+                            <i class="fa-solid fa-scroll mr-2 text-[#6a2932]"></i>閱讀《跨越時空的信》
                         </button>
                     </div>
                 </div>
@@ -746,11 +710,10 @@
         <!-- MODAL: FULL LETTER (完整破碎信件) -->
         <div id="modal-full-letter" class="fixed inset-0 bg-stone-900/95 backdrop-blur-lg z-[1000] flex items-center justify-center p-4 hidden transition-opacity">
             <div class="w-full max-w-[430px] flex flex-col items-center relative fade-in">
-                <button class="absolute -top-14 right-2 text-white/70 hover:text-white text-4xl active:scale-90 transition" onclick="closeFullLetter()"><i class="fa-solid fa-xmark"></i></button>
+                <button class="absolute -top-14 right-2 text-white/70 hover:text-white text-4xl active:scale-90 transition min-w-[44px] min-h-[44px]" onclick="closeFullLetter()"><i class="fa-solid fa-xmark"></i></button>
                 
                 <h3 class="text-center font-black text-3xl mb-8 text-[#e5d5b5] tracking-widest border-b-2 border-dashed border-[#e5d5b5]/40 pb-4 shrink-0 font-serif" style="text-shadow: 0 4px 6px rgba(0,0,0,0.8);">跨越時空的信</h3>
                 
-                <!-- 完整信件的拼圖版面 -->
                 <div id="full-letter-board" class="scale-105">
                     <!-- 完整的拼圖碎片將由 JS 動態生成 -->
                 </div>
@@ -803,7 +766,7 @@
                     { q: "請問語音中提到的料理是哪一道？", opts: ["山東煎餅", "韭菜盒子", "蔥油餅", "牛肉餡餅"], a: 1, desc: "韭菜盒子是常見北方家常麵食，適合家庭分享。" }
                 ],
                 audios: [
-                    // [需替換]: L3 音檔網址 (目前為測試音檔)
+                    // TODO: [音檔] 請替換此處音效路徑，觸發時機: 播放 L3 料理語音題目 1~5
                     "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
                     "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
                     "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
@@ -824,7 +787,7 @@
             },
             level6: {
                 songs: [
-                    // [需替換]: L6 歌曲音檔網址 (目前為測試音檔)
+                    // TODO: [音檔] 請替換此處音效路徑，觸發時機: L6 時代金曲點播
                     { title: "《安童哥買菜》", lyric: "安童哥仔囉，哩哩囉囉...", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3", desc: "劉福助｜曲風活潑、充滿生活感。" },
                     { title: "《相思河畔》", lyric: "自從相思河畔見了你...", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3", desc: "吳靜嫻｜氣氛浪漫、充滿復古情懷。" },
                     { title: "《鄉間的小路》", lyric: "走在鄉間的小路上...", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3", desc: "葉佳修｜帶有民歌時代的清新感。" }
@@ -841,17 +804,17 @@
             ],
             // 預載圖片清單
             preloadImages: [
-                // [需替換]: 在此放入所有真實的圖片網址，確保玩家不會看到破圖
+                // TODO: [圖片] 以下為需預先載入的圖片網址，確保使用者體驗流暢，替換為正式圖片
                 "https://placehold.co/400x300/e5d5b5/7c343d?text=Map",
-                "https://placehold.co/150/e5d5b5/7c343d?text=Grandma",
-                "https://placehold.co/150/e5d5b5/7c343d?text=Mom",
-                "https://placehold.co/150/e5d5b5/7c343d?text=Student",
-                "https://placehold.co/150/e5d5b5/7c343d?text=Kid",
+                "https://placehold.co/200/e5d5b5/7c343d?text=Grandma",
+                "https://placehold.co/200/e5d5b5/7c343d?text=Mom",
+                "https://placehold.co/200/e5d5b5/7c343d?text=Student",
+                "https://placehold.co/200/e5d5b5/7c343d?text=Kid",
                 "https://placehold.co/200/e5d5b5/7c343d?text=Singer+1",
                 "https://placehold.co/200/e5d5b5/7c343d?text=Singer+2",
                 "https://placehold.co/200/e5d5b5/7c343d?text=Singer+3",
                 "https://placehold.co/200/e5d5b5/7c343d?text=Singer+4",
-                "https://placehold.co/150/e5d5b5/7c343d?text=Grandson",
+                "https://placehold.co/200/e5d5b5/7c343d?text=Grandson",
                 "https://placehold.co/200x200/ffdddd/990000?text=Rose",
                 "https://placehold.co/200x200/f0f0f0/333333?text=Jasmine",
                 "https://placehold.co/200x200/ffeecc/cc6600?text=Flower",
@@ -870,9 +833,9 @@
                 teamName: null, startLevel: 3, customSequence: [3, 4, 5, 6, 1, 2, 7],
                 startTime: null, endTime: null, stamps: [false, false, false, false, false, false, false],
                 currentStageIndex: 0, soundEnabled: true,
-                l1Input: [], l1Collected: [false, false, false, false], l1Errors: 0, // 新增 l1Errors
+                l1Input: [], l1Collected: [false, false, false, false], l1Errors: 0,
                 l2Photos: [false, false, false, false, false], l2CurrentQ: 0,
-                l3PhotoDone: false, l3CurrentQ: 0, l5Input: [], l5Errors: 0 // 新增 l5Errors
+                l3PhotoDone: false, l3CurrentQ: 0, l5Input: [], l5Errors: 0
             };
             
             function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
@@ -898,7 +861,6 @@
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
         window.addEventListener('load', () => {
-            // 真實圖片預載邏輯
             const loader = document.getElementById('app-loader');
             const progressEl = document.getElementById('loader-progress');
             const images = GAME_DATA.preloadImages;
@@ -911,7 +873,6 @@
                 loader.style.opacity = '0';
                 setTimeout(() => loader.remove(), 600);
                 
-                // Initialize Game
                 if (GameState.init() && GameState.get('teamName')) {
                     if(globalTimerInterval) clearInterval(globalTimerInterval);
                     globalTimerInterval = setInterval(updateTimerDisplay, 1000); updateTimerDisplay();
@@ -923,7 +884,6 @@
                 }
             };
 
-            // 最多等待 3 秒，超時強制進入遊戲
             const timeout = setTimeout(finishLoading, 3000); 
 
             if(images.length === 0) finishLoading();
@@ -944,7 +904,6 @@
             }
         });
 
-        // 亂數洗牌 (Fisher-Yates)
         function shuffleArray(array) {
             let currentIndex = array.length, randomIndex;
             while (currentIndex !== 0) {
@@ -980,8 +939,7 @@
         // ==========================================
         // 5. UI HELPERS & TRANSITIONS
         // ==========================================
-        // 重構後的 Alert Modal
-        function showAlert(title, desc, iconClass = "", colorClass = "text-[#7c343d]", callback = null, btnText = "確認", autoCloseDelay = 0) {
+        function showAlert(title, desc, iconClass = "", colorClass = "text-[#6a2932]", callback = null, btnText = "確認", autoCloseDelay = 0) {
             document.getElementById('alert-title').textContent = title;
             document.getElementById('alert-desc').textContent = desc;
             const iconEl = document.getElementById('alert-icon');
@@ -991,7 +949,6 @@
             const btn = document.getElementById('alert-btn');
             const btnContainer = document.getElementById('alert-btn-container');
             
-            // 如果 btnText 為 false，隱藏按鈕（用於純提示過場）
             if (btnText === false) {
                 btnContainer.classList.add('hidden');
             } else {
@@ -1005,7 +962,6 @@
             
             document.getElementById('modal-alert').classList.remove('hidden');
             
-            // 假裝處理中的自動關閉邏輯
             if (autoCloseDelay > 0) {
                 setTimeout(() => {
                     document.getElementById('modal-alert').classList.add('hidden');
@@ -1028,7 +984,7 @@
             }
         }
 
-        // 滑順翻頁過場 (SubPages)
+        // 頁內子頁面切換 (改善切換防點擊失效)
         async function transitionSubPage(level, fromPage, toPage) {
             playBeep();
             const fromEl = document.getElementById(`l${level}-p${fromPage}`);
@@ -1037,13 +993,15 @@
             if(fromEl) {
                 fromEl.classList.remove('screen-active');
                 fromEl.classList.add('screen-exit');
+                fromEl.style.pointerEvents = 'none'; // 防止動畫過程中點擊
             }
             
-            await new Promise(r => setTimeout(r, 200)); // slightly faster for subpages
+            await new Promise(r => setTimeout(r, 200)); 
             
             if(fromEl) {
                 fromEl.classList.add('hidden');
                 fromEl.classList.remove('screen-exit');
+                fromEl.style.pointerEvents = 'auto';
             }
             if(toEl) {
                 toEl.classList.remove('hidden');
@@ -1055,7 +1013,7 @@
             document.getElementById('game-viewport').scrollTop = 0;
         }
 
-        // 滑順切換主畫面
+        // 大頁面切換
         async function showScreen(screenId) {
             stopAllMedia();
             const viewport = document.getElementById('game-viewport');
@@ -1065,13 +1023,14 @@
             if (currentActive && currentActive !== targetScreen) {
                 currentActive.classList.remove('screen-active');
                 currentActive.classList.add('screen-exit');
+                currentActive.style.pointerEvents = 'none';
                 
                 await new Promise(r => setTimeout(r, 300));
                 
                 currentActive.classList.add('hidden');
                 currentActive.classList.remove('screen-exit');
+                currentActive.style.pointerEvents = 'auto';
             } else {
-                // Initial load fallback
                 document.querySelectorAll('[id^="screen-"]').forEach(s => {
                     if(s !== targetScreen) s.classList.add('hidden');
                 });
@@ -1080,7 +1039,7 @@
             if (targetScreen) {
                 targetScreen.classList.remove('hidden');
                 targetScreen.classList.add('screen-enter');
-                void targetScreen.offsetWidth; // trigger reflow
+                void targetScreen.offsetWidth;
                 targetScreen.classList.remove('screen-enter');
                 targetScreen.classList.add('screen-active');
                 viewport.scrollTop = 0;
@@ -1089,7 +1048,6 @@
             document.getElementById('modal-stamps').classList.add('hidden');
             updateHeader(screenId);
 
-            // Execute specific render logic
             if (screenId === 'certificate') renderCertificate();
             if (screenId === 'main') renderMain();
             if (screenId === 'level-1') renderL1();
@@ -1103,7 +1061,6 @@
             updateStampBadgeCount();
         }
         
-        // 強制重置子頁面狀態
         function forceSubPageInit(level, targetPage, totalPages) {
             for(let i=1; i<=totalPages; i++) { 
                 const el = document.getElementById(`l${level}-p${i}`); 
@@ -1170,7 +1127,7 @@
                 }
                 btn.onclick = () => {
                     playBeep(600, 0.05); const loc = GAME_DATA.level1.locations[idx];
-                    showAlert(loc.title, `【查閱任務】\n${loc.task}\n\n【歷史檔案】\n${loc.desc}`, "fa-map-location-dot", "text-[#7c343d]", () => {
+                    showAlert(loc.title, `【查閱任務】\n${loc.task}\n\n【歷史檔案】\n${loc.desc}`, "fa-map-location-dot", "text-[#6a2932]", () => {
                         let c = GameState.get('l1Collected');
                         if(!c[idx]) { c[idx] = true; GameState.set('l1Collected', c); renderL1(); }
                     }, collected[idx] ? "關閉檔案" : "完成記錄");
@@ -1201,11 +1158,10 @@
                 GameState.set('l1Input', []);
                 updateL1Display();
                 
-                // 動態提示系統
                 if (errCount >= 4) {
                     showAlert("機密檔案調閱", GAME_DATA.level1.hints[1], "fa-lightbulb", "text-amber-600");
                 } else if (errCount >= 2) {
-                    showAlert("調查線索", GAME_DATA.level1.hints[0], "fa-magnifying-glass", "text-[#5c4738]");
+                    showAlert("調查線索", GAME_DATA.level1.hints[0], "fa-magnifying-glass", "text-[#3d2a1b]");
                 } else {
                     showAlert("密碼錯誤", "年份驗證失敗，請重新確認歷史檔案。", "fa-circle-xmark", "text-red-700");
                 }
@@ -1222,17 +1178,17 @@
             const icon = document.getElementById(iconId);
             icon.className = "fa-solid fa-gear fa-spin text-xl";
             
-            showAlert("相片顯影中", "奶奶正在戴上老花眼鏡檢查照片...", "fa-glasses", "text-[#5c4738]", () => {
+            showAlert("相片顯影中", "奶奶正在戴上老花眼鏡檢查照片...", "fa-glasses", "text-[#3d2a1b]", () => {
                 playSuccessSound();
                 icon.className = "fa-solid fa-camera-retro text-xl";
                 if(onSuccess) onSuccess();
-            }, false, 2000); // 2秒後自動關閉並回調
+            }, false, 2000); 
         }
 
         // --- LEVEL 2 ---
         document.getElementById('l2-camera-input').addEventListener('change', function(e) {
             if(this.files && this.files.length > 0) {
-                this.value = ''; // 重置 file input
+                this.value = '';
                 fakePhotoVerification(2, () => {
                     let photos = GameState.get('l2Photos');
                     photos[GameState.get('l2CurrentQ')] = true;
@@ -1247,8 +1203,7 @@
             const qData = GAME_DATA.level2.questions[currentQ];
             document.getElementById('l2-q-counter').textContent = `測驗 ${currentQ + 1} / 5`;
             
-            // 上一題邏輯
-            document.getElementById('btn-l2-prev').style.display = currentQ > 0 ? 'block' : 'none';
+            document.getElementById('btn-l2-prev').style.display = currentQ > 0 ? 'flex' : 'none';
             
             document.getElementById('l2-question-text').textContent = qData.q;
             
@@ -1265,7 +1220,7 @@
 
                 shuffledOptions.forEach((o) => {
                     const btn = document.createElement('button');
-                    btn.className = "opt-btn l2-opt font-serif text-lg tracking-wide";
+                    btn.className = "opt-btn font-serif text-lg tracking-wide";
                     btn.textContent = o.text;
                     btn.onclick = () => {
                         if(o.isCorrect) {
@@ -1276,7 +1231,7 @@
                             }, "下一題");
                         } else {
                             playErrorSound(); 
-                            showAlert("驗證失敗", "歷史記載與您的選擇不符，請再試一次。", "fa-xmark-circle", "text-[#7c343d]", null, "重新選擇");
+                            showAlert("驗證失敗", "歷史記載與您的選擇不符，請再試一次。", "fa-xmark-circle", "text-[#6a2932]", null, "重新選擇");
                         }
                     };
                     cont.appendChild(btn);
@@ -1318,8 +1273,7 @@
             if(!qData) return;
             document.getElementById('l3-q-counter').textContent = `菜單 ${currentQ + 1} / 5`;
             
-            // 上一題邏輯
-            document.getElementById('btn-l3-prev').style.display = currentQ > 0 ? 'block' : 'none';
+            document.getElementById('btn-l3-prev').style.display = currentQ > 0 ? 'flex' : 'none';
             
             document.getElementById('l3-question-text').textContent = qData.q;
             document.getElementById('l3-audio-hint').classList.remove('hidden');
@@ -1331,9 +1285,9 @@
 
             shuffledOptions.forEach((o) => {
                 const btn = document.createElement('button');
-                btn.className = "opt-btn l3-opt l3-opt-btn font-serif text-lg tracking-wide";
+                btn.className = "opt-btn l3-opt-btn font-serif text-lg tracking-wide";
                 btn.textContent = o.text;
-                btn.disabled = true; // 鎖定直到播放
+                btn.disabled = true;
                 btn.onclick = () => {
                     if(o.isCorrect) {
                         playSuccessSound(); 
@@ -1344,7 +1298,7 @@
                         }, "下一道料理");
                     } else {
                         playErrorSound(); 
-                        showAlert("品鑑錯誤", "味道似乎不對，請再試一次。", "fa-xmark-circle", "text-[#7c343d]", null, "重新選擇");
+                        showAlert("品鑑錯誤", "味道似乎不對，請再試一次。", "fa-xmark-circle", "text-[#6a2932]", null, "重新選擇");
                     }
                 };
                 cont.appendChild(btn);
@@ -1366,7 +1320,6 @@
             initAudio(); playBeep(); 
             icon.className = "fa-solid fa-gear fa-spin text-5xl"; btnVoice.disabled = true;
             
-            // 加入 5s 超時機制
             let isPlaying = false;
             let timeout = setTimeout(() => {
                 if (!isPlaying) {
@@ -1412,7 +1365,7 @@
         document.getElementById('l4-btn-verify').onclick = () => {
             const q1 = document.getElementById('l4-q1').value, q2 = document.getElementById('l4-q2').value;
             if(q1 === 'correct' && q2 === 'correct') handleLevelSuccess(4);
-            else { playErrorSound(); showAlert("檔案不符", "選擇有誤，請再試一次！", "fa-circle-xmark", "text-[#7c343d]"); }
+            else { playErrorSound(); showAlert("檔案不符", "選擇有誤，請再試一次！", "fa-circle-xmark", "text-[#6a2932]"); }
         };
 
         // --- LEVEL 5 ---
@@ -1435,13 +1388,12 @@
                 GameState.set('l5Input', []); 
                 updateL5Display();
                 
-                // 動態提示系統
                 if (errCount >= 4) {
                     showAlert("機密檔案調閱", GAME_DATA.level5.hints[1], "fa-lightbulb", "text-amber-600");
                 } else if (errCount >= 2) {
-                    showAlert("調查線索", GAME_DATA.level5.hints[0], "fa-magnifying-glass", "text-[#5c4738]");
+                    showAlert("調查線索", GAME_DATA.level5.hints[0], "fa-magnifying-glass", "text-[#3d2a1b]");
                 } else {
-                    showAlert("密碼錯誤", "通關密語錯誤！請重新確認。", "fa-circle-xmark", "text-[#7c343d]");
+                    showAlert("密碼錯誤", "通關密語錯誤！請重新確認。", "fa-circle-xmark", "text-[#6a2932]");
                 }
             }
         };
@@ -1454,17 +1406,17 @@
         let l6SelectedFlowers = [];
         function toggleFlower(el, fName) {
             playBeep();
-            if(el.classList.contains('ring-4')) { el.classList.remove('ring-4', 'ring-[#7c343d]'); l6SelectedFlowers = l6SelectedFlowers.filter(f => f !== fName); }
-            else { el.classList.add('ring-4', 'ring-[#7c343d]'); l6SelectedFlowers.push(fName); }
+            if(el.classList.contains('ring-4')) { el.classList.remove('ring-4', 'ring-[#6a2932]'); l6SelectedFlowers = l6SelectedFlowers.filter(f => f !== fName); }
+            else { el.classList.add('ring-4', 'ring-[#6a2932]'); l6SelectedFlowers.push(fName); }
         }
         function showL6Clue(num) {
             playBeep();
-            if(num===1) showAlert("檔案記錄一", "花瓣層層疊疊，枝條上常帶著刺，也經常被人們拿來代表愛情。（玫瑰）", "fa-seedling", "text-[#5c4738]");
-            else showAlert("檔案記錄二", "花朵小巧潔白，花瓣通常層層展開，夜晚時香氣尤其明顯，常被人們用來製茶與提取香氣。（茉莉）", "fa-seedling", "text-[#5c4738]");
+            if(num===1) showAlert("檔案記錄一", "花瓣層層疊疊，枝條上常帶著刺，也經常被人們拿來代表愛情。（玫瑰）", "fa-seedling", "text-[#3d2a1b]");
+            else showAlert("檔案記錄二", "花朵小巧潔白，花瓣通常層層展開，夜晚時香氣尤其明顯，常被人們用來製茶與提取香氣。（茉莉）", "fa-seedling", "text-[#3d2a1b]");
         }
         function verifyFlowers() {
             if(l6SelectedFlowers.length===2 && l6SelectedFlowers.includes('玫瑰') && l6SelectedFlowers.includes('茉莉')) { playSuccessSound(); showAlert("成分分析正確", "成功找出了隱藏的玫瑰與茉莉花香！前往下一階段。", "fa-flask", "text-[#047857]", () => transitionSubPage(6, 3, 4)); }
-            else { playErrorSound(); showAlert("成分錯誤", "請確認是否剛好選擇了正確的【兩種】花卉喔！", "fa-circle-xmark", "text-[#7c343d]"); }
+            else { playErrorSound(); showAlert("成分錯誤", "請確認是否剛好選擇了正確的【兩種】花卉喔！", "fa-circle-xmark", "text-[#6a2932]"); }
         }
         
         let l6SongInterval = null;
@@ -1474,7 +1426,7 @@
             GAME_DATA.level6.songs.forEach((song, idx) => {
                 const btn = document.createElement('button');
                 btn.className = "opt-btn flex justify-between items-center";
-                btn.innerHTML = `<div><div class="font-black text-lg text-[#7c343d] mb-1 font-serif text-blend">${song.title}</div><div class="text-xs text-[#5c4738] font-normal tracking-wide">${song.desc}</div></div><i class="fa-solid fa-play text-[#7c343d] text-xl opacity-60"></i>`;
+                btn.innerHTML = `<div><div class="font-black text-lg text-[#6a2932] mb-1 font-serif">${song.title}</div><div class="text-xs text-[#3d2a1b] font-normal tracking-wide">${song.desc}</div></div><i class="fa-solid fa-play text-[#6a2932] text-xl opacity-60"></i>`;
                 btn.onclick = () => {
                     if(!GameState.get('soundEnabled')) return showAlert("靜音鎖定", "請先開啟右上角的音量開關。");
                     if(l6SongInterval) { clearInterval(l6SongInterval); document.getElementById('l6-audio-player').pause(); } 
@@ -1494,7 +1446,7 @@
                         w+=2; prog.style.width = `${w}%`;
                         if(w>=100) { 
                             clearInterval(l6SongInterval); audioEl.pause(); 
-                            setTimeout(() => showAlert("點播完畢", "請至背景牆前將您的推薦詞貼上去與大家分享！", "fa-record-vinyl", "text-[#5c4738]", () => handleLevelSuccess(6)), 300); 
+                            setTimeout(() => showAlert("點播完畢", "請至背景牆前將您的推薦詞貼上去與大家分享！", "fa-record-vinyl", "text-[#3d2a1b]", () => handleLevelSuccess(6)), 300); 
                         }
                     }, 100);
                 };
@@ -1502,7 +1454,7 @@
             });
         }
 
-        // --- STAMPS DRAWER & PUZZLE (RWD Fixed) ---
+        // --- STAMPS DRAWER & PUZZLE ---
         function openStampsDrawer() {
             playBeep();
             renderPuzzlePieces('puzzle-drawer-board', false);
@@ -1627,7 +1579,7 @@
         }
 
         document.getElementById('btn-restart-game').onclick = () => {
-            showAlert("銷毀檔案", "確定要銷毀目前調閱檔案，重新開始嗎？所有的進度與拼圖都將重置。", "fa-triangle-exclamation", "text-[#7c343d]", () => {
+            showAlert("銷毀檔案", "確定要銷毀目前調閱檔案，重新開始嗎？所有的進度與拼圖都將重置。", "fa-triangle-exclamation", "text-[#6a2932]", () => {
                 GameState.reset();
             }, "確認銷毀");
         };
