@@ -17,10 +17,8 @@
         .paper-bg { background-color: #e6dfcc; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.08"/></svg>'); }
         .vintage-paper { background-color: #d8c8a7; background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.15"/></svg>'); box-shadow: inset 0 0 30px rgba(90, 60, 30, 0.4); }
         
-        /* 1. 視覺對比度優化：移除原本會導致文字在強光下過淡的 mix-blend-mode，保留為類別但清空屬性以防報錯 */
-        .text-blend { /* 刻意留空，確保文字為最高對比度實色 */ } 
+        .text-blend { } 
 
-        /* 按鈕手感重塑：機械頓挫感、銳利陰影、確保最小觸控熱區 44px */
         .military-btn { background: #fdfbf7; border: 2px solid #3d2a1b; color: #1a110a; box-shadow: 4px 4px 0 #3d2a1b; transition: transform 0.1s ease, box-shadow 0.1s ease; border-radius: 2px; min-height: 44px; min-width: 44px; }
         .military-btn:active:not(:disabled) { transform: translate(3px, 3px) scale(0.98); box-shadow: 1px 1px 0 #3d2a1b, inset 2px 2px 4px rgba(0,0,0,0.15); }
         
@@ -38,8 +36,6 @@
         .opt-btn:active:not(:disabled) { background: #f5eedf; transform: translate(3px, 3px) scale(0.98); box-shadow: 1px 1px 0 #8a7251, inset 2px 2px 5px rgba(0,0,0,0.15); }
         .code-box { background: #fdfbf7; border: 2px solid #3d2a1b; border-radius: 2px; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.1); }
 
-        /* 2. 排版修復：更改 screen-panel 為向下擴展而非限制在螢幕內 (去除 inset-0) */
-        /* 2. 排版修復：移除絕對定位，讓外層容器能正確抓到高度 */
         .screen-panel { 
             width: 100%; 
             min-height: 100%; 
@@ -64,7 +60,6 @@
         
         #puzzle-drawer-board, #full-letter-board { container-type: inline-size; aspect-ratio: 4 / 3; width: 100%; position: relative; }
         
-        /* 5. 碎片防遮擋優化 */
         .puzzle-piece {
             position: absolute; background-color: #d8c8a7;
             background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.15"/></svg>');
@@ -74,10 +69,8 @@
             filter: url(#torn-edge) drop-shadow(3px 4px 2px rgba(60,40,20,0.4));
             box-shadow: inset 0 0 15px rgba(101, 75, 41, 0.2); z-index: 10;
         }
-        /* 點擊或觸控時放大並提升層級 */
         .puzzle-piece:active, .puzzle-piece:hover { transform: scale(1.1); z-index: 50 !important; filter: url(#torn-edge) drop-shadow(5px 6px 4px rgba(60,40,20,0.6)); }
         .puzzle-piece.locked { background-color: #3a2e26; background-image: none; color: #665243; filter: url(#torn-edge) grayscale(1); box-shadow: none; pointer-events: none; }
-        /* 文字加上微背景保護層 */
         .puzzle-piece span { padding: 4%; pointer-events: none; line-height: 1.5; letter-spacing: 0.5px; font-size: max(10px, 3.5cqi); background: rgba(216, 200, 167, 0.6); box-shadow: 0 0 6px rgba(216,200,167,0.7); border-radius: 4px; }
         
         .piece-1 { top: 0%; left: 0%; width: 42%; height: 44%; clip-path: polygon(0 0, 95% 8%, 85% 100%, 0 92%); transform: rotate(-1deg); }
@@ -89,8 +82,6 @@
         .piece-7 { top: 44%; left: 78%; width: 22%; height: 56%; clip-path: polygon(5% 0, 100% 5%, 90% 100%, 0 95%); transform: rotate(-1.5deg); }
 
         #app-loader { transition: opacity 0.6s ease; }
-        
-        /* 動態安全區下邊距 (預留給底部導覽列與 iOS 橫條) */
         .pb-viewport-safe { padding-bottom: calc(90px + env(safe-area-inset-bottom, 20px)); }
     </style>
 </head>
@@ -135,9 +126,7 @@
             </div>
         </div>
 
-                <!-- MAIN VIEWPORT (2. 捲動排版修復) -->
         <div id="game-viewport" class="flex-1 overflow-y-auto scroll-smooth z-10 w-full custom-scrollbar relative bg-transparent" style="-webkit-overflow-scrolling: touch;">
-            <!-- ⚠️ 移除這裡原本的 p-5，保留 pb-viewport-safe -->
             <div class="pb-viewport-safe min-h-full flex flex-col relative w-full">
 
                 <!-- SCREEN 0: ENTRY -->
@@ -175,7 +164,6 @@
                         <span class="text-[#1a110a] font-black mb-4 text-base tracking-widest border-b-2 border-dashed border-[#3d2a1b] pb-2 w-full text-center">【 空照地圖 】</span>
                         <div class="w-full aspect-[4/3] vintage-photo flex items-center justify-center">
                             <div class="skeleton-bg absolute inset-0"></div>
-                            <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 800 x 600，說明: 三重一村空照地圖 -->
                             <img src="https://placehold.co/400x300/e5d5b5/7c343d?text=Map" alt="三重一村地圖" onload="this.parentElement.querySelector('.skeleton-bg').classList.add('hidden'); this.classList.add('loaded')">
                         </div>
                     </div>
@@ -229,10 +217,12 @@
                             </label>
                             <input type="file" accept="image/*" capture="environment" id="l2-camera-input" class="hidden">
                         </div>
-                        <!-- ！！！新增這個圖片容器！！！ -->
+                        
+                        <!-- 圖片容器 -->
                         <div id="l2-question-img-container" class="hidden mb-6 w-full vintage-photo shrink-0">
                             <img id="l2-question-img" src="" class="w-full h-auto object-cover">
                         </div>
+                        
                         <div id="l2-question-text" class="text-lg font-bold leading-[1.8] mb-8 whitespace-pre-line text-[#1a110a] shrink-0 text-justify"></div>
                         <div id="l2-options-container" class="space-y-4 flex-1 flex flex-col justify-end pb-4"></div>
                     </div>
@@ -290,7 +280,6 @@
                         </div>
                         <div class="grid grid-cols-2 gap-4 flex-1">
                             <div class="char-card-grid">
-                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 200，說明: 奶奶角色圖 -->
                                 <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2">
                                     <img src="https://placehold.co/200/e5d5b5/7c343d?text=Grandma" alt="奶奶" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
                                 </div>
@@ -301,7 +290,6 @@
                                 </div>
                             </div>
                             <div class="char-card-grid">
-                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 200，說明: 媽媽角色圖 -->
                                 <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2">
                                     <img src="https://placehold.co/200/e5d5b5/7c343d?text=Mom" alt="媽媽翠芳" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
                                 </div>
@@ -312,7 +300,6 @@
                                 </div>
                             </div>
                             <div class="char-card-grid">
-                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 200，說明: 中學生角色圖 -->
                                 <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2">
                                     <img src="https://placehold.co/200/e5d5b5/7c343d?text=Student" alt="中學生" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
                                 </div>
@@ -323,7 +310,6 @@
                                 </div>
                             </div>
                             <div class="char-card-grid">
-                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 200，說明: 兒童角色圖 -->
                                 <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2">
                                     <img src="https://placehold.co/200/e5d5b5/7c343d?text=Kid" alt="小孩" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
                                 </div>
@@ -388,7 +374,6 @@
                         </div>
                         <div class="grid grid-cols-2 gap-4 flex-1 content-start">
                             <div class="char-card-grid">
-                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 250，說明: 歌手紫薇 -->
                                 <div class="char-img-box skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2 aspect-[4/5]"><img src="images/紫薇.png" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                 <div class="p-3 text-xs flex-1 flex flex-col text-center">
                                     <b class="text-sm text-[#6a2932] mb-1">紫薇</b>
@@ -397,7 +382,6 @@
                                 </div>
                             </div>
                             <div class="char-card-grid">
-                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 250，說明: 歌手潘安邦 -->
                                 <div class="char-img-box skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2 aspect-[4/5]"><img src="images/潘安邦.png" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                 <div class="p-3 text-xs flex-1 flex flex-col text-center">
                                     <b class="text-sm text-[#6a2932] mb-1">潘安邦</b>
@@ -406,7 +390,6 @@
                                 </div>
                             </div>
                             <div class="char-card-grid">
-                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 250，說明: 歌手鄧麗君 -->
                                 <div class="char-img-box skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2 aspect-[4/5]"><img src="images/鄧麗君.png" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                 <div class="p-3 text-xs flex-1 flex flex-col text-center">
                                     <b class="text-sm text-[#6a2932] mb-1">鄧麗君</b>
@@ -415,7 +398,6 @@
                                 </div>
                             </div>
                             <div class="char-card-grid">
-                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 250，說明: 歌手羅大佑 -->
                                 <div class="char-img-box skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2 aspect-[4/5]"><img src="images/羅大佑.png" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                 <div class="p-3 text-xs flex-1 flex flex-col text-center">
                                     <b class="text-sm text-[#6a2932] mb-1">羅大佑</b>
@@ -479,7 +461,6 @@
                         </div>
                         <div class="flex-1 flex flex-col space-y-4 min-h-0">
                             <div class="char-card-flex flex-1">
-                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 200，說明: 奶奶角色圖 (L6) -->
                                 <div class="char-img-box w-1/3 shrink-0 border-r-2 border-[#3d2a1b] skeleton-bg relative">
                                     <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandma" alt="奶奶" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
                                 </div>
@@ -489,7 +470,6 @@
                                 </div>
                             </div>
                             <div class="char-card-flex flex-1">
-                                <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 200 x 200，說明: 孫子角色圖 -->
                                 <div class="char-img-box w-1/3 shrink-0 border-r-2 border-[#3d2a1b] skeleton-bg relative">
                                     <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandson" alt="孫子" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
                                 </div>
@@ -510,7 +490,6 @@
                         </div>
                         <button class="w-full py-4 primary-btn font-black text-xl mt-6 tracking-widest" onclick="transitionSubPage(6, 2, 3)">進入調查</button>
                     </div>
-                    <!-- 3. 「藏在花露水裡的花」六宮格重構為 2欄位並增加高度 -->
                     <div id="l6-p3" class="hidden flex-col min-h-full">
                         <div class="flex items-center mb-4">
                             <button onclick="transitionSubPage(6, 3, 2)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
@@ -518,35 +497,28 @@
                         </div>
                         <div class="level-card p-4 flex-1 flex flex-col overflow-y-auto">
                             <p class="text-sm font-bold bg-[#fdfbf7] p-3 rounded-sm border-2 border-[#3d2a1b] mb-4 shrink-0 text-justify leading-relaxed">奶奶：「桌上有瓶明星花露水，裡面藏著哪些花香？畫面上有六種花，找的只有兩種，快從中把它們找出來吧！」</p>
-                            <!-- 變更為 2欄位 -->
                             <div class="grid grid-cols-2 gap-4 flex-1 items-stretch min-h-0 pb-4" id="flower-grid">
                                 <div class="flower-card flex flex-col border-2 border-[#3d2a1b] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#3d2a1b] transition active:scale-95" onclick="toggleFlower(this, '玫瑰')">
-                                    <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 300 x 300，說明: 玫瑰花圖片 -->
                                     <div class="bg-rose-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/玫瑰.jpg" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                     <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-[#6a2932] shrink-0 border-t-2 border-[#3d2a1b]">玫瑰</div>
                                 </div>
                                 <div class="flower-card flex flex-col border-2 border-[#3d2a1b] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#3d2a1b] transition active:scale-95" onclick="toggleFlower(this, '茉莉')">
-                                    <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 300 x 300，說明: 茉莉花圖片 -->
                                     <div class="bg-stone-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/茉莉.png" class="absolute inset-0 w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                     <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-stone-900 shrink-0 border-t-2 border-[#3d2a1b]">茉莉</div>
                                 </div>
                                 <div class="flower-card flex flex-col border-2 border-[#3d2a1b] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#3d2a1b] transition active:scale-95" onclick="toggleFlower(this, '秀英花')">
-                                    <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 300 x 300，說明: 秀英花圖片 -->
                                     <div class="bg-orange-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/秀英花.jpg" class="absolute inset-0 w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                     <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-orange-900 shrink-0 border-t-2 border-[#3d2a1b]">秀英花</div>
                                 </div>
                                 <div class="flower-card flex flex-col border-2 border-[#3d2a1b] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#3d2a1b] transition active:scale-95" onclick="toggleFlower(this, '桂花')">
-                                    <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 300 x 300，說明: 桂花圖片 -->
                                     <div class="bg-yellow-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/桂花.png" class="absolute inset-0 w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                     <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-yellow-900 shrink-0 border-t-2 border-[#3d2a1b]">桂花</div>
                                 </div>
                                 <div class="flower-card flex flex-col border-2 border-[#3d2a1b] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#3d2a1b] transition active:scale-95" onclick="toggleFlower(this, '梔子花')">
-                                    <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 300 x 300，說明: 梔子花圖片 -->
                                     <div class="bg-neutral-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/梔子花.jpg" class="absolute inset-0 w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                     <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-neutral-900 shrink-0 border-t-2 border-[#3d2a1b]">梔子花</div>
                                 </div>
                                 <div class="flower-card flex flex-col border-2 border-[#3d2a1b] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#3d2a1b] transition active:scale-95" onclick="toggleFlower(this, '玉蘭花')">
-                                    <!-- TODO: [圖片] 請替換此處圖片路徑，建議尺寸: 300 x 300，說明: 玉蘭花圖片 -->
                                     <div class="bg-pink-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/玉蘭花.jpg" class="absolute inset-0 w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                     <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-pink-900 shrink-0 border-t-2 border-[#3d2a1b]">玉蘭花</div>
                                 </div>
@@ -761,11 +733,11 @@
             },
             level2: {
                 questions: [
-                    { image: "images/l2_map.jpg" ,q: "依據軍階與家庭成員分配房舍。請對照地圖找到特級眷舍，高階軍官的家擁有哪一個最明顯的建築特徵？", opts: ["獨立庭院與紅色大門", "只能側身通過的窄巷", "蓋在屋頂上的小閣樓", "共用牆壁的連棟小屋"], a: 0, photo: true, photoText: "請尋找該建築特徵並拍照上傳",image: "images/l2_map.jpg" , desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門；基層官兵則多居住於共用牆壁的連棟窄房。" },
-                    { image: "images/l2_map.jpg" ,q: "為什麼防洪樓裡會有小閣樓？", opts: ["放雜物", "放武器", "洪水來時避難", "養鴿子"], a: 2, photo: false, desc: "過去經常受淡水河洪患，於1960年代興建「防洪樓」作為避難空間。樓內保留當時為躲避水災增建的小閣樓。" },
-                    { image: "images/l2_map.jpg" ,q: "「一線天」是眷村特殊的狹窄巷道景觀。造成一線天形成的主要原因為何？\n\n【線索】：兩側皆有眷舍/巷道狹窄/抬頭見一線天", opts: ["建村時為了節省土地設計", "居民居住空間不足向前後院擴建", "為了讓鄰居方便交流", "為了遮陽避雨刻意縮小"], a: 1, photo: true, photoText: "請在眷村中找到「一線天」拍照上傳",image: "images/l2_map.jpg" , desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成今日緊鄰樣貌。" },
+                    { image: "images/l2_map.jpg" ,q: "依據軍階與家庭成員分配房舍。請對照地圖找到特級眷舍，高階軍官的家擁有哪一個最明顯的建築特徵？", opts: ["獨立庭院與紅色大門", "只能側身通過的窄巷", "蓋在屋頂上的小閣樓", "共用牆壁的連棟小屋"], a: 0, photo: true, photoText: "請尋找該建築特徵並拍照上傳", desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門；基層官兵則多居住於共用牆壁的連棟窄房。" },
+                    { image: "images/防洪樓.png" ,q: "為什麼防洪樓裡會有小閣樓？", opts: ["放雜物", "放武器", "洪水來時避難", "養鴿子"], a: 2, photo: false, desc: "過去經常受淡水河洪患，於1960年代興建「防洪樓」作為避難空間。樓內保留當時為躲避水災增建的小閣樓。" },
+                    { image: "images/l2_map.jpg" ,q: "「一線天」是眷村特殊的狹窄巷道景觀。造成一線天形成的主要原因為何？\n\n【線索】：兩側皆有眷舍/巷道狹窄/抬頭見一線天", opts: ["建村時為了節省土地設計", "居民居住空間不足向前後院擴建", "為了讓鄰居方便交流", "為了遮陽避雨刻意縮小"], a: 1, photo: true, photoText: "請在眷村中找到「一線天」拍照上傳", desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成今日緊鄰樣貌。" },
                     { q: "請依照村長家的演變順序排列下列事件。\n① 興建防洪樓，增加避難空間\n② 黑瓦竹泥牆平房\n③ 全面改建為三層樓\n④ 加蓋二樓增加空間", opts: ["① → ② → ③ → ④", "② → ① → ④ → ③", "② → ④ → ① → ③", "① → ③ → ② → ④"], a: 1, photo: false, desc: "村長的家經歷了 7 次改建，從最初的平房，一路上蓋到三層樓。" },
-                    { image: "images/l2_map.jpg" ,q: "為什麼隨著時間過去，眷村的房屋開始出現更多門窗、鐵窗，生活空間逐漸移回屋內？", opts: ["居民開始重視與鄰居保持距離", "居民確定無法短期返回大陸，長久生活", "政府規定必須將生活空間封閉", "為了防止敵人進入眷村"], a: 1, photo: true, photoText: "請尋找建築上的鐵窗拍照上傳",image: "images/l2_map.jpg" , desc: "隨著回大陸希望渺茫及人口增加，居民擴建將生活機能移入屋內並加裝鐵窗。眷村逐漸從開放轉為獨立住宅。" }
+                    { image: "images/l2_map.jpg" ,q: "為什麼隨著時間過去，眷村的房屋開始出現更多門窗、鐵窗，生活空間逐漸移回屋內？", opts: ["居民開始重視與鄰居保持距離", "居民確定無法短期返回大陸，長久生活", "政府規定必須將生活空間封閉", "為了防止敵人進入眷村"], a: 1, photo: true, photoText: "請尋找建築上的鐵窗拍照上傳", desc: "隨著回大陸希望渺茫及人口增加，居民擴建將生活機能移入屋內並加裝鐵窗。眷村逐漸從開放轉為獨立住宅。" }
                 ]
             },
             level3: {
@@ -833,7 +805,8 @@
                 "images/玫瑰.jpg",
                 "images/茉莉.png",
                 "images/信.png",
-                "images/l2_map.jpg" 
+                "images/l2_map.jpg",
+                "images/防洪樓.png"
             ]
         };
 
@@ -1217,8 +1190,18 @@
             document.getElementById('l2-q-counter').textContent = `測驗 ${currentQ + 1} / 5`;
             
             document.getElementById('btn-l2-prev').style.display = currentQ > 0 ? 'flex' : 'none';
-            
             document.getElementById('l2-question-text').textContent = qData.q;
+            
+            // ★ 新增這段：處理題目圖片的顯示與隱藏
+            const imgContainer = document.getElementById('l2-question-img-container');
+            const imgElement = document.getElementById('l2-question-img');
+            if (qData.image) {
+                imgElement.src = qData.image;
+                imgContainer.classList.remove('hidden');
+            } else {
+                imgContainer.classList.add('hidden');
+            }
+            // ★ 新增結束
             
             const cont = document.getElementById('l2-options-container'), pSect = document.getElementById('l2-photo-section');
             cont.innerHTML = ''; 
