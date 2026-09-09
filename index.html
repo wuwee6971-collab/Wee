@@ -806,9 +806,9 @@
                 "images/茉莉.png",
                 "images/信.png",
                 "images/l2_map.jpg",
-                "images/l2_1.jpg" ,
-                "images/l2_2.jpg" ,
-                "images/l2_3.jpg" ,
+                "images/l2_1.jpg",
+                "images/l2_2.jpg",
+                "images/l2_3.jpg",
                 "images/l2_5.jpg"
             ]
         };
@@ -873,7 +873,7 @@
                 }
             };
 
-            const timeout = setTimeout(finishLoading, 3000); 
+            const timeout = setTimeout(finishLoading, 800); 
 
             if(images.length === 0) finishLoading();
             else {
@@ -960,18 +960,28 @@
         }
 
         function updateHeader(screenId) {
-            const teamEl = document.getElementById('header-team-name');
-            const titleEl = document.getElementById('header-level-title');
-            teamEl.textContent = GameState.get('teamName') || "未登入";
-            if (screenId === 'entry') titleEl.textContent = "檔案報到";
-            else if (screenId === 'main') titleEl.textContent = "任務總部";
-            else if (screenId === 'certificate') titleEl.textContent = "結案報告";
-            else {
-                const lvlNum = parseInt(screenId.replace('level-', ''));
-                const data = GAME_DATA.levels.find(l => l.id === lvlNum);
-                titleEl.textContent = data ? data.name : "調查任務";
-            }
-        }
+    const teamEl = document.getElementById('header-team-name');
+    const titleEl = document.getElementById('header-level-title');
+    teamEl.textContent = GameState.get('teamName') || "未登入";
+    if (screenId === 'entry') titleEl.textContent = "檔案報到";
+    else if (screenId === 'main') titleEl.textContent = "任務總部";
+    else if (screenId === 'certificate') titleEl.textContent = "結案報告";
+    else {
+        const lvlNum = parseInt(screenId.replace('level-', ''));
+        const data = GAME_DATA.levels.find(l => l.id === lvlNum);
+        titleEl.textContent = data ? data.name : "調查任務";
+    }
+
+    // ★ 新增：根據目前畫面切換左下角按鈕文字與功能
+    const navHqBtn = document.getElementById('btn-nav-hq');
+    if (screenId === 'main') {
+        navHqBtn.innerHTML = `<i class="fa-solid fa-rotate-left text-[#6a2932]"></i><span class="text-[#6a2932]">重新開始</span>`;
+        navHqBtn.onclick = confirmRestartGame;
+    } else {
+        navHqBtn.innerHTML = `<i class="fa-solid fa-house"></i><span>回主畫面</span>`;
+        navHqBtn.onclick = () => { playBeep(); showScreen(GameState.get('teamName') ? 'main' : 'entry'); };
+    }
+}
 
         // 頁內子頁面切換 (改善切換防點擊失效)
         async function transitionSubPage(level, fromPage, toPage) {
@@ -1585,12 +1595,13 @@
             else msgEl.innerHTML = '雖然耗費了較多時間，但真相終究水落石出。<br>這段歲月記憶因你的堅持而完整。';
         }
 
-        document.getElementById('btn-restart-game').onclick = () => {
+        function confirmRestartGame() {
             showAlert("銷毀檔案", "確定要銷毀目前調閱檔案，重新開始嗎？所有的進度與拼圖都將重置。", "fa-triangle-exclamation", "text-[#6a2932]", () => {
                 GameState.reset();
             }, "確認銷毀");
-        };
-
+        }
+        
+        document.getElementById('btn-restart-game').onclick = confirmRestartGame;
         document.getElementById('btn-nav-hq').onclick = () => { playBeep(); showScreen(GameState.get('teamName') ? 'main' : 'entry'); };
         
         document.getElementById('sound-toggle').onclick = () => { 
