@@ -211,6 +211,9 @@
                             <span class="px-4 py-2 bg-[#e0f2e9] border-2 border-[#047857] rounded-sm text-sm font-black text-[#047857] shadow-[2px_2px_0_#047857] mx-auto" id="l2-q-counter">測驗 1 / 5</span>
                         </div>
                         <div id="l2-photo-section" class="hidden bg-[#e0f2e9] p-5 rounded-sm border-2 border-dashed border-[#047857] mb-6 text-center shrink-0">
+                            <div id="l2-photo-img-container" class="hidden mb-4 vintage-photo w-full">
+                                <img id="l2-photo-img" src="" class="w-full h-auto object-cover" onload="this.classList.add('loaded')">
+                            </div>
                             <p id="l2-photo-req-text" class="text-sm font-bold text-[#064e3b] mb-4"></p>
                             <label for="l2-camera-input" class="w-full py-4 bg-[#047857] border-2 border-[#064e3b] text-[#fdfbf7] shadow-[4px_4px_0_#064e3b] font-black text-lg flex items-center justify-center space-x-2 cursor-pointer transition active:translate-y-1 active:translate-x-1 active:shadow-[1px_1px_0_#064e3b]">
                                 <i id="l2-cam-icon" class="fa-solid fa-camera-retro text-xl"></i><span>啟動相機取證</span>
@@ -662,8 +665,11 @@
                 <div class="py-2 text-center">
                     <p id="alert-desc" class="text-lg text-[#1a110a] font-bold leading-[1.8] whitespace-pre-line font-serif"></p>
                 </div>
-                <div class="pt-4 shrink-0" id="alert-btn-container">
-                    <button id="alert-btn" class="w-full py-4 bg-[#6a2932] text-[#fdfbf7] border-2 border-[#291014] font-black text-xl tracking-widest shadow-[4px_4px_0_#291014] transition-transform active:translate-y-1 active:translate-x-1 active:shadow-[1px_1px_0_#291014]">確認</button>
+                <div class="pt-4 shrink-0 grid grid-cols-2 gap-3" id="alert-btn-container">
+                    <!-- 新增的返回/取消按鈕 -->
+                    <button id="alert-cancel-btn" class="py-4 military-btn font-black text-lg tracking-widest">返回</button>
+                    <!-- 原本的確認按鈕 -->
+                    <button id="alert-btn" class="py-4 bg-[#6a2932] text-[#fdfbf7] border-2 border-[#291014] font-black text-lg tracking-widest shadow-[4px_4px_0_#291014] transition-transform active:translate-y-1 active:translate-x-1 active:shadow-[1px_1px_0_#291014]">確認</button>
                 </div>
             </div>
         </div>
@@ -733,9 +739,9 @@
             },
             level2: {
                 questions: [
-                    { image: "images/l2_1.jpg" ,q: "依據軍階與家庭成員分配房舍。請對照地圖找到特級眷舍，高階軍官的家擁有哪一個最明顯的建築特徵？", opts: ["獨立庭院與紅色大門", "只能側身通過的窄巷", "蓋在屋頂上的小閣樓", "共用牆壁的連棟小屋"], a: 0, photo: true, photoText: "請尋找該建築特徵並拍照上傳", desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門；基層官兵則多居住於共用牆壁的連棟窄房。" },
+                    { photoImage: "images/拍照時要看的參考圖.jpg",image: "images/l2_1.jpg" ,q: "依據軍階與家庭成員分配房舍。請對照地圖找到特級眷舍，高階軍官的家擁有哪一個最明顯的建築特徵？", opts: ["獨立庭院與紅色大門", "只能側身通過的窄巷", "蓋在屋頂上的小閣樓", "共用牆壁的連棟小屋"], a: 0, photo: true, photoText: "請尋找該建築特徵並拍照上傳", desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門；基層官兵則多居住於共用牆壁的連棟窄房。" },
                     { image: "images/l2_2.jpg" ,q: "為什麼防洪樓裡會有小閣樓？", opts: ["放雜物", "放武器", "洪水來時避難", "養鴿子"], a: 2, photo: false, desc: "過去經常受淡水河洪患，於1960年代興建「防洪樓」作為避難空間。樓內保留當時為躲避水災增建的小閣樓。" },
-                    { image: "images/l2_3.jpg" ,q: "「一線天」是眷村特殊的狹窄巷道景觀。造成一線天形成的主要原因為何？\n\n【線索】：兩側皆有眷舍/巷道狹窄/抬頭見一線天", opts: ["建村時為了節省土地設計", "居民居住空間不足向前後院擴建", "為了讓鄰居方便交流", "為了遮陽避雨刻意縮小"], a: 1, photo: true, photoText: "請在眷村中找到「一線天」拍照上傳", desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成今日緊鄰樣貌。" },
+                    { q: "「一線天」是眷村特殊的狹窄巷道景觀。造成一線天形成的主要原因為何？\n\n【線索】：兩側皆有眷舍/巷道狹窄/抬頭見一線天", opts: ["建村時為了節省土地設計", "居民居住空間不足向前後院擴建", "為了讓鄰居方便交流", "為了遮陽避雨刻意縮小"], a: 1, photo: true, photoText: "請在眷村中找到「一線天」拍照上傳", desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成今日緊鄰樣貌。" },
                     { q: "請依照村長家的演變順序排列下列事件。\n① 興建防洪樓，增加避難空間\n② 黑瓦竹泥牆平房\n③ 全面改建為三層樓\n④ 加蓋二樓增加空間", opts: ["① → ② → ③ → ④", "② → ① → ④ → ③", "② → ④ → ① → ③", "① → ③ → ② → ④"], a: 1, photo: false, desc: "村長的家經歷了 7 次改建，從最初的平房，一路上蓋到三層樓。" },
                     { image: "images/l2_5.jpg" ,q: "為什麼隨著時間過去，眷村的房屋開始出現更多門窗、鐵窗，生活空間逐漸移回屋內？", opts: ["居民開始重視與鄰居保持距離", "居民確定無法短期返回大陸，長久生活", "政府規定必須將生活空間封閉", "為了防止敵人進入眷村"], a: 1, photo: true, photoText: "請尋找建築上的鐵窗拍照上傳", desc: "隨著回大陸希望渺茫及人口增加，居民擴建將生活機能移入屋內並加裝鐵窗。眷村逐漸從開放轉為獨立住宅。" }
                 ]
@@ -936,6 +942,7 @@
             else { iconEl.style.display = 'none'; }
             
             const btn = document.getElementById('alert-btn');
+            const cancelBtn = document.getElementById('alert-cancel-btn'); // 取得返回按鈕
             const btnContainer = document.getElementById('alert-btn-container');
             
             if (btnText === false) {
@@ -943,9 +950,17 @@
             } else {
                 btnContainer.classList.remove('hidden');
                 btn.textContent = btnText;
+                
+                // 設定點擊確認後的行為
                 btn.onclick = () => {
                     playBeep(400, 0.05); document.getElementById('modal-alert').classList.add('hidden');
                     if (callback) callback();
+                };
+        
+                // ★ 設定點擊返回按鈕直接關閉視窗不執行動作
+                cancelBtn.onclick = () => {
+                    playBeep(300, 0.05);
+                    document.getElementById('modal-alert').classList.add('hidden');
                 };
             }
             
@@ -960,13 +975,13 @@
         }
 
         function updateHeader(screenId) {
-    const teamEl = document.getElementById('header-team-name');
-    const titleEl = document.getElementById('header-level-title');
-    teamEl.textContent = GameState.get('teamName') || "未登入";
-    if (screenId === 'entry') titleEl.textContent = "檔案報到";
-    else if (screenId === 'main') titleEl.textContent = "任務總部";
-    else if (screenId === 'certificate') titleEl.textContent = "結案報告";
-    else {
+            const teamEl = document.getElementById('header-team-name');
+            const titleEl = document.getElementById('header-level-title');
+            teamEl.textContent = GameState.get('teamName') || "未登入";
+            if (screenId === 'entry') titleEl.textContent = "檔案報到";
+            else if (screenId === 'main') titleEl.textContent = "任務總部";
+            else if (screenId === 'certificate') titleEl.textContent = "結案報告";
+            else {
         const lvlNum = parseInt(screenId.replace('level-', ''));
         const data = GAME_DATA.levels.find(l => l.id === lvlNum);
         titleEl.textContent = data ? data.name : "調查任務";
@@ -1222,6 +1237,14 @@
             let photos = GameState.get('l2Photos');
             if(qData.photo && !photos[currentQ]) {
                 pSect.classList.remove('hidden'); document.getElementById('l2-photo-req-text').textContent = "📸 " + qData.photoText;
+                const photoImgContainer = document.getElementById('l2-photo-img-container');
+                const photoImgElement = document.getElementById('l2-photo-img');
+                if (qData.photoImage) {
+                    photoImgElement.src = qData.photoImage;
+                    photoImgContainer.classList.remove('hidden');
+    } else {
+        photoImgContainer.classList.add('hidden');
+    }
             } else {
                 pSect.classList.add('hidden');
                 let optionsWithIndex = qData.opts.map((opt, index) => ({ text: opt, isCorrect: index === qData.a }));
