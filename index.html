@@ -756,11 +756,11 @@
                 ],
                 audios: [
                     // TODO: [音檔] 請替換此處音效路徑，觸發時機: 播放 L3 料理語音題目 1~5
-                    "images/1_sichuan.mp3",
-                    "images/2_hunan.mp3",
-                    "images/3_anhui.mp3",
-                    "images/4_beijing.mp3",
-                    "images/5_shandong.mp3"
+                    "images_1_sichuan.mp3",
+                    "images_2_hunan.mp3",
+                    "images_3_anhui.mp3",
+                    "images_4_beijing.mp3",
+                    "images_5_shandong.mp3"
                 ]
             },
             level4: {
@@ -950,13 +950,21 @@
             } else {
                 btnContainer.classList.remove('hidden');
                 btn.textContent = btnText;
+                // ★ 根據 showCancel 決定是否顯示返回按鈕與調整格線
+                if (showCancel) {
+                    cancelBtn.classList.remove('hidden');
+                    btnContainer.className = "pt-4 shrink-0 grid grid-cols-2 gap-3"; // 兩欄
+                } else {
+                    cancelBtn.classList.add('hidden');
+                    btnContainer.className = "pt-4 shrink-0"; // 單欄滿版
+                }
                 
                 // 設定點擊確認後的行為
                 btn.onclick = () => {
                     playBeep(400, 0.05); document.getElementById('modal-alert').classList.add('hidden');
                     if (callback) callback();
                 };
-        
+
                 // ★ 設定點擊返回按鈕直接關閉視窗不執行動作
                 cancelBtn.onclick = () => {
                     playBeep(300, 0.05);
@@ -1619,9 +1627,10 @@
         }
 
         function confirmRestartGame() {
+            // 最後一個參數帶入 true，代表這個視窗要顯示「返回」按鈕
             showAlert("銷毀檔案", "確定要銷毀目前調閱檔案，重新開始嗎？所有的進度與拼圖都將重置。", "fa-triangle-exclamation", "text-[#6a2932]", () => {
                 GameState.reset();
-            }, "確認銷毀");
+            }, "確認銷毀", 0, true);
         }
         
         document.getElementById('btn-restart-game').onclick = confirmRestartGame;
