@@ -787,7 +787,7 @@
             if (screenId === 'level-1') renderL1();
             if (screenId === 'level-2') renderL2();
             if (screenId === 'level-3') renderL3();
-            if (screenId === 'level-4') forceSubPageInit(4, 1, 4);
+            if (screenId === 'level-4') { forceSubPageInit(4, 1, 4); renderL4Questions(); } // 修改這行（加入 renderL4Questions()）
             if (screenId === 'level-5') { forceSubPageInit(5, 1, 4); updateL5Display(); }
             if (screenId === 'level-6') { forceSubPageInit(6, 1, 4); renderL6Songs(); }
             
@@ -1134,6 +1134,76 @@
         // 頁面加載完成與 Loader 關閉防卡死邏輯
         // ==========================================
         window.addEventListener('load', () => {
+            // ================= 補齊遺漏的互動綁定與函數 =================
+
+        // 1. 綁定頂部導覽列的「音效切換」按鈕
+        document.getElementById('sound-toggle').onclick = () => {
+            let isEnabled = !GameState.get('soundEnabled');
+            GameState.set('soundEnabled', isEnabled);
+            const icon = document.getElementById('sound-icon');
+            icon.className = isEnabled ? "fa-solid fa-volume-high text-yellow-400 text-base" : "fa-solid fa-volume-xmark text-stone-400 text-base";
+            if (isEnabled) playBeep();
+        };
+
+        // 2. 綁定報到大廳的「授權調查啟動」按鈕
+        document.getElementById('btn-start-game').onclick = () => {
+            const teamName = document.getElementById('input-team-name').value.trim();
+            if (!teamName) {
+                showAlert("輸入錯誤", "請輸入隊伍代號！", "fa-triangle-exclamation");
+                return;
+            }
+            playBeep();
+            
+            const startLvl = parseInt(document.getElementById('start-level-select').value);
+            let seq = [startLvl];
+            for (let i = 1; i <= 6; i++) {
+                if (i !== startLvl) seq.push(i);
+            }
+            seq.push(7);
+            
+            GameState.set('teamName', teamName);
+            GameState.set('startLevel', startLvl);
+            GameState.set('customSequence', seq);
+            GameState.set('currentStageIndex', 0);
+            GameState.set('startTime', Date.now());
+            
+            if (globalTimerInterval) clearInterval(globalTimerInterval);
+            globalTimerInterval = setInterval(updateTimerDisplay, 1000);
+            updateTimerDisplay();
+            
+            showScreen('main');
+        };
+
+        // 3. 綁定任務總部的「前往調查」按鈕
+        document.getElementById('btn-goto-current').onclick = () => {
+            playBeep();
+            let seq = GameState.get('customSequence');
+            let idx = GameState.get('currentStageIndex');
+            const currentLvlId = parseInt(seq[idx]) || 1;
+            showScreen(`level-${currentLvlId}`);
+        };
+
+        // 4. 補上遺漏的倒數計時器函數
+        function updateTimerDisplay() {
+            const startTime = GameState.get('startTime');
+            if (!startTime) return;
+            const totalDuration = 2 * 60 * 60;
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const remaining = Math.max(0, totalDuration - elapsed);
+            
+            const h = String(Math.floor(remaining / 3600)).padStart(2, '0');
+            const m = String(Math.floor((remaining % 3600) / 60)).padStart(2, '0');
+            const s = String(remaining % 60).padStart(2, '0');
+            
+            const timerEl = document.getElementById('main-timer');
+            if (timerEl) {
+                timerEl.textContent = `${h}:${m}:${s}`;
+                if (remaining < 300) {
+                    timerEl.classList.remove('text-[#6a2932]');
+                    timerEl.classList.add('text-red-600', 'animate-pulse');
+                }
+            }
+        }
             const loader = document.getElementById('app-loader');
             const progressEl = document.getElementById('loader-progress');
             if (progressEl) progressEl.textContent = '100%';
