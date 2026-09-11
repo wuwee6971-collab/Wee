@@ -18,14 +18,14 @@
     </div>
 
     <script>
-      // 貼上第二步的配置
+      // 填入與遊戲端一致的真實金鑰
       const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
+        apiKey: "AIzaSyCxIinbYw3OhJhKksVHsqPaYCv0-fLUR3s",
         authDomain: "weee-57379.firebaseapp.com",
         projectId: "weee-57379",
-        storageBucket: "weee-57379.appspot.com",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
+        storageBucket: "weee-57379.firebasestorage.app",
+        messagingSenderId: "26784647",
+        appId: "1:26784647:web:e3c682e0915fe43ddf5922"
       };
       firebase.initializeApp(firebaseConfig);
       const db = firebase.firestore();
@@ -46,22 +46,28 @@
                 card.className = "bg-stone-800 border-2 border-stone-700 p-4 rounded shadow-lg";
                 card.innerHTML = `
                     <div class="flex justify-between items-center mb-2">
-                        <span class="font-bold text-lg text-amber-400">${item.teamName}</span>
-                        <span class="text-xs bg-stone-700 px-2 py-1 rounded">任務 ${item.levelId}</span>
+                        <span class="font-bold text-lg text-amber-400">${item.teamName || '未知隊伍'}</span>
+                        <span class="text-xs bg-stone-700 px-2 py-1 rounded">${item.levelId || '調查任務'}</span>
                     </div>
-                    <img src="${item.image}" class="w-full h-auto rounded border border-stone-600 mb-3" />
+                    <!-- 修正為讀取玩家端上傳的 imageBase64 欄位 -->
+                    <img src="${item.imageBase64}" class="w-full h-auto rounded border border-stone-600 mb-3 bg-black/40" alt="線索照片" />
                     <div class="grid grid-cols-2 gap-3">
-                        <button onclick="updateStatus('${doc.id}', 'rejected')" class="py-2.5 bg-red-900/80 hover:bg-red-800 text-white font-bold rounded">✖ 駁回重拍</button>
-                        <button onclick="updateStatus('${doc.id}', 'approved')" class="py-2.5 bg-emerald-700 hover:bg-emerald-600 text-white font-bold rounded">✔ 核准通過</button>
+                        <button onclick="updateStatus('${doc.id}', 'rejected')" class="py-2.5 bg-red-900/80 hover:bg-red-800 text-white font-bold rounded transition active:scale-95">✖ 駁回重拍</button>
+                        <button onclick="updateStatus('${doc.id}', 'approved')" class="py-2.5 bg-emerald-700 hover:bg-emerald-600 text-white font-bold rounded transition active:scale-95">✔ 核准通過</button>
                     </div>
                 `;
                 list.appendChild(card);
             });
+        }, (error) => {
+            console.error("Firestore 監聽失敗：", error);
+            document.getElementById('submissions-list').innerHTML = `<div class="text-center text-rose-500 py-8">連線失敗：${error.message}</div>`;
         });
 
       function updateStatus(id, newStatus) {
           db.collection("submissions").doc(id).update({
               status: newStatus
+          }).catch((err) => {
+              alert("審核狀態更新失敗：" + err.message);
           });
       }
     </script>
