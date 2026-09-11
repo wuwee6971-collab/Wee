@@ -71,18 +71,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script>
-  // 貼上剛才第二步複製的設定
-  const firebaseConfig = {
-    apiKey: "AIzaSyCxIinbYw3OhJhKksVHsqPaYCv0-fLUR3s",
-    authDomain: "weee-57379.firebaseapp.com",
-    projectId: "weee-57379",
-    storageBucket: "weee-57379.firebasestorage.app",
-    messagingSenderId: "26784647",
-    appId: "1:26784647:web:e3c682e0915fe43ddf5922"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-</script>
 <body class="min-h-[100dvh] flex items-center justify-center p-0 sm:p-4 overflow-x-hidden">
 
     <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
@@ -552,62 +540,79 @@
 
     <script>
         // ==========================================
-        // Firebase Configuration (請替換為你的專案金鑰)
+        // Firebase Configuration (統一真實金鑰設定)
         // ==========================================
-        // ==========================================
-        // Firebase Configuration (防呆保護版)
-        // ==========================================
-        let db = null;
-        let storage = null;
+        const firebaseConfig = {
+            apiKey: "AIzaSyCxIinbYw3OhJhKksVHsqPaYCv0-fLUR3s",
+            authDomain: "weee-57379.firebaseapp.com",
+            projectId: "weee-57379",
+            storageBucket: "weee-57379.firebasestorage.app",
+            messagingSenderId: "26784647",
+            appId: "1:26784647:web:e3c682e0915fe43ddf5922"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
 
-        try {
-            const firebaseConfig = {
-                apiKey: "YOUR_API_KEY",
-                authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-                projectId: "YOUR_PROJECT_ID",
-                storageBucket: "YOUR_PROJECT_ID.appspot.com",
-                messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-                appId: "YOUR_APP_ID"
-            };
-
-            // 僅在有填入真實 Key 時才初始化
-            if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
-                firebase.initializeApp(firebaseConfig);
-                db = firebase.firestore();
-                storage = firebase.storage();
-            } else {
-                console.warn("Firebase 尚未配置真實 API Key，已先略過初始化以防卡死。");
-            }
-        } catch (e) {
-            console.error("Firebase 初始化失敗：", e);
-        }
-        // 圖片壓縮函數 (前端壓縮避免上傳過久)
-        function compressImage(file, callback) {
+        // 圖片壓縮為 Base64 (確保寫入 Firestore 順暢)
+        function compressImageToBase64(file, maxWidth, quality, callback) {
             const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = event => {
+            reader.onload = function(e) {
                 const img = new Image();
-                img.src = event.target.result;
-                img.onload = () => {
+                img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800;
-                    let width = img.width, height = img.height;
-                    
-                    if (width > MAX_WIDTH) {
-                        height *= MAX_WIDTH / width;
-                        width = MAX_WIDTH;
-                    }
-                    
-                    canvas.width = width;
-                    canvas.height = height;
+                    const scale = Math.min(1, maxWidth / img.width);
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
                     const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    canvas.toBlob((blob) => callback(blob), 'image/jpeg', 0.8);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const base64Str = canvas.toDataURL('image/jpeg', quality);
+                    callback(base64Str);
                 };
+                img.src = e.target.result;
             };
+            reader.readAsDataURL(file);
         }
 
+        function uploadAndListenVerification(file, levelName, onSuccess) {
+            showAlert("資料處理中", "正在壓縮並加密線索檔案...", "fa-satellite-dish fa-spin", "text-blue-600", null, false);
+
+            compressImageToBase64(file, 600, 0.6, async (base64Image) => {
+                const teamName = GameState.get('teamName') || "匿名隊伍";
+                try {
+                    const docRef = await db.collection("submissions").add({
+                        teamName: teamName,
+                        levelId: levelName,
+                        imageBase64: base64Image,
+                        status: "pending",
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    document.getElementById('alert-desc').textContent = "照片已傳送至總部，等待長官審核中...\n(請勿關閉此畫面)";
+                    document.getElementById('alert-icon').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+                    const unsubscribe = docRef.onSnapshot((doc) => {
+                        if (!doc.exists) return;
+                        const data = doc.data();
+                        if (data.status === "approved") {
+                            unsubscribe();
+                            document.getElementById('modal-alert').classList.add('hidden');
+                            onSuccess(true);
+                        } else if (data.status === "rejected") {
+                            unsubscribe();
+                            document.getElementById('modal-alert').classList.add('hidden');
+                            onSuccess(false);
+                        }
+                    });
+                } catch (error) {
+                    showAlert("傳輸失敗", "無法傳送至資料庫，請重新拍攝。\n" + error.message, "fa-triangle-exclamation", "text-red-600");
+                }
+            });
+        }
+
+        // 剩餘的 GAME_DATA、GameState 及網頁互動邏輯接在下方...
+    </script>
         // Firebase 拍照上傳與監聽審核
         function compressImageToBase64(file, maxWidth, quality, callback) {
             const reader = new FileReader();
