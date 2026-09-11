@@ -10,10 +10,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
     
-    <!-- Firebase Compat SDK -->
+    <!-- 唯一保留的 Firebase SDK (v10.8.0) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
     <style>
         body { font-family: 'Courier Prime', 'Noto Serif TC', serif; background-color: #2b1f16; color: #1a110a; user-select: none; -webkit-user-select: none; touch-action: manipulation; overscroll-behavior-y: none; }
@@ -63,12 +62,11 @@
         #app-loader { transition: opacity 0.6s ease; }
         .pb-viewport-safe { padding-bottom: calc(90px + env(safe-area-inset-bottom, 20px)); }
         
-        /* 統一優化的返回按鈕 (置於左上角) */
+        /* 統一優化的返回按鈕 */
         .nav-back-btn { position: absolute; left: 16px; top: 16px; color: #6a2932; font-size: 1.25rem; padding: 4px; z-index: 20; background: transparent; border: none; cursor: pointer; transition: transform 0.1s; }
         .nav-back-btn:active { transform: scale(0.9); }
     </style>
 </head>
-<script>
 <body class="min-h-[100dvh] flex items-center justify-center p-0 sm:p-4 overflow-x-hidden">
 
     <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
@@ -88,6 +86,7 @@
 
     <div class="relative w-full max-w-[430px] h-[100dvh] sm:h-[860px] paper-bg sm:border-[8px] border-stone-900 shadow-2xl flex flex-col overflow-hidden bg-white">
         
+        <!-- 頂部導覽列 -->
         <div class="bg-[#6a2932] border-b-4 border-[#291014] px-4 py-3.5 flex items-center justify-between z-40 shrink-0 shadow-[0_4px_10px_rgba(0,0,0,0.5)] relative text-[#f8f2e6]">
             <div class="flex items-center space-x-1.5 w-1/3 truncate">
                 <i class="fa-solid fa-id-badge text-xs opacity-80"></i>
@@ -109,6 +108,7 @@
         <div id="game-viewport" class="flex-1 overflow-y-auto scroll-smooth z-10 w-full custom-scrollbar relative bg-transparent" style="-webkit-overflow-scrolling: touch;">
             <div class="pb-viewport-safe min-h-full flex flex-col relative w-full">
 
+                <!-- SCREEN: 報到大廳 -->
                 <div id="screen-entry" class="screen-panel screen-active p-5 flex flex-col justify-center bg-transparent">
                     <div class="text-center py-6 mb-4">
                         <h1 class="text-4xl font-black tracking-widest text-[#6a2932] mb-3 drop-shadow-md font-serif">三重空軍一村</h1>
@@ -136,6 +136,7 @@
                     </div>
                 </div>
 
+                <!-- SCREEN: 任務總部 -->
                 <div id="screen-main" class="screen-panel hidden p-5 flex flex-col space-y-6 justify-center">
                     <div class="level-card p-5 text-center flex flex-col items-center justify-center shadow-md">
                         <div class="text-sm font-bold text-[#3d2a1b] mb-1">委託剩餘時間</div>
@@ -145,9 +146,7 @@
                         <i class="fa-solid fa-envelope-open-text text-5xl text-[#8a7251] mb-6 opacity-80"></i>
                         <div class="text-sm font-bold text-[#3d2a1b] mb-2">下一步，請前往區域</div>
                         <div class="text-3xl font-black text-[#6a2932] mb-8 tracking-widest">《 <span id="main-active-title"></span> 》</div>
-                        <button id="btn-goto-current" class="w-full py-4 primary-btn font-black text-xl tracking-widest animate-pulse">
-                            前往調查
-                        </button>
+                        <button id="btn-goto-current" class="w-full py-4 primary-btn font-black text-xl tracking-widest animate-pulse">前往調查</button>
                     </div>
                 </div>
 
@@ -157,7 +156,7 @@
                         <h2 class="text-xl text-[#6a2932] font-black text-center border-b-2 border-[#3d2a1b] pb-3 font-serif">任務一：陣地巡查拍照</h2>
                         <p class="text-sm font-bold text-[#3d2a1b] text-center mb-2">請尋找以下地標並拍照上傳至總部審核。</p>
                         <div class="grid grid-cols-2 gap-4" id="l1-locations-grid">
-                            <!-- JS 生成 -->
+                            <!-- JS 動態生成 -->
                         </div>
                     </div>
                     <div class="level-card p-5 space-y-5 relative">
@@ -177,7 +176,6 @@
 
                 <!-- LEVEL 2: 眷村眷舍 -->
                 <div id="screen-level-2" class="screen-panel hidden p-5 flex flex-col space-y-5">
-                    
                     <div id="l2-pre-q4" class="level-card p-6 flex-1 flex flex-col justify-center hidden relative">
                         <button class="nav-back-btn" onclick="prevL2Question(true)"><i class="fa-solid fa-chevron-left"></i></button>
                         <h2 class="text-2xl font-black text-[#047857] text-center mb-6 font-serif border-b-2 border-dashed border-[#047857]/40 pb-4 mt-8">眷舍的有機生長</h2>
@@ -201,11 +199,9 @@
                             </label>
                             <input type="file" accept="image/*" capture="environment" id="l2-camera-input" class="hidden">
                         </div>
-                        
                         <div id="l2-question-img-container" class="hidden mb-6 w-full vintage-photo shrink-0">
                             <img id="l2-question-img" src="" class="w-full h-auto object-cover loaded">
                         </div>
-                        
                         <div id="l2-question-text" class="text-lg font-bold leading-[1.8] mb-8 whitespace-pre-line text-[#1a110a] shrink-0 text-justify"></div>
                         <div id="l2-options-container" class="space-y-4 flex-1 flex flex-col justify-end pb-4"></div>
                     </div>
@@ -223,14 +219,12 @@
                         </label>
                         <input type="file" accept="image/*" capture="environment" id="l3-camera-input" class="hidden">
                     </div>
-                    
                     <div id="l3-qa-section" class="hidden flex-1 flex flex-col">
                         <div class="level-card border-t-[#a04b1e] p-6 flex-1 flex flex-col relative pt-12">
                             <button onclick="prevL3Question()" class="nav-back-btn" id="btn-l3-prev"><i class="fa-solid fa-chevron-left"></i></button>
                             <div class="text-center mb-6 shrink-0 relative flex justify-center items-center border-b-2 border-dashed border-[#a04b1e]/40 pb-4">
                                 <span class="px-4 py-2 bg-[#f5f0e8] border-2 border-[#a04b1e] rounded-sm text-sm font-black text-[#a04b1e] shadow-[2px_2px_0_#a04b1e]" id="l3-q-counter"></span>
                             </div>
-                            
                             <div class="mt-2 flex flex-col items-center justify-center shrink-0 mb-4 relative">
                                 <button id="l3-btn-voice" class="w-20 h-20 bg-[#d8c8a7] border-4 border-[#3d2a1b] rounded-full text-[#3d2a1b] flex items-center justify-center shadow-[0_6px_0_#3d2a1b] transition-transform active:translate-y-2 active:shadow-[0_0px_0_#3d2a1b] animate-bounce">
                                     <i id="l3-voice-icon" class="fa-solid fa-volume-high text-3xl"></i>
@@ -239,12 +233,9 @@
                                 <p class="text-xs font-bold text-[#a04b1e] mt-3">點擊聆聽老鄰居的描述</p>
                             </div>
                             <p id="l3-question-text" class="text-lg font-black text-center leading-[1.6] mb-4 text-[#1a110a] font-serif"></p>
-                            
-                            <!-- 嵌入菜單圖 -->
                             <div class="w-full h-28 bg-[#e6dfcc] border-2 border-[#3d2a1b] mb-4 rounded-sm flex items-center justify-center overflow-hidden">
                                 <img id="l3-menu-img" src="" class="w-full h-full object-cover opacity-80 mix-blend-multiply">
                             </div>
-
                             <div id="l3-options-container" class="space-y-3 flex-1 flex flex-col justify-end pb-2"></div>
                         </div>
                     </div>
@@ -1174,119 +1165,6 @@
                 }
             }, 600);
         });
-    </script>
-</body>
-</html>
-
-另外一個檔案是admin:
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>總部審核終端</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Firebase Compat SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-</head>
-<body class="bg-stone-900 text-stone-200 font-mono min-h-screen">
-
-    <!-- 登入畫面 -->
-    <div id="login-screen" class="fixed inset-0 flex flex-col items-center justify-center bg-stone-900 z-50 p-6">
-        <i class="fa-solid fa-shield-halved text-6xl text-stone-500 mb-6"></i>
-        <h1 class="text-2xl font-bold tracking-widest text-stone-300 mb-8">總部終端連線</h1>
-        <input type="password" id="admin-pin" placeholder="輸入授權碼" class="w-full max-w-xs bg-stone-800 border-2 border-stone-600 p-4 text-center text-2xl tracking-[0.5em] text-white rounded outline-none focus:border-stone-400 mb-4">
-        <button onclick="login()" class="w-full max-w-xs py-4 bg-stone-700 hover:bg-stone-600 text-white font-bold rounded tracking-widest transition">連線</button>
-    </div>
-
-    <!-- 審核主畫面 -->
-    <div id="main-screen" class="hidden flex-col h-screen">
-        <header class="bg-stone-950 border-b-2 border-stone-800 p-4 flex justify-between items-center shrink-0 shadow-md">
-            <div class="font-bold tracking-widest text-emerald-500"><i class="fa-solid fa-satellite-dish animate-pulse mr-2"></i>即時監控網</div>
-            <div class="text-xs text-stone-500">待審核：<span id="pending-count" class="text-white text-lg font-bold">0</span></div>
-        </header>
-        
-        <main class="flex-1 overflow-y-auto p-4 space-y-4" id="submissions-container">
-            <!-- 任務卡片將透過 JS 生成 -->
-        </main>
-    </div>
-
-    <script>
-        // ==========================================
-        // 請填入你的 Firebase Config
-        // ==========================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyCxIinbYw3OhJhKksVHsqPaYCv0-fLUR3s",
-            authDomain: "weee-57379.firebaseapp.com",
-            projectId: "weee-57379",
-            storageBucket: "weee-57379.firebasestorage.app",
-            messagingSenderId: "26784647",
-            appId: "1:26784647:web:e3c682e0915fe43ddf5922"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        function login() {
-            const pin = document.getElementById('admin-pin').value;
-            if (pin === "1945") {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('main-screen').classList.remove('hidden');
-                document.getElementById('main-screen').classList.add('flex');
-                startListening();
-            } else {
-                alert("密碼錯誤");
-                document.getElementById('admin-pin').value = '';
-            }
-        }
-
-        function startListening() {
-            db.collection("submissions")
-              .where("status", "==", "pending")
-              .orderBy("createdAt", "asc")
-              .onSnapshot((snapshot) => {
-                  const container = document.getElementById('submissions-container');
-                  document.getElementById('pending-count').textContent = snapshot.docs.length;
-                  container.innerHTML = '';
-                  
-                  if (snapshot.empty) {
-                      container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-stone-600"><i class="fa-solid fa-mug-hot text-4xl mb-4"></i><p>目前無待審核任務</p></div>';
-                      return;
-                  }
-
-                  snapshot.forEach((doc) => {
-                      const data = doc.data();
-                      const timeString = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleTimeString('zh-TW', {hour12: false}) : '剛才';
-                      
-                      const card = document.createElement('div');
-                      card.className = "bg-stone-800 border border-stone-700 rounded shadow-lg overflow-hidden flex flex-col";
-                      card.innerHTML = `
-                          <div class="p-3 bg-stone-900 border-b border-stone-700 flex justify-between items-center">
-                              <span class="font-bold text-emerald-400">${data.teamName}</span>
-                              <span class="text-xs text-stone-400"><i class="fa-regular fa-clock mr-1"></i>${timeString}</span>
-                          </div>
-                          <div class="p-3 text-sm text-stone-300 border-b border-stone-700 bg-stone-800">
-                              任務：<span class="font-bold text-white">${data.levelId}</span>
-                          </div>
-                          <div class="bg-black flex items-center justify-center h-64 overflow-hidden">
-                              <img src="${data.imageBase64 || data.photoUrl}" class="w-full h-full object-contain" onclick="window.open('${data.imageBase64 || data.photoUrl}')">
-                          </div>
-                          <div class="grid grid-cols-2 gap-px bg-stone-900">
-                              <button onclick="updateStatus('${doc.id}', 'rejected')" class="py-4 bg-stone-800 text-rose-500 font-bold hover:bg-stone-700 active:bg-rose-900 transition"><i class="fa-solid fa-xmark mr-2"></i>退回重拍</button>
-                              <button onclick="updateStatus('${doc.id}', 'approved')" class="py-4 bg-stone-800 text-emerald-500 font-bold hover:bg-stone-700 active:bg-emerald-900 transition"><i class="fa-solid fa-check mr-2"></i>核准通過</button>
-                          </div>
-                      `;
-                      container.appendChild(card);
-                  });
-              });
-        }
-
-        function updateStatus(docId, newStatus) {
-            db.collection("submissions").doc(docId).update({ status: newStatus })
-              .catch(err => alert("更新失敗：" + err.message));
-        }
     </script>
 </body>
 </html>
