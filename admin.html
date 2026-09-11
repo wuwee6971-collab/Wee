@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>關主即時審核指揮所</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-stone-900 text-stone-100 min-h-screen p-4 pb-12">
+    <h1 class="text-2xl font-black text-center text-amber-500 mb-6 border-b border-stone-700 pb-3">
+        🎖️ 實境解謎・現場審核後台
+    </h1>
+
+    <div id="submissions-list" class="max-w-md mx-auto space-y-4">
+        <p class="text-center text-stone-400">連線資料庫中...</p>
+    </div>
+
+    <script>
+      // 貼上第二步的配置
+      const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "weee-57379.firebaseapp.com",
+        projectId: "weee-57379",
+        storageBucket: "weee-57379.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+
+      // 即時監聽 pending 狀態的照片
+      db.collection("submissions")
+        .where("status", "==", "pending")
+        .onSnapshot((snapshot) => {
+            const list = document.getElementById('submissions-list');
+            if (snapshot.empty) {
+                list.innerHTML = '<div class="text-center text-stone-500 py-12">目前沒有待審核的照片</div>';
+                return;
+            }
+            list.innerHTML = '';
+            snapshot.forEach((doc) => {
+                const item = doc.data();
+                const card = document.createElement('div');
+                card.className = "bg-stone-800 border-2 border-stone-700 p-4 rounded shadow-lg";
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-bold text-lg text-amber-400">${item.teamName}</span>
+                        <span class="text-xs bg-stone-700 px-2 py-1 rounded">任務 ${item.levelId}</span>
+                    </div>
+                    <img src="${item.image}" class="w-full h-auto rounded border border-stone-600 mb-3" />
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="updateStatus('${doc.id}', 'rejected')" class="py-2.5 bg-red-900/80 hover:bg-red-800 text-white font-bold rounded">✖ 駁回重拍</button>
+                        <button onclick="updateStatus('${doc.id}', 'approved')" class="py-2.5 bg-emerald-700 hover:bg-emerald-600 text-white font-bold rounded">✔ 核准通過</button>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        });
+
+      function updateStatus(id, newStatus) {
+          db.collection("submissions").doc(id).update({
+              status: newStatus
+          });
+      }
+    </script>
+</body>
+</html>
