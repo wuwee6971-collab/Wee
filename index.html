@@ -539,18 +539,33 @@
         // ==========================================
         // Firebase Configuration (請替換為你的專案金鑰)
         // ==========================================
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const storage = firebase.storage();
+        // ==========================================
+        // Firebase Configuration (防呆保護版)
+        // ==========================================
+        let db = null;
+        let storage = null;
 
+        try {
+            const firebaseConfig = {
+                apiKey: "YOUR_API_KEY",
+                authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+                projectId: "YOUR_PROJECT_ID",
+                storageBucket: "YOUR_PROJECT_ID.appspot.com",
+                messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+                appId: "YOUR_APP_ID"
+            };
+
+            // 僅在有填入真實 Key 時才初始化
+            if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                storage = firebase.storage();
+            } else {
+                console.warn("Firebase 尚未配置真實 API Key，已先略過初始化以防卡死。");
+            }
+        } catch (e) {
+            console.error("Firebase 初始化失敗：", e);
+        }
         // 圖片壓縮函數 (前端壓縮避免上傳過久)
         function compressImage(file, callback) {
             const reader = new FileReader();
@@ -1129,6 +1144,41 @@
                 renderCertificate();
             }, "確認兌換", 0, true);
         };
+        // ==========================================
+        // 頁面加載完成與 Loader 關閉防卡死邏輯
+        // ==========================================
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('app-loader');
+            const progressEl = document.getElementById('loader-progress');
+            if (progressEl) progressEl.textContent = '100%';
+
+            setTimeout(() => {
+                if (loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.remove(), 600);
+                }
+
+                // 檢查存檔狀態，決定跳轉畫面
+                if (GameState.init() && GameState.get('teamName')) {
+                    if (globalTimerInterval) clearInterval(globalTimerInterval);
+                    globalTimerInterval = setInterval(updateTimerDisplay, 1000);
+                    updateTimerDisplay();
+
+                    if (!GameState.get('soundEnabled')) {
+                        const icon = document.getElementById('sound-icon');
+                        if (icon) icon.className = "fa-solid fa-volume-xmark text-stone-400 text-base";
+                    }
+
+                    if (GameState.get('stamps').filter(Boolean).length === 7) {
+                        showScreen('certificate');
+                    } else {
+                        showScreen('main');
+                    }
+                } else {
+                    showScreen('entry');
+                }
+            }, 600);
+        });
     </script>
 </body>
 </html>
