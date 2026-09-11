@@ -68,8 +68,6 @@
         .nav-back-btn:active { transform: scale(0.9); }
     </style>
 </head>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script>
 <body class="min-h-[100dvh] flex items-center justify-center p-0 sm:p-4 overflow-x-hidden">
 
@@ -536,12 +534,19 @@
             </div>
         </div>
 
-    </div>
+    </div> <!-- 注意：這是主容器的結尾 div -->
 
+    <!-- ============================================================== -->
+    <!-- 1. Firebase SDK 載入 (放在 HTML 最底部，確保不干擾畫面) -->
+    <!-- ============================================================== -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- ============================================================== -->
+    <!-- 2. 所有 JavaScript 遊戲邏輯與 Firebase 設定都必須包在這裡面 -->
+    <!-- ============================================================== -->
     <script>
-        // ==========================================
-        // Firebase Configuration (統一真實金鑰設定)
-        // ==========================================
+        // 初始化 Firebase (使用你的真實金鑰)
         const firebaseConfig = {
             apiKey: "AIzaSyCxIinbYw3OhJhKksVHsqPaYCv0-fLUR3s",
             authDomain: "weee-57379.firebaseapp.com",
@@ -550,12 +555,10 @@
             messagingSenderId: "26784647",
             appId: "1:26784647:web:e3c682e0915fe43ddf5922"
         };
-        
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const storage = firebase.storage();
 
-        // 圖片壓縮為 Base64 (確保寫入 Firestore 順暢)
+        // 圖片壓縮為 Base64 (前端壓縮避免上傳過久)
         function compressImageToBase64(file, maxWidth, quality, callback) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -575,9 +578,10 @@
             reader.readAsDataURL(file);
         }
 
+        // 上傳至 Firestore 邏輯
         function uploadAndListenVerification(file, levelName, onSuccess) {
             showAlert("資料處理中", "正在壓縮並加密線索檔案...", "fa-satellite-dish fa-spin", "text-blue-600", null, false);
-
+            
             compressImageToBase64(file, 600, 0.6, async (base64Image) => {
                 const teamName = GameState.get('teamName') || "匿名隊伍";
                 try {
@@ -611,75 +615,8 @@
             });
         }
 
-        // 剩餘的 GAME_DATA、GameState 及網頁互動邏輯接在下方...
-    </script>
-        // Firebase 拍照上傳與監聽審核
-        function compressImageToBase64(file, maxWidth, quality, callback) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const scale = Math.min(1, maxWidth / img.width);
-                    canvas.width = img.width * scale;
-                    canvas.height = img.height * scale;
-        
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        
-                    // 轉為 Base64 JPEG 字串 (檔案大小約 50KB ~ 90KB)
-                    const base64Str = canvas.toDataURL('image/jpeg', quality);
-                    callback(base64Str);
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-        function uploadAndListenVerification(file, levelName, onSuccess) {
-    showAlert("資料處理中", "正在壓縮並加密線索檔案...", "fa-satellite-dish fa-spin", "text-blue-600", null, false);
-
-    // 限制最大寬度 600px、品質 0.6，確保字串大小小於 100KB (符合 Firestore 1MB 限制)
-    compressImageToBase64(file, 600, 0.6, async (base64Image) => {
-        const teamName = GameState.get('teamName') || "匿名隊伍";
-
-        try {
-            // 直接將 Base64 存入 Firestore，跳過 Storage
-            const docRef = await db.collection("submissions").add({
-                teamName: teamName,
-                levelId: levelName,
-                imageBase64: base64Image,
-                status: "pending",
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            // 更新彈窗提示
-            document.getElementById('alert-desc').textContent = "照片已傳送至總部，等待長官審核中...\n(請勿關閉此畫面)";
-            document.getElementById('alert-icon').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-
-            // 即時監聽審核狀態
-            const unsubscribe = docRef.onSnapshot((doc) => {
-                if (!doc.exists) return;
-                const data = doc.data();
-
-                if (data.status === "approved") {
-                    unsubscribe();
-                    document.getElementById('modal-alert').classList.add('hidden');
-                    onSuccess(true);
-                } else if (data.status === "rejected") {
-                    unsubscribe();
-                    document.getElementById('modal-alert').classList.add('hidden');
-                    onSuccess(false);
-                }
-            });
-        } catch (error) {
-            showAlert("傳輸失敗", "無法傳送至資料庫，請重新拍攝。\n" + error.message, "fa-triangle-exclamation", "text-red-600");
-        }
-    });
-}
-
-
         // ==========================================
-        // 原始遊戲資料與邏輯 (合併修正)
+        // 原始遊戲資料與核心邏輯
         // ==========================================
         const GAME_DATA = {
             levels: [
@@ -1201,6 +1138,7 @@
                 renderCertificate();
             }, "確認兌換", 0, true);
         };
+        
         // ==========================================
         // 頁面加載完成與 Loader 關閉防卡死邏輯
         // ==========================================
@@ -1236,6 +1174,119 @@
                 }
             }, 600);
         });
+    </script>
+</body>
+</html>
+
+另外一個檔案是admin:
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>總部審核終端</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase Compat SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-stone-900 text-stone-200 font-mono min-h-screen">
+
+    <!-- 登入畫面 -->
+    <div id="login-screen" class="fixed inset-0 flex flex-col items-center justify-center bg-stone-900 z-50 p-6">
+        <i class="fa-solid fa-shield-halved text-6xl text-stone-500 mb-6"></i>
+        <h1 class="text-2xl font-bold tracking-widest text-stone-300 mb-8">總部終端連線</h1>
+        <input type="password" id="admin-pin" placeholder="輸入授權碼" class="w-full max-w-xs bg-stone-800 border-2 border-stone-600 p-4 text-center text-2xl tracking-[0.5em] text-white rounded outline-none focus:border-stone-400 mb-4">
+        <button onclick="login()" class="w-full max-w-xs py-4 bg-stone-700 hover:bg-stone-600 text-white font-bold rounded tracking-widest transition">連線</button>
+    </div>
+
+    <!-- 審核主畫面 -->
+    <div id="main-screen" class="hidden flex-col h-screen">
+        <header class="bg-stone-950 border-b-2 border-stone-800 p-4 flex justify-between items-center shrink-0 shadow-md">
+            <div class="font-bold tracking-widest text-emerald-500"><i class="fa-solid fa-satellite-dish animate-pulse mr-2"></i>即時監控網</div>
+            <div class="text-xs text-stone-500">待審核：<span id="pending-count" class="text-white text-lg font-bold">0</span></div>
+        </header>
+        
+        <main class="flex-1 overflow-y-auto p-4 space-y-4" id="submissions-container">
+            <!-- 任務卡片將透過 JS 生成 -->
+        </main>
+    </div>
+
+    <script>
+        // ==========================================
+        // 請填入你的 Firebase Config
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyCxIinbYw3OhJhKksVHsqPaYCv0-fLUR3s",
+            authDomain: "weee-57379.firebaseapp.com",
+            projectId: "weee-57379",
+            storageBucket: "weee-57379.firebasestorage.app",
+            messagingSenderId: "26784647",
+            appId: "1:26784647:web:e3c682e0915fe43ddf5922"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function login() {
+            const pin = document.getElementById('admin-pin').value;
+            if (pin === "1945") {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-screen').classList.remove('hidden');
+                document.getElementById('main-screen').classList.add('flex');
+                startListening();
+            } else {
+                alert("密碼錯誤");
+                document.getElementById('admin-pin').value = '';
+            }
+        }
+
+        function startListening() {
+            db.collection("submissions")
+              .where("status", "==", "pending")
+              .orderBy("createdAt", "asc")
+              .onSnapshot((snapshot) => {
+                  const container = document.getElementById('submissions-container');
+                  document.getElementById('pending-count').textContent = snapshot.docs.length;
+                  container.innerHTML = '';
+                  
+                  if (snapshot.empty) {
+                      container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-stone-600"><i class="fa-solid fa-mug-hot text-4xl mb-4"></i><p>目前無待審核任務</p></div>';
+                      return;
+                  }
+
+                  snapshot.forEach((doc) => {
+                      const data = doc.data();
+                      const timeString = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleTimeString('zh-TW', {hour12: false}) : '剛才';
+                      
+                      const card = document.createElement('div');
+                      card.className = "bg-stone-800 border border-stone-700 rounded shadow-lg overflow-hidden flex flex-col";
+                      card.innerHTML = `
+                          <div class="p-3 bg-stone-900 border-b border-stone-700 flex justify-between items-center">
+                              <span class="font-bold text-emerald-400">${data.teamName}</span>
+                              <span class="text-xs text-stone-400"><i class="fa-regular fa-clock mr-1"></i>${timeString}</span>
+                          </div>
+                          <div class="p-3 text-sm text-stone-300 border-b border-stone-700 bg-stone-800">
+                              任務：<span class="font-bold text-white">${data.levelId}</span>
+                          </div>
+                          <div class="bg-black flex items-center justify-center h-64 overflow-hidden">
+                              <img src="${data.imageBase64 || data.photoUrl}" class="w-full h-full object-contain" onclick="window.open('${data.imageBase64 || data.photoUrl}')">
+                          </div>
+                          <div class="grid grid-cols-2 gap-px bg-stone-900">
+                              <button onclick="updateStatus('${doc.id}', 'rejected')" class="py-4 bg-stone-800 text-rose-500 font-bold hover:bg-stone-700 active:bg-rose-900 transition"><i class="fa-solid fa-xmark mr-2"></i>退回重拍</button>
+                              <button onclick="updateStatus('${doc.id}', 'approved')" class="py-4 bg-stone-800 text-emerald-500 font-bold hover:bg-stone-700 active:bg-emerald-900 transition"><i class="fa-solid fa-check mr-2"></i>核准通過</button>
+                          </div>
+                      `;
+                      container.appendChild(card);
+                  });
+              });
+        }
+
+        function updateStatus(docId, newStatus) {
+            db.collection("submissions").doc(docId).update({ status: newStatus })
+              .catch(err => alert("更新失敗：" + err.message));
+        }
     </script>
 </body>
 </html>
