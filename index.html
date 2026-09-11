@@ -68,6 +68,21 @@
         .nav-back-btn:active { transform: scale(0.9); }
     </style>
 </head>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+  // 貼上剛才第二步複製的設定
+  const firebaseConfig = {
+    apiKey: "AIzaSyCxIinbYw3OhJhKksVHsqPaYCv0-fLUR3s",
+    authDomain: "weee-57379.firebaseapp.com",
+    projectId: "weee-57379",
+    storageBucket: "weee-57379.firebasestorage.app",
+    messagingSenderId: "26784647",
+    appId: "1:26784647:web:e3c682e0915fe43ddf5922"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
 <body class="min-h-[100dvh] flex items-center justify-center p-0 sm:p-4 overflow-x-hidden">
 
     <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
@@ -594,48 +609,68 @@
         }
 
         // Firebase 拍照上傳與監聽審核
+        function compressImageToBase64(file, maxWidth, quality, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const scale = Math.min(1, maxWidth / img.width);
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
+        
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+                    // 轉為 Base64 JPEG 字串 (檔案大小約 50KB ~ 90KB)
+                    const base64Str = canvas.toDataURL('image/jpeg', quality);
+                    callback(base64Str);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
         function uploadAndListenVerification(file, levelName, onSuccess) {
-            showAlert("資料傳送中", "正在加密傳輸至總部...", "fa-satellite-dish fa-spin", "text-blue-600", null, false);
-            
-            compressImage(file, async (compressedBlob) => {
-                const teamName = GameState.get('teamName');
-                const timestamp = Date.now();
-                const storageRef = storage.ref(`submissions/${teamName}_${timestamp}.jpg`);
-                
-                try {
-                    await storageRef.put(compressedBlob);
-                    const photoUrl = await storageRef.getDownloadURL();
-                    
-                    const docRef = await db.collection("submissions").add({
-                        teamName: teamName,
-                        levelId: levelName,
-                        photoUrl: photoUrl,
-                        status: "pending",
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+    showAlert("資料處理中", "正在壓縮並加密線索檔案...", "fa-satellite-dish fa-spin", "text-blue-600", null, false);
 
-                    // 轉換彈窗文字為等待審核
-                    document.getElementById('alert-desc').textContent = "照片已傳送至總部，等待長官審核中...\n(請勿關閉此畫面)";
-                    document.getElementById('alert-icon').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+    // 限制最大寬度 600px、品質 0.6，確保字串大小小於 100KB (符合 Firestore 1MB 限制)
+    compressImageToBase64(file, 600, 0.6, async (base64Image) => {
+        const teamName = GameState.get('teamName') || "匿名隊伍";
 
-                    // 監聽審核狀態
-                    const unsubscribe = docRef.onSnapshot((doc) => {
-                        const data = doc.data();
-                        if (data.status === "approved") {
-                            unsubscribe();
-                            document.getElementById('modal-alert').classList.add('hidden');
-                            onSuccess(true);
-                        } else if (data.status === "rejected") {
-                            unsubscribe();
-                            document.getElementById('modal-alert').classList.add('hidden');
-                            onSuccess(false);
-                        }
-                    });
-                } catch (error) {
-                    showAlert("傳輸失敗", "網路異常，請重新拍攝。\n" + error.message, "fa-triangle-exclamation", "text-red-600");
+        try {
+            // 直接將 Base64 存入 Firestore，跳過 Storage
+            const docRef = await db.collection("submissions").add({
+                teamName: teamName,
+                levelId: levelName,
+                imageBase64: base64Image,
+                status: "pending",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            // 更新彈窗提示
+            document.getElementById('alert-desc').textContent = "照片已傳送至總部，等待長官審核中...\n(請勿關閉此畫面)";
+            document.getElementById('alert-icon').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+            // 即時監聽審核狀態
+            const unsubscribe = docRef.onSnapshot((doc) => {
+                if (!doc.exists) return;
+                const data = doc.data();
+
+                if (data.status === "approved") {
+                    unsubscribe();
+                    document.getElementById('modal-alert').classList.add('hidden');
+                    onSuccess(true);
+                } else if (data.status === "rejected") {
+                    unsubscribe();
+                    document.getElementById('modal-alert').classList.add('hidden');
+                    onSuccess(false);
                 }
             });
+        } catch (error) {
+            showAlert("傳輸失敗", "無法傳送至資料庫，請重新拍攝。\n" + error.message, "fa-triangle-exclamation", "text-red-600");
         }
+    });
+}
 
 
         // ==========================================
@@ -916,14 +951,22 @@
 
         // ================= LEVEL 2 =================
         document.getElementById('l2-camera-input').addEventListener('change', function(e) {
-            if(this.files && this.files.length > 0) {
+            if (this.files && this.files.length > 0) {
                 const file = this.files[0];
-                this.value = '';
-                uploadAndListenVerification(file, `眷舍空間-Q${GameState.get('l2CurrentQ')+1}`, (success) => {
-                    if (success) {
-                        let photos = GameState.get('l2Photos'); photos[GameState.get('l2CurrentQ')] = true; GameState.set('l2Photos', photos); renderL2();
+                this.value = ''; // 清空 input 防止無法選同一張圖
+        
+                uploadAndListenVerification(file, "任務二：眷舍空間", (isApproved) => {
+                    if (isApproved) {
+                        playSuccessSound();
+                        showAlert("審核通過", "長官已確認線索照片！解鎖考驗題目。", "fa-circle-check", "text-[#047857]", () => {
+                            let photos = GameState.get('l2Photos');
+                            photos[GameState.get('l2CurrentQ')] = true;
+                            GameState.set('l2Photos', photos);
+                            renderL2();
+                        });
                     } else {
-                        showAlert("審核退回", "照片模糊或不符，請重新拍攝。", "fa-xmark", "text-rose-600");
+                        playErrorSound();
+                        showAlert("審核未通過", "長官回報：照片模糊或角度不符，請重新拍攝！", "fa-circle-xmark", "text-[#6a2932]");
                     }
                 });
             }
@@ -994,12 +1037,21 @@
 
         // ================= LEVEL 3 =================
         document.getElementById('l3-camera-input').addEventListener('change', function(e) {
-            if(this.files && this.files.length > 0) {
+            if (this.files && this.files.length > 0) {
                 const file = this.files[0];
                 this.value = '';
-                uploadAndListenVerification(file, `村長的家-外觀`, (success) => {
-                    if (success) { GameState.set('l3PhotoDone', true); renderL3(); } 
-                    else { showAlert("審核退回", "照片模糊或不符，請重新拍攝。", "fa-xmark", "text-rose-600"); }
+        
+                uploadAndListenVerification(file, "任務三：村長的家", (isApproved) => {
+                    if (isApproved) {
+                        playSuccessSound();
+                        showAlert("審核通過", "已確認到達村長家現場！解鎖眷村廣播線索。", "fa-circle-check", "text-[#a04b1e]", () => {
+                            GameState.set('l3PhotoDone', true);
+                            renderL3();
+                        });
+                    } else {
+                        playErrorSound();
+                        showAlert("審核未通過", "長官回報：地標辨認失敗，請確認站在村長家門前重新拍攝！", "fa-circle-xmark", "text-[#6a2932]");
+                    }
                 });
             }
         });
