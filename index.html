@@ -1103,9 +1103,9 @@
         // ==========================================
         function showAlert(title, desc, iconClass = "", colorClass = "text-[#6a2932]", callback = null, btnText = "確認", autoCloseDelay = 0, showCancel = false) {
             document.getElementById('alert-title').textContent = title;
-            document.getElementById('alert-desc').textContent = desc;
+            document.getElementById('alert-desc').innerHTML = desc; // 支援內嵌圖片與格式化標籤
             const iconEl = document.getElementById('alert-icon');
-            if(iconClass) { 
+            if (iconClass) { 
                 iconEl.innerHTML = `<i class="fa-solid ${iconClass}"></i>`; 
                 iconEl.className = `text-5xl ${colorClass} shrink-0 mb-2 drop-shadow-md`; 
                 iconEl.style.display = 'block'; 
@@ -1309,57 +1309,63 @@
         }
 
         // --- LEVEL 1 ---
+        let l1ActiveTargetIdx = null;
+
         function renderL1() {
             let collected = GameState.get('l1Collected');
             document.querySelectorAll('.l1-loc-btn').forEach((btn) => {
                 const idx = parseInt(btn.dataset.idx);
-                if(collected[idx]) {
+                const loc = GAME_DATA.level1.locations[idx];
+                if (collected[idx]) {
                     btn.classList.add('bg-[#e0f2e9]', 'border-[#047857]', 'text-[#064e3b]');
-                    btn.innerHTML = `<i class="fa-solid fa-check text-[#047857] text-xl mb-1.5"></i>已紀錄`;
+                    btn.innerHTML = `<i class="fa-solid fa-check text-[#047857] text-xl mb-1"></i><span class="text-xs">密碼：<b>${loc.code}</b></span>`;
+                } else {
+                    btn.classList.remove('bg-[#e0f2e9]', 'border-[#047857]', 'text-[#064e3b]');
+                    btn.innerHTML = `<i class="fa-solid fa-camera mb-1.5 text-[#6a2932] text-xl"></i>${loc.title}`;
                 }
+
                 btn.onclick = () => {
-                    playBeep(600, 0.05); 
-                    const loc = GAME_DATA.level1.locations[idx];
-                    showAlert(loc.title, `【查閱任務】\n${loc.task}\n\n【歷史檔案】\n${loc.desc}`, "fa-map-location-dot", "text-[#6a2932]", () => {
-                        let c = GameState.get('l1Collected');
-                        if(!c[idx]) { c[idx] = true; GameState.set('l1Collected', c); renderL1(); }
-                    }, collected[idx] ? "關閉檔案" : "完成記錄");
+                    playBeep(600, 0.05);
+                    if (collected[idx]) {
+                        showAlert(loc.title, `【歷史檔案】\n${loc.desc}\n\n獲得密碼數字：【<b class="text-2xl text-[#6a2932] font-mono">${loc.code}</b>】`, "fa-file-lines", "text-[#047857]", null, "確定");
+                    } else {
+                        showAlert(`巡查任務：${loc.title}`, `【任務指引】\n${loc.task}\n\n點擊確認啟動相機拍照取證。`, "fa-camera", "text-[#6a2932]", () => {
+                            l1ActiveTargetIdx = idx;
+                            document.getElementById('l1-camera-input').click();
+                        }, "拍攝取證", 0, true);
+                    }
                 };
             });
+
             const cCount = collected.filter(Boolean).length;
             const overlay = document.getElementById('l1-keypad-overlay');
             if (cCount === 4) overlay.classList.add('hidden'); else overlay.classList.remove('hidden');
             updateL1Display();
         }
 
-        document.querySelectorAll('.l1-key').forEach(b => b.onclick = () => {
-            let input = GameState.get('l1Input');
-            if(input.length < 4) { playBeep(); input.push(b.dataset.val); GameState.set('l1Input', input); updateL1Display(); }
-        });
-        document.getElementById('l1-btn-del').onclick = () => {
-            let input = GameState.get('l1Input');
-            if(input.length > 0) { playBeep(400); input.pop(); GameState.set('l1Input', input); updateL1Display(); }
-        };
-        document.getElementById('l1-btn-submit').onclick = () => {
-            let input = GameState.get('l1Input');
-            if(input.join('') === GAME_DATA.level1.passcode) {
-                handleLevelSuccess(1);
-            } else {
-                playErrorSound();
-                let errCount = GameState.get('l1Errors') + 1;
-                GameState.set('l1Errors', errCount);
-                GameState.set('l1Input', []);
-                updateL1Display();
+        // 任務一相機拍攝監聽
+        document.getElementById('l1-camera-input').addEventListener('change', function(e) {
+            if (this.files && this.files.length > 0 && l1ActiveTargetIdx !== null) {
+                const file = this.files[0];
+                const targetIdx = l1ActiveTargetIdx;
+                const loc = GAME_DATA.level1.locations[targetIdx];
+                this.value = '';
 
-                if (errCount >= 4) {
-                    showAlert("機密檔案調閱", GAME_DATA.level1.hints[1], "fa-lightbulb", "text-amber-600");
-                } else if (errCount >= 2) {
-                    showAlert("調查線索", GAME_DATA.level1.hints[0], "fa-magnifying-glass", "text-[#3d2a1b]");
-                } else {
-                    showAlert("密碼錯誤", "年份驗證失敗，請重新確認歷史檔案。", "fa-circle-xmark", "text-red-700");
-                }
+                uploadAndListenVerification(file, `任務一：${loc.title}`, (isApproved) => {
+                    if (isApproved) {
+                        playSuccessSound();
+                        let c = GameState.get('l1Collected');
+                        c[targetIdx] = true;
+                        GameState.set('l1Collected', c);
+                        renderL1();
+                        showAlert("審核通過", `長官已確認【${loc.title}】之構件特徵！\n\n【歷史考證】\n${loc.desc}\n\n已解密通關密碼：【<b class="text-3xl text-[#6a2932] font-mono">${loc.code}</b>】`, "fa-circle-check", "text-[#047857]", null, "收到！");
+                    } else {
+                        playErrorSound();
+                        showAlert("審核未通過", `長官回報：照片模糊或非【${loc.title}】構件，請至現場重新拍攝！`, "fa-circle-xmark", "text-[#6a2932]");
+                    }
+                });
             }
-        };
+        });
         function updateL1Display() {
             let input = GameState.get('l1Input');
             document.querySelectorAll('#l1-code-container .code-box').forEach((box, i) => box.textContent = input[i] || '');
@@ -1388,16 +1394,43 @@
             }
         });
 
+        let l2InSequenceIntro = false;
+
         function renderL2() {
             let currentQ = GameState.get('l2CurrentQ');
             const qData = GAME_DATA.level2.questions[currentQ];
             document.getElementById('l2-q-counter').textContent = `測驗 ${currentQ + 1} / 5`;
-
             document.getElementById('btn-l2-prev').style.display = currentQ > 0 ? 'flex' : 'none';
-            document.getElementById('l2-question-text').textContent = qData.q;
 
             const imgContainer = document.getElementById('l2-question-img-container');
             const imgElement = document.getElementById('l2-question-img');
+            const qTextEl = document.getElementById('l2-question-text');
+            const cont = document.getElementById('l2-options-container');
+            const pSect = document.getElementById('l2-photo-section');
+            cont.innerHTML = '';
+
+            // 第 4 題排序前導小知識判斷
+            if (qData.isSequence && !l2InSequenceIntro) {
+                imgContainer.classList.add('hidden');
+                pSect.classList.add('hidden');
+                qTextEl.textContent = "【建築演變小知識】\n\n村長的家經歷了 7 次改建：\n從最初的「黑瓦竹泥牆平房」，因水患興建「防洪樓避難」，隨後人口增加「加蓋二樓」，最終「全面改建為三層樓」。\n\n請詳讀上述順序，點擊下方按鈕開始排序測驗！";
+                
+                const startBtn = document.createElement('button');
+                startBtn.className = "w-full py-4 primary-btn font-black text-xl tracking-widest mt-4";
+                startBtn.innerHTML = '<i class="fa-solid fa-play mr-2"></i>開始答題';
+                startBtn.onclick = () => {
+                    playBeep();
+                    l2InSequenceIntro = true;
+                    renderL2();
+                };
+                cont.appendChild(startBtn);
+                return;
+            }
+
+            // 題目文字展示
+            qTextEl.textContent = qData.q;
+
+            // 題目頁圖片展示
             if (qData.image) {
                 imgElement.src = qData.image;
                 imgContainer.classList.remove('hidden');
@@ -1405,21 +1438,19 @@
                 imgContainer.classList.add('hidden');
             }
 
-            const cont = document.getElementById('l2-options-container');
-            const pSect = document.getElementById('l2-photo-section');
-            cont.innerHTML = '';
-
+            // 拍照區塊處理（第 1 題與第 5 題因 photoImage 為 null，因此不會洩題）
             let photos = GameState.get('l2Photos');
-            if(qData.photo && !photos[currentQ]) {
+            if (qData.photo && !photos[currentQ]) {
                 pSect.classList.remove('hidden'); 
                 document.getElementById('l2-photo-req-text').textContent = "📸 " + qData.photoText;
                 const photoImgContainer = document.getElementById('l2-photo-img-container');
                 const photoImgElement = document.getElementById('l2-photo-img');
+                
                 if (qData.photoImage) {
                     photoImgElement.src = qData.photoImage;
                     photoImgContainer.classList.remove('hidden');
                 } else {
-                    photoImgContainer.classList.add('hidden');
+                    photoImgContainer.classList.add('hidden'); // 隱藏參考照片
                 }
             } else {
                 pSect.classList.add('hidden');
@@ -1431,11 +1462,17 @@
                     btn.className = "opt-btn font-serif text-lg tracking-wide";
                     btn.textContent = o.text;
                     btn.onclick = () => {
-                        if(o.isCorrect) {
+                        if (o.isCorrect) {
                             playSuccessSound();
                             showAlert("驗證通過", qData.desc, "fa-check-circle", "text-[#047857]", () => {
+                                l2InSequenceIntro = false;
                                 let cq = GameState.get('l2CurrentQ');
-                                if(cq < 4) { GameState.set('l2CurrentQ', cq + 1); renderL2(); } else handleLevelSuccess(2);
+                                if (cq < 4) { 
+                                    GameState.set('l2CurrentQ', cq + 1); 
+                                    renderL2(); 
+                                } else {
+                                    handleLevelSuccess(2);
+                                }
                             }, "下一題");
                         } else {
                             playErrorSound();
@@ -1488,14 +1525,20 @@
         function showL3Question() {
             let currentQ = GameState.get('l3CurrentQ');
             const qData = GAME_DATA.level3.questions[currentQ];
-            if(!qData) return;
+            if (!qData) return;
             document.getElementById('l3-q-counter').textContent = `菜單 ${currentQ + 1} / 5`;
-
             document.getElementById('btn-l3-prev').style.display = currentQ > 0 ? 'flex' : 'none';
 
             document.getElementById('l3-question-text').textContent = qData.q;
             document.getElementById('l3-audio-hint').classList.remove('hidden');
             document.getElementById('l3-audio-player').src = GAME_DATA.level3.audios[currentQ];
+            
+            // 嵌入菜單局部截圖
+            const menuImg = document.getElementById('l3-menu-img');
+            if (menuImg && GAME_DATA.level3.menuImages) {
+                menuImg.src = GAME_DATA.level3.menuImages[currentQ] || '';
+            }
+
             const cont = document.getElementById('l3-options-container'); 
             cont.innerHTML = '';
 
@@ -1508,26 +1551,35 @@
                 btn.textContent = o.text;
                 btn.disabled = true;
                 btn.onclick = () => {
-                    if(o.isCorrect) {
+                    if (o.isCorrect) {
                         playSuccessSound();
-                        showAlert("品鑑正確", qData.desc, "fa-check-circle", "text-[#a04b1e]", () => {
+                        // 彈窗附帶該道菜的實拍美食圖
+                        const foodImgSrc = GAME_DATA.level3.foodImages[currentQ];
+                        const feedbackHtml = `
+                            <div class="my-2 vintage-photo w-full aspect-[16/9] overflow-hidden rounded">
+                                <img src="${foodImgSrc}" class="w-full h-full object-cover" onerror="this.parentElement.style.display='none'">
+                            </div>
+                            <p class="mt-2">${qData.desc}</p>
+                        `;
+
+                        showAlert("品鑑正確", feedbackHtml, "fa-bowl-rice", "text-[#a04b1e]", () => {
                             let cq = GameState.get('l3CurrentQ');
-                            if(cq < 4) { 
+                            if (cq < 4) { 
                                 GameState.set('l3CurrentQ', cq + 1); 
                                 showL3Question(); 
                             } else {
-                                showAlert("調查成功", "從四川的麻辣香氣、湖南的辣椒鮮味，到江南的清甜湯品與北方的麵食文化，每一道料理都不只是味道，更是一段跨越距離的生活記憶。\n\n當不同省份的人們帶著家鄉味來到台灣，眷村廚房也成為文化交流的場所。", "", "text-[#a04b1e]", () => handleLevelSuccess(3));
+                                showAlert("味覺檔案完全解鎖", "每一道料理都不只是滋味，更是一段跨越海峽的生活記憶。\n\n眷村廚房匯聚了大江南北的家鄉味，也成就了台灣獨特的人情故事。", "", "text-[#a04b1e]", () => handleLevelSuccess(3));
                             }
-                        }, "下一道料理");
+                        }, "品鑑下一道");
                     } else {
                         playErrorSound();
-                        showAlert("品鑑錯誤", "味道似乎不對，請再試一次。", "fa-xmark-circle", "text-[#6a2932]", null, "重新選擇");
+                        showAlert("品鑑錯誤", "收音機裡長輩描述的味道似乎不是這道，請再聽一次！", "fa-xmark-circle", "text-[#6a2932]", null, "重新品鑑");
                     }
                 };
                 cont.appendChild(btn);
             });
         }
-
+        
         function prevL3Question() {
             playBeep();
             let cq = GameState.get('l3CurrentQ');
@@ -1735,7 +1787,7 @@
 
         function renderPuzzlePieces(containerId, isFullView) {
             const container = document.getElementById(containerId);
-            if(!container) return;
+            if (!container) return;
             container.innerHTML = '';
 
             GAME_DATA.puzzles.forEach((p) => {
@@ -1751,17 +1803,28 @@
                     div.innerHTML = `<span>${p.text}</span>`;
                 }
 
+                // 點擊解鎖碎片改為 Lightbox 放大，不再跳回原始關卡
                 if (!isFullView) {
                     div.onclick = () => {
                         if (isUnlocked) {
-                            playBeep();
-                            document.getElementById('modal-stamps').classList.add('hidden');
-                            showScreen(`level-${p.id}`);
+                            playBeep(700, 0.05);
+                            openPuzzleLightbox(p.text);
                         }
                     };
                 }
                 container.appendChild(div);
             });
+        }
+
+        function openPuzzleLightbox(textHtml) {
+            const content = document.getElementById('puzzle-lightbox-content');
+            if (content) content.innerHTML = textHtml;
+            document.getElementById('modal-puzzle-lightbox').classList.remove('hidden');
+        }
+
+        function closePuzzleLightbox() {
+            playBeep(400, 0.05);
+            document.getElementById('modal-puzzle-lightbox').classList.add('hidden');
         }
 
         function openFullLetter() {
@@ -1841,23 +1904,56 @@
             const elapsed = Math.floor(((GameState.get('endTime') || Date.now()) - GameState.get('startTime')) / 1000);
             const h = String(Math.floor(elapsed / 3600)).padStart(2, '0');
             const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
-            const s = String(remain = elapsed % 60).padStart(2, '0');
+            const s = String(elapsed % 60).padStart(2, '0');
             const timeStr = `${h}:${m}:${s}`;
             const isSClass = elapsed <= 7200;
 
             document.getElementById('cert-time').textContent = isSClass ? `${timeStr} (時限內)` : timeStr;
-            document.getElementById('cert-status').textContent = isSClass ? '檔案完全解密' : '委託已完成（時空延遲）';
+            document.getElementById('cert-status').textContent = isSClass ? '檔案完全解密' : '委託已完成（超時）';
             document.getElementById('cert-rank').textContent = isSClass ? '【S級結案】' : '【堅毅探尋】';
             document.getElementById('cert-status').className = isSClass ? 'text-emerald-700 font-black text-right' : 'text-amber-700 font-black text-right';
 
             const msgEl = document.getElementById('cert-msg');
-            if(isSClass) {
+            if (isSClass) {
                 msgEl.innerHTML = '恭喜完成所有委託！<br>您成功解開了眷村深埋的記憶，讓跨越時空的思念得以圓滿。';
             } else {
                 msgEl.innerHTML = '雖然耗費了較多時間，但真相終究水落石出。<br>這段歲月記憶因你的堅持而完整。';
             }
+
+            // 核銷按鈕狀態渲染
+            const claimBtn = document.getElementById('btn-claim-gift');
+            const isClaimed = GameState.get('giftClaimed') === true;
+            if (isClaimed) {
+                claimBtn.disabled = true;
+                claimBtn.className = "w-full py-3.5 bg-stone-300 border-2 border-stone-400 text-stone-600 font-black text-base cursor-not-allowed shadow-none";
+                claimBtn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-700 mr-1.5"></i>已於 ${GameState.get('giftClaimedTime') || ''} 兌換完畢`;
+            } else {
+                claimBtn.disabled = false;
+                claimBtn.className = "w-full py-3.5 primary-btn font-black text-lg tracking-widest flex items-center justify-center space-x-2";
+                claimBtn.innerHTML = `<i class="fa-solid fa-stamp"></i><span>現場人員點擊核銷</span>`;
+            }
         }
 
+        // 綁定防誤觸二次確認核銷
+        document.getElementById('btn-claim-gift').onclick = () => {
+            showAlert(
+                "服務台兌獎核銷",
+                "⚠【此操作限工作人員點擊】\n\n確認已發放實體紀念品？\n一旦核銷後將永久鎖定，無法重複領取！",
+                "fa-gift",
+                "text-amber-700",
+                () => {
+                    const now = new Date();
+                    const timeTag = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+                    GameState.set('giftClaimed', true);
+                    GameState.set('giftClaimedTime', timeTag);
+                    playSuccessSound();
+                    renderCertificate();
+                },
+                "確認已領獎",
+                0,
+                true // 開啟取消返回鍵防呆
+            );
+        };
         function confirmRestartGame() {
             showAlert("銷毀檔案", "確定要銷毀目前調閱檔案，重新開始嗎？所有的進度與拼圖都將重置。", "fa-triangle-exclamation", "text-[#6a2932]", () => {
                 GameState.reset();
