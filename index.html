@@ -128,7 +128,8 @@
         </div>
 
         <div id="game-viewport" class="flex-1 overflow-y-auto scroll-smooth z-10 w-full custom-scrollbar relative bg-transparent" style="-webkit-overflow-scrolling: touch;">
-            <div class="min-h-full flex flex-col relative w-full">
+            <!-- 預留底部空間 (pb-24)，確保內容滾到最底時按鈕不會被固定底欄擋住 -->
+            <div class="min-h-full flex flex-col relative w-full pb-24">
 
                 <!-- SCREEN 0: ENTRY -->
                 <div id="screen-entry" class="screen-panel screen-active p-5 flex flex-col justify-center bg-transparent">
@@ -693,11 +694,11 @@
             </div>
         </div>
 
-        <!-- 底部導覽列 -->
-        <div class="border-t-4 border-[#291014] p-3 text-base font-bold flex items-center justify-around text-[#1a110a] bg-[#e6dfcc] z-30 absolute bottom-0 w-full pb-[calc(12px+env(safe-area-inset-bottom,12px))] shadow-[0_-4px_15px_rgba(0,0,0,0.2)]">
-            <button id="btn-nav-hq" class="hover:text-[#6a2932] transition flex items-center space-x-2 py-3 px-4 rounded-sm active:scale-95 border-2 border-transparent active:border-[#3d2a1b]"><i class="fa-solid fa-house"></i><span>回主畫面</span></button>
+        <!-- 底部導覽列：釘死在最底部，不隨內容滑動 -->
+        <div id="bottom-nav-bar" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] border-t-4 border-[#291014] p-3 text-base font-bold flex items-center justify-around text-[#1a110a] bg-[#e6dfcc] z-40 pb-[calc(12px+env(safe-area-inset-bottom,12px))] shadow-[0_-4px_15px_rgba(0,0,0,0.25)]">
+            <button id="btn-nav-hq" class="hover:text-[#6a2932] transition flex items-center space-x-2 py-2.5 px-4 rounded-sm active:scale-95 border-2 border-transparent active:border-[#3d2a1b]"><i class="fa-solid fa-house"></i><span>回主畫面</span></button>
             <span class="text-[#3d2a1b] opacity-50">|</span>
-            <button id="btn-nav-stamps" class="hover:text-[#6a2932] transition flex items-center space-x-2 py-3 px-4 rounded-sm text-[#6a2932] active:scale-95 border-2 border-transparent active:border-[#3d2a1b]" onclick="openStampsDrawer()"><i class="fa-solid fa-puzzle-piece"></i><span>拼圖收集</span></button>
+            <button id="btn-nav-stamps" class="hover:text-[#6a2932] transition flex items-center space-x-2 py-2.5 px-4 rounded-sm text-[#6a2932] active:scale-95 border-2 border-transparent active:border-[#3d2a1b]" onclick="openStampsDrawer()"><i class="fa-solid fa-puzzle-piece"></i><span>拼圖收集</span></button>
         </div>
 
         <!-- MODAL: ALERT -->
