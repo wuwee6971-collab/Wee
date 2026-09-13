@@ -308,41 +308,51 @@
             }).join('');
         }
         // 6. 操作資料庫
+        // 1. 狀態更新函式（包含重新判定）
         async function updateStatus(docId, newStatus) {
             try {
                 await db.collection("submissions").doc(docId).update({
                     status: newStatus,
                     reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
+                // 即時更新本地快取並重繪，防止 onSnapshot 延遲
+                const target = currentSubmissions.find(s => s.id === docId);
+                if (target) target.status = newStatus;
+                renderList();
             } catch (err) {
-                alert("狀態變更失敗：" + err.message);
+                alert("【狀態變更失敗】\n" + err.message + "\n請確認 Firestore 安全規則是否已開啟 write: if true");
             }
         }
-        // 單張刪除函式（包含可選的 Storage 實體圖檔清除）
+        
+        // 2. 單張刪除函式（容錯版）
         async function deleteSubmission(docId, photoUrl) {
             if (!confirm("確定要刪除這筆審核紀錄嗎？此動作無法復原！")) return;
         
             try {
-                // 1. 刪除 Firestore 紀錄
+                // 先刪除 Firestore 資料
                 await db.collection("submissions").doc(docId).delete();
         
-                // 2. 若為 Storage 網址則嘗試一併刪除實體檔案
-                if (photoUrl && photoUrl.includes("firebasestorage.googleapis.com")) {
+                // 嘗試刪除 Storage 實體檔案（若失敗或為 base64 則安全略過，不阻斷流程）
+                if (photoUrl && typeof photoUrl === 'string' && photoUrl.startsWith("http") && photoUrl.includes("firebasestorage")) {
                     try {
                         const storageRef = firebase.storage().refFromURL(photoUrl);
                         await storageRef.delete();
                     } catch (storageErr) {
-                        console.warn("Storage 檔案刪除略過或已被移除:", storageErr);
+                        console.warn("Storage 檔案清理略過：", storageErr.message);
                     }
                 }
+        
+                // 從本地陣列移除並立即更新畫面
+                currentSubmissions = currentSubmissions.filter(s => s.id !== docId);
+                renderList();
             } catch (err) {
-                alert("刪除失敗：" + err.message);
+                alert("【刪除失敗】\n" + err.message + "\n請檢查 Firestore Rules 權限。");
             }
         }
         
-        // 全部清空函式（批次刪除全部紀錄）
+        // 3. 全部清空函式（批次容錯版）
         async function clearAllSubmissions() {
-            const inputPass = prompt("【警告】這將清空所有隊伍的上傳記錄！\n請輸入確認代碼「CLEAR」以執行清空：");
+            const inputPass = prompt("【警告】這將清空所有審核記錄！\n請輸入確認代碼「CLEAR」以執行清空：");
             if (inputPass !== "CLEAR") {
                 if (inputPass !== null) alert("代碼不正確，已取消操作。");
                 return;
@@ -356,28 +366,20 @@
                 }
         
                 const batch = db.batch();
-                const deleteStoragePromises = [];
-        
                 snapshot.forEach(doc => {
-                    const data = doc.data();
                     batch.delete(doc.ref);
-        
-                    // 批次收集 Storage 圖檔刪除任務
-                    if (data.photoUrl && data.photoUrl.includes("firebasestorage.googleapis.com")) {
-                        deleteStoragePromises.push(
-                            firebase.storage().refFromURL(data.photoUrl).delete().catch(e => console.warn(e))
-                        );
-                    }
                 });
         
                 await batch.commit();
-                await Promise.allSettled(deleteStoragePromises);
-                alert(`已成功清除共 ${snapshot.size} 筆歷史紀錄！`);
+        
+                // 清空本地快取並重繪
+                currentSubmissions = [];
+                renderList();
+                alert(`已成功清空共 ${snapshot.size} 筆歷史紀錄！`);
             } catch (err) {
-                alert("批次清空失敗：" + err.message);
+                alert("【清空失敗】\n" + err.message);
             }
         }
-
         // 7. 燈箱輔助函式
         function openLightbox(src) {
             if (!src) return;
