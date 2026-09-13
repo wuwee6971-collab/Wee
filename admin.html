@@ -2,74 +2,308 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>關主即時審核指揮所</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>三重空軍一村 - 前線任務指揮所 (關主後台)</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-</head>
-<body class="bg-stone-900 text-stone-100 min-h-screen p-4 pb-12">
-    <h1 class="text-2xl font-black text-center text-amber-500 mb-6 border-b border-stone-700 pb-3">
-        🎖️ 實境解謎・現場審核後台
-    </h1>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+    
+    <!-- Firebase Compat SDK v10.8.0 -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
-    <div id="submissions-list" class="max-w-md mx-auto space-y-4">
-        <p class="text-center text-stone-400">連線資料庫中...</p>
+    <style>
+        body { font-family: 'Courier Prime', 'Noto Serif TC', serif; background-color: #12100e; color: #dcd4c3; touch-action: manipulation; }
+        .military-card { background: #1c1917; border: 2px solid #443c33; box-shadow: 4px 4px 0 #0c0a09; }
+        .btn-approve { background: #166534; border: 2px solid #14532d; color: #f0fdf4; box-shadow: 3px 3px 0 #052e16; }
+        .btn-approve:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #052e16; }
+        .btn-reject { background: #991b1b; border: 2px solid #7f1d1d; color: #fef2f2; box-shadow: 3px 3px 0 #450a0a; }
+        .btn-reject:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #450a0a; }
+        .tag-pending { background: #854d0e; color: #fef08a; border: 1px solid #ca8a04; }
+    </style>
+</head>
+<body class="min-h-[100dvh] flex flex-col items-center justify-start pb-12">
+
+    <!-- 門禁驗證 Modal -->
+    <div id="pin-modal" class="fixed inset-0 z-50 bg-[#0c0a09]/95 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="military-card max-w-[340px] w-full p-6 text-center space-y-5 rounded-sm">
+            <div class="w-16 h-16 mx-auto rounded-full bg-[#292524] border-2 border-[#a1824a] flex items-center justify-center text-2xl text-[#a1824a]">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-black text-[#e5d5b5] tracking-widest font-serif">指揮所通訊授權</h2>
+                <p class="text-xs text-stone-400 mt-1">請輸入關主通行口令 (預設: 1945)</p>
+            </div>
+            <input type="password" id="pin-input" pattern="[0-9]*" inputmode="numeric" maxlength="8" placeholder="輸入口令"
+                   class="w-full bg-[#12100e] border-2 border-[#574c3d] text-center text-2xl font-mono tracking-widest text-[#f5f0e6] py-3 rounded-sm focus:border-[#a1824a] outline-none">
+            <button onclick="verifyPin()" class="w-full py-3 bg-[#a1824a] text-[#1c1917] font-black text-lg border-2 border-[#785f34] shadow-[3px_3px_0_#3f311a] active:translate-x-0.5 active:translate-y-0.5">
+                解除鎖定
+            </button>
+        </div>
+    </div>
+
+    <!-- 頂部資訊列 -->
+    <header class="w-full max-w-lg bg-[#1c1917] border-b-4 border-[#3b3227] px-4 py-3 sticky top-0 z-30 shadow-lg flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="font-black text-sm tracking-wider text-[#e5d5b5]">前線通訊所</span>
+        </div>
+        <div class="flex items-center space-x-3">
+            <div class="text-xs bg-[#2b2520] border border-[#574c3d] px-2.5 py-1 rounded text-[#e5d5b5] font-mono">
+                待核准: <b id="pending-counter" class="text-amber-400 text-sm">0</b>
+            </div>
+            <button onclick="toggleAudio()" id="btn-audio" class="text-xs px-2.5 py-1 border border-[#574c3d] bg-[#292524] text-stone-300 rounded">
+                <i class="fa-solid fa-bell"></i>
+            </button>
+            <button onclick="lockConsole()" class="text-xs px-2 py-1 text-stone-400 hover:text-white">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主內容區 -->
+    <main class="w-full max-w-lg p-4 space-y-4">
+        <!-- 分籤切換 -->
+        <div class="grid grid-cols-2 gap-2 text-xs font-bold font-mono">
+            <button id="tab-pending" onclick="switchTab('pending')" class="py-2.5 border-b-2 border-amber-500 text-amber-400 bg-[#1c1917]">
+                待審核任務
+            </button>
+            <button id="tab-resolved" onclick="switchTab('resolved')" class="py-2.5 border-b-2 border-transparent text-stone-400 hover:text-stone-200">
+                審核紀錄 (近20筆)
+            </button>
+        </div>
+
+        <!-- 任務列表容器 -->
+        <div id="submissions-list" class="space-y-4">
+            <div class="text-center py-16 text-stone-500 text-sm font-mono">
+                <i class="fa-solid fa-spinner fa-spin text-2xl mb-3 block text-stone-600"></i>
+                正在連線至前線基地資料庫...
+            </div>
+        </div>
+    </main>
+
+    <!-- 圖片放大燈箱 Modal -->
+    <div id="lightbox-modal" class="fixed inset-0 z-50 bg-black/90 hidden flex flex-col items-center justify-center p-4" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" class="max-w-full max-h-[85vh] object-contain border-2 border-stone-600 rounded-sm shadow-2xl">
+        <p class="text-xs text-stone-400 mt-3 font-mono">點擊任意處關閉檢視</p>
     </div>
 
     <script>
-      // 填入與遊戲端一致的真實金鑰
-      const firebaseConfig = {
-        apiKey: "AIzaSyCxIinbYw3OhJhKksVHsqPaYCv0-fLUR3s",
-        authDomain: "weee-57379.firebaseapp.com",
-        projectId: "weee-57379",
-        storageBucket: "weee-57379.firebasestorage.app",
-        messagingSenderId: "26784647",
-        appId: "1:26784647:web:e3c682e0915fe43ddf5922"
-      };
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.firestore();
+        // 1. Firebase 初始化
+        const firebaseConfig = {
+            apiKey: "AIzaSyCxIinbYw3OhJhKksVHsqPaYCv0-fLUR3s",
+            authDomain: "weee-57379.firebaseapp.com",
+            databaseURL: "https://weee-57379-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "weee-57379",
+            storageBucket: "weee-57379.firebasestorage.app",
+            messagingSenderId: "26784647",
+            appId: "1:26784647:web:e3c682e0915fe43ddf5922",
+            measurementId: "G-VJKC5DMSBS"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-      // 即時監聽 pending 狀態的照片
-      db.collection("submissions")
-        .where("status", "==", "pending")
-        .onSnapshot((snapshot) => {
-            const list = document.getElementById('submissions-list');
-            if (snapshot.empty) {
-                list.innerHTML = '<div class="text-center text-stone-500 py-12">目前沒有待審核的照片</div>';
-                return;
+        // 2. 狀態管理
+        let currentTab = 'pending';
+        let currentSubmissions = [];
+        let previousPendingCount = 0;
+        let isAudioEnabled = true;
+
+        // 提示音效 Web Audio
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playChime() {
+            if (!isAudioEnabled) return;
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            } catch (e) {}
+        }
+
+        // 3. 門禁驗證
+        function verifyPin() {
+            const pin = document.getElementById('pin-input').value.trim();
+            if (pin === "1945") {
+                sessionStorage.setItem("admin_authorized", "true");
+                document.getElementById('pin-modal').classList.add('hidden');
+                startListening();
+            } else {
+                alert("口令錯誤，權限不足！");
+                document.getElementById('pin-input').value = "";
             }
-            list.innerHTML = '';
-            snapshot.forEach((doc) => {
-                const item = doc.data();
-                const card = document.createElement('div');
-                card.className = "bg-stone-800 border-2 border-stone-700 p-4 rounded shadow-lg";
-                card.innerHTML = `
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="font-bold text-lg text-amber-400">${item.teamName || '未知隊伍'}</span>
-                        <span class="text-xs bg-stone-700 px-2 py-1 rounded">${item.levelId || '調查任務'}</span>
-                    </div>
-                    <!-- 修正為讀取玩家端上傳的 imageBase64 欄位 -->
-                    <img src="${item.imageBase64}" class="w-full h-auto rounded border border-stone-600 mb-3 bg-black/40" alt="線索照片" />
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="updateStatus('${doc.id}', 'rejected')" class="py-2.5 bg-red-900/80 hover:bg-red-800 text-white font-bold rounded transition active:scale-95">✖ 駁回重拍</button>
-                        <button onclick="updateStatus('${doc.id}', 'approved')" class="py-2.5 bg-emerald-700 hover:bg-emerald-600 text-white font-bold rounded transition active:scale-95">✔ 核准通過</button>
-                    </div>
-                `;
-                list.appendChild(card);
-            });
-        }, (error) => {
-            console.error("Firestore 監聽失敗：", error);
-            document.getElementById('submissions-list').innerHTML = `<div class="text-center text-rose-500 py-8">連線失敗：${error.message}</div>`;
+        }
+
+        function lockConsole() {
+            sessionStorage.removeItem("admin_authorized");
+            location.reload();
+        }
+
+        window.addEventListener('load', () => {
+            if (sessionStorage.getItem("admin_authorized") === "true") {
+                document.getElementById('pin-modal').classList.add('hidden');
+                startListening();
+            }
         });
 
-      function updateStatus(id, newStatus) {
-          db.collection("submissions").doc(id).update({
-              status: newStatus
-          }).catch((err) => {
-              alert("審核狀態更新失敗：" + err.message);
-          });
-      }
+        // 4. 即時監聽 Firestore
+        let unsubscribe = null;
+        function startListening() {
+            if (unsubscribe) unsubscribe();
+            
+            // 監聽最近的 50 筆紀錄
+            unsubscribe = db.collection("submissions")
+                .orderBy("createdAt", "desc")
+                .limit(50)
+                .onSnapshot((snapshot) => {
+                    currentSubmissions = [];
+                    snapshot.forEach(doc => {
+                        currentSubmissions.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    const pendingList = currentSubmissions.filter(s => s.status === 'pending');
+                    document.getElementById('pending-counter').textContent = pendingList.length;
+
+                    // 新資料抵達時播放音效
+                    if (pendingList.length > previousPendingCount) {
+                        playChime();
+                    }
+                    previousPendingCount = pendingList.length;
+
+                    renderList();
+                }, (error) => {
+                    console.error("監聽失敗:", error);
+                    document.getElementById('submissions-list').innerHTML = `
+                        <div class="military-card p-4 text-center text-red-400 text-xs">
+                            連線受阻：${error.message}
+                        </div>`;
+                });
+        }
+
+        // 5. 渲染邏輯
+        function switchTab(tab) {
+            currentTab = tab;
+            const tabP = document.getElementById('tab-pending');
+            const tabR = document.getElementById('tab-resolved');
+            if (tab === 'pending') {
+                tabP.className = "py-2.5 border-b-2 border-amber-500 text-amber-400 bg-[#1c1917]";
+                tabR.className = "py-2.5 border-b-2 border-transparent text-stone-400 hover:text-stone-200";
+            } else {
+                tabR.className = "py-2.5 border-b-2 border-amber-500 text-amber-400 bg-[#1c1917]";
+                tabP.className = "py-2.5 border-b-2 border-transparent text-stone-400 hover:text-stone-200";
+            }
+            renderList();
+        }
+
+        function renderList() {
+            const container = document.getElementById('submissions-list');
+            const filtered = currentSubmissions.filter(item => {
+                return currentTab === 'pending' ? item.status === 'pending' : item.status !== 'pending';
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="military-card p-10 text-center text-stone-500">
+                        <i class="fa-solid fa-inbox text-4xl mb-3 opacity-40"></i>
+                        <p class="text-sm font-bold">${currentTab === 'pending' ? '目前無待審核任務' : '暫無歷史審核紀錄'}</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(item => {
+                const timeStr = item.createdAt ? new Date(item.createdAt.toDate ? item.createdAt.toDate() : item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '--:--:--';
+                const imgSrc = item.photoUrl || item.imageBase64 || '';
+                
+                let badgeHtml = '';
+                if (item.status === 'pending') badgeHtml = `<span class="text-[10px] font-mono px-2 py-0.5 rounded font-black tag-pending">待審核</span>`;
+                else if (item.status === 'approved') badgeHtml = `<span class="text-[10px] font-mono px-2 py-0.5 rounded font-black bg-emerald-950 text-emerald-300 border border-emerald-700">已核准</span>`;
+                else badgeHtml = `<span class="text-[10px] font-mono px-2 py-0.5 rounded font-black bg-red-950 text-red-300 border border-red-700">已退回</span>`;
+
+                return `
+                <div class="military-card p-4 space-y-3">
+                    <div class="flex items-center justify-between border-b border-[#332c25] pb-2">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-users text-[#a1824a] text-sm"></i>
+                            <span class="font-black text-[#e5d5b5] text-base">${escapeHtml(item.teamName || '未知隊伍')}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-[10px] font-mono text-stone-400">${timeStr}</span>
+                            ${badgeHtml}
+                        </div>
+                    </div>
+
+                    <div class="text-xs text-stone-400 font-bold">
+                        任務目標：<span class="text-[#e5d5b5]">${escapeHtml(item.levelId || '未指定關卡')}</span>
+                    </div>
+
+                    <div class="w-full aspect-[4/3] bg-black/60 rounded border border-[#332c25] overflow-hidden flex items-center justify-center cursor-pointer relative group" onclick="openLightbox('${imgSrc}')">
+                        <img src="${imgSrc}" class="w-full h-full object-cover" loading="lazy">
+                        <div class="absolute bottom-2 right-2 bg-black/70 px-2 py-1 rounded text-[10px] text-white flex items-center space-x-1">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i><span>點擊放大</span>
+                        </div>
+                    </div>
+
+                    ${item.status === 'pending' ? `
+                    <div class="grid grid-cols-2 gap-3 pt-1">
+                        <button onclick="updateStatus('${item.id}', 'rejected')" class="py-3 btn-reject font-black text-sm tracking-wider flex items-center justify-center space-x-1 rounded-sm">
+                            <i class="fa-solid fa-xmark"></i><span>退回重拍</span>
+                        </button>
+                        <button onclick="updateStatus('${item.id}', 'approved')" class="py-3 btn-approve font-black text-sm tracking-wider flex items-center justify-center space-x-1 rounded-sm">
+                            <i class="fa-solid fa-check"></i><span>核准通過</span>
+                        </button>
+                    </div>
+                    ` : `
+                    <div class="text-right pt-1">
+                        <button onclick="updateStatus('${item.id}', 'pending')" class="text-xs text-stone-400 hover:text-amber-400 underline">
+                            重新判定此項
+                        </button>
+                    </div>
+                    `}
+                </div>`;
+            }).join('');
+        }
+
+        // 6. 操作資料庫
+        async function updateStatus(docId, newStatus) {
+            try {
+                await db.collection("submissions").doc(docId).update({
+                    status: newStatus,
+                    reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch (err) {
+                alert("狀態變更失敗：" + err.message);
+            }
+        }
+
+        // 7. 燈箱輔助函式
+        function openLightbox(src) {
+            if (!src) return;
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox-modal').classList.remove('hidden');
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox-modal').classList.add('hidden');
+        }
+
+        function toggleAudio() {
+            isAudioEnabled = !isAudioEnabled;
+            const btn = document.getElementById('btn-audio');
+            btn.innerHTML = isAudioEnabled ? '<i class="fa-solid fa-bell text-amber-400"></i>' : '<i class="fa-solid fa-bell-slash text-stone-500"></i>';
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[s]);
+        }
     </script>
 </body>
 </html>
