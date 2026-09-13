@@ -294,58 +294,71 @@
                         <button class="w-full py-4 primary-btn font-black text-xl mt-6 tracking-widest" onclick="transitionSubPage(4, 1, 2)">展開圖鑑</button>
                     </div>
                     <div id="l4-p2" class="hidden flex-col min-h-full">
-                        <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(4, 2, 1)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-2xl pr-[44px] font-serif">人物圖鑑</h2>
+                        <!-- l4-p2 頂部 -->
+                        <div class="flex items-center justify-between mb-4 shrink-0">
+                            <button onclick="transitionSubPage(4, 2, 1)" class="retro-back-btn" title="返回"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="font-black text-[#6a2932] text-xl font-serif tracking-widest text-center flex-1 pr-9">【尋人啟事】目標特徵</h2>
                         </div>
-                        <div class="grid grid-cols-2 gap-4 flex-1">
-                            <div class="char-card-grid">
-                                <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2">
+                        <div class="grid grid-cols-2 gap-3 flex-1 overflow-y-auto custom-scrollbar content-start pb-2">
+                            <!-- 奶奶 -->
+                            <div class="wanted-card flex flex-col">
+                                <div class="wanted-badge">協尋對象</div>
+                                <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-2 !border-b-4 m-2">
                                     <img src="https://placehold.co/200/e5d5b5/7c343d?text=Grandma" alt="奶奶" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
                                 </div>
-                                <div class="p-3 text-xs flex-1 flex flex-col text-center">
-                                    <b class="text-sm text-[#6a2932] mb-1">奶奶 (60歲)</b>
-                                    <span class="text-[#3d2a1b] text-[10px] mb-2 border-b border-dashed border-[#3d2a1b]/30 pb-1">碎花上衣/蒲扇</span>
-                                    <span class="font-bold leading-[1.5] text-[#1a110a]">負責歷史講解與關卡互動。</span>
+                                <div class="p-2 text-xs flex-1 flex flex-col text-center">
+                                    <b class="text-sm text-[#6a2932] mb-0.5 font-serif">奶奶 (60歲)</b>
+                                    <span class="text-[#3d2a1b] text-[11px] mb-1.5 border-b border-dashed border-[#3d2a1b]/40 pb-1 font-mono">特徵：碎花上衣／蒲扇</span>
+                                    <span class="font-bold leading-tight text-[#1a110a] text-[11px]">主動前往攀談，聽取歷史解說啟動互動。</span>
                                 </div>
                             </div>
-                            <div class="char-card-grid">
-                                <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2">
+                        
+                            <!-- 媽媽 -->
+                            <div class="wanted-card flex flex-col">
+                                <div class="wanted-badge">協尋對象</div>
+                                <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-2 !border-b-4 m-2">
                                     <img src="https://placehold.co/200/e5d5b5/7c343d?text=Mom" alt="媽媽翠芳" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
                                 </div>
-                                <div class="p-3 text-xs flex-1 flex flex-col text-center">
-                                    <b class="text-sm text-[#6a2932] mb-1">媽媽・翠芳</b>
-                                    <span class="text-[#3d2a1b] text-[10px] mb-2 border-b border-dashed border-[#3d2a1b]/30 pb-1">旗袍/高跟鞋</span>
-                                    <span class="font-bold leading-[1.5] text-[#1a110a]">負責開場串場，引導團聚。</span>
+                                <div class="p-2 text-xs flex-1 flex flex-col text-center">
+                                    <b class="text-sm text-[#6a2932] mb-0.5 font-serif">媽媽・翠芳</b>
+                                    <span class="text-[#3d2a1b] text-[11px] mb-1.5 border-b border-dashed border-[#3d2a1b]/40 pb-1 font-mono">特徵：旗袍／高跟鞋</span>
+                                    <span class="font-bold leading-tight text-[#1a110a] text-[11px]">尋找其身影，引導眷村大團聚開場。</span>
                                 </div>
                             </div>
-                            <div class="char-card-grid">
-                                <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2">
+                        
+                            <!-- 中學生 -->
+                            <div class="wanted-card flex flex-col">
+                                <div class="wanted-badge">協尋對象</div>
+                                <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-2 !border-b-4 m-2">
                                     <img src="https://placehold.co/200/e5d5b5/7c343d?text=Student" alt="中學生" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
                                 </div>
-                                <div class="p-3 text-xs flex-1 flex flex-col text-center">
-                                    <b class="text-sm text-[#6a2932] mb-1">中學生</b>
-                                    <span class="text-[#3d2a1b] text-[10px] mb-2 border-b border-dashed border-[#3d2a1b]/30 pb-1">制服/軍綠包</span>
-                                    <span class="font-bold leading-[1.5] text-[#1a110a]">帶領進行「編繩子」關卡。</span>
+                                <div class="p-2 text-xs flex-1 flex flex-col text-center">
+                                    <b class="text-sm text-[#6a2932] mb-0.5 font-serif">中學生</b>
+                                    <span class="text-[#3d2a1b] text-[11px] mb-1.5 border-b border-dashed border-[#3d2a1b]/40 pb-1 font-mono">特徵：學生制服／軍綠包</span>
+                                    <span class="font-bold leading-tight text-[#1a110a] text-[11px]">請找到他，一起完成「編繩子」任務。</span>
                                 </div>
                             </div>
-                            <div class="char-card-grid">
-                                <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-4 !border-b-8 !box-shadow-none m-2">
+                        
+                            <!-- 在地兒童 -->
+                            <div class="wanted-card flex flex-col">
+                                <div class="wanted-badge">協尋對象</div>
+                                <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-2 !border-b-4 m-2">
                                     <img src="https://placehold.co/200/e5d5b5/7c343d?text=Kid" alt="小孩" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
                                 </div>
-                                <div class="p-3 text-xs flex-1 flex flex-col text-center">
-                                    <b class="text-sm text-[#6a2932] mb-1">在地兒童</b>
-                                    <span class="text-[#3d2a1b] text-[10px] mb-2 border-b border-dashed border-[#3d2a1b]/30 pb-1">黃帽/直笛</span>
-                                    <span class="font-bold leading-[1.5] text-[#1a110a]">邀請跳橡皮筋繩融入生活。</span>
+                                <div class="p-2 text-xs flex-1 flex flex-col text-center">
+                                    <b class="text-sm text-[#6a2932] mb-0.5 font-serif">在地兒童</b>
+                                    <span class="text-[#3d2a1b] text-[11px] mb-1.5 border-b border-dashed border-[#3d2a1b]/40 pb-1 font-mono">特徵：小黃帽／直笛</span>
+                                    <span class="font-bold leading-tight text-[#1a110a] text-[11px]">主動靠近，加入跳橡皮筋繩童趣遊戲。</span>
                                 </div>
                             </div>
                         </div>
                         <button class="w-full py-4 primary-btn font-black text-xl mt-6 tracking-widest" onclick="transitionSubPage(4, 2, 3)">查看指引</button>
                     </div>
                     <div id="l4-p3" class="hidden flex-col min-h-full">
-                        <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(4, 3, 2)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-2xl pr-[44px] font-serif">活動指引</h2>
+                        <!-- l4-p3 頂部 -->
+                        <div class="flex items-center justify-between mb-4 shrink-0">
+                            <button onclick="transitionSubPage(4, 3, 2)" class="retro-back-btn" title="返回"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="font-black text-[#6a2932] text-xl font-serif tracking-widest text-center flex-1 pr-9">活動指引</h2>
                         </div>
                         <div class="level-card p-8 flex-1 flex flex-col justify-center">
                             <p class="mb-6 text-lg font-bold text-[#1a110a] font-serif">歡迎來到榕樹廣場！在接下來的活動中，你們將扮演眷村裡的鄰家小孩。</p>
@@ -357,9 +370,10 @@
                         <button class="w-full py-4 primary-btn font-black text-xl mt-6 tracking-widest" onclick="transitionSubPage(4, 3, 4)">進入測驗</button>
                     </div>
                     <div id="l4-p4" class="hidden flex-col min-h-full">
-                        <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(4, 4, 3)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-2xl pr-[44px] font-serif">知識測驗</h2>
+                        <!-- l4-p4 頂部 -->
+                        <div class="flex items-center justify-between mb-4 shrink-0">
+                            <button onclick="transitionSubPage(4, 4, 3)" class="retro-back-btn" title="返回"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="font-black text-[#6a2932] text-xl font-serif tracking-widest text-center flex-1 pr-9">知識測驗</h2>
                         </div>
                         <div class="level-card p-6 space-y-8 flex-1 flex flex-col justify-center bg-[#fcfaf5]">
                             <div class="space-y-4">
@@ -388,9 +402,10 @@
                         <button class="w-full py-4 primary-btn font-black text-xl mt-6 tracking-widest" onclick="transitionSubPage(5, 1, 2)">查閱群星</button>
                     </div>
                     <div id="l5-p2" class="hidden flex-col min-h-full">
-                        <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(5, 2, 1)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-2xl pr-[44px] font-serif">群星圖鑑</h2>
+                        <!-- l5-p2 頂部 -->
+                        <div class="flex items-center justify-between mb-4 shrink-0">
+                            <button onclick="transitionSubPage(5, 2, 1)" class="retro-back-btn" title="返回"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="font-black text-[#6a2932] text-xl font-serif tracking-widest text-center flex-1 pr-9">【尋人啟事】工作人員圖鑑</h2>
                         </div>
                         <div class="grid grid-cols-2 gap-4 flex-1 content-start">
                             <div class="char-card-grid">
@@ -429,9 +444,10 @@
                         <button class="w-full py-4 primary-btn font-black text-xl mt-6 tracking-widest" onclick="transitionSubPage(5, 2, 3)">查看規則</button>
                     </div>
                     <div id="l5-p3" class="hidden flex-col min-h-full">
-                        <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(5, 3, 2)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-2xl pr-[44px] font-serif">遊戲規則</h2>
+                        <!-- l5-p3 頂部 -->
+                        <div class="flex items-center justify-between mb-4 shrink-0">
+                            <button onclick="transitionSubPage(5, 3, 2)" class="retro-back-btn" title="返回"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="font-black text-[#6a2932] text-xl font-serif tracking-widest text-center flex-1 pr-9">遊戲規則</h2>
                         </div>
                         <div class="level-card p-8 flex-1 flex flex-col justify-center">
                             <ol class="list-decimal pl-5 space-y-6 text-lg font-bold text-[#1a110a] text-justify leading-[1.8] font-serif">
@@ -444,9 +460,10 @@
                         <button class="w-full py-4 primary-btn font-black text-xl mt-6 tracking-widest" onclick="transitionSubPage(5, 3, 4)">輸入密碼</button>
                     </div>
                     <div id="l5-p4" class="hidden flex-col min-h-full">
-                        <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(5, 4, 3)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-2xl pr-[44px] font-serif">通關密語</h2>
+                        <!-- l5-p4 頂部 -->
+                        <div class="flex items-center justify-between mb-4 shrink-0">
+                            <button onclick="transitionSubPage(5, 4, 3)" class="retro-back-btn" title="返回"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="font-black text-[#6a2932] text-xl font-serif tracking-widest text-center flex-1 pr-9">通關密語</h2>
                         </div>
                         <div class="level-card p-6 flex-1 flex flex-col justify-center">
                             <p class="text-lg font-bold text-[#3d2a1b] mb-6 text-center font-serif">請輸入現場獲取的三位數密碼</p>
@@ -485,9 +502,10 @@
                         <button class="w-full py-4 primary-btn font-black text-xl mt-6 tracking-widest" onclick="transitionSubPage(6, 1, 2)">認識角色</button>
                     </div>
                     <div id="l6-p2" class="hidden flex-col min-h-full">
-                        <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(6, 2, 1)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-2xl pr-[44px] font-serif">角色介紹</h2>
+                        <!-- l6-p2 頂部 -->
+                        <div class="flex items-center justify-between mb-4 shrink-0">
+                            <button onclick="transitionSubPage(6, 2, 1)" class="retro-back-btn" title="返回"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="font-black text-[#6a2932] text-xl font-serif tracking-widest text-center flex-1 pr-9">角色介紹</h2>
                         </div>
                         <div class="flex-1 flex flex-col space-y-4 min-h-0">
                             <div class="char-card-flex flex-1">
@@ -521,9 +539,10 @@
                         <button class="w-full py-4 primary-btn font-black text-xl mt-6 tracking-widest" onclick="transitionSubPage(6, 2, 3)">進入調查</button>
                     </div>
                     <div id="l6-p3" class="hidden flex-col min-h-full">
-                        <div class="flex items-center mb-4">
-                            <button onclick="transitionSubPage(6, 3, 2)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-xl pr-[44px] font-serif">藏在花露水裡的花</h2>
+                        <!-- l6-p3 頂部 -->
+                        <div class="flex items-center justify-between mb-4 shrink-0">
+                            <button onclick="transitionSubPage(6, 3, 2)" class="retro-back-btn" title="返回"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="font-black text-[#6a2932] text-xl font-serif tracking-widest text-center flex-1 pr-9">藏在花露水裡的花</h2>
                         </div>
                         <div class="level-card p-4 flex-1 flex flex-col overflow-y-auto">
                             <p class="text-sm font-bold bg-[#fdfbf7] p-3 rounded-sm border-2 border-[#3d2a1b] mb-4 shrink-0 text-justify leading-relaxed">奶奶：「桌上有瓶明星花露水，裡面藏著哪些花香？畫面上有六種花，找的只有兩種，快從中把它們找出來吧！」</p>
@@ -553,35 +572,40 @@
                                     <div class="text-center text-sm font-bold py-2 bg-[#fdfbf7] text-pink-900 shrink-0 border-t-2 border-[#3d2a1b]">玉蘭花</div>
                                 </div>
                             </div>
-                            <div class="flex justify-between mt-2 items-center shrink-0 pt-2 border-t-2 border-[#3d2a1b]/10">
-                                <div class="space-x-2 flex">
-                                    <button class="military-btn text-sm px-4 py-3 font-bold" onclick="showL6Clue(1)">線索一</button>
-                                    <button class="military-btn text-sm px-4 py-3 font-bold" onclick="showL6Clue(2)">線索二</button>
-                                </div>
-                                <button class="primary-btn text-base px-6 py-3 font-black" onclick="verifyFlowers()">確認</button>
+                            <div class="mt-3 shrink-0 pt-2 border-t-2 border-[#3d2a1b]/20">
+                                <button class="w-full py-4 primary-btn text-lg font-black tracking-widest shadow-[3px_3px_0_#291014]" onclick="verifyFlowers()">
+                                    <i class="fa-solid fa-stamp mr-2"></i>提交香氛鑑定
+                                </button>
                             </div>
                         </div>
                     </div>
                     <div id="l6-p4" class="hidden flex-col min-h-full">
-                        <div class="flex items-center mb-6">
-                            <button onclick="transitionSubPage(6, 4, 3)" class="military-btn py-2 px-3 flex justify-center items-center"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-[#6a2932] text-2xl pr-[44px] font-serif">點播時代金曲</h2>
+                        <div class="flex items-center justify-between mb-4 shrink-0">
+                            <button onclick="transitionSubPage(6, 4, 3)" class="retro-back-btn" title="返回"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="font-black text-[#6a2932] text-xl font-serif tracking-widest text-center flex-1 pr-9">點播時代金曲</h2>
                         </div>
-                        <div class="level-card p-6 flex-1 flex flex-col">
-                            <p class="text-base font-bold bg-[#fdfbf7] p-4 rounded-sm border-2 border-[#3d2a1b] mb-6 leading-relaxed text-justify">奶奶：「以前三重讓人記得的，可不只有花香，還有熱鬧的唱片產業。這裡準備了三首歌，選一首你現在最想聽的聽聽看吧！」</p>
-                            <div class="space-y-4" id="l6-songs-container"></div>
-                            <div id="l6-player" class="hidden mt-auto p-5 bg-[#fdfbf7] rounded-sm border-2 border-[#3d2a1b] text-center relative overflow-hidden shrink-0 shadow-[4px_4px_0_#3d2a1b]">
-                                <div class="text-xs font-bold text-[#3d2a1b] mb-2 animate-pulse"><i class="fa-solid fa-record-vinyl fa-spin mr-1"></i>現正播放</div>
-                                <div id="l6-song-title" class="text-xl font-black mb-2 text-[#6a2932] font-serif"></div>
-                                <p id="l6-lyrics" class="text-sm italic text-[#1a110a] h-10 flex items-center justify-center font-bold"></p>
-                                <div class="w-full bg-[#e6dfcc] h-3 border-2 border-[#3d2a1b] mt-3 overflow-hidden rounded-full">
-                                    <div id="l6-progress" class="h-full w-0 transition-all duration-100 ease-linear bg-[#6a2932]"></div>
+                        <div class="level-card p-5 flex-1 flex flex-col justify-between overflow-hidden">
+                            <p class="text-sm font-bold bg-[#fdfbf7] p-3.5 rounded-sm border-2 border-[#3d2a1b] mb-4 leading-relaxed text-justify shrink-0 shadow-inner">
+                                奶奶：「以前三重讓人記得的，可不只有花香，還有熱鬧的唱片產業。選一首你現在最想聽的曲子點播吧！」
+                            </p>
+                    
+                            <!-- 歌曲清單（保留獨立彈性間距） -->
+                            <div class="space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-0.5" id="l6-songs-container"></div>
+                    
+                            <!-- 播放器狀態欄 -->
+                            <div id="l6-player" class="hidden mt-3 p-4 bg-[#fdfbf7] rounded-sm border-2 border-[#3d2a1b] text-center shrink-0 shadow-[3px_3px_0_#3d2a1b]">
+                                <div class="text-[11px] font-bold text-[#6a2932] mb-1 flex items-center justify-center space-x-1">
+                                    <i class="fa-solid fa-record-vinyl fa-spin"></i><span>留聲機播放中</span>
+                                </div>
+                                <div id="l6-song-title" class="text-lg font-black text-[#1a110a] font-serif truncate"></div>
+                                <p id="l6-lyrics" class="text-xs italic text-[#5c4a3e] min-h-[2.2rem] flex items-center justify-center font-bold px-2"></p>
+                                <div class="w-full bg-[#e6dfcc] h-2.5 border-2 border-[#3d2a1b] mt-2 overflow-hidden rounded-full">
+                                    <div id="l6-progress" class="h-full w-0 bg-[#6a2932] transition-all duration-100 ease-linear"></div>
                                 </div>
                                 <audio id="l6-audio-player" class="hidden"></audio>
                             </div>
                         </div>
                     </div>
-                </div>
 
                 <!-- LEVEL 7: 最後一封信 (Immersive Theater) -->
                 <div id="screen-level-7" class="screen-panel hidden p-5 flex flex-col">
@@ -1622,13 +1646,20 @@
         function renderL6Songs() {
             const container = document.getElementById('l6-songs-container');
             container.innerHTML = '';
-            GAME_DATA.level6.songs.forEach((song, idx) => {
+            GAME_DATA.level6.songs.forEach((song) => {
                 const btn = document.createElement('button');
-                btn.className = "opt-btn flex justify-between items-center";
-                btn.innerHTML = `<div><div class="font-black text-lg text-[#6a2932] mb-1 font-serif">${song.title}</div><div class="text-xs text-[#3d2a1b] font-normal tracking-wide">${song.desc}</div></div><i class="fa-solid fa-play text-[#6a2932] text-xl opacity-60"></i>`;
+                btn.className = "song-btn-wrap";
+                btn.innerHTML = `
+                    <div class="flex-1 min-w-0 pr-3">
+                        <div class="font-black text-base text-[#6a2932] truncate font-serif">${song.title}</div>
+                        <div class="text-xs text-[#3d2a1b] font-bold truncate mt-0.5 opacity-90">${song.desc}</div>
+                    </div>
+                    <div class="w-9 h-9 rounded-full bg-[#e6dfcc] border-2 border-[#3d2a1b] flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-play text-[#6a2932] text-sm ml-0.5"></i>
+                    </div>`;
                 btn.onclick = () => {
-                    if(!GameState.get('soundEnabled')) return showAlert("靜音鎖定", "請先開啟右上角的音量開關。");
-                    if(l6SongInterval) { clearInterval(l6SongInterval); document.getElementById('l6-audio-player').pause(); }
+                    if (!GameState.get('soundEnabled')) return showAlert("靜音鎖定", "請先點擊右上角開啟音效喇叭。");
+                    if (l6SongInterval) { clearInterval(l6SongInterval); document.getElementById('l6-audio-player').pause(); }
                     initAudio(); 
                     playBeep(800, 0.1);
 
@@ -1641,13 +1672,13 @@
                     prog.style.width = '0%';
 
                     audioEl.src = song.audio;
-                    audioEl.play().catch(e => { console.log("Audio block", e); });
+                    audioEl.play().catch(e => { console.log("Audio play blocked", e); });
 
                     let w = 0;
                     l6SongInterval = setInterval(() => {
                         w += 2; 
                         prog.style.width = `${w}%`;
-                        if(w >= 100) {
+                        if (w >= 100) {
                             clearInterval(l6SongInterval); 
                             audioEl.pause();
                             setTimeout(() => showAlert("點播完畢", "請至背景牆前將您的推薦詞貼上去與大家分享！", "fa-record-vinyl", "text-[#3d2a1b]", () => handleLevelSuccess(6)), 300);
@@ -1657,7 +1688,6 @@
                 container.appendChild(btn);
             });
         }
-
         // --- STAMPS DRAWER & PUZZLE ---
         function openStampsDrawer() {
             playBeep();
