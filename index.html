@@ -558,7 +558,7 @@
                                 </div>
                                 <div class="p-4 text-[#1a110a] flex-1 flex flex-col justify-center bg-[#fdfbf7]">
                                     <b class="text-lg text-[#6a2932] mb-2 border-b border-dashed border-[#3d2a1b]/30 pb-1">孫子 (NPC)</b>
-                                    <span class="font-bold text-sm leading-[1.6] text-justify">參與遊戲，陪大家討論帶氣氛。</span>
+                                    <span class="font-bold text-sm leading-[1.6] text-justify">三重一村的小孩，和大家討論、帶氣氛</span>
                                 </div>
                             </div>
                             <div class="char-card-flex flex-1">
@@ -580,7 +580,7 @@
                             <h2 class="font-black text-[#6a2932] text-xl font-serif tracking-widest text-center flex-1 pr-9">藏在花露水裡的花</h2>
                         </div>
                         <div class="level-card p-4 flex-1 flex flex-col overflow-y-auto">
-                            <p class="text-sm font-bold bg-[#fdfbf7] p-3 rounded-sm border-2 border-[#3d2a1b] mb-4 shrink-0 text-justify leading-relaxed">奶奶：「桌上有瓶明星花露水，裡面藏著哪些花香？畫面上有六種花，找的只有兩種，快從中把它們找出來吧！」</p>
+                            <p class="text-sm font-bold bg-[#fdfbf7] p-3 rounded-sm border-2 border-[#3d2a1b] mb-4 shrink-0 text-justify leading-relaxed">奶奶：「桌上有瓶明星花露水，裡面藏著哪些花香？畫面上有六種花，答案共有兩種，快從中把它們找出來吧！」</p>
                             <div class="grid grid-cols-2 gap-4 flex-1 items-stretch min-h-0 pb-4" id="flower-grid">
                                 <div class="flower-card flex flex-col border-2 border-[#3d2a1b] rounded-sm overflow-hidden bg-white shadow-[2px_2px_0_#3d2a1b] transition active:scale-95" onclick="toggleFlower(this, '玫瑰')">
                                     <div class="bg-rose-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/玫瑰.jpg" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
@@ -1891,6 +1891,32 @@
         function renderL6Songs() {
             const container = document.getElementById('l6-songs-container');
             container.innerHTML = '';
+            const audioEl = document.getElementById('l6-audio-player');
+            const prog = document.getElementById('l6-progress');
+
+            // 1. 綁定真實進度更新（跟隨音檔真實秒數）
+            audioEl.ontimeupdate = () => {
+                if (audioEl.duration) {
+                    const pct = (audioEl.currentTime / audioEl.duration) * 100;
+                    prog.style.width = `${pct}%`;
+                }
+            };
+
+            // 2. 監聽完整播放完畢事件
+            audioEl.onended = () => {
+                prog.style.width = '100%';
+                setTimeout(() => {
+                    showAlert(
+                        "點播完畢",
+                        "歌曲已完整播放完畢！\n請至背景牆前將您的推薦詞貼上去與大家分享！",
+                        "fa-record-vinyl",
+                        "text-[#3d2a1b]",
+                        () => handleLevelSuccess(6)
+                    );
+                }, 300);
+            };
+
+            // 3. 渲染歌曲清單
             GAME_DATA.level6.songs.forEach((song) => {
                 const btn = document.createElement('button');
                 btn.className = "song-btn-wrap";
@@ -1902,33 +1928,28 @@
                     <div class="w-9 h-9 rounded-full bg-[#e6dfcc] border-2 border-[#3d2a1b] flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-play text-[#6a2932] text-sm ml-0.5"></i>
                     </div>`;
+
                 btn.onclick = () => {
                     if (!GameState.get('soundEnabled')) return showAlert("靜音鎖定", "請先點擊右上角開啟音效喇叭。");
-                    if (l6SongInterval) { clearInterval(l6SongInterval); document.getElementById('l6-audio-player').pause(); }
+                    
                     initAudio(); 
                     playBeep(800, 0.1);
 
+                    // 重置播放器介面與狀態
+                    audioEl.pause();
+                    audioEl.currentTime = 0;
+                    prog.style.width = '0%';
+
                     const pUI = document.getElementById('l6-player');
-                    const audioEl = document.getElementById('l6-audio-player');
                     pUI.classList.remove('hidden');
                     document.getElementById('l6-song-title').textContent = song.title;
                     document.getElementById('l6-lyrics').textContent = song.lyric;
-                    const prog = document.getElementById('l6-progress'); 
-                    prog.style.width = '0%';
 
+                    // 載入音檔並播放
                     audioEl.src = song.audio;
-                    audioEl.play().catch(e => { console.log("Audio play blocked", e); });
-
-                    let w = 0;
-                    l6SongInterval = setInterval(() => {
-                        w += 2; 
-                        prog.style.width = `${w}%`;
-                        if (w >= 100) {
-                            clearInterval(l6SongInterval); 
-                            audioEl.pause();
-                            setTimeout(() => showAlert("點播完畢", "請至背景牆前將您的推薦詞貼上去與大家分享！", "fa-record-vinyl", "text-[#3d2a1b]", () => handleLevelSuccess(6)), 300);
-                        }
-                    }, 100);
+                    audioEl.play().catch(e => {
+                        console.log("Audio play blocked", e);
+                    });
                 };
                 container.appendChild(btn);
             });
