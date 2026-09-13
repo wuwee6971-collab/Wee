@@ -399,6 +399,30 @@
         function escapeHtml(str) {
             return String(str).replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[s]);
         }
+        // 手機螢幕重開或切回瀏覽器時，立即重連抓取
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                startListening();
+            }
+        });
+        
+        // 每 3 秒輕量輪詢補償，避免特定行動網路環境下 WebSocket 凍結
+        setInterval(() => {
+            if (!document.hidden && db) {
+                db.collection("submissions").orderBy("createdAt", "desc").limit(20).get().then(snapshot => {
+                    snapshot.docChanges().forEach(change => {
+                        if (change.type === "added") {
+                            const exists = currentSubmissions.some(s => s.id === change.doc.id);
+                            if (!exists) {
+                                currentSubmissions.unshift({ id: change.doc.id, ...change.doc.data() });
+                                renderList();
+                                playChime();
+                            }
+                        }
+                    });
+                }).catch(() => {});
+            }
+        }, 3000);
     </script>
 </body>
 </html>
