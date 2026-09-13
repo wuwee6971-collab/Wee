@@ -183,6 +183,8 @@
 
                 <!-- LEVEL 1: 防砲陣地 -->
                 <div id="screen-level-1" class="screen-panel hidden p-5 flex flex-col space-y-6">
+                    <!-- 第一關專用相機 -->
+                    <input type="file" accept="image/*" capture="environment" id="l1-camera-input" class="hidden">
                     <div class="level-card p-5 space-y-5">
                         <h2 class="text-xl text-[#6a2932] font-black text-center border-b-2 border-[#3d2a1b] pb-3 font-serif">任務一：陣地巡查</h2>
                         <p class="text-sm font-bold text-[#3d2a1b] text-center mb-2">點擊完成定點打卡（可重複查看指示）</p>
@@ -821,55 +823,84 @@
             reader.readAsDataURL(file);
         }
         
-        // 2. 直接寫入 Firestore 審核隊列（免信用卡、免 Storage 權限）
+        // 極速前端壓縮（輸出約 25KB-35KB，傳輸只需 0.3 秒）
+        function compressImageFast(file, maxWidth, quality, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const scale = Math.min(1, maxWidth / img.width);
+                    canvas.width = Math.round(img.width * scale);
+                    canvas.height = Math.round(img.height * scale);
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const base64 = canvas.toDataURL('image/jpeg', quality);
+                    callback(base64);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // 快速上傳與雙重監聽（即時監聽 + 主動輪詢，解決手機後台休眠問題）
         function uploadAndListenVerification(file, levelName, onSuccess) {
-            showAlert("檔案加密中", "正在壓縮並傳輸現場影像至指揮所...", "fa-satellite-dish fa-spin", "text-[#6a2932]", null, false);
+            showAlert("檔案加密中", "正在快速傳送現場照片至指揮所...", "fa-satellite-dish fa-spin", "text-[#6a2932]", null, false);
         
-            // 限制寬度 500px、品質 0.55，既能看清目標建築細節，又能在 1 秒內極速送達
-            compressImageToBase64(file, 500, 0.55, async (base64Image) => {
+            compressImageFast(file, 640, 0.5, async (base64Str) => {
                 const teamName = GameState.get('teamName') || "匿名隊伍";
-        
                 try {
-                    // 直接存入 Firestore 的 submissions 集合
+                    // 直接寫入 Firestore，省去 Storage 上傳與下載 URL 的漫長延遲
                     const docRef = await db.collection("submissions").add({
                         teamName: teamName,
                         levelId: levelName,
-                        imageBase64: base64Image,
+                        photoUrl: base64Str,
+                        imageBase64: base64Str,
                         status: "pending",
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
         
-                    // 更新提示窗狀態
                     const alertDesc = document.getElementById('alert-desc');
                     const alertIcon = document.getElementById('alert-icon');
-                    if (alertDesc) alertDesc.textContent = "照片已成功傳送至指揮所，長官審核中...\n(請保持畫面開啟，無須重新整理)";
+                    if (alertDesc) alertDesc.textContent = "照片已送達指揮所，審核官查驗中...\n(請保持畫面，審核通過將自動跳轉)";
                     if (alertIcon) alertIcon.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-5xl text-[#6a2932]"></i>';
         
-                    // 即時監聽關主審核狀態
+                    let isHandled = false;
+                    const handleResult = (approved) => {
+                        if (isHandled) return;
+                        isHandled = true;
+                        if (pollTimer) clearInterval(pollTimer);
+                        if (unsubscribe) unsubscribe();
+                        document.getElementById('modal-alert').classList.add('hidden');
+                        onSuccess(approved);
+                    };
+        
+                    // 1. Snapshot 監聽
                     const unsubscribe = docRef.onSnapshot((doc) => {
                         if (!doc.exists) return;
                         const data = doc.data();
-        
-                        if (data.status === "approved") {
-                            unsubscribe();
-                            document.getElementById('modal-alert').classList.add('hidden');
-                            onSuccess(true);
-                        } else if (data.status === "rejected") {
-                            unsubscribe();
-                            document.getElementById('modal-alert').classList.add('hidden');
-                            onSuccess(false);
-                        }
-                    }, (err) => {
-                        console.error("監聽審核錯誤：", err);
+                        if (data.status === "approved") handleResult(true);
+                        else if (data.status === "rejected") handleResult(false);
                     });
+        
+                    // 2. 主動短輪詢（每 1.5 秒向伺服器拉取一次，防止手機切換 App 時 WebSocket 斷線）
+                    const pollTimer = setInterval(async () => {
+                        try {
+                            const docSnap = await docRef.get();
+                            if (docSnap.exists) {
+                                const data = docSnap.data();
+                                if (data.status === "approved") handleResult(true);
+                                else if (data.status === "rejected") handleResult(false);
+                            }
+                        } catch(e) {}
+                    }, 1500);
         
                 } catch (error) {
                     console.error("傳輸失敗：", error);
-                    showAlert("連線中斷", "無法將影像送達指揮所：\n" + error.message, "fa-triangle-exclamation", "text-[#6a2932]");
+                    showAlert("連線中斷", "無法將影像送達指揮所，請再拍一次。\n" + error.message, "fa-triangle-exclamation", "text-[#6a2932]");
                 }
             });
         }
-        
         // ==========================================
         // 1. DATA SEPARATION: GAME_DATA
         // ==========================================
@@ -896,7 +927,7 @@
                     // 第 1 題：拍照頁面拿掉 photoImage 參考答案，題目頁保留 image
                     { image: "images/l2_map2.jpg", photoImage: null, q: "依據軍階與家庭成員分配房舍。請對照地圖找到特級眷舍，高階軍官的家擁有哪一個最明顯的建築特徵？", opts: ["獨立庭院與紅色大門", "只能側身通過的窄巷", "蓋在屋頂上的小閣樓", "共用牆壁的連棟小屋"], a: 0, photo: true, photoText: "請至現場尋找特級眷舍特徵並拍照上傳審核", desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門；基層官兵則居住於共用牆壁的窄房。" },
                     { image: "images/l2_2.jpg", q: "為什麼防洪樓裡會有小閣樓？", opts: ["放雜物", "放武器", "洪水來時避難", "養鴿子"], a: 2, photo: false, desc: "過去常受淡水河洪患，於1960年代興建「防洪樓」避難，樓內保留躲避水災增建的小閣樓。" },
-                    { image: "images/l2_3.jpg", photoImage: "images/l2_3.jpg", q: "「一線天」是眷村特殊的狹窄巷道景觀。造成一線天形成的主要原因為何？\n\n【線索】：兩側皆有眷舍/巷道狹窄/抬頭見一線天", opts: ["建村時為了節省土地設計", "居民居住空間不足向前後院擴建", "為了讓鄰居方便交流", "為了遮陽避雨刻意縮小"], a: 1, photo: true, photoText: "請在眷村中找到「一線天」拍照上傳", desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成緊鄰樣貌。" },
+                    { image: "images/l2_3.jpg", q: "「一線天」是眷村特殊的狹窄巷道景觀。造成一線天形成的主要原因為何？\n\n【線索】：兩側皆有眷舍/巷道狹窄/抬頭見一線天", opts: ["建村時為了節省土地設計", "居民居住空間不足向前後院擴建", "為了讓鄰居方便交流", "為了遮陽避雨刻意縮小"], a: 1, photo: true, photoText: "請在眷村中找到「一線天」拍照上傳", desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成緊鄰樣貌。" },
                     // 第 4 題：排序題（掛載前導知識）
                     { 
                         isSequence: true,
@@ -1311,35 +1342,70 @@
         // --- LEVEL 1 ---
         let l1ActiveTargetIdx = null;
 
+        let currentL1TargetIdx = null;
+
+        // 監聽第一關相機拍照
+        document.getElementById('l1-camera-input').addEventListener('change', function() {
+            if (this.files && this.files.length > 0 && currentL1TargetIdx !== null) {
+                const file = this.files[0];
+                this.value = '';
+                const loc = GAME_DATA.level1.locations[currentL1TargetIdx];
+                const targetNumber = ['1', '9', '4', '5'][currentL1TargetIdx];
+        
+                uploadAndListenVerification(file, `任務一：${loc.title}`, (isApproved) => {
+                    if (isApproved) {
+                        playSuccessSound();
+                        showAlert("審核通過", `長官已確認【${loc.title}】照片！\n\n【歷史檔案】\n${loc.desc}\n\n★ 獲得密碼數字：【 ${targetNumber} 】`, "fa-circle-check", "text-[#047857]", () => {
+                            let collected = GameState.get('l1Collected');
+                            collected[currentL1TargetIdx] = true;
+                            GameState.set('l1Collected', collected);
+                            renderL1();
+                        }, "收下密碼");
+                    } else {
+                        playErrorSound();
+                        showAlert("審核未通過", `長官回報：【${loc.title}】拍攝角度不符或模糊，請重新拍攝！`, "fa-circle-xmark", "text-[#6a2932]");
+                    }
+                });
+            }
+        });
+        
         function renderL1() {
-            let collected = GameState.get('l1Collected');
+            const collected = GameState.get('l1Collected');
+            const passcodeDigits = ['1', '9', '4', '5'];
+        
             document.querySelectorAll('.l1-loc-btn').forEach((btn) => {
                 const idx = parseInt(btn.dataset.idx);
                 const loc = GAME_DATA.level1.locations[idx];
+        
                 if (collected[idx]) {
                     btn.classList.add('bg-[#e0f2e9]', 'border-[#047857]', 'text-[#064e3b]');
-                    btn.innerHTML = `<i class="fa-solid fa-check text-[#047857] text-xl mb-1"></i><span class="text-xs">密碼：<b>${loc.code}</b></span>`;
+                    btn.innerHTML = `<i class="fa-solid fa-check text-[#047857] text-lg mb-1"></i>${loc.title}<span class="text-xs text-amber-700 font-mono font-black mt-0.5">密碼: ${passcodeDigits[idx]}</span>`;
+                    btn.onclick = () => {
+                        playBeep(500, 0.05);
+                        showAlert(loc.title, `【歷史檔案】\n${loc.desc}\n\n★ 此處獲得密碼數字：【 ${passcodeDigits[idx]} 】`, "fa-info-circle", "text-[#047857]");
+                    };
                 } else {
                     btn.classList.remove('bg-[#e0f2e9]', 'border-[#047857]', 'text-[#064e3b]');
                     btn.innerHTML = `<i class="fa-solid fa-camera mb-1.5 text-[#6a2932] text-xl"></i>${loc.title}`;
-                }
-
-                btn.onclick = () => {
-                    playBeep(600, 0.05);
-                    if (collected[idx]) {
-                        showAlert(loc.title, `【歷史檔案】\n${loc.desc}\n\n獲得密碼數字：【<b class="text-2xl text-[#6a2932] font-mono">${loc.code}</b>】`, "fa-file-lines", "text-[#047857]", null, "確定");
-                    } else {
-                        showAlert(`巡查任務：${loc.title}`, `【任務指引】\n${loc.task}\n\n點擊確認啟動相機拍照取證。`, "fa-camera", "text-[#6a2932]", () => {
-                            l1ActiveTargetIdx = idx;
+                    btn.onclick = () => {
+                        playBeep(600, 0.05);
+                        showAlert(loc.title, `【偵察任務】\n${loc.task}\n\n請前往現場尋找該構件並拍照送審。`, "fa-camera", "text-[#6a2932]", () => {
+                            currentL1TargetIdx = idx;
                             document.getElementById('l1-camera-input').click();
-                        }, "拍攝取證", 0, true);
-                    }
-                };
+                        }, "啟動相機拍照", 0, true);
+                    };
+                }
             });
-
+        
+            // 檢查是否全部收集完畢以解鎖鍵盤
             const cCount = collected.filter(Boolean).length;
             const overlay = document.getElementById('l1-keypad-overlay');
-            if (cCount === 4) overlay.classList.add('hidden'); else overlay.classList.remove('hidden');
+            if (cCount === 4) {
+                overlay.classList.add('hidden');
+            } else {
+                overlay.classList.remove('hidden');
+                overlay.innerHTML = `<div class="bg-[#1a110a] text-[#e5d5b5] text-sm font-bold px-5 py-3 rounded-sm shadow-xl border-2 border-[#e5d5b5] text-center">機密鎖定：請完成 4 處構件巡查與拍照<br><span class="text-amber-400 font-mono text-xs">(已解密 ${cCount}/4)</span></div>`;
+            }
             updateL1Display();
         }
 
@@ -1401,62 +1467,38 @@
             const qData = GAME_DATA.level2.questions[currentQ];
             document.getElementById('l2-q-counter').textContent = `測驗 ${currentQ + 1} / 5`;
             document.getElementById('btn-l2-prev').style.display = currentQ > 0 ? 'flex' : 'none';
-
-            const imgContainer = document.getElementById('l2-question-img-container');
-            const imgElement = document.getElementById('l2-question-img');
-            const qTextEl = document.getElementById('l2-question-text');
+            document.getElementById('l2-question-text').textContent = qData.q;
+        
             const cont = document.getElementById('l2-options-container');
             const pSect = document.getElementById('l2-photo-section');
+            const qImgContainer = document.getElementById('l2-question-img-container');
+            const qImgElement = document.getElementById('l2-question-img');
             cont.innerHTML = '';
-
-            // 第 4 題排序前導小知識判斷
-            if (qData.isSequence && !l2InSequenceIntro) {
-                imgContainer.classList.add('hidden');
-                pSect.classList.add('hidden');
-                qTextEl.textContent = "【建築演變小知識】\n\n村長的家經歷了 7 次改建：\n從最初的「黑瓦竹泥牆平房」，因水患興建「防洪樓避難」，隨後人口增加「加蓋二樓」，最終「全面改建為三層樓」。\n\n請詳讀上述順序，點擊下方按鈕開始排序測驗！";
-                
-                const startBtn = document.createElement('button');
-                startBtn.className = "w-full py-4 primary-btn font-black text-xl tracking-widest mt-4";
-                startBtn.innerHTML = '<i class="fa-solid fa-play mr-2"></i>開始答題';
-                startBtn.onclick = () => {
-                    playBeep();
-                    l2InSequenceIntro = true;
-                    renderL2();
-                };
-                cont.appendChild(startBtn);
-                return;
-            }
-
-            // 題目文字展示
-            qTextEl.textContent = qData.q;
-
-            // 題目頁圖片展示
-            if (qData.image) {
-                imgElement.src = qData.image;
-                imgContainer.classList.remove('hidden');
-            } else {
-                imgContainer.classList.add('hidden');
-            }
-
-            // 拍照區塊處理（第 1 題與第 5 題因 photoImage 為 null，因此不會洩題）
+        
             let photos = GameState.get('l2Photos');
+        
+            // 階段 1：拍照取證畫面（完全隱藏任何參考圖，不洩題）
             if (qData.photo && !photos[currentQ]) {
                 pSect.classList.remove('hidden'); 
+                qImgContainer.classList.add('hidden'); // 題目圖隱藏
+                document.getElementById('l2-photo-img-container').classList.add('hidden'); // 拍照參考圖徹底隱藏
                 document.getElementById('l2-photo-req-text').textContent = "📸 " + qData.photoText;
-                const photoImgContainer = document.getElementById('l2-photo-img-container');
-                const photoImgElement = document.getElementById('l2-photo-img');
-                
-                if (qData.photoImage) {
-                    photoImgElement.src = qData.photoImage;
-                    photoImgContainer.classList.remove('hidden');
-                } else {
-                    photoImgContainer.classList.add('hidden'); // 隱藏參考照片
-                }
-            } else {
+            } 
+            // 階段 2：測驗作答畫面（顯示題目歷史圖片與選項）
+            else {
                 pSect.classList.add('hidden');
+        
+                // 測驗畫面：若題目有設定圖片則正常顯示
+                if (qData.image) {
+                    qImgElement.src = qData.image;
+                    qImgContainer.classList.remove('hidden');
+                } else {
+                    qImgContainer.classList.add('hidden');
+                }
+        
                 let optionsWithIndex = qData.opts.map((opt, index) => ({ text: opt, isCorrect: index === qData.a }));
                 let shuffledOptions = shuffleArray([...optionsWithIndex]);
-
+        
                 shuffledOptions.forEach((o) => {
                     const btn = document.createElement('button');
                     btn.className = "opt-btn font-serif text-lg tracking-wide";
@@ -1465,7 +1507,6 @@
                         if (o.isCorrect) {
                             playSuccessSound();
                             showAlert("驗證通過", qData.desc, "fa-check-circle", "text-[#047857]", () => {
-                                l2InSequenceIntro = false;
                                 let cq = GameState.get('l2CurrentQ');
                                 if (cq < 4) { 
                                     GameState.set('l2CurrentQ', cq + 1); 
@@ -1483,7 +1524,6 @@
                 });
             }
         }
-
         function prevL2Question() {
             playBeep();
             let cq = GameState.get('l2CurrentQ');
