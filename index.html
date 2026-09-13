@@ -187,6 +187,8 @@
                         <h2 class="text-xl text-[#6a2932] font-black text-center border-b-2 border-[#3d2a1b] pb-3 font-serif">任務一：陣地巡查</h2>
                         <p class="text-sm font-bold text-[#3d2a1b] text-center mb-2">點擊完成定點打卡（可重複查看指示）</p>
                         <div class="grid grid-cols-2 gap-4" id="l1-locations-grid">
+                            <!-- 請加入在 #l1-locations-grid 容器後方 -->
+                            <input type="file" accept="image/*" capture="environment" id="l1-camera-input" class="hidden">
                             <button class="l1-loc-btn military-btn py-5 text-base font-black flex flex-col items-center justify-center" data-idx="0"><i class="fa-solid fa-map-pin mb-2 text-[#6a2932] text-xl"></i>通氣孔</button>
                             <button class="l1-loc-btn military-btn py-5 text-base font-black flex flex-col items-center justify-center" data-idx="1"><i class="fa-solid fa-map-pin mb-2 text-[#6a2932] text-xl"></i>包砲建屋</button>
                             <button class="l1-loc-btn military-btn py-5 text-base font-black flex flex-col items-center justify-center" data-idx="2"><i class="fa-solid fa-map-pin mb-2 text-[#6a2932] text-xl"></i>砲座遺跡</button>
@@ -279,6 +281,10 @@
                                 <audio id="l3-audio-player" class="hidden"></audio>
                             </div>
                             <p id="l3-question-text" class="text-xl font-black text-center leading-[1.8] mb-8 text-[#1a110a] font-serif"></p>
+                            <!-- 菜單局部截圖展示框 -->
+                            <div id="l3-menu-box" class="w-full vintage-photo !border-4 !border-b-8 mb-4 max-h-44 flex items-center justify-center overflow-hidden shrink-0">
+                                <img id="l3-menu-img" src="" class="w-full h-auto object-cover" onload="this.classList.add('loaded')" onerror="this.src='https://placehold.co/400x200/e5d5b5/6a2932?text=菜單檔案調閱中'">
+                            </div>
                             <div id="l3-options-container" class="space-y-4 flex-1 flex flex-col justify-end pb-4"></div>
                         </div>
                     </div>
@@ -687,7 +693,15 @@
                             <div class="flex items-center space-x-2 text-[#6a2932] mb-3 font-black text-lg border-b border-[#8a7251]/40 pb-2"><i class="fa-solid fa-gift"></i><span>兌獎引導</span></div>
                             請「截圖保留」此認證畫面，並出示您獲得的【跨越時空的信】（點擊下方拼圖收集查看），前往起點服務台領取專屬獎勵！
                         </div>
-
+                        <!-- 服務台現場核銷專區 -->
+                        <div class="bg-[#f5eedf] p-4 rounded-sm border-2 border-[#3d2a1b] mb-6 text-center shadow-inner">
+                            <div class="text-xs font-bold text-[#3d2a1b] mb-2 tracking-wider flex items-center justify-center">
+                                <i class="fa-solid fa-user-shield text-[#6a2932] mr-1.5"></i>服務台工作人員專用核銷區
+                            </div>
+                            <button id="btn-claim-gift" class="w-full py-3.5 primary-btn font-black text-lg tracking-widest flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-stamp"></i><span>現場人員點擊核銷</span>
+                            </button>
+                        </div>
                         <button id="btn-restart-game" class="w-full py-4 military-btn font-black text-lg tracking-widest"><i class="fa-solid fa-rotate-left mr-2"></i>清除檔案並重新開始</button>
                     </div>
                 </div>
@@ -750,7 +764,17 @@
                 </div>
             </div>
         </div>
-
+        <!-- MODAL: PUZZLE LIGHTBOX (單張拼圖檢視，防止跳回原關卡) -->
+        <div id="modal-puzzle-lightbox" class="fixed inset-0 bg-stone-950/90 backdrop-blur-md z-[1010] flex items-center justify-center p-6 hidden transition-opacity" onclick="closePuzzleLightbox()">
+            <div class="vintage-paper p-6 rounded-sm max-w-[340px] w-full text-center space-y-4 shadow-2xl border-2 border-[#8a7251] relative" onclick="event.stopPropagation()">
+                <div class="flex justify-between items-center border-b-2 border-dashed border-[#3d2a1b]/30 pb-2">
+                    <span class="text-xs font-mono font-black text-[#6a2932]"><i class="fa-solid fa-puzzle-piece mr-1"></i>歷史碎片檢視</span>
+                    <button onclick="closePuzzleLightbox()" class="text-stone-700 hover:text-black p-1 text-lg font-bold"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div id="puzzle-lightbox-content" class="py-6 px-4 bg-[#fdfbf7] border border-[#3d2a1b] rounded-sm text-base font-serif font-black text-[#1a110a] leading-relaxed shadow-inner"></div>
+                <p class="text-[11px] font-mono text-stone-500">點擊任意處關閉檢視</p>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -856,10 +880,10 @@
             ],
             level1: {
                 locations: [
-                    { title: "#通氣孔", task: "尋找小廣場周圍牆腳的金屬通氣孔或地面排氣井蓋，觀察其標示，記錄下暗號數字。", desc: "透過地面通氣孔連結地下甬道的歷史存在，了解二戰防禦機制。" },
-                    { title: "#包砲建屋", task: "觀察廣場緊鄰的眷舍牆角，尋找日治紅磚掩體與戰後眷村牆面交接處，找出構造辨識編號。", desc: "體會這片土地從「日治軍事要塞」轉變為「戰後眷村家園」的歷史層次。" },
-                    { title: "#砲座遺跡", task: "觀察地上保存最完整的圓形高射砲座遺跡，看看旁邊標示牌上記錄的「核心砲座代號」。", desc: "認識日治時期三重防砲陣地的核心軍事設施。" },
-                    { title: "#預備門數", task: "閱讀廣場旁的歷史解說牌，找出日治時期防砲部隊在此預計配置的「高射砲預備門數」。", desc: "理解三重防砲陣地的高射砲火網配置規模與戰略地位。" }
+                    { title: "通氣孔", code: "1", task: "尋找小廣場周圍牆腳的金屬通氣孔或地面排氣井蓋拍照上傳。", desc: "透過通氣孔連結地下甬道，見證二戰時期的防空工程智慧。" },
+                    { title: "包砲建屋", code: "9", task: "觀察眷舍牆角，尋找日治紅磚掩體與戰後眷村牆面交接處拍照上傳。", desc: "體會這片土地從「日治軍事要塞」轉變為「戰後眷村家園」的歷史疊加。" },
+                    { title: "砲座遺跡", code: "4", task: "觀察地上最完整的圓形高射砲座遺跡拍照上傳。", desc: "日治時期三重防砲陣地的核心軍事構件，守衛淡水河口至台北上空。" },
+                    { title: "預備門數", code: "5", task: "閱讀廣場旁的歷史解說牌，拍下紀錄預備門數之說明板。", desc: "防砲部隊原預計配置的多門高射砲火網，顯現當時戰略地位之關鍵。" }
                 ],
                 passcode: "1945",
                 hints: [
@@ -869,20 +893,30 @@
             },
             level2: {
                 questions: [
-                    { image: "images/l2_map2.jpg", photoImage: "images/l2_map2.jpg", q: "依據軍階與家庭成員分配房舍。請對照地圖找到特級眷舍，高階軍官的家擁有哪一個最明顯的建築特徵？", opts: ["獨立庭院與紅色大門", "只能側身通過的窄巷", "蓋在屋頂上的小閣樓", "共用牆壁的連棟小屋"], a: 0, photo: true, photoText: "請尋找該建築特徵並拍照上傳", desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門；基層官兵則多居住於共用牆壁的連棟窄房。" },
-                    { image: "images/l2_2.jpg", q: "為什麼防洪樓裡會有小閣樓？", opts: ["放雜物", "放武器", "洪水來時避難", "養鴿子"], a: 2, photo: false, desc: "過去經常受淡水河洪患，於1960年代興建「防洪樓」作為避難空間。樓內保留當時為躲避水災增建的小閣樓。" },
-                    { image: "images/l2_3.jpg", q: "「一線天」是眷村特殊的狹窄巷道景觀。造成一線天形成的主要原因為何？\n\n【線索】：兩側皆有眷舍/巷道狹窄/抬頭見一線天", opts: ["建村時為了節省土地設計", "居民居住空間不足向前後院擴建", "為了讓鄰居方便交流", "為了遮陽避雨刻意縮小"], a: 1, photo: true, photoText: "請在眷村中找到「一線天」拍照上傳", desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成今日緊鄰樣貌。" },
-                    { q: "請依照村長家的演變順序排列下列事件。\n① 興建防洪樓，增加避難空間\n② 黑瓦竹泥牆平房\n③ 全面改建為三層樓\n④ 加蓋二樓增加空間", opts: ["① → ② → ③ → ④", "② → ① → ④ → ③", "② → ④ → ① → ③", "① → ③ → ② → ④"], a: 1, photo: false, desc: "村長的家經歷了 7 次改建，從最初的平房，一路上蓋到三層樓。" },
-                    { image: "images/l2_5.jpg", q: "為什麼隨著時間過去，眷村的房屋開始出現更多門窗、鐵窗，生活空間逐漸移回屋內？", opts: ["居民開始重視與鄰居保持距離", "居民確定無法短期返回大陸，長久生活", "政府規定必須將生活空間封閉", "為了防止敵人進入眷村"], a: 1, photo: true, photoText: "請尋找建築上的鐵窗拍照上傳", desc: "隨著回大陸希望渺茫及人口增加，居民擴建將生活機能移入屋內並加裝鐵窗。眷村逐漸從開放轉為獨立住宅。" }
+                    // 第 1 題：拍照頁面拿掉 photoImage 參考答案，題目頁保留 image
+                    { image: "images/l2_map2.jpg", photoImage: null, q: "依據軍階與家庭成員分配房舍。請對照地圖找到特級眷舍，高階軍官的家擁有哪一個最明顯的建築特徵？", opts: ["獨立庭院與紅色大門", "只能側身通過的窄巷", "蓋在屋頂上的小閣樓", "共用牆壁的連棟小屋"], a: 0, photo: true, photoText: "請至現場尋找特級眷舍特徵並拍照上傳審核", desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門；基層官兵則居住於共用牆壁的窄房。" },
+                    { image: "images/l2_2.jpg", q: "為什麼防洪樓裡會有小閣樓？", opts: ["放雜物", "放武器", "洪水來時避難", "養鴿子"], a: 2, photo: false, desc: "過去常受淡水河洪患，於1960年代興建「防洪樓」避難，樓內保留躲避水災增建的小閣樓。" },
+                    { image: "images/l2_3.jpg", photoImage: "images/l2_3.jpg", q: "「一線天」是眷村特殊的狹窄巷道景觀。造成一線天形成的主要原因為何？\n\n【線索】：兩側皆有眷舍/巷道狹窄/抬頭見一線天", opts: ["建村時為了節省土地設計", "居民居住空間不足向前後院擴建", "為了讓鄰居方便交流", "為了遮陽避雨刻意縮小"], a: 1, photo: true, photoText: "請在眷村中找到「一線天」拍照上傳", desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成緊鄰樣貌。" },
+                    // 第 4 題：排序題（掛載前導知識）
+                    { 
+                        isSequence: true,
+                        q: "請依照村長家的演變順序排列下列事件：\n① 興建防洪樓，增加避難空間\n② 黑瓦竹泥牆平房\n③ 全面改建為三層樓\n④ 加蓋二樓增加空間", 
+                        opts: ["① → ② → ③ → ④", "② → ① → ④ → ③", "② → ④ → ① → ③", "① → ③ → ② → ④"], 
+                        a: 1, 
+                        photo: false, 
+                        desc: "村長家歷經7次改建，從黑瓦平房、防洪樓、二樓加蓋到全面三層樓，完整體現居住演進。" 
+                    },
+                    // 第 5 題：拍照頁面拿掉 photoImage 參考答案，題目頁保留 image
+                    { image: "images/l2_5.jpg", photoImage: null, q: "為什麼隨著時間過去，眷村的房屋開始出現更多門窗、鐵窗，生活空間逐漸移回屋內？", opts: ["居民開始重視與鄰居保持距離", "居民確定無法短期返回大陸，長久生活", "政府規定必須將生活空間封閉", "為了防止敵人進入眷村"], a: 1, photo: true, photoText: "請尋找建築上的鐵窗拍照上傳審核", desc: "隨著定居長久與人口增加，生活機能全面移入屋內並加裝鐵窗，從開放聚落走向獨立住宅。" }
                 ]
             },
             level3: {
                 questions: [
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["麻婆豆腐", "回鍋肉", "水煮魚", "宮保雞丁"], a: 1, desc: "回鍋肉是四川經典家常菜，呈現四川料理麻、辣、香風味。" },
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["酸菜魚", "剁椒魚頭", "清蒸鱸魚", "糖醋魚"], a: 1, desc: "剁椒魚頭是湖南料理，搭配剁椒蒸製，展現鮮、辣、香特色。" },
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["安徽板麵", "蘭州拉麵", "刀削麵", "牛肉麵"], a: 0, desc: "安徽板麵是具地方特色的麵食，搭配香辣濃郁醬汁。" },
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["打滷麵", "擔擔麵", "炸醬麵", "蔥油拌麵"], a: 2, desc: "炸醬麵是北方代表家常麵食。濃郁炸醬形成鹹香厚重風味。" },
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["山東煎餅", "韭菜盒子", "蔥油餅", "牛肉餡餅"], a: 1, desc: "韭菜盒子是常見北方家常麵食，適合家庭分享。" }
+                    { q: "請問語音中提到的料理是哪一道？", opts: ["麻婆豆腐", "回鍋肉", "水煮魚", "宮保雞丁"], a: 1, desc: "回鍋肉是四川經典家常菜，呈現川菜麻、辣、香醇風味。" },
+                    { q: "請問語音中提到的料理是哪一道？", opts: ["酸菜魚", "剁椒魚頭", "清蒸鱸魚", "糖醋魚"], a: 1, desc: "剁椒魚頭搭配辛辣剁椒蒸製，展現湘菜鮮、辣、厚重特色。" },
+                    { q: "請問語音中提到的料理是哪一道？", opts: ["安徽板麵", "蘭州拉麵", "刀削麵", "牛肉麵"], a: 0, desc: "安徽板麵以彈牙麵條搭配香辣醬汁，是充滿鄉土特色的北方風味。" },
+                    { q: "請問語音中提到的料理是哪一道？", opts: ["打滷麵", "擔擔麵", "炸醬麵", "蔥油拌麵"], a: 2, desc: "炸醬麵濃郁鹹香，以豆瓣醬與肉末慢炒，代表北方家常麵食。" },
+                    { q: "請問語音中提到的料理是哪一道？", opts: ["山東煎餅", "韭菜盒子", "蔥油餅", "牛肉餡餅"], a: 1, desc: "金黃酥脆的韭菜盒子包入冬粉、雞蛋與蝦米，是鄰里分享的溫暖點心。" }
                 ],
                 audios: [
                     "images/images_1_sichuan.mp3",
@@ -890,6 +924,20 @@
                     "images/images_3_anhui.mp3",
                     "images/images_4_beijing.mp3",
                     "images/images_5_shandong.mp3"
+                ],
+                menuImages: [
+                    "images/menu_sichuan.jpg",
+                    "images/menu_hunan.jpg",
+                    "images/menu_anhui.jpg",
+                    "images/menu_beijing.jpg",
+                    "images/menu_shandong.jpg"
+                ],
+                foodImages: [
+                    "images/food_huiguorou.jpg",
+                    "images/food_duojiaoyutou.jpg",
+                    "images/food_banmian.jpg",
+                    "images/food_zhajiangmian.jpg",
+                    "images/food_jiucaihezi.jpg"
                 ]
             },
             level4: {
@@ -898,16 +946,13 @@
             },
             level5: {
                 passcode: "999",
-                hints: [
-                    "提示一：群星會的巔峰時刻，是一個大家都熟悉的三位數字。",
-                    "提示二：就是 999 啦！"
-                ]
+                hints: ["提示一：群星會的巔峰時刻，是一個大家都熟悉的三位數字。", "提示二：通關密碼就是 999！"]
             },
             level6: {
                 songs: [
-                    { title: "《安童哥買菜》", lyric: "安童哥仔囉，哩哩囉囉...", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3", desc: "劉福助｜曲風活潑、充滿生活感。" },
-                    { title: "《相思河畔》", lyric: "自從相思河畔見了你...", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3", desc: "吳靜嫻｜氣氛浪漫、充滿復古情懷。" },
-                    { title: "《鄉間的小路》", lyric: "走在鄉間的小路上...", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3", desc: "葉佳修｜帶有民歌時代的清新感。" }
+                    { title: "《安童哥買菜》", lyric: "安童哥仔囉，哩哩囉囉...", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3", desc: "劉福助｜曲風活潑、充滿市井生活感。" },
+                    { title: "《相思河畔》", lyric: "自從相思河畔見了你...", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3", desc: "吳靜嫻｜氣氛浪漫、充滿深情復古情懷。" },
+                    { title: "《鄉間的小路》", lyric: "走在鄉間的小路上...", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3", desc: "葉佳修｜民歌時代的純樸與清新。" }
                 ]
             },
             puzzles: [
@@ -925,23 +970,10 @@
                 "https://placehold.co/200/e5d5b5/7c343d?text=Mom",
                 "https://placehold.co/200/e5d5b5/7c343d?text=Student",
                 "https://placehold.co/200/e5d5b5/7c343d?text=Kid",
-                "images/鄧麗君.png",
-                "images/羅大佑.png",
-                "images/紫薇.png",
-                "images/潘安邦.png",
+                "images/鄧麗君.png", "images/羅大佑.png", "images/紫薇.png", "images/潘安邦.png",
                 "https://placehold.co/200/e5d5b5/7c343d?text=Grandson",
-                "images/桂花.png",
-                "images/玉蘭花.jpg",
-                "images/梔子花.jpg",
-                "images/秀英花.jpg",
-                "images/玫瑰.jpg",
-                "images/茉莉.png",
-                "images/信.png",
-                "images/l2_map.jpg",
-                "images/l2_1.jpg",
-                "images/l2_2.jpg",
-                "images/l2_3.jpg",
-                "images/l2_5.jpg"
+                "images/桂花.png", "images/玉蘭花.jpg", "images/梔子花.jpg", "images/秀英花.jpg", "images/玫瑰.jpg", "images/茉莉.png",
+                "images/信.png", "images/l2_map.jpg", "images/l2_map2.jpg", "images/l2_2.jpg", "images/l2_3.jpg", "images/l2_5.jpg"
             ]
         };
 
