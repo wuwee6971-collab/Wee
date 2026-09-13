@@ -128,7 +128,7 @@
         </div>
 
         <div id="game-viewport" class="flex-1 overflow-y-auto scroll-smooth z-10 w-full custom-scrollbar relative bg-transparent" style="-webkit-overflow-scrolling: touch;">
-            <div class="pb-viewport-safe min-h-full flex flex-col relative w-full">
+            <div class="min-h-full flex flex-col relative w-full">
 
                 <!-- SCREEN 0: ENTRY -->
                 <div id="screen-entry" class="screen-panel screen-active p-5 flex flex-col justify-center bg-transparent">
@@ -302,7 +302,6 @@
                         <div class="grid grid-cols-2 gap-3 flex-1 overflow-y-auto custom-scrollbar content-start pb-2">
                             <!-- 奶奶 -->
                             <div class="wanted-card flex flex-col">
-                                <div class="wanted-badge">協尋對象</div>
                                 <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-2 !border-b-4 m-2">
                                     <img src="https://placehold.co/200/e5d5b5/7c343d?text=Grandma" alt="奶奶" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
                                 </div>
@@ -315,7 +314,6 @@
                         
                             <!-- 媽媽 -->
                             <div class="wanted-card flex flex-col">
-                                <div class="wanted-badge">協尋對象</div>
                                 <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-2 !border-b-4 m-2">
                                     <img src="https://placehold.co/200/e5d5b5/7c343d?text=Mom" alt="媽媽翠芳" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
                                 </div>
@@ -328,7 +326,6 @@
                         
                             <!-- 中學生 -->
                             <div class="wanted-card flex flex-col">
-                                <div class="wanted-badge">協尋對象</div>
                                 <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-2 !border-b-4 m-2">
                                     <img src="https://placehold.co/200/e5d5b5/7c343d?text=Student" alt="中學生" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
                                 </div>
@@ -341,7 +338,6 @@
                         
                             <!-- 在地兒童 -->
                             <div class="wanted-card flex flex-col">
-                                <div class="wanted-badge">協尋對象</div>
                                 <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-2 !border-b-4 m-2">
                                     <img src="https://placehold.co/200/e5d5b5/7c343d?text=Kid" alt="小孩" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
                                 </div>
@@ -698,7 +694,7 @@
         </div>
 
         <!-- 底部導覽列 -->
-        <div class="border-t-4 border-[#291014] p-3 text-base font-bold flex items-center justify-around text-[#1a110a] bg-[#e6dfcc] z-30 absolute bottom-0 w-full left-0 pb-[calc(12px+env(safe-area-inset-bottom,12px))] shadow-[0_-4px_15px_rgba(0,0,0,0.2)]">
+        <div class="border-t-4 border-[#291014] p-3 text-base font-bold flex items-center justify-around text-[#1a110a] bg-[#e6dfcc] z-30 shrink-0 relative w-full pb-[calc(12px+env(safe-area-inset-bottom,12px))] shadow-[0_-4px_15px_rgba(0,0,0,0.2)]">
             <button id="btn-nav-hq" class="hover:text-[#6a2932] transition flex items-center space-x-2 py-3 px-4 rounded-sm active:scale-95 border-2 border-transparent active:border-[#3d2a1b]"><i class="fa-solid fa-house"></i><span>回主畫面</span></button>
             <span class="text-[#3d2a1b] opacity-50">|</span>
             <button id="btn-nav-stamps" class="hover:text-[#6a2932] transition flex items-center space-x-2 py-3 px-4 rounded-sm text-[#6a2932] active:scale-95 border-2 border-transparent active:border-[#3d2a1b]" onclick="openStampsDrawer()"><i class="fa-solid fa-puzzle-piece"></i><span>拼圖收集</span></button>
