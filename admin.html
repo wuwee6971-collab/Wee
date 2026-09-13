@@ -342,8 +342,8 @@
         }
 
         async function clearAllSubmissions() {
-            const inputPass = prompt("【警告】這將清空所有審核記錄！\n請輸入確認代碼「CLEAR」以執行清空：");
-            if (inputPass !== "CLEAR") {
+            const inputPass = prompt("【警告】這將清空所有審核記錄！\n請輸入確認代碼「C」以執行清空：");
+            if (inputPass !== "C") {
                 if (inputPass !== null) alert("代碼不正確，已取消操作。");
                 return;
             }
