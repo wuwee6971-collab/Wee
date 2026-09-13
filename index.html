@@ -1057,6 +1057,7 @@
         // ==========================================
         // 以下保留原始全部 JS 邏輯 (完全不動業務邏輯)
         // ==========================================
+        // 【修改後】加入防呆，即使 CDN 失敗或被攔截也不會讓整個 App 當掉
         const firebaseConfig = {
             apiKey: "AIzaSyCxIinbYw3OhJhKksVHsqPaYCv0-fLUR3s",
             authDomain: "weee-57379.firebaseapp.com",
@@ -1065,9 +1066,20 @@
             messagingSenderId: "26784647",
             appId: "1:26784647:web:e3c682e0915fe43ddf5922"
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
+        
+        let db = null;
+        try {
+            if (typeof firebase !== 'undefined') {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                db = firebase.firestore();
+            } else {
+                console.warn("Firebase SDK 未成功載入，將關閉即時審核功能。");
+            }
+        } catch (e) {
+            console.warn("Firebase 初始化失敗：", e);
+        }
         function compressImageToBase64(file, maxWidth, quality, callback) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -1285,50 +1297,86 @@
             };
         })();
 
+        // 【修改後】使用 try-catch 包裹，避免特定環境拋出例外阻斷腳本
         let globalTimerInterval = null;
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-        window.addEventListener('load', () => {
+        let audioCtx = null;
+        try {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (AudioContextClass) audioCtx = new AudioContextClass();
+        } catch (e) {
+            console.warn("Web Audio API 初始化失敗：", e);
+        }
+        // 【修改後】獨立出啟動函數，支援 readyState 判斷，並具備全域強制退場定時器
+        function startAppLifecycle() {
             const loader = document.getElementById('app-loader');
             const progressEl = document.getElementById('loader-progress');
-            const images = GAME_DATA.preloadImages;
+            const images = (GAME_DATA && GAME_DATA.preloadImages) ? GAME_DATA.preloadImages : [];
             let loaded = 0;
             let isFinished = false;
-
+        
             const finishLoading = () => {
-                if(isFinished) return;
+                if (isFinished) return;
                 isFinished = true;
-                loader.style.opacity = '0';
-                setTimeout(() => loader.remove(), 800);
-
-                if (GameState.init() && GameState.get('teamName')) {
-                    if(globalTimerInterval) clearInterval(globalTimerInterval);
-                    globalTimerInterval = setInterval(updateTimerDisplay, 1000); 
-                    updateTimerDisplay();
-                    const icon = document.getElementById('sound-icon');
-                    if(!GameState.get('soundEnabled')) icon.className = "fa-solid fa-volume-xmark text-gold/50 text-lg";
-                    if (GameState.get('stamps').filter(Boolean).length === 7) showScreen('certificate'); else showScreen('main');
-                } else {
+        
+                if (loader) {
+                    loader.style.pointerEvents = 'none';
+                    loader.style.opacity = '0';
+                    setTimeout(() => { if (loader.parentNode) loader.remove(); }, 800);
+                }
+        
+                try {
+                    if (GameState.init() && GameState.get('teamName')) {
+                        if (globalTimerInterval) clearInterval(globalTimerInterval);
+                        globalTimerInterval = setInterval(updateTimerDisplay, 1000);
+                        updateTimerDisplay();
+                        const icon = document.getElementById('sound-icon');
+                        if (icon && !GameState.get('soundEnabled')) {
+                            icon.className = "fa-solid fa-volume-xmark text-gold/50 text-lg";
+                        }
+                        if (GameState.get('stamps').filter(Boolean).length === 7) {
+                            showScreen('certificate');
+                        } else {
+                            showScreen('main');
+                        }
+                    } else {
+                        showScreen('entry');
+                    }
+                } catch (err) {
+                    console.error("狀態初始化失敗，強制進入登入畫面：", err);
                     showScreen('entry');
                 }
             };
-
-            const timeout = setTimeout(finishLoading, 800);
-            if(images.length === 0) { finishLoading(); } 
-            else {
+        
+            // 全域安全退場：不管圖片有沒有載入成功，最多 1.5 秒強制進入遊戲
+            const forceTimeout = setTimeout(finishLoading, 1500);
+        
+            if (images.length === 0) {
+                clearTimeout(forceTimeout);
+                finishLoading();
+            } else {
                 images.forEach(src => {
                     const img = new Image();
                     img.onload = img.onerror = () => {
                         loaded++;
                         const pct = Math.floor((loaded / images.length) * 100);
-                        if(progressEl) progressEl.textContent = `${pct}%`;
-                        if(loaded === images.length) { clearTimeout(timeout); finishLoading(); }
+                        if (progressEl) progressEl.textContent = `${pct}%`;
+                        if (loaded >= images.length) {
+                            clearTimeout(forceTimeout);
+                            finishLoading();
+                        }
                     };
                     img.src = src;
                 });
             }
-        });
-
+        }
+        
+        // 判斷文件是否已經載入完畢，避免監聽器錯過觸發時機
+        if (document.readyState === 'complete') {
+            startAppLifecycle();
+        } else {
+            window.addEventListener('DOMContentLoaded', startAppLifecycle);
+            window.addEventListener('load', startAppLifecycle);
+        }
         function shuffleArray(array) {
             let currentIndex = array.length, randomIndex;
             while (currentIndex !== 0) {
