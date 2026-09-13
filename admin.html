@@ -27,30 +27,14 @@
 </head>
 <body class="min-h-[100dvh] flex flex-col items-center justify-start pb-12">
 
-    <!-- 門禁驗證 Modal -->
-    <div id="pin-modal" class="fixed inset-0 z-50 bg-[#0c0a09]/95 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="military-card max-w-[340px] w-full p-6 text-center space-y-5 rounded-sm">
-            <div class="w-16 h-16 mx-auto rounded-full bg-[#292524] border-2 border-[#a1824a] flex items-center justify-center text-2xl text-[#a1824a]">
-                <i class="fa-solid fa-shield-halved"></i>
-            </div>
-            <div>
-                <h2 class="text-xl font-black text-[#e5d5b5] tracking-widest font-serif">指揮所通訊授權</h2>
-                <p class="text-xs text-stone-400 mt-1">請輸入關主通行口令 (預設: 1945)</p>
-            </div>
-            <input type="password" id="pin-input" pattern="[0-9]*" inputmode="numeric" maxlength="8" placeholder="輸入口令"
-                   class="w-full bg-[#12100e] border-2 border-[#574c3d] text-center text-2xl font-mono tracking-widest text-[#f5f0e6] py-3 rounded-sm focus:border-[#a1824a] outline-none">
-            <button onclick="verifyPin()" class="w-full py-3 bg-[#a1824a] text-[#1c1917] font-black text-lg border-2 border-[#785f34] shadow-[3px_3px_0_#3f311a] active:translate-x-0.5 active:translate-y-0.5">
-                解除鎖定
-            </button>
-        </div>
-    </div>
-
+    
     <!-- 頂部資訊列 -->
     <header class="w-full max-w-lg bg-[#1c1917] border-b-4 border-[#3b3227] px-4 py-3 sticky top-0 z-30 shadow-lg flex items-center justify-between">
         <div class="flex items-center space-x-2">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
             <span class="font-black text-sm tracking-wider text-[#e5d5b5]">前線通訊所</span>
         </div>
+        <!-- 找到 <header> 內的右側按鈕區塊，替換或加入以下內容 -->
         <div class="flex items-center space-x-3">
             <div class="text-xs bg-[#2b2520] border border-[#574c3d] px-2.5 py-1 rounded text-[#e5d5b5] font-mono">
                 待核准: <b id="pending-counter" class="text-amber-400 text-sm">0</b>
@@ -58,14 +42,28 @@
             <button onclick="toggleAudio()" id="btn-audio" class="text-xs px-2.5 py-1 border border-[#574c3d] bg-[#292524] text-stone-300 rounded">
                 <i class="fa-solid fa-bell"></i>
             </button>
-            <button onclick="lockConsole()" class="text-xs px-2 py-1 text-stone-400 hover:text-white">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            <!-- 新增：全部清空按鈕 -->
+            <button onclick="clearAllSubmissions()" title="清空全部紀錄" class="text-xs px-2.5 py-1 border border-red-800 bg-red-950/60 text-red-300 rounded hover:bg-red-900 active:scale-95">
+                <i class="fa-solid fa-trash-can mr-1"></i>清空紀錄
             </button>
         </div>
     </header>
 
     <!-- 主內容區 -->
     <main class="w-full max-w-lg p-4 space-y-4">
+        <!-- 關卡房間分流選單 -->
+        <div class="space-y-1.5 mb-3">
+            <div class="text-[11px] text-stone-400 font-bold flex items-center justify-between">
+                <span><i class="fa-solid fa-door-open text-[#a1824a] mr-1"></i>當前審核房間：</span>
+                <span id="current-room-label" class="text-amber-400 font-mono">全部關卡</span>
+            </div>
+            <div class="grid grid-cols-4 gap-1.5 text-xs font-bold font-mono">
+                <button onclick="setRoom('ALL')" id="room-btn-ALL" class="py-2 rounded-sm border border-[#a1824a] bg-[#a1824a] text-[#12100e]">全部</button>
+                <button onclick="setRoom('1')" id="room-btn-1" class="py-2 rounded-sm border border-[#443c33] bg-[#1c1917] text-stone-400">任務一</button>
+                <button onclick="setRoom('2')" id="room-btn-2" class="py-2 rounded-sm border border-[#443c33] bg-[#1c1917] text-stone-400">任務二</button>
+                <button onclick="setRoom('3')" id="room-btn-3" class="py-2 rounded-sm border border-[#443c33] bg-[#1c1917] text-stone-400">任務三</button>
+            </div>
+        </div>
         <!-- 分籤切換 -->
         <div class="grid grid-cols-2 gap-2 text-xs font-bold font-mono">
             <button id="tab-pending" onclick="switchTab('pending')" class="py-2.5 border-b-2 border-amber-500 text-amber-400 bg-[#1c1917]">
@@ -105,13 +103,7 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-
-        // 2. 狀態管理
-        let currentTab = 'pending';
-        let currentSubmissions = [];
-        let previousPendingCount = 0;
-        let isAudioEnabled = true;
-
+        
         // 提示音效 Web Audio
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playChime() {
@@ -131,31 +123,11 @@
             } catch (e) {}
         }
 
-        // 3. 門禁驗證
-        function verifyPin() {
-            const pin = document.getElementById('pin-input').value.trim();
-            if (pin === "1945") {
-                sessionStorage.setItem("admin_authorized", "true");
-                document.getElementById('pin-modal').classList.add('hidden');
-                startListening();
-            } else {
-                alert("口令錯誤，權限不足！");
-                document.getElementById('pin-input').value = "";
-            }
-        }
 
-        function lockConsole() {
-            sessionStorage.removeItem("admin_authorized");
-            location.reload();
-        }
-
+        // 頁面開啟時直接啟動監聽（無密碼門禁）
         window.addEventListener('load', () => {
-            if (sessionStorage.getItem("admin_authorized") === "true") {
-                document.getElementById('pin-modal').classList.add('hidden');
-                startListening();
-            }
+            startListening();
         });
-
         // 4. 即時監聽 Firestore
         let unsubscribe = null;
         function startListening() {
@@ -205,21 +177,76 @@
             renderList();
         }
 
+        // 當前選擇的關卡房間 ('ALL', '1', '2', '3')
+        let selectedRoom = 'ALL';
+        
+        // 關卡房間切換函式
+        function setRoom(roomId) {
+            selectedRoom = roomId;
+            
+            // 更新按鈕樣式
+            ['ALL', '1', '2', '3'].forEach(id => {
+                const btn = document.getElementById(`room-btn-${id}`);
+                if (!btn) return;
+                if (id === roomId) {
+                    btn.className = "py-2 rounded-sm border border-[#a1824a] bg-[#a1824a] text-[#12100e]";
+                } else {
+                    btn.className = "py-2 rounded-sm border border-[#443c33] bg-[#1c1917] text-stone-400";
+                }
+            });
+        
+            const labels = {
+                'ALL': '全部關卡',
+                '1': '任務一 (防砲陣地)',
+                '2': '任務二 (眷舍空間)',
+                '3': '任務三 (村長的家)'
+            };
+            document.getElementById('current-room-label').textContent = labels[roomId] || '未知房間';
+            
+            renderList();
+        }
+        
+        // 渲染列表（整合：分籤 + 關卡房間過濾）
         function renderList() {
             const container = document.getElementById('submissions-list');
-            const filtered = currentSubmissions.filter(item => {
+        
+            // 1. 狀態篩選 (待審核 vs 已處理)
+            let filtered = currentSubmissions.filter(item => {
                 return currentTab === 'pending' ? item.status === 'pending' : item.status !== 'pending';
             });
-
+        
+            // 2. 關卡房間篩選 (依照 levelId 模糊或精確比對)
+            if (selectedRoom !== 'ALL') {
+                filtered = filtered.filter(item => {
+                    const lvl = String(item.levelId || '');
+                    if (selectedRoom === '1') return lvl.includes('一') || lvl.includes('1') || lvl.includes('防砲');
+                    if (selectedRoom === '2') return lvl.includes('二') || lvl.includes('2') || lvl.includes('眷舍');
+                    if (selectedRoom === '3') return lvl.includes('三') || lvl.includes('3') || lvl.includes('村長');
+                    return true;
+                });
+            }
+        
+            // 更新計數器 (顯示當前房間內的待審數量)
+            const pendingInRoom = currentSubmissions.filter(s => {
+                if (s.status !== 'pending') return false;
+                if (selectedRoom === 'ALL') return true;
+                const lvl = String(s.levelId || '');
+                if (selectedRoom === '1') return lvl.includes('一') || lvl.includes('1') || lvl.includes('防砲');
+                if (selectedRoom === '2') return lvl.includes('二') || lvl.includes('2') || lvl.includes('眷舍');
+                if (selectedRoom === '3') return lvl.includes('三') || lvl.includes('3') || lvl.includes('村長');
+                return true;
+            });
+            document.getElementById('pending-counter').textContent = pendingInRoom.length;
+        
             if (filtered.length === 0) {
                 container.innerHTML = `
                     <div class="military-card p-10 text-center text-stone-500">
                         <i class="fa-solid fa-inbox text-4xl mb-3 opacity-40"></i>
-                        <p class="text-sm font-bold">${currentTab === 'pending' ? '目前無待審核任務' : '暫無歷史審核紀錄'}</p>
+                        <p class="text-sm font-bold">${currentTab === 'pending' ? '此關卡房間目前無待審核任務' : '此關卡無歷史審核紀錄'}</p>
                     </div>`;
                 return;
             }
-
+        
             container.innerHTML = filtered.map(item => {
                 const timeStr = item.createdAt ? new Date(item.createdAt.toDate ? item.createdAt.toDate() : item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '--:--:--';
                 const imgSrc = item.photoUrl || item.imageBase64 || '';
@@ -228,7 +255,7 @@
                 if (item.status === 'pending') badgeHtml = `<span class="text-[10px] font-mono px-2 py-0.5 rounded font-black tag-pending">待審核</span>`;
                 else if (item.status === 'approved') badgeHtml = `<span class="text-[10px] font-mono px-2 py-0.5 rounded font-black bg-emerald-950 text-emerald-300 border border-emerald-700">已核准</span>`;
                 else badgeHtml = `<span class="text-[10px] font-mono px-2 py-0.5 rounded font-black bg-red-950 text-red-300 border border-red-700">已退回</span>`;
-
+        
                 return `
                 <div class="military-card p-4 space-y-3">
                     <div class="flex items-center justify-between border-b border-[#332c25] pb-2">
@@ -241,18 +268,18 @@
                             ${badgeHtml}
                         </div>
                     </div>
-
+        
                     <div class="text-xs text-stone-400 font-bold">
                         任務目標：<span class="text-[#e5d5b5]">${escapeHtml(item.levelId || '未指定關卡')}</span>
                     </div>
-
+        
                     <div class="w-full aspect-[4/3] bg-black/60 rounded border border-[#332c25] overflow-hidden flex items-center justify-center cursor-pointer relative group" onclick="openLightbox('${imgSrc}')">
                         <img src="${imgSrc}" class="w-full h-full object-cover" loading="lazy">
                         <div class="absolute bottom-2 right-2 bg-black/70 px-2 py-1 rounded text-[10px] text-white flex items-center space-x-1">
                             <i class="fa-solid fa-magnifying-glass-plus"></i><span>點擊放大</span>
                         </div>
                     </div>
-
+        
                     ${item.status === 'pending' ? `
                     <div class="grid grid-cols-2 gap-3 pt-1">
                         <button onclick="updateStatus('${item.id}', 'rejected')" class="py-3 btn-reject font-black text-sm tracking-wider flex items-center justify-center space-x-1 rounded-sm">
@@ -262,8 +289,16 @@
                             <i class="fa-solid fa-check"></i><span>核准通過</span>
                         </button>
                     </div>
-                    ` : `
                     <div class="text-right pt-1">
+                        <button onclick="deleteSubmission('${item.id}', '${item.photoUrl || ''}')" class="text-xs text-red-400/80 hover:text-red-300 underline">
+                            <i class="fa-solid fa-trash-can mr-1"></i>刪除此單張紀錄
+                        </button>
+                    </div>
+                    ` : `
+                    <div class="flex items-center justify-between pt-1">
+                        <button onclick="deleteSubmission('${item.id}', '${item.photoUrl || ''}')" class="text-xs text-red-400/80 hover:text-red-300 underline">
+                            <i class="fa-solid fa-trash-can mr-1"></i>刪除此單張紀錄
+                        </button>
                         <button onclick="updateStatus('${item.id}', 'pending')" class="text-xs text-stone-400 hover:text-amber-400 underline">
                             重新判定此項
                         </button>
@@ -272,7 +307,6 @@
                 </div>`;
             }).join('');
         }
-
         // 6. 操作資料庫
         async function updateStatus(docId, newStatus) {
             try {
@@ -282,6 +316,65 @@
                 });
             } catch (err) {
                 alert("狀態變更失敗：" + err.message);
+            }
+        }
+        // 單張刪除函式（包含可選的 Storage 實體圖檔清除）
+        async function deleteSubmission(docId, photoUrl) {
+            if (!confirm("確定要刪除這筆審核紀錄嗎？此動作無法復原！")) return;
+        
+            try {
+                // 1. 刪除 Firestore 紀錄
+                await db.collection("submissions").doc(docId).delete();
+        
+                // 2. 若為 Storage 網址則嘗試一併刪除實體檔案
+                if (photoUrl && photoUrl.includes("firebasestorage.googleapis.com")) {
+                    try {
+                        const storageRef = firebase.storage().refFromURL(photoUrl);
+                        await storageRef.delete();
+                    } catch (storageErr) {
+                        console.warn("Storage 檔案刪除略過或已被移除:", storageErr);
+                    }
+                }
+            } catch (err) {
+                alert("刪除失敗：" + err.message);
+            }
+        }
+        
+        // 全部清空函式（批次刪除全部紀錄）
+        async function clearAllSubmissions() {
+            const inputPass = prompt("【警告】這將清空所有隊伍的上傳記錄！\n請輸入確認代碼「CLEAR」以執行清空：");
+            if (inputPass !== "CLEAR") {
+                if (inputPass !== null) alert("代碼不正確，已取消操作。");
+                return;
+            }
+        
+            try {
+                const snapshot = await db.collection("submissions").get();
+                if (snapshot.empty) {
+                    alert("目前沒有任何紀錄需要清空。");
+                    return;
+                }
+        
+                const batch = db.batch();
+                const deleteStoragePromises = [];
+        
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    batch.delete(doc.ref);
+        
+                    // 批次收集 Storage 圖檔刪除任務
+                    if (data.photoUrl && data.photoUrl.includes("firebasestorage.googleapis.com")) {
+                        deleteStoragePromises.push(
+                            firebase.storage().refFromURL(data.photoUrl).delete().catch(e => console.warn(e))
+                        );
+                    }
+                });
+        
+                await batch.commit();
+                await Promise.allSettled(deleteStoragePromises);
+                alert(`已成功清除共 ${snapshot.size} 筆歷史紀錄！`);
+            } catch (err) {
+                alert("批次清空失敗：" + err.message);
             }
         }
 
