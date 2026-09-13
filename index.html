@@ -744,67 +744,66 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // 初始化 Firebase Storage 實例
-        const storage = firebase.storage();
-        
-        // 1. 前端高效壓縮圖片轉 Blob（兼顧清晰度與傳輸速度）
-        function compressImageToBlob(file, maxWidth, quality, callback) {
+        // 1. 前端超輕量壓縮（轉為 30~60KB 的 Base64 字串，免用 Storage）
+        function compressImageToBase64(file, maxWidth, quality, callback) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const scale = Math.min(1, maxWidth / img.width);
-                    canvas.width = img.width * scale;
-                    canvas.height = img.height * scale;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    canvas.toBlob((blob) => {
-                        callback(blob);
-                    }, 'image/jpeg', quality);
+                    try {
+                        const canvas = document.createElement('canvas');
+                        const scale = Math.min(1, maxWidth / img.width);
+                        canvas.width = Math.round(img.width * scale);
+                        canvas.height = Math.round(img.height * scale);
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        const base64Str = canvas.toDataURL('image/jpeg', quality);
+                        callback(base64Str);
+                    } catch (err) {
+                        console.warn("Canvas 壓縮失敗，採用原圖轉碼", err);
+                        callback(e.target.result);
+                    }
+                };
+                img.onerror = function() {
+                    callback(e.target.result);
                 };
                 img.src = e.target.result;
+            };
+            reader.onerror = function() {
+                alert("讀取相機檔案失敗，請重試！");
             };
             reader.readAsDataURL(file);
         }
         
-        // 2. Storage 實體上傳 + Firestore 即時審核監聽
+        // 2. 直接寫入 Firestore 審核隊列（免信用卡、免 Storage 權限）
         function uploadAndListenVerification(file, levelName, onSuccess) {
-            showAlert("檔案加密中", "正在壓縮並傳輸現場偵察影像至指揮所...", "fa-satellite-dish fa-spin", "text-[#6a2932]", null, false);
-            
-            // 壓縮為寬度上限 1024px、品質 0.75 的 JPG，檔案體積通常落於 80KB~180KB
-            compressImageToBlob(file, 1024, 0.75, async (blob) => {
+            showAlert("檔案加密中", "正在壓縮並傳輸現場影像至指揮所...", "fa-satellite-dish fa-spin", "text-[#6a2932]", null, false);
+        
+            // 限制寬度 500px、品質 0.55，既能看清目標建築細節，又能在 1 秒內極速送達
+            compressImageToBase64(file, 500, 0.55, async (base64Image) => {
                 const teamName = GameState.get('teamName') || "匿名隊伍";
-                const safeTeamName = encodeURIComponent(teamName.replace(/\s+/g, '_'));
-                const timestamp = Date.now();
-                const filePath = `submissions/${timestamp}_${safeTeamName}_${levelName}.jpg`;
-                const storageRef = storage.ref(filePath);
         
                 try {
-                    // A. 上傳至 Firebase Storage
-                    const uploadTask = await storageRef.put(blob, { contentType: 'image/jpeg' });
-                    const photoUrl = await uploadTask.ref.getDownloadURL();
-        
-                    // B. 寫入 Firestore 任務審核隊列
+                    // 直接存入 Firestore 的 submissions 集合
                     const docRef = await db.collection("submissions").add({
                         teamName: teamName,
                         levelId: levelName,
-                        photoUrl: photoUrl,
+                        imageBase64: base64Image,
                         status: "pending",
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
         
-                    // C. 提示玩家等待關主審核
+                    // 更新提示窗狀態
                     const alertDesc = document.getElementById('alert-desc');
                     const alertIcon = document.getElementById('alert-icon');
-                    if (alertDesc) alertDesc.textContent = "線索照片已成功送達指揮所，審核官查驗中...\n(請保持畫面開啟，無須重新整理)";
+                    if (alertDesc) alertDesc.textContent = "照片已成功傳送至指揮所，長官審核中...\n(請保持畫面開啟，無須重新整理)";
                     if (alertIcon) alertIcon.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-5xl text-[#6a2932]"></i>';
         
-                    // D. 即時監聽關主審核狀態變更
+                    // 即時監聽關主審核狀態
                     const unsubscribe = docRef.onSnapshot((doc) => {
                         if (!doc.exists) return;
                         const data = doc.data();
-                        
+        
                         if (data.status === "approved") {
                             unsubscribe();
                             document.getElementById('modal-alert').classList.add('hidden');
@@ -820,10 +819,11 @@
         
                 } catch (error) {
                     console.error("傳輸失敗：", error);
-                    showAlert("連線中斷", "無法將影像送達指揮所，請檢查網路連線或重新拍攝。\n" + error.message, "fa-triangle-exclamation", "text-[#6a2932]");
+                    showAlert("連線中斷", "無法將影像送達指揮所：\n" + error.message, "fa-triangle-exclamation", "text-[#6a2932]");
                 }
             });
         }
+        
         // ==========================================
         // 1. DATA SEPARATION: GAME_DATA
         // ==========================================
