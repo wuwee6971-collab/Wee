@@ -974,15 +974,17 @@
             }
         }
 
+        // 【修改後】拼圖抽屜只做 translateY 滑動，一般彈窗才做 scale/opacity 淡出
         function closeModalAnim(modalId, boxId, callback = null) {
             const modal = document.getElementById(modalId);
             const box = document.getElementById(boxId);
             if(box) {
-                box.classList.remove('scale-100', 'opacity-100');
-                box.classList.add('scale-95', 'opacity-0');
-            }
-            if(modalId === 'modal-stamps') {
-                box.classList.add('translate-y-full');
+                if(modalId === 'modal-stamps') {
+                    box.classList.add('translate-y-full');
+                } else {
+                    box.classList.remove('scale-100', 'opacity-100');
+                    box.classList.add('scale-95', 'opacity-0');
+                }
             }
             setTimeout(() => {
                 modal.classList.add('hidden');
@@ -992,19 +994,22 @@
 
         // 攔截並動畫化 Stamps Modal
         const originalOpenStampsDrawer = window.openStampsDrawer;
+        // 【修改後】加入類別清理，保證抽屜一定完全可見
         window.openStampsDrawer = function() {
             playBeep();
             renderPuzzlePieces('puzzle-drawer-board', false);
             const letterBtnContainer = document.getElementById('full-letter-btn-container');
             if(GameState.get('stamps')[6]) letterBtnContainer.classList.remove('hidden');
             else letterBtnContainer.classList.add('hidden');
-
+        
             const modal = document.getElementById('modal-stamps');
             const box = document.getElementById('stamps-box');
             modal.classList.remove('hidden');
+        
+            // 關鍵防呆：清除可能殘留的透明度與縮放，確保抽屜完整顯現
+            box.classList.remove('opacity-0', 'scale-95');
             setTimeout(() => box.classList.remove('translate-y-full'), 10);
         }
-
         document.getElementById('close-stamps').onclick = () => {
             playBeep();
             closeModalAnim('modal-stamps', 'stamps-box');
