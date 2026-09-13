@@ -84,6 +84,37 @@
 
         #app-loader { transition: opacity 0.6s ease; }
         .pb-viewport-safe { padding-bottom: calc(90px + env(safe-area-inset-bottom, 20px)); }
+        /* 任務二建築前導頁卡片 */
+        .intro-history-card {
+            background: #fdfbf7;
+            border: 2px dashed #047857;
+            padding: 14px;
+            border-radius: 2px;
+            box-shadow: inset 0 0 10px rgba(4, 120, 87, 0.08);
+        }
+
+        /* 任務三美食回饋圖高度防破版限制 */
+        .food-feedback-box {
+            width: 100%;
+            max-height: 160px;
+            overflow: hidden;
+            border: 2px solid #3d2a1b;
+            border-radius: 2px;
+            margin: 8px 0;
+            background-color: #d8c8a7;
+        }
+
+        /* 拼圖文字排版自適應與陰影強化 */
+        .puzzle-piece span {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-break: break-all;
+            padding: 4px 6px;
+            line-height: 1.35;
+        }
     </style>
 </head>
 <body class="min-h-[100dvh] flex items-center justify-center p-0 sm:p-4 overflow-x-hidden">
@@ -1519,67 +1550,104 @@
 
         let l2InSequenceIntro = false;
 
+        let l2SequenceIntroSeen = false;
+
         function renderL2() {
             let currentQ = GameState.get('l2CurrentQ');
             const qData = GAME_DATA.level2.questions[currentQ];
             document.getElementById('l2-q-counter').textContent = `測驗 ${currentQ + 1} / 5`;
             document.getElementById('btn-l2-prev').style.display = currentQ > 0 ? 'flex' : 'none';
-            document.getElementById('l2-question-text').textContent = qData.q;
-        
+
             const cont = document.getElementById('l2-options-container');
             const pSect = document.getElementById('l2-photo-section');
             const qImgContainer = document.getElementById('l2-question-img-container');
             const qImgElement = document.getElementById('l2-question-img');
+            const qTextEl = document.getElementById('l2-question-text');
             cont.innerHTML = '';
-        
+
             let photos = GameState.get('l2Photos');
-        
-            // 階段 1：拍照取證畫面（完全隱藏任何參考圖，不洩題）
+
+            // 階段 1：拍照取證畫面（完全不出現參考答案圖）
             if (qData.photo && !photos[currentQ]) {
-                pSect.classList.remove('hidden'); 
-                qImgContainer.classList.add('hidden'); // 題目圖隱藏
-                document.getElementById('l2-photo-img-container').classList.add('hidden'); // 拍照參考圖徹底隱藏
+                pSect.classList.remove('hidden');
+                qImgContainer.classList.add('hidden');
+                qTextEl.textContent = qData.q;
+                document.getElementById('l2-photo-img-container').classList.add('hidden');
                 document.getElementById('l2-photo-req-text').textContent = "📸 " + qData.photoText;
-            } 
-            // 階段 2：測驗作答畫面（顯示題目歷史圖片與選項）
-            else {
-                pSect.classList.add('hidden');
-        
-                // 測驗畫面：若題目有設定圖片則正常顯示
-                if (qData.image) {
-                    qImgElement.src = qData.image;
-                    qImgContainer.classList.remove('hidden');
-                } else {
-                    qImgContainer.classList.add('hidden');
-                }
-        
-                let optionsWithIndex = qData.opts.map((opt, index) => ({ text: opt, isCorrect: index === qData.a }));
-                let shuffledOptions = shuffleArray([...optionsWithIndex]);
-        
-                shuffledOptions.forEach((o) => {
-                    const btn = document.createElement('button');
-                    btn.className = "opt-btn font-serif text-lg tracking-wide";
-                    btn.textContent = o.text;
-                    btn.onclick = () => {
-                        if (o.isCorrect) {
-                            playSuccessSound();
-                            showAlert("驗證通過", qData.desc, "fa-check-circle", "text-[#047857]", () => {
-                                let cq = GameState.get('l2CurrentQ');
-                                if (cq < 4) { 
-                                    GameState.set('l2CurrentQ', cq + 1); 
-                                    renderL2(); 
-                                } else {
-                                    handleLevelSuccess(2);
-                                }
-                            }, "下一題");
-                        } else {
-                            playErrorSound();
-                            showAlert("驗證失敗", "歷史記載與您的選擇不符，請再試一次。", "fa-circle-xmark", "text-[#6a2932]", null, "重新選擇");
-                        }
-                    };
-                    cont.appendChild(btn);
-                });
+                return;
             }
+
+            pSect.classList.add('hidden');
+
+            // 階段 2-A：第 4 題專屬前導背景知識頁
+            if (qData.isSequence && !l2SequenceIntroSeen) {
+                qImgContainer.classList.add('hidden');
+                qTextEl.textContent = "【建築演變前導知識】";
+
+                cont.innerHTML = `
+                    <div class="intro-history-card text-left space-y-3 font-serif">
+                        <div class="font-black text-[#047857] text-base border-b border-[#047857]/30 pb-1">
+                            <i class="fa-solid fa-landmark mr-1.5"></i>村長家的七次擴建歷程
+                        </div>
+                        <p class="text-xs leading-relaxed text-[#1a110a] font-bold text-justify">
+                            民國38年隨軍撤退來台時，村長家最初僅是簡陋的<b>黑瓦竹泥牆平房</b>。
+                            民國50年代因淡水河頻繁氾濫，特別增建了挑高的<b>防洪樓</b>避難；
+                            隨後因家庭人口繁衍生活空間不足，陸續<b>加蓋二樓</b>；
+                            最後才隨著就地生根的決心，逐步擴充<b>改建為三層樓</b>的現代水泥建築。
+                        </p>
+                        <div class="bg-[#047857]/10 p-2 rounded text-[11px] text-[#064e3b] font-bold">
+                            💡 請記住這段由「克難避難」走向「成家生根」的時序變化。
+                        </div>
+                    </div>
+                    <button id="btn-start-l2-seq" class="w-full py-4 primary-btn font-black text-lg tracking-widest mt-2 shadow-[3px_3px_0_#291014]">
+                        我記住了，開始排序測驗 <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                `;
+
+                document.getElementById('btn-start-l2-seq').onclick = () => {
+                    playBeep(600, 0.05);
+                    l2SequenceIntroSeen = true;
+                    renderL2();
+                };
+                return;
+            }
+
+            // 階段 2-B：標準測驗作答畫面
+            qTextEl.textContent = qData.q;
+            if (qData.image) {
+                qImgElement.src = qData.image;
+                qImgContainer.classList.remove('hidden');
+            } else {
+                qImgContainer.classList.add('hidden');
+            }
+
+            let optionsWithIndex = qData.opts.map((opt, index) => ({ text: opt, isCorrect: index === qData.a }));
+            let shuffledOptions = shuffleArray([...optionsWithIndex]);
+
+            shuffledOptions.forEach((o) => {
+                const btn = document.createElement('button');
+                btn.className = "opt-btn font-serif text-lg tracking-wide";
+                btn.textContent = o.text;
+                btn.onclick = () => {
+                    if (o.isCorrect) {
+                        playSuccessSound();
+                        showAlert("驗證通過", qData.desc, "fa-check-circle", "text-[#047857]", () => {
+                            let cq = GameState.get('l2CurrentQ');
+                            if (cq < 4) {
+                                l2SequenceIntroSeen = false;
+                                GameState.set('l2CurrentQ', cq + 1);
+                                renderL2();
+                            } else {
+                                handleLevelSuccess(2);
+                            }
+                        }, "下一題");
+                    } else {
+                        playErrorSound();
+                        showAlert("驗證失敗", "歷史記載與您的排序不符，請重新比對演變脈絡！", "fa-circle-xmark", "text-[#6a2932]", null, "重新作答");
+                    }
+                };
+                cont.appendChild(btn);
+            });
         }
         function prevL2Question() {
             playBeep();
@@ -1625,18 +1693,17 @@
             if (!qData) return;
             document.getElementById('l3-q-counter').textContent = `菜單 ${currentQ + 1} / 5`;
             document.getElementById('btn-l3-prev').style.display = currentQ > 0 ? 'flex' : 'none';
-
             document.getElementById('l3-question-text').textContent = qData.q;
             document.getElementById('l3-audio-hint').classList.remove('hidden');
             document.getElementById('l3-audio-player').src = GAME_DATA.level3.audios[currentQ];
-            
-            // 嵌入菜單局部截圖
+
+            // 嵌入對應菜單局部截圖
             const menuImg = document.getElementById('l3-menu-img');
             if (menuImg && GAME_DATA.level3.menuImages) {
                 menuImg.src = GAME_DATA.level3.menuImages[currentQ] || '';
             }
 
-            const cont = document.getElementById('l3-options-container'); 
+            const cont = document.getElementById('l3-options-container');
             cont.innerHTML = '';
 
             let optionsWithIndex = qData.opts.map((opt, index) => ({ text: opt, isCorrect: index === qData.a }));
@@ -1650,27 +1717,26 @@
                 btn.onclick = () => {
                     if (o.isCorrect) {
                         playSuccessSound();
-                        // 彈窗附帶該道菜的實拍美食圖
-                        const foodImgSrc = GAME_DATA.level3.foodImages[currentQ];
+                        const foodImgSrc = GAME_DATA.level3.foodImages ? GAME_DATA.level3.foodImages[currentQ] : '';
                         const feedbackHtml = `
-                            <div class="my-2 vintage-photo w-full aspect-[16/9] overflow-hidden rounded">
+                            <div class="food-feedback-box">
                                 <img src="${foodImgSrc}" class="w-full h-full object-cover" onerror="this.parentElement.style.display='none'">
                             </div>
-                            <p class="mt-2">${qData.desc}</p>
+                            <p class="text-sm font-bold text-[#1a110a] leading-relaxed">${qData.desc}</p>
                         `;
 
                         showAlert("品鑑正確", feedbackHtml, "fa-bowl-rice", "text-[#a04b1e]", () => {
                             let cq = GameState.get('l3CurrentQ');
-                            if (cq < 4) { 
-                                GameState.set('l3CurrentQ', cq + 1); 
-                                showL3Question(); 
+                            if (cq < 4) {
+                                GameState.set('l3CurrentQ', cq + 1);
+                                showL3Question();
                             } else {
-                                showAlert("味覺檔案完全解鎖", "每一道料理都不只是滋味，更是一段跨越海峽的生活記憶。\n\n眷村廚房匯聚了大江南北的家鄉味，也成就了台灣獨特的人情故事。", "", "text-[#a04b1e]", () => handleLevelSuccess(3));
+                                showAlert("調查成功", "每一道料理都不只是滋味，更是一段跨越海峽的生活記憶。\n\n眷村廚房匯聚了大江南北的家鄉味，也成為文化交流的場所。", "", "text-[#a04b1e]", () => handleLevelSuccess(3));
                             }
                         }, "品鑑下一道");
                     } else {
                         playErrorSound();
-                        showAlert("品鑑錯誤", "收音機裡長輩描述的味道似乎不是這道，請再聽一次！", "fa-xmark-circle", "text-[#6a2932]", null, "重新品鑑");
+                        showAlert("品鑑錯誤", "收音機裡長輩描述的味道似乎不是這道，請再聽一次！", "fa-xmark-circle", "text-[#6a2932]", null, "重新選擇");
                     }
                 };
                 cont.appendChild(btn);
@@ -2052,7 +2118,7 @@
             );
         };
         function confirmRestartGame() {
-            showAlert("銷毀檔案", "確定要銷毀目前調閱檔案，重新開始嗎？所有的進度與拼圖都將重置。", "fa-triangle-exclamation", "text-[#6a2932]", () => {
+            showAlert("銷毀檔案", "確定要銷毀目前調閱檔案並重新開始嗎？所有的解密進度、拼圖與兌獎紀錄都將重置。", "fa-triangle-exclamation", "text-[#6a2932]", () => {
                 GameState.reset();
             }, "確認銷毀", 0, true);
         }
