@@ -27,22 +27,19 @@
 </head>
 <body class="min-h-[100dvh] flex flex-col items-center justify-start pb-12">
 
-    
     <!-- 頂部資訊列 -->
     <header class="w-full max-w-lg bg-[#1c1917] border-b-4 border-[#3b3227] px-4 py-3 sticky top-0 z-30 shadow-lg flex items-center justify-between">
         <div class="flex items-center space-x-2">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
             <span class="font-black text-sm tracking-wider text-[#e5d5b5]">前線通訊所</span>
         </div>
-        <!-- 找到 <header> 內的右側按鈕區塊，替換或加入以下內容 -->
         <div class="flex items-center space-x-3">
             <div class="text-xs bg-[#2b2520] border border-[#574c3d] px-2.5 py-1 rounded text-[#e5d5b5] font-mono">
                 待核准: <b id="pending-counter" class="text-amber-400 text-sm">0</b>
             </div>
             <button onclick="toggleAudio()" id="btn-audio" class="text-xs px-2.5 py-1 border border-[#574c3d] bg-[#292524] text-stone-300 rounded">
-                <i class="fa-solid fa-bell"></i>
+                <i class="fa-solid fa-bell text-amber-400"></i>
             </button>
-            <!-- 新增：全部清空按鈕 -->
             <button onclick="clearAllSubmissions()" title="清空全部紀錄" class="text-xs px-2.5 py-1 border border-red-800 bg-red-950/60 text-red-300 rounded hover:bg-red-900 active:scale-95">
                 <i class="fa-solid fa-trash-can mr-1"></i>清空紀錄
             </button>
@@ -64,13 +61,14 @@
                 <button onclick="setRoom('3')" id="room-btn-3" class="py-2 rounded-sm border border-[#443c33] bg-[#1c1917] text-stone-400">任務三</button>
             </div>
         </div>
+
         <!-- 分籤切換 -->
         <div class="grid grid-cols-2 gap-2 text-xs font-bold font-mono">
             <button id="tab-pending" onclick="switchTab('pending')" class="py-2.5 border-b-2 border-amber-500 text-amber-400 bg-[#1c1917]">
                 待審核任務
             </button>
             <button id="tab-resolved" onclick="switchTab('resolved')" class="py-2.5 border-b-2 border-transparent text-stone-400 hover:text-stone-200">
-                審核紀錄 (近20筆)
+                審核紀錄 (近50筆)
             </button>
         </div>
 
@@ -103,8 +101,16 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        
-        // 提示音效 Web Audio
+
+        // 2. 全域狀態變數（確保預設值正確，避免 ReferenceError）
+        let currentTab = 'pending';
+        let selectedRoom = 'ALL';
+        let currentSubmissions = [];
+        let previousPendingCount = 0;
+        let isAudioEnabled = true;
+        let unsubscribe = null;
+
+        // 3. 提示音效 Web Audio
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playChime() {
             if (!isAudioEnabled) return;
@@ -114,47 +120,46 @@
                 const gain = audioCtx.createGain();
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
                 osc.start();
-                osc.stop(audioCtx.currentTime + 0.3);
-            } catch (e) {}
+                osc.stop(audioCtx.currentTime + 0.35);
+            } catch (e) {
+                console.warn("音效播放失敗（可能受限於瀏覽器自動播放政策）:", e);
+            }
         }
 
-
-        // 頁面開啟時直接啟動監聽（無密碼門禁）
-        window.addEventListener('load', () => {
-            startListening();
-        });
         // 4. 即時監聽 Firestore
-        let unsubscribe = null;
         function startListening() {
-            if (unsubscribe) unsubscribe();
+            if (unsubscribe) {
+                unsubscribe();
+                unsubscribe = null;
+            }
             
-            // 監聽最近的 50 筆紀錄
             unsubscribe = db.collection("submissions")
                 .orderBy("createdAt", "desc")
                 .limit(50)
                 .onSnapshot((snapshot) => {
-                    currentSubmissions = [];
+                    const list = [];
                     snapshot.forEach(doc => {
-                        currentSubmissions.push({ id: doc.id, ...doc.data() });
+                        list.push({ id: doc.id, ...doc.data() });
                     });
+                    currentSubmissions = list;
                     
                     const pendingList = currentSubmissions.filter(s => s.status === 'pending');
-                    document.getElementById('pending-counter').textContent = pendingList.length;
-
-                    // 新資料抵達時播放音效
+                    
+                    // 新資料到達且數量增加時播放音效（保護執行，不阻斷後續渲染）
                     if (pendingList.length > previousPendingCount) {
-                        playChime();
+                        try { playChime(); } catch(err) {}
                     }
                     previousPendingCount = pendingList.length;
 
+                    // 確保無條件執行重新繪製
                     renderList();
                 }, (error) => {
-                    console.error("監聽失敗:", error);
+                    console.error("即時監聽失敗:", error);
                     document.getElementById('submissions-list').innerHTML = `
                         <div class="military-card p-4 text-center text-red-400 text-xs">
                             連線受阻：${error.message}
@@ -162,7 +167,7 @@
                 });
         }
 
-        // 5. 渲染邏輯
+        // 5. 分籤與房間切換
         function switchTab(tab) {
             currentTab = tab;
             const tabP = document.getElementById('tab-pending');
@@ -177,14 +182,8 @@
             renderList();
         }
 
-        // 當前選擇的關卡房間 ('ALL', '1', '2', '3')
-        let selectedRoom = 'ALL';
-        
-        // 關卡房間切換函式
         function setRoom(roomId) {
             selectedRoom = roomId;
-            
-            // 更新按鈕樣式
             ['ALL', '1', '2', '3'].forEach(id => {
                 const btn = document.getElementById(`room-btn-${id}`);
                 if (!btn) return;
@@ -202,20 +201,20 @@
                 '3': '任務三 (村長的家)'
             };
             document.getElementById('current-room-label').textContent = labels[roomId] || '未知房間';
-            
             renderList();
         }
-        
-        // 渲染列表（整合：分籤 + 關卡房間過濾）
+
+        // 6. 核心列表渲染函式
         function renderList() {
             const container = document.getElementById('submissions-list');
-        
-            // 1. 狀態篩選 (待審核 vs 已處理)
+            if (!container) return;
+
+            // A. 分籤過濾
             let filtered = currentSubmissions.filter(item => {
                 return currentTab === 'pending' ? item.status === 'pending' : item.status !== 'pending';
             });
-        
-            // 2. 關卡房間篩選 (依照 levelId 模糊或精確比對)
+
+            // B. 房間過濾
             if (selectedRoom !== 'ALL') {
                 filtered = filtered.filter(item => {
                     const lvl = String(item.levelId || '');
@@ -225,8 +224,8 @@
                     return true;
                 });
             }
-        
-            // 更新計數器 (顯示當前房間內的待審數量)
+
+            // C. 更新右上角待審核數量
             const pendingInRoom = currentSubmissions.filter(s => {
                 if (s.status !== 'pending') return false;
                 if (selectedRoom === 'ALL') return true;
@@ -237,7 +236,8 @@
                 return true;
             });
             document.getElementById('pending-counter').textContent = pendingInRoom.length;
-        
+
+            // D. 無資料畫面
             if (filtered.length === 0) {
                 container.innerHTML = `
                     <div class="military-card p-10 text-center text-stone-500">
@@ -246,7 +246,8 @@
                     </div>`;
                 return;
             }
-        
+
+            // E. 渲染卡片
             container.innerHTML = filtered.map(item => {
                 const timeStr = item.createdAt ? new Date(item.createdAt.toDate ? item.createdAt.toDate() : item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '--:--:--';
                 const imgSrc = item.photoUrl || item.imageBase64 || '';
@@ -255,7 +256,7 @@
                 if (item.status === 'pending') badgeHtml = `<span class="text-[10px] font-mono px-2 py-0.5 rounded font-black tag-pending">待審核</span>`;
                 else if (item.status === 'approved') badgeHtml = `<span class="text-[10px] font-mono px-2 py-0.5 rounded font-black bg-emerald-950 text-emerald-300 border border-emerald-700">已核准</span>`;
                 else badgeHtml = `<span class="text-[10px] font-mono px-2 py-0.5 rounded font-black bg-red-950 text-red-300 border border-red-700">已退回</span>`;
-        
+
                 return `
                 <div class="military-card p-4 space-y-3">
                     <div class="flex items-center justify-between border-b border-[#332c25] pb-2">
@@ -268,18 +269,18 @@
                             ${badgeHtml}
                         </div>
                     </div>
-        
+
                     <div class="text-xs text-stone-400 font-bold">
                         任務目標：<span class="text-[#e5d5b5]">${escapeHtml(item.levelId || '未指定關卡')}</span>
                     </div>
-        
+
                     <div class="w-full aspect-[4/3] bg-black/60 rounded border border-[#332c25] overflow-hidden flex items-center justify-center cursor-pointer relative group" onclick="openLightbox('${imgSrc}')">
                         <img src="${imgSrc}" class="w-full h-full object-cover" loading="lazy">
                         <div class="absolute bottom-2 right-2 bg-black/70 px-2 py-1 rounded text-[10px] text-white flex items-center space-x-1">
                             <i class="fa-solid fa-magnifying-glass-plus"></i><span>點擊放大</span>
                         </div>
                     </div>
-        
+
                     ${item.status === 'pending' ? `
                     <div class="grid grid-cols-2 gap-3 pt-1">
                         <button onclick="updateStatus('${item.id}', 'rejected')" class="py-3 btn-reject font-black text-sm tracking-wider flex items-center justify-center space-x-1 rounded-sm">
@@ -307,72 +308,55 @@
                 </div>`;
             }).join('');
         }
-        // 6. 操作資料庫
-        // 1. 狀態更新函式（包含重新判定）
+
+        // 7. 操作資料庫
         async function updateStatus(docId, newStatus) {
             try {
                 await db.collection("submissions").doc(docId).update({
                     status: newStatus,
                     reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                // 即時更新本地快取並重繪，防止 onSnapshot 延遲
                 const target = currentSubmissions.find(s => s.id === docId);
                 if (target) target.status = newStatus;
                 renderList();
             } catch (err) {
-                alert("【狀態變更失敗】\n" + err.message + "\n請確認 Firestore 安全規則是否已開啟 write: if true");
+                alert("【狀態變更失敗】\n" + err.message);
             }
         }
-        
-        // 2. 單張刪除函式（容錯版）
+
         async function deleteSubmission(docId, photoUrl) {
             if (!confirm("確定要刪除這筆審核紀錄嗎？此動作無法復原！")) return;
-        
             try {
-                // 先刪除 Firestore 資料
                 await db.collection("submissions").doc(docId).delete();
-        
-                // 嘗試刪除 Storage 實體檔案（若失敗或為 base64 則安全略過，不阻斷流程）
                 if (photoUrl && typeof photoUrl === 'string' && photoUrl.startsWith("http") && photoUrl.includes("firebasestorage")) {
                     try {
                         const storageRef = firebase.storage().refFromURL(photoUrl);
                         await storageRef.delete();
-                    } catch (storageErr) {
-                        console.warn("Storage 檔案清理略過：", storageErr.message);
-                    }
+                    } catch (e) {}
                 }
-        
-                // 從本地陣列移除並立即更新畫面
                 currentSubmissions = currentSubmissions.filter(s => s.id !== docId);
                 renderList();
             } catch (err) {
-                alert("【刪除失敗】\n" + err.message + "\n請檢查 Firestore Rules 權限。");
+                alert("【刪除失敗】\n" + err.message);
             }
         }
-        
-        // 3. 全部清空函式（批次容錯版）
+
         async function clearAllSubmissions() {
             const inputPass = prompt("【警告】這將清空所有審核記錄！\n請輸入確認代碼「CLEAR」以執行清空：");
             if (inputPass !== "CLEAR") {
                 if (inputPass !== null) alert("代碼不正確，已取消操作。");
                 return;
             }
-        
             try {
                 const snapshot = await db.collection("submissions").get();
                 if (snapshot.empty) {
                     alert("目前沒有任何紀錄需要清空。");
                     return;
                 }
-        
                 const batch = db.batch();
-                snapshot.forEach(doc => {
-                    batch.delete(doc.ref);
-                });
-        
+                snapshot.forEach(doc => { batch.delete(doc.ref); });
                 await batch.commit();
-        
-                // 清空本地快取並重繪
+
                 currentSubmissions = [];
                 renderList();
                 alert(`已成功清空共 ${snapshot.size} 筆歷史紀錄！`);
@@ -380,7 +364,8 @@
                 alert("【清空失敗】\n" + err.message);
             }
         }
-        // 7. 燈箱輔助函式
+
+        // 8. 燈箱與輔助功能
         function openLightbox(src) {
             if (!src) return;
             document.getElementById('lightbox-img').src = src;
@@ -399,30 +384,17 @@
         function escapeHtml(str) {
             return String(str).replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[s]);
         }
-        // 手機螢幕重開或切回瀏覽器時，立即重連抓取
+
+        // 9. 頁面載入與喚醒事件
+        window.addEventListener('load', () => {
+            startListening();
+        });
+
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden) {
                 startListening();
             }
         });
-        
-        // 每 3 秒輕量輪詢補償，避免特定行動網路環境下 WebSocket 凍結
-        setInterval(() => {
-            if (!document.hidden && db) {
-                db.collection("submissions").orderBy("createdAt", "desc").limit(20).get().then(snapshot => {
-                    snapshot.docChanges().forEach(change => {
-                        if (change.type === "added") {
-                            const exists = currentSubmissions.some(s => s.id === change.doc.id);
-                            if (!exists) {
-                                currentSubmissions.unshift({ id: change.doc.id, ...change.doc.data() });
-                                renderList();
-                                playChime();
-                            }
-                        }
-                    });
-                }).catch(() => {});
-            }
-        }, 3000);
     </script>
 </body>
 </html>
