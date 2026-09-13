@@ -188,9 +188,8 @@
                     <div class="level-card p-5 space-y-5">
                         <h2 class="text-xl text-[#6a2932] font-black text-center border-b-2 border-[#3d2a1b] pb-3 font-serif">任務一：陣地巡查</h2>
                         <p class="text-sm font-bold text-[#3d2a1b] text-center mb-2">點擊完成定點打卡（可重複查看指示）</p>
+                        <!-- 請將此區塊替換為乾淨版本（移除重複的 input） -->
                         <div class="grid grid-cols-2 gap-4" id="l1-locations-grid">
-                            <!-- 請加入在 #l1-locations-grid 容器後方 -->
-                            <input type="file" accept="image/*" capture="environment" id="l1-camera-input" class="hidden">
                             <button class="l1-loc-btn military-btn py-5 text-base font-black flex flex-col items-center justify-center" data-idx="0"><i class="fa-solid fa-map-pin mb-2 text-[#6a2932] text-xl"></i>通氣孔</button>
                             <button class="l1-loc-btn military-btn py-5 text-base font-black flex flex-col items-center justify-center" data-idx="1"><i class="fa-solid fa-map-pin mb-2 text-[#6a2932] text-xl"></i>包砲建屋</button>
                             <button class="l1-loc-btn military-btn py-5 text-base font-black flex flex-col items-center justify-center" data-idx="2"><i class="fa-solid fa-map-pin mb-2 text-[#6a2932] text-xl"></i>砲座遺跡</button>
@@ -1340,49 +1339,55 @@
         }
 
         // --- LEVEL 1 ---
-        let l1ActiveTargetIdx = null;
-
         let currentL1TargetIdx = null;
 
-        // 監聽第一關相機拍照
+        // 1. 任務一相機拍照與送審監聽
         document.getElementById('l1-camera-input').addEventListener('change', function() {
             if (this.files && this.files.length > 0 && currentL1TargetIdx !== null) {
                 const file = this.files[0];
                 this.value = '';
                 const loc = GAME_DATA.level1.locations[currentL1TargetIdx];
-                const targetNumber = ['1', '9', '4', '5'][currentL1TargetIdx];
-        
+                const targetNumber = loc.code || ['1', '9', '4', '5'][currentL1TargetIdx];
+
                 uploadAndListenVerification(file, `任務一：${loc.title}`, (isApproved) => {
                     if (isApproved) {
                         playSuccessSound();
-                        showAlert("審核通過", `長官已確認【${loc.title}】照片！\n\n【歷史檔案】\n${loc.desc}\n\n★ 獲得密碼數字：【 ${targetNumber} 】`, "fa-circle-check", "text-[#047857]", () => {
-                            let collected = GameState.get('l1Collected');
-                            collected[currentL1TargetIdx] = true;
-                            GameState.set('l1Collected', collected);
-                            renderL1();
-                        }, "收下密碼");
+                        let collected = GameState.get('l1Collected') || [false, false, false, false];
+                        collected[currentL1TargetIdx] = true;
+                        GameState.set('l1Collected', collected);
+                        renderL1();
+
+                        showAlert(
+                            "審核通過",
+                            `長官已確認【${loc.title}】之構件特徵！\n\n【歷史考證】\n${loc.desc}\n\n★ 解密通關密碼：【<b class="text-3xl text-[#6a2932] font-mono">${targetNumber}</b>】`,
+                            "fa-circle-check",
+                            "text-[#047857]",
+                            null,
+                            "收到！"
+                        );
                     } else {
                         playErrorSound();
-                        showAlert("審核未通過", `長官回報：【${loc.title}】拍攝角度不符或模糊，請重新拍攝！`, "fa-circle-xmark", "text-[#6a2932]");
+                        showAlert("審核未通過", `長官回報：照片模糊或非【${loc.title}】構件，請至現場重新拍攝！`, "fa-circle-xmark", "text-[#6a2932]");
                     }
                 });
             }
         });
-        
+
+        // 2. 渲染任務一巡查按鈕與解鎖狀態
         function renderL1() {
-            const collected = GameState.get('l1Collected');
+            const collected = GameState.get('l1Collected') || [false, false, false, false];
             const passcodeDigits = ['1', '9', '4', '5'];
-        
+
             document.querySelectorAll('.l1-loc-btn').forEach((btn) => {
                 const idx = parseInt(btn.dataset.idx);
                 const loc = GAME_DATA.level1.locations[idx];
-        
+
                 if (collected[idx]) {
                     btn.classList.add('bg-[#e0f2e9]', 'border-[#047857]', 'text-[#064e3b]');
-                    btn.innerHTML = `<i class="fa-solid fa-check text-[#047857] text-lg mb-1"></i>${loc.title}<span class="text-xs text-amber-700 font-mono font-black mt-0.5">密碼: ${passcodeDigits[idx]}</span>`;
+                    btn.innerHTML = `<i class="fa-solid fa-check text-[#047857] text-lg mb-1"></i>${loc.title}<span class="text-xs text-amber-700 font-mono font-black mt-0.5">密碼: ${loc.code || passcodeDigits[idx]}</span>`;
                     btn.onclick = () => {
                         playBeep(500, 0.05);
-                        showAlert(loc.title, `【歷史檔案】\n${loc.desc}\n\n★ 此處獲得密碼數字：【 ${passcodeDigits[idx]} 】`, "fa-info-circle", "text-[#047857]");
+                        showAlert(loc.title, `【歷史考證】\n${loc.desc}\n\n★ 此處獲得密碼數字：【 ${loc.code || passcodeDigits[idx]} 】`, "fa-info-circle", "text-[#047857]");
                     };
                 } else {
                     btn.classList.remove('bg-[#e0f2e9]', 'border-[#047857]', 'text-[#064e3b]');
@@ -1396,8 +1401,8 @@
                     };
                 }
             });
-        
-            // 檢查是否全部收集完畢以解鎖鍵盤
+
+            // 四個構件皆完成拍照審核後，自動移除鍵盤遮罩
             const cCount = collected.filter(Boolean).length;
             const overlay = document.getElementById('l1-keypad-overlay');
             if (cCount === 4) {
@@ -1409,32 +1414,58 @@
             updateL1Display();
         }
 
-        // 任務一相機拍攝監聽
-        document.getElementById('l1-camera-input').addEventListener('change', function(e) {
-            if (this.files && this.files.length > 0 && l1ActiveTargetIdx !== null) {
-                const file = this.files[0];
-                const targetIdx = l1ActiveTargetIdx;
-                const loc = GAME_DATA.level1.locations[targetIdx];
-                this.value = '';
-
-                uploadAndListenVerification(file, `任務一：${loc.title}`, (isApproved) => {
-                    if (isApproved) {
-                        playSuccessSound();
-                        let c = GameState.get('l1Collected');
-                        c[targetIdx] = true;
-                        GameState.set('l1Collected', c);
-                        renderL1();
-                        showAlert("審核通過", `長官已確認【${loc.title}】之構件特徵！\n\n【歷史考證】\n${loc.desc}\n\n已解密通關密碼：【<b class="text-3xl text-[#6a2932] font-mono">${loc.code}</b>】`, "fa-circle-check", "text-[#047857]", null, "收到！");
-                    } else {
-                        playErrorSound();
-                        showAlert("審核未通過", `長官回報：照片模糊或非【${loc.title}】構件，請至現場重新拍攝！`, "fa-circle-xmark", "text-[#6a2932]");
-                    }
-                });
-            }
+        // 3. 綁定數字鍵盤輸入（0-9）
+        document.querySelectorAll('.l1-key').forEach(b => {
+            b.onclick = () => {
+                let input = GameState.get('l1Input') || [];
+                if (input.length < 4) {
+                    playBeep(600, 0.05);
+                    input.push(b.dataset.val);
+                    GameState.set('l1Input', input);
+                    updateL1Display();
+                }
+            };
         });
+
+        // 4. 綁定刪除鍵
+        document.getElementById('l1-btn-del').onclick = () => {
+            let input = GameState.get('l1Input') || [];
+            if (input.length > 0) {
+                playBeep(400, 0.05);
+                input.pop();
+                GameState.set('l1Input', input);
+                updateL1Display();
+            }
+        };
+
+        // 5. 綁定確認提交鍵
+        document.getElementById('l1-btn-submit').onclick = () => {
+            let input = GameState.get('l1Input') || [];
+            if (input.join('').trim() === GAME_DATA.level1.passcode) {
+                handleLevelSuccess(1);
+            } else {
+                playErrorSound();
+                let errCount = (GameState.get('l1Errors') || 0) + 1;
+                GameState.set('l1Errors', errCount);
+                GameState.set('l1Input', []);
+                updateL1Display();
+
+                if (errCount >= 4) {
+                    showAlert("機密檔案調閱", GAME_DATA.level1.hints[1], "fa-lightbulb", "text-amber-600");
+                } else if (errCount >= 2) {
+                    showAlert("調查線索", GAME_DATA.level1.hints[0], "fa-magnifying-glass", "text-[#3d2a1b]");
+                } else {
+                    showAlert("密碼錯誤", "年份驗證失敗，請確認四處構件解鎖之數字（1945）。", "fa-circle-xmark", "text-[#6a2932]");
+                }
+            }
+        };
+
+        // 6. 更新密碼方格畫面
         function updateL1Display() {
-            let input = GameState.get('l1Input');
-            document.querySelectorAll('#l1-code-container .code-box').forEach((box, i) => box.textContent = input[i] || '');
+            let input = GameState.get('l1Input') || [];
+            document.querySelectorAll('#l1-code-container .code-box').forEach((box, i) => {
+                box.textContent = input[i] || '';
+            });
         }
 
         // --- LEVEL 2 ---
