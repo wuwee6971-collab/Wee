@@ -842,14 +842,26 @@
             reader.readAsDataURL(file);
         }
         
-        // 快速上傳與雙重監聽（即時監聽 + 主動輪詢，解決手機後台休眠問題）
+        // 全域監聽與計時器控制器（確保同時間永遠只有一個任務在監聽）
+        let activeUploadUnsubscribe = null;
+        let activeUploadPollTimer = null;
+        
         function uploadAndListenVerification(file, levelName, onSuccess) {
+            // 1. 強制中斷並清理前一次（如退回重拍）殘留的任何監聽與計時器
+            if (activeUploadPollTimer) {
+                clearInterval(activeUploadPollTimer);
+                activeUploadPollTimer = null;
+            }
+            if (activeUploadUnsubscribe) {
+                activeUploadUnsubscribe();
+                activeUploadUnsubscribe = null;
+            }
+        
             showAlert("檔案加密中", "正在快速傳送現場照片至指揮所...", "fa-satellite-dish fa-spin", "text-[#6a2932]", null, false);
         
             compressImageFast(file, 640, 0.5, async (base64Str) => {
                 const teamName = GameState.get('teamName') || "匿名隊伍";
                 try {
-                    // 直接寫入 Firestore，省去 Storage 上傳與下載 URL 的漫長延遲
                     const docRef = await db.collection("submissions").add({
                         teamName: teamName,
                         levelId: levelName,
@@ -865,25 +877,39 @@
                     if (alertIcon) alertIcon.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-5xl text-[#6a2932]"></i>';
         
                     let isHandled = false;
+        
+                    // 徹底清理函式
+                    const cleanUp = () => {
+                        if (activeUploadPollTimer) {
+                            clearInterval(activeUploadPollTimer);
+                            activeUploadPollTimer = null;
+                        }
+                        if (activeUploadUnsubscribe) {
+                            activeUploadUnsubscribe();
+                            activeUploadUnsubscribe = null;
+                        }
+                    };
+        
                     const handleResult = (approved) => {
                         if (isHandled) return;
                         isHandled = true;
-                        if (pollTimer) clearInterval(pollTimer);
-                        if (unsubscribe) unsubscribe();
+                        cleanUp(); // 無論通過或退回，立即銷毀連線
                         document.getElementById('modal-alert').classList.add('hidden');
                         onSuccess(approved);
                     };
         
-                    // 1. Snapshot 監聽
-                    const unsubscribe = docRef.onSnapshot((doc) => {
+                    // 2. 即時 Snapshot 監聽
+                    activeUploadUnsubscribe = docRef.onSnapshot((doc) => {
                         if (!doc.exists) return;
                         const data = doc.data();
                         if (data.status === "approved") handleResult(true);
                         else if (data.status === "rejected") handleResult(false);
+                    }, (err) => {
+                        console.warn("Snapshot 斷線，交由輪詢處理", err);
                     });
         
-                    // 2. 主動短輪詢（每 1.5 秒向伺服器拉取一次，防止手機切換 App 時 WebSocket 斷線）
-                    const pollTimer = setInterval(async () => {
+                    // 3. 獨立輪詢（每 1 秒快速檢查，確保即使退回重拍也能秒回）
+                    activeUploadPollTimer = setInterval(async () => {
                         try {
                             const docSnap = await docRef.get();
                             if (docSnap.exists) {
@@ -891,8 +917,8 @@
                                 if (data.status === "approved") handleResult(true);
                                 else if (data.status === "rejected") handleResult(false);
                             }
-                        } catch(e) {}
-                    }, 1500);
+                        } catch (e) {}
+                    }, 1000);
         
                 } catch (error) {
                     console.error("傳輸失敗：", error);
