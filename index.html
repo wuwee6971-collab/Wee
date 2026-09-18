@@ -539,7 +539,7 @@
                     <div id="l5-p2" class="hidden flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(5, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">工作人員圖鑑</h2>
+                            <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">關主圖鑑</h2>
                         </div>
                         <div class="grid grid-cols-2 gap-4 flex-1 content-start">
                             <div class="char-card-grid">
@@ -1226,9 +1226,9 @@
             },
             level3: {
                 questions: [
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["麻婆豆腐", "回鍋肉", "水煮魚", "宮保雞丁"], a: 1, desc: "回鍋肉是四川經典家常菜，呈現川菜麻、辣、香醇風味。" },
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["酸菜魚", "剁椒魚頭", "清蒸鱸魚", "糖醋魚"], a: 1, desc: "剁椒魚頭搭配辛辣剁椒蒸製，展現湘菜鮮、辣、厚重特色。" },
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["安徽板麵", "蘭州拉麵", "刀削麵", "牛肉麵"], a: 0, desc: "安徽板麵以彈牙麵條搭配香辣醬汁，是充滿鄉土特色的北方風味。" },
+                    { q: "請問語音中提到的料理是哪一道？", opts: ["麻婆豆腐", "回鍋肉", "水煮魚", "宮保雞丁"], a: 1, desc: "回鍋肉是四川經典家常菜，\n呈現川菜麻、辣、香醇風味。" },
+                    { q: "請問語音中提到的料理是哪一道？", opts: ["酸菜魚", "剁椒魚頭", "清蒸鱸魚", "糖醋魚"], a: 1, desc: "剁椒魚頭搭配辛辣剁椒蒸製，\n展現湘菜鮮、辣、厚重特色。" },
+                    { q: "請問語音中提到的料理是哪一道？", opts: ["安徽板麵", "蘭州拉麵", "刀削麵", "牛肉麵"], a: 0, desc: "安徽板麵以彈牙麵條搭配香辣醬汁，\n是充滿鄉土特色的北方風味。" },
                     { q: "請問語音中提到的料理是哪一道？", opts: ["打滷麵", "擔擔麵", "炸醬麵", "蔥油拌麵"], a: 2, desc: "炸醬麵濃郁鹹香，以豆瓣醬與肉末慢炒，代表北方家常麵食。" },
                     { q: "請問語音中提到的料理是哪一道？", opts: ["山東煎餅", "韭菜盒子", "蔥油餅", "牛肉餡餅"], a: 1, desc: "金黃酥脆的韭菜盒子包入冬粉、雞蛋與蝦米，是鄰里分享的溫暖點心。" }
                 ],
@@ -1546,7 +1546,7 @@
                 if(!GameState.get('endTime')) GameState.set('endTime', Date.now());
                 openFullLetter();
             } else {
-                let msg = "獲得一塊歷史碎片，準備進入下一階段調查。";
+                let msg = "獲得一塊歷史碎片，\n準備進入下一階段調查。";
                 if (lvlNum === 1) msg = "暗號重組成「1945 年」——這正是防砲陣地完成使命的轉折點。\n\n獲得一塊歷史碎片！";
                 if (lvlNum === 2) msg = "眷村空間演變記錄了『人用生活塑造建築，建築也見證了人』的歷史。\n\n獲得一塊歷史碎片！";
                 if (lvlNum === 6) msg = "您已獲得第 6 塊碎片。\n\n請前往觀賞《最後一封信》沉浸式劇場，解鎖最後一塊拼圖碎片！";
@@ -1733,7 +1733,7 @@
                         }, "下一題");
                     } else {
                         playErrorSound();
-                        showAlert("驗證失敗", "歷史記載與您的排序不符，請重新比對演變脈絡！", "fa-circle-xmark", "text-primary", null, "重新作答");
+                        showAlert("驗證失敗", "歷史記載與您的答案不符，請重新比對演變脈絡！", "fa-circle-xmark", "text-primary", null, "重新作答");
                     }
                 };
                 cont.appendChild(btn);
@@ -1747,7 +1747,7 @@
                 uploadAndListenVerification(file, "任務三：村長的家", (isApproved) => {
                     if (isApproved) {
                         playSuccessSound();
-                        showAlert("審核通過", "已確認到達村長家現場！解鎖眷村廣播線索。", "fa-circle-check", "text-gold-dark", () => { GameState.set('l3PhotoDone', true); renderL3(); });
+                        showAlert("審核通過", "已確認到達村長家現場！\n解鎖眷村廣播線索。", "fa-circle-check", "text-gold-dark", () => { GameState.set('l3PhotoDone', true); renderL3(); });
                     } else {
                         playErrorSound(); showAlert("審核未通過", "長官回報：地標辨認失敗，請確認站在村長家門前重新拍攝！", "fa-circle-xmark", "text-primary");
                     }
@@ -1877,7 +1877,7 @@
         }
         function verifyFlowers() {
             if(l6SelectedFlowers.length === 2 && l6SelectedFlowers.includes('玫瑰') && l6SelectedFlowers.includes('茉莉')) { 
-                playSuccessSound(); showAlert("成分分析正確", "成功找出了隱藏的玫瑰與茉莉花香！前往下一階段。", "fa-flask", "text-emerald-700", () => transitionSubPage(6, 3, 4)); 
+                playSuccessSound(); showAlert("成分分析正確", "成功找出了隱藏的玫瑰與茉莉花香！\n前往下一階段。", "fa-flask", "text-emerald-700", () => transitionSubPage(6, 3, 4)); 
             } else { 
                 playErrorSound(); showAlert("成分錯誤", "請確認是否剛好選擇了正確的【兩種】花卉喔！", "fa-circle-xmark", "text-primary"); 
             }
