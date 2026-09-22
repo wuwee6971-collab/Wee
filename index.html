@@ -1212,7 +1212,7 @@
                 questions: [
                     { image: "images/l2_map2.jpg", photoImage: null, q: "依據軍階與家庭成員分配房舍。請對照地圖找到特級眷舍，高階軍官的家擁有哪一個最明顯的建築特徵？", opts: ["獨立庭院與紅色大門", "只能側身通過的窄巷", "蓋在屋頂上的小閣樓", "共用牆壁的連棟小屋"], a: 0, photo: true, photoText: "請至現場尋找特級眷舍特徵並拍照上傳審核", desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門；基層官兵則居住於共用牆壁的窄房。" },
                     { image: "images/l2_2.jpg", q: "為什麼防洪樓裡會有小閣樓？", opts: ["放雜物", "放武器", "洪水來時避難", "養鴿子"], a: 2, photo: false, desc: "過去常受淡水河洪患，於1960年代興建「防洪樓」避難，樓內保留躲避水災增建的小閣樓。" },
-                    { image: "images/l2_3.jpg", q: "「一線天」是眷村特殊的狹窄巷道景觀。造成一線天形成的主要原因為何？\n\n【線索】：兩側皆有眷舍/巷道狹窄/抬頭見一線天", opts: ["建村時為了節省土地設計", "居民居住空間不足向前後院擴建", "為了讓鄰居方便交流", "為了遮陽避雨刻意縮小"], a: 1, photo: true, photoText: "請在眷村中找到「一線天」拍照上傳", desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成緊鄰樣貌。" },
+                    { q: "「一線天」是眷村特殊的狹窄巷道景觀。造成一線天形成的主要原因為何？\n\n【線索】：兩側皆有眷舍/巷道狹窄/抬頭見一線天(旁有介紹板子)", opts: ["建村時為了節省土地設計", "居民居住空間不足向前後院擴建", "為了讓鄰居方便交流", "為了遮陽避雨刻意縮小"], a: 1, photo: true, photoText: "請在眷村中找到「一線天」拍照上傳", desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成緊鄰樣貌。" },
                     { 
                         isSequence: true,
                         q: "請依照村長家的演變順序排列下列事件：\n① 興建防洪樓，增加避難空間\n② 黑瓦竹泥牆平房\n③ 全面改建為三層樓\n④ 加蓋二樓增加空間", 
@@ -1221,7 +1221,7 @@
                         photo: false, 
                         desc: "村長家歷經7次改建，從黑瓦平房、防洪樓、二樓加蓋到全面三層樓，完整體現居住演進。" 
                     },
-                    { image: "images/l2_5.jpg", photoImage: null, q: "為什麼隨著時間過去，眷村的房屋開始出現更多門窗、鐵窗，生活空間逐漸移回屋內？", opts: ["居民開始重視與鄰居保持距離", "居民確定無法短期返回大陸，長久生活", "政府規定必須將生活空間封閉", "為了防止敵人進入眷村"], a: 1, photo: true, photoText: "請尋找建築上的鐵窗拍照上傳審核", desc: "隨著定居長久與人口增加，生活機能全面移入屋內並加裝鐵窗，從開放聚落走向獨立住宅。" }
+                    { photoImage: null, q: "為什麼隨著時間過去，眷村的房屋開始出現更多門窗、鐵窗，生活空間逐漸移回屋內？", opts: ["居民開始重視與鄰居保持距離", "居民確定無法短期返回大陸，長久生活", "政府規定必須將生活空間封閉", "為了防止敵人進入眷村"], a: 1, photo: true, photoText: "請尋找建築上的鐵窗拍照上傳審核\n(各種鐵窗都可以)", desc: "隨著定居長久與人口增加，生活機能全面移入屋內並加裝鐵窗，從開放聚落走向獨立住宅。" }
                 ]
             },
             level3: {
@@ -1278,13 +1278,15 @@
         };
 
         const GameState = (function() {
-            const STORAGE_KEY = 'sanchong_game_state_v19_retro';
+            const STORAGE_KEY = 'sanchong_game_state_v20_retro';
             let state = {
                 teamName: null, startLevel: 3, customSequence: [3, 4, 5, 6, 1, 2, 7],
                 startTime: null, endTime: null, stamps: [false, false, false, false, false, false, false],
                 currentStageIndex: 0, soundEnabled: true,
                 l1Input: [], l1Collected: [false, false, false, false], l1Errors: 0,
-                l2Photos: [false, false, false, false, false], l2CurrentQ: 0,
+                l2Photos: [false, false, false, false, false], 
+                l2Answered: [false, false, false, false, false], // ★ 新增這行：記錄每題是否已答對
+                l2CurrentQ: 0,
                 l3PhotoDone: false, l3CurrentQ: 0, l5Input: [], l5Errors: 0
             };
             function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
@@ -1655,12 +1657,26 @@
                 uploadAndListenVerification(file, "任務二：眷舍空間", (isApproved) => {
                     if (isApproved) {
                         playSuccessSound();
-                        showAlert("審核通過", "長官已確認線索照片！解鎖考驗題目。", "fa-circle-check", "text-emerald-700", () => {
-                            let photos = GameState.get('l2Photos'); photos[GameState.get('l2CurrentQ')] = true;
-                            GameState.set('l2Photos', photos); renderL2();
-                        });
+                        // 標記拍照完成
+                        let photos = GameState.get('l2Photos') || [false, false, false, false, false];
+                        let currentQ = GameState.get('l2CurrentQ');
+                        photos[currentQ] = true;
+                        GameState.set('l2Photos', photos);
+        
+                        // ★ 修改點 C：審核通過後，直接前進到下一題或結束關卡
+                        showAlert("審核通過", "長官已確認線索照片！此題驗證完成。", "fa-circle-check", "text-emerald-700", () => {
+                            let cq = GameState.get('l2CurrentQ');
+                            if (cq < 4) {
+                                l2SequenceIntroSeen = false;
+                                GameState.set('l2CurrentQ', cq + 1);
+                                renderL2();
+                            } else {
+                                handleLevelSuccess(2);
+                            }
+                        }, "進入下一題");
                     } else {
-                        playErrorSound(); showAlert("審核未通過", "長官回報：照片模糊或角度不符，請重新拍攝！", "fa-circle-xmark", "text-primary");
+                        playErrorSound(); 
+                        showAlert("審核未通過", "長官回報：照片模糊或角度不符，請重新拍攝！", "fa-circle-xmark", "text-primary");
                     }
                 });
             }
@@ -1672,26 +1688,32 @@
             const qData = GAME_DATA.level2.questions[currentQ];
             document.getElementById('l2-q-counter').textContent = `測驗 ${currentQ + 1} / 5`;
             document.getElementById('btn-l2-prev').style.display = currentQ > 0 ? 'flex' : 'none';
-
+        
             const cont = document.getElementById('l2-options-container');
             const pSect = document.getElementById('l2-photo-section');
             const qImgContainer = document.getElementById('l2-question-img-container');
             const qImgElement = document.getElementById('l2-question-img');
             const qTextEl = document.getElementById('l2-question-text');
             cont.innerHTML = '';
-            let photos = GameState.get('l2Photos');
-
-            if (qData.photo && !photos[currentQ]) {
-                pSect.classList.remove('hidden'); qImgContainer.classList.add('hidden');
-                qTextEl.textContent = qData.q;
+            
+            let photos = GameState.get('l2Photos') || [false, false, false, false, false];
+            let answered = GameState.get('l2Answered') || [false, false, false, false, false];
+        
+            // ★ 修改點 A：若該題需要拍照，且「已答對選擇題」但「尚未完成拍照審核」，才顯示拍照面板
+            if (qData.photo && answered[currentQ] && !photos[currentQ]) {
+                pSect.classList.remove('hidden'); 
+                qImgContainer.classList.add('hidden');
+                qTextEl.textContent = `【任務解鎖】：選擇題答對！\n請完成現場取證以通關。`;
                 document.getElementById('l2-photo-img-container').classList.add('hidden');
                 document.getElementById('l2-photo-req-text').textContent = "📸 " + qData.photoText;
                 return;
             }
             pSect.classList.add('hidden');
-
+        
+            // 前導排程介紹 (保留原本邏輯)
             if (qData.isSequence && !l2SequenceIntroSeen) {
-                qImgContainer.classList.add('hidden'); qTextEl.textContent = "【建築演變前導知識】";
+                qImgContainer.classList.add('hidden'); 
+                qTextEl.textContent = "【建築演變前導知識】";
                 cont.innerHTML = `
                     <div class="intro-history-card text-left space-y-4 font-serif">
                         <div class="font-black text-military text-base border-b border-military/30 pb-2">
@@ -1713,24 +1735,49 @@
                 document.getElementById('btn-start-l2-seq').onclick = () => { playBeep(600, 0.05); l2SequenceIntroSeen = true; renderL2(); };
                 return;
             }
-
+        
             qTextEl.textContent = qData.q;
-            if (qData.image) { qImgElement.src = qData.image; qImgContainer.classList.remove('hidden'); } 
-            else { qImgContainer.classList.add('hidden'); }
-
+            if (qData.image) { 
+                qImgElement.src = qData.image; 
+                qImgContainer.classList.remove('hidden'); 
+            } else { 
+                qImgContainer.classList.add('hidden'); 
+            }
+        
             let optionsWithIndex = qData.opts.map((opt, index) => ({ text: opt, isCorrect: index === qData.a }));
             let shuffledOptions = shuffleArray([...optionsWithIndex]);
+            
             shuffledOptions.forEach((o) => {
                 const btn = document.createElement('button');
-                btn.className = "opt-btn font-serif text-base tracking-wide"; btn.textContent = o.text;
+                btn.className = "opt-btn font-serif text-base tracking-wide"; 
+                btn.textContent = o.text;
                 btn.onclick = () => {
                     if (o.isCorrect) {
                         playSuccessSound();
-                        showAlert("驗證通過", qData.desc, "fa-check-circle", "text-emerald-700", () => {
-                            let cq = GameState.get('l2CurrentQ');
-                            if (cq < 4) { l2SequenceIntroSeen = false; GameState.set('l2CurrentQ', cq + 1); renderL2(); } 
-                            else { handleLevelSuccess(2); }
-                        }, "下一題");
+                        
+                        // ★ 修改點 B：答對選擇題後的處置
+                        if (qData.photo) {
+                            // 若這題需要拍照，標記為「已答對」，彈窗提示後轉入拍照畫面
+                            let ans = GameState.get('l2Answered') || [false, false, false, false, false];
+                            ans[currentQ] = true;
+                            GameState.set('l2Answered', ans);
+        
+                            showAlert("回答正確！", `${qData.desc}\n\n★ 請前往現場拍攝相應特徵完成查驗！`, "fa-check-circle", "text-emerald-700", () => {
+                                renderL2();
+                            }, "前往拍照取證");
+                        } else {
+                            // 不需要拍照的題目，直接前往下一題或結算
+                            showAlert("驗證通過", qData.desc, "fa-check-circle", "text-emerald-700", () => {
+                                let cq = GameState.get('l2CurrentQ');
+                                if (cq < 4) { 
+                                    l2SequenceIntroSeen = false; 
+                                    GameState.set('l2CurrentQ', cq + 1); 
+                                    renderL2(); 
+                                } else { 
+                                    handleLevelSuccess(2); 
+                                }
+                            }, "下一題");
+                        }
                     } else {
                         playErrorSound();
                         showAlert("驗證失敗", "歷史記載與您的答案不符，請重新比對演變脈絡！", "fa-circle-xmark", "text-primary", null, "重新作答");
