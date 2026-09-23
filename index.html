@@ -268,7 +268,6 @@
                             <label class="text-sm font-bold text-ink block tracking-wide">隊伍代號：</label>
                             <input type="text" id="input-team-name" maxlength="15" placeholder="例：眷村探險小隊" class="w-full bg-paper border border-ink/20 rounded-md px-4 py-4 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-ink shadow-inner">
                         </div>
-                        <!-- 三-1 新增隊員欄位 -->
                         <div class="space-y-3">
                             <label class="text-sm font-bold text-ink block tracking-wide">隊員：</label>
                             <textarea id="input-team-members" rows="2" placeholder="例：小明、小華、小美" class="w-full bg-paper border border-ink/20 rounded-md px-4 py-3 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-ink shadow-inner"></textarea>
@@ -329,12 +328,10 @@
                 </div>
                 <!-- SCREEN: MAIN (總部主畫面) -->
                 <div id="screen-main" class="screen-panel hidden p-6 flex flex-col space-y-6 justify-center">
-                    <!-- 二-1 預設時間改為 01:30:00 -->
                     <div class="level-card p-6 text-center flex flex-col items-center justify-center">
                         <div class="text-xs font-bold text-ink/60 mb-2 tracking-widest uppercase">委託剩餘時間</div>
                         <div id="main-timer" class="text-5xl font-mono font-black text-primary tracking-wider drop-shadow-sm">01:30:00</div>
                     </div>
-                    <!-- 二-2 已刪除【空照地圖】卡片區塊，直接保留前進提示 -->
                     <div class="level-card p-8 text-center bg-paper/50">
                         <div class="text-xs font-bold text-ink/60 mb-3 tracking-widest">下一步，請前往</div>
                         <div class="text-2xl font-black text-primary mb-8 tracking-[0.1em] font-serif">《 <span id="main-active-title"></span> 》</div>
@@ -344,13 +341,12 @@
                     </div>
                 </div>
 
-                <!-- LEVEL 1: 防砲陣地 - 依照新意圖改為子頁面結構 -->
+                <!-- LEVEL 1: 防砲陣地 -->
                 <div id="screen-level-1" class="screen-panel hidden p-6 flex flex-col">
                     <input type="file" accept="image/*" capture="environment" id="l1-camera-input" class="hidden">
                     <!-- LEVEL 1: P1 現場位置提示 -->
                     <div id="l1-p1" class="level-card p-6 flex flex-col justify-center min-h-full">
                         <h2 class="text-xl text-primary font-black text-center border-b border-dashed border-ink/20 pb-4 font-serif tracking-widest mb-5">關卡現場位置提示</h2>
-                        <!-- 五-2 加入甬道圖容器 -->
                         <div class="w-full aspect-[16/9] vintage-photo flex items-center justify-center mb-5 shrink-0">
                             <img src="images/甬道圖.jpg" alt="甬道圖" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=甬道配置圖'" class="w-full h-full object-cover loaded">
                         </div>
@@ -880,7 +876,6 @@
 
                         <div id="cert-msg" class="text-base font-bold text-ink leading-[1.8] mb-8 text-justify font-serif"></div>
 
-                        <!-- 二-3 全局名詞置換 -->
                         <div class="bg-gold/20 p-5 rounded-lg border border-gold/40 text-sm text-ink font-bold mb-8 text-left shadow-sm">
                             <div class="flex items-center space-x-2 text-primary mb-3 font-black text-base border-b border-gold/30 pb-2"><i class="fa-solid fa-gift"></i><span class="tracking-widest">兌獎引導</span></div>
                             <span class="leading-relaxed opacity-90">請「截圖保留」此認證畫面，並出示您獲得的【跨越時空的信】（點擊下方信件碎片查看），前往起點服務台領取專屬獎勵！</span>
@@ -972,10 +967,280 @@
     </div>
 
     <script>
-        // --- 輔助動畫函數 ---
-        const originalShowAlert = window.showAlert;
+        // ==========================================
+        // 核心設定與資料 (State & Data)
+        // ==========================================
+        const GAME_DATA = {
+            levels: [
+                { id: 1, name: '防砲陣地' }, { id: 2, name: '眷村空間與建築' }, { id: 3, name: '村長的家' },
+                { id: 4, name: '榕樹廣場' }, { id: 5, name: '群星之夜' }, { id: 6, name: '時光膠囊' }, { id: 7, name: '市集攤位' }
+            ],
+            level1: {
+                locations: [
+                    { title: "甬道1號出口", code: "1", task: "1.甬道出口：作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，為了不被敵人發現，通常設計得隱蔽，防守方在敵軍不注意時，突然現身進行反擊。\n一村中的甬道有10個出口，請觀察關主後方的地圖找尋【1號出口】，並拍照回傳總部。", desc: "" },
+                    { title: "豎井", code: "9", task: "2.甬道豎井：地下甬道容易因為空氣不流通積聚有害氣體或極度悶熱。豎井利用煙囪效應或外接機械風扇，帶入新鮮空氣，並排出內部廢氣、濕氣或熱量。當甬道不幸發生火災時，豎井是最佳的排煙通道，可防止濃煙在狹窄的水平甬道內快速擴散，為人員爭取逃生時間與空間。\n請走上階梯，觀察是否有高出地面的結構物找尋疑似【豎井】的通氣構造，其中一個可以藉由玻璃這照觀察地下甬道，請找到它並拍照回傳總部確認。", desc: "" },
+                    { title: "甬道4號出入口", code: "4", task: "4號出入口：作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，為了不被敵人發現，通常設計得隱蔽，防守方在敵軍不注意時，突然現身進行反擊。\n一村中的甬道有10個出口，其中有些入口隨著時間堆疊許多構建，請觀察擁到地圖找尋院落中的【4號出口】，並拍照回傳總部確認。", desc: "" },
+                    { title: "5號砲台遺跡", code: "5", task: "5號砲台遺跡：日治時期高射砲陣地留下的6座防空砲台原本是一座長滿草的小山坡，主要是為了防禦美軍空襲時的總督府與物資集散地大稻埕。\n戰後國民政府遷台，空軍高砲部隊駐紮於此，興建眷舍時便以這 6 座防空砲台為核心，將房子圍繞在周圍興建。這種「軍事防衛陣地」與「民居眷村生活」緊密嵌合的奇特景觀，在台灣極為罕見。\n請找尋甬道4號出口前的地板，找尋疑似【高射砲砲座】的構建，並回傳總部確認。", desc: "" }
+                ],
+                passcode: "1945",
+                hints: [
+                    "提示一：防砲陣地是在二戰結束那一年終止任務的。",
+                    "提示二：第二次世界大戰結束於西元 1945 年。"
+                ]
+            },
+            level2: {
+                questions: [
+                    { 
+                        image: "images/l2_map2.jpg", 
+                        photoImage: null, 
+                        q: "空軍一村依據軍階與家庭成員分配房舍，這是一村的建築配置圖請對照地圖找到特級眷舍觀察高階軍官的家擁有哪一個最明顯的建築特征?", 
+                        opts: [
+                            "1 整排的連棟小屋", 
+                            "2 紅色大門", 
+                            "3 綠色大門", 
+                            "4 獨立庭院", 
+                            "5 美麗的斜屋頂", 
+                            "6 迷你游泳池", 
+                            "7 洗石子外牆", 
+                            "8 馬賽克外牆", 
+                            "9 紅磚牆", 
+                            "10 竹籬笆"
+                        ], 
+                        a: [1, 3, 6], 
+                        photo: true, 
+                        photoText: "請隊員們一起與特級眷舍的任一個特徵並拍照吧！", 
+                        desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門。" 
+                    },
+                    { 
+                        image: "images/l2_2.jpg", 
+                        q: "請找尋這個門牌的所在位置，並觀察旁邊的說明牌\n\n糟了！這張線索遺失了重要資訊，請幫忙填起\n\n(填空題)", 
+                        inputType: "text",
+                        answers: ["乙", "中校", "淡水河洪患", "防洪樓"], 
+                        opts: [], 
+                        a: null,
+                        photo: true, 
+                        photoText: "請玩家找尋【進入防洪樓】閣樓空間，高舉雙手，看看能否碰到閣樓的地板，並拍照紀錄",
+                        desc: "防洪樓是為躲避淡水河洪患而建，保留了躲避水災增建的小閣樓。" 
+                    },
+                    { 
+                        image: "images/一線天說明牌.jpg", 
+                        q: "居民居住因為空間不足向前後院擴建，形成眷村特殊的狹窄巷道景觀，我們稱為(____)", 
+                        inputType: "text",
+                        answers: ["一線天"],
+                        opts: [],
+                        a: null,
+                        photo: true, 
+                        photoText: "請在眷村中找到「一線天」張開雙手觸碰二側牆壁拍一張照\n\n玩家必須入鏡並雙手碰牆", 
+                        desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成緊鄰樣貌。" 
+                    },
+                    { 
+                        isSequence: true,
+                        q: "請依照村長家的演變順序排列下列事件：\n① 興建防洪樓，增加避難空間\n② 黑瓦竹泥牆平房\n③ 全面改建為三層樓\n④ 加蓋二樓增加空間", 
+                        opts: ["① → ② → ③ → ④", "② → ① → ④ → ③", "② → ④ → ① → ③", "① → ③ → ② → ④"], 
+                        a: 1, 
+                        photo: false, 
+                        desc: "村長家歷經7次改建，從黑瓦平房、防洪樓、二樓加蓋到全面三層樓，完整體現居住演進。" 
+                    },
+                    { 
+                        photoImage: null, 
+                        q: "為什麼隨著時間過去，眷村的房屋開始出現更多門窗、鐵窗，生活空間逐漸移回屋內？", 
+                        opts: ["居民開始重視與鄰居保持距離", "居民確定無法短期返回大陸，長久生活", "政府規定必須將生活空間封閉", "為了防止敵人進入眷村"], 
+                        a: 1, 
+                        photo: true, 
+                        photoText: "請尋找建築上的鐵窗拍照上傳審核\n(各種鐵窗都可以)", 
+                        desc: "隨著定居長久與人口增加，生活機能全面移入屋內並加裝鐵窗，從開放聚落走向獨立住宅。" 
+                    }
+                ]
+            },
+            level3: {
+                questions: [
+                    { q: "請問語音中提到的料理是哪一道？", opts: ["麻婆豆腐", "回鍋肉", "水煮魚", "宮保雞丁"], a: 1, desc: "回鍋肉是四川經典家常菜，\n呈現川菜麻、辣、香醇風味。" },
+                    { q: "請問語音中提到的料理是哪一道？", opts: ["酸菜魚", "剁椒魚頭", "清蒸鱸魚", "糖醋魚"], a: 1, desc: "剁椒魚頭搭配辛辣剁椒蒸製，\n展現湘菜鮮、辣、厚重特色。" },
+                    { q: "請問語音中提到的料理是哪一道？", opts: ["安徽板麵", "蘭州拉麵", "刀削麵", "牛肉麵"], a: 0, desc: "安徽板麵以彈牙麵條搭配香辣醬汁，\n是充滿鄉土特色的北方風味。" },
+                    { q: "請問語音中提到的料理是哪一道？", opts: ["打滷麵", "擔擔麵", "炸醬麵", "蔥油拌麵"], a: 2, desc: "炸醬麵濃郁鹹香，以豆瓣醬與肉末慢炒，代表北方家常麵食。" },
+                    { q: "請問語音中提到的料理是哪一道？", opts: ["山東煎餅", "韭菜盒子", "蔥油餅", "牛肉餡餅"], a: 1, desc: "金黃酥脆的韭菜盒子包入冬粉、雞蛋與蝦米，是鄰里分享的溫暖點心。" }
+                ],
+                audios: [
+                    "images/images_1_sichuan.mp3", "images/images_2_hunan.mp3", "images/images_3_anhui.mp3", "images/images_4_beijing.mp3", "images/images_5_shandong.mp3"
+                ],
+                menuImages: [
+                    "images/menu_sichuan.jpg", "images/menu_hunan.jpg", "images/menu_anhui.jpg", "images/menu_beijing.jpg", "images/menu_shandong.jpg"
+                ],
+                foodImages: [
+                    "images/food_huiguorou.jpg", "images/food_duojiaoyutou.jpg", "images/food_banmian.jpg", "images/food_zhajiangmian.jpg", "images/food_jiucaihezi.jpg"
+                ]
+            },
+            level4: {
+                q1: { text: "1. 眷村婦女縫製衣服與裁縫的核心工具：", opts: [{t:"老式黑膠唱片機", c:false}, {t:"勝家腳踏縫紉機", c:true}, {t:"煤油爐", c:false}] },
+                q2: { text: "2. 昔日眷村居民領取生活主食憑證：", opts: [{t:"戰備電影票", c:false}, {t:"米糧油鹽配給證", c:true}, {t:"郵政儲蓄存折", c:false}] }
+            },
+            level5: {
+                passcode: "999",
+                hints: ["提示一：群星會的巔峰時刻，是一個大家都熟悉的三位數字。", "提示二：通關密碼就是 999！"]
+            },
+            level6: {
+                songs: [
+                    { title: "《安童哥買菜》", lyric: "蹌蹌行伊都蹌蹌去\n安童哥仔囉 我一時有仔主意 蹌蹌行伊都蹌蹌去\n上街到菜市 彼囉菜籃叮仔噹耳奧\n安童哥仔囉 雙腳行入到菜市 擱開嘴叫一聲(頭家仔) 目睭十十睨\n東平看過來又擱西平看過去 舉一目 哎喲看一見\n彼囉肥豬肉肥志 哎喲瘦的紅記記", audio: "images/劉福助.mp3", desc: "劉福助｜曲風活潑、充滿市井生活感。" },
+                    { title: "《相思河畔》", lyric: "自從相思河畔別了你\n無限的痛苦埋在心窩裡\n我要輕輕的告訴你 不要把我忘記\n秋風無情 為什麼吹落了丹楓\n青春尚在 為什麼毀褪了殘紅\n啊 人生本是夢", audio: "images/相思河畔.mp3", desc: "吳靜嫻｜氣氛浪漫、充滿深情復古情懷。" },
+                    { title: "《鄉間的小路》", lyric: "走在鄉間的小路上 暮歸的老牛是我同伴\n藍天配朵夕陽在胸膛\n繽紛的雲彩是晚霞的衣裳\n荷把鋤頭在肩上 牧童的歌聲在盪漾\n喔～喔～他們唱\n還有一隻短笛隱約在吹響\n笑意寫在臉上 哼一曲鄉居小唱\n任思緒在晚風中飛揚", audio: "images/葉佳修.mp3", desc: "葉佳修｜民歌時代的純樸與清新。" }
+                ]
+            },
+            puzzles: [
+                { id: 1, class: 'piece-1', text: '阿秀，拍勢啦<br>我可能沒辦法遵守回家的約定了。' },
+                { id: 2, class: 'piece-2', text: '每次走到巷口，聞到那個味道，<br>我就知道，我到家了。' },
+                { id: 3, class: 'piece-3', text: '我總想著，等一切結束，<br>要陪你慢慢吃一輩子的飯。' },
+                { id: 4, class: 'piece-4', text: '答應我，你要好好生活，<br>替我多看看我們的家。' },
+                { id: 5, class: 'piece-5', text: '別難過，因為不管我飛得多遠，<br>我從來沒有忘記回家的方向。' },
+                { id: 6, class: 'piece-6', text: '阿秀，我永遠愛你。' },
+                { id: 7, class: 'piece-7', text: '「半世戎馬，一生清風」<br>—— 永遠想回家的志遠' }
+            ],
+            preloadImages: [
+                "https://placehold.co/400x300/e5d5b5/7c343d?text=Map", "https://placehold.co/200/e5d5b5/7c343d?text=Grandma",
+                "https://placehold.co/200/e5d5b5/7c343d?text=Mom", "https://placehold.co/200/e5d5b5/7c343d?text=Student",
+                "https://placehold.co/200/e5d5b5/7c343d?text=Kid", "images/鄧麗君.png", "images/羅大佑.png", "images/紫薇.png", "images/潘安邦.png",
+                "https://placehold.co/200/e5d5b5/7c343d?text=Grandson", "images/桂花.png", "images/玉蘭花.jpg", "images/梔子花.jpg", "images/秀英花.jpg", "images/玫瑰.jpg", "images/茉莉.png",
+                "images/信.png", "images/l2_map.jpg", "images/l2_map2.jpg", "images/l2_2.jpg", "images/l2_3.jpg", "images/l2_5.jpg", 
+                "images/images_1_sichuan.mp3", "images/images_2_hunan.mp3", "images/images_3_anhui.mp3", "images/images_4_beijing.mp3", "images/images_5_shandong.mp3", 
+                "images/相思河畔.mp3", "images/葉佳修.mp3", "images/劉福助.mp3", "images/眷村.png"
+            ]
+        };
+
+        const GameState = (function() {
+            const STORAGE_KEY = 'sanchong_game_state_v20_retro';
+            let state = {
+                teamName: null, startLevel: 6, customSequence: [6, 1, 4, 2, 5, 3, 7],
+                startTime: null, endTime: null, stamps: [false, false, false, false, false, false, false],
+                currentStageIndex: 0, soundEnabled: true,
+                l1Input: [], l1Collected: [false, false, false, false], l1Errors: 0,
+                l2Photos: [false, false, false, false, false], 
+                l2Answered: [false, false, false, false, false],
+                l2CurrentQ: 0,
+                l3PhotoDone: false, l3CurrentQ: 0, l5Input: [], l5Errors: 0
+            };
+            function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+            return {
+                init: function() {
+                    try {
+                        const data = localStorage.getItem(STORAGE_KEY);
+                        if (data) { state = { ...state, ...JSON.parse(data) }; return true; }
+                    } catch(e) { localStorage.removeItem(STORAGE_KEY); }
+                    return false;
+                },
+                get: function(key) { return state[key]; },
+                set: function(key, value) { state[key] = value; save(); },
+                reset: function() { localStorage.removeItem(STORAGE_KEY); location.reload(); }
+            };
+        })();
+
+        let globalTimerInterval = null;
+        let audioCtx = null;
+        try {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (AudioContextClass) audioCtx = new AudioContextClass();
+        } catch (e) {
+            console.warn("Web Audio API 初始化失敗：", e);
+        }
+
+        // ==========================================
+        // Firebase 與生命週期
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyCxIinbYw3OhJhKksVHsqPaYCv0-fLUR3s",
+            authDomain: "weee-57379.firebaseapp.com",
+            projectId: "weee-57379",
+            storageBucket: "weee-57379.firebasestorage.app",
+            messagingSenderId: "26784647",
+            appId: "1:26784647:web:e3c682e0915fe43ddf5922"
+        };
         
+        let db = null;
+        try {
+            if (typeof firebase !== 'undefined') {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                db = firebase.firestore();
+            } else {
+                console.warn("Firebase SDK 未成功載入，將關閉即時審核功能。");
+            }
+        } catch (e) {
+            console.warn("Firebase 初始化失敗：", e);
+        }
+
+        function startAppLifecycle() {
+            const loader = document.getElementById('app-loader');
+            const progressEl = document.getElementById('loader-progress');
+            const images = (GAME_DATA && GAME_DATA.preloadImages) ? GAME_DATA.preloadImages : [];
+            let loaded = 0;
+            let isFinished = false;
+        
+            const finishLoading = () => {
+                if (isFinished) return;
+                isFinished = true;
+        
+                if (loader) {
+                    loader.style.pointerEvents = 'none';
+                    loader.style.opacity = '0';
+                    setTimeout(() => { if (loader.parentNode) loader.remove(); }, 800);
+                }
+        
+                try {
+                    if (GameState.init() && GameState.get('teamName')) {
+                        if (globalTimerInterval) clearInterval(globalTimerInterval);
+                        globalTimerInterval = setInterval(updateTimerDisplay, 1000);
+                        updateTimerDisplay();
+                        const icon = document.getElementById('sound-icon');
+                        if (icon && !GameState.get('soundEnabled')) {
+                            icon.className = "fa-solid fa-volume-xmark text-gold/50 text-lg";
+                        }
+                        if (GameState.get('stamps').filter(Boolean).length === 7) {
+                            showScreen('certificate');
+                        } else {
+                            showScreen('main');
+                        }
+                    } else {
+                        showScreen('entry');
+                    }
+                } catch (err) {
+                    console.error("狀態初始化失敗，強制進入登入畫面：", err);
+                    showScreen('entry');
+                }
+            };
+        
+            const forceTimeout = setTimeout(finishLoading, 1500);
+        
+            if (images.length === 0) {
+                clearTimeout(forceTimeout);
+                finishLoading();
+            } else {
+                images.forEach(src => {
+                    const img = new Image();
+                    img.onload = img.onerror = () => {
+                        loaded++;
+                        const pct = Math.floor((loaded / images.length) * 100);
+                        if (progressEl) progressEl.textContent = `${pct}%`;
+                        if (loaded >= images.length) {
+                            clearTimeout(forceTimeout);
+                            finishLoading();
+                        }
+                    };
+                    img.src = src;
+                });
+            }
+        }
+        
+        if (document.readyState === 'complete') {
+            startAppLifecycle();
+        } else {
+            window.addEventListener('DOMContentLoaded', startAppLifecycle);
+            window.addEventListener('load', startAppLifecycle);
+        }
+
+        // ==========================================
+        // 核心功能 (Utils)
+        // ==========================================
         // 覆蓋原本的 showAlert 使其支援動畫
+        const originalShowAlert = window.showAlert;
         window.showAlert = function(title, desc, iconClass = "", colorClass = "text-primary", callback = null, btnText = "確認", autoCloseDelay = 0, showCancel = false) {
             document.getElementById('alert-title').textContent = title;
             document.getElementById('alert-desc').innerHTML = desc;
@@ -1046,94 +1311,6 @@
             }, 300);
         }
 
-        // 攔截並動畫化 Stamps Modal
-        window.openStampsDrawer = function() {
-            playBeep();
-            renderPuzzlePieces('puzzle-drawer-board', false);
-            const letterBtnContainer = document.getElementById('full-letter-btn-container');
-            if(GameState.get('stamps')[6]) letterBtnContainer.classList.remove('hidden');
-            else letterBtnContainer.classList.add('hidden');
-        
-            const modal = document.getElementById('modal-stamps');
-            const box = document.getElementById('stamps-box');
-            modal.classList.remove('hidden');
-        
-            box.classList.remove('opacity-0', 'scale-95');
-            setTimeout(() => box.classList.remove('translate-y-full'), 10);
-        }
-        document.getElementById('close-stamps').onclick = () => {
-            playBeep();
-            closeModalAnim('modal-stamps', 'stamps-box');
-        };
-
-        window.openFullLetter = function() {
-            playBeep();
-            closeModalAnim('modal-stamps', 'stamps-box');
-            
-            const modal = document.getElementById('modal-full-letter');
-            const box = document.getElementById('letter-box');
-            modal.classList.remove('hidden');
-            
-            const board = document.getElementById('full-letter-board');
-            board.style.aspectRatio = 'auto';
-            board.innerHTML = `<img src="images/信.png" alt="跨越時空的信" class="w-full h-auto object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)] rounded">`;
-            
-            setTimeout(() => {
-                box.classList.remove('scale-95', 'opacity-0');
-                box.classList.add('scale-100', 'opacity-100');
-            }, 10);
-        }
-
-        window.closeFullLetter = function() {
-            playBeep();
-            closeModalAnim('modal-full-letter', 'letter-box', () => {
-                if(GameState.get('stamps').filter(Boolean).length === 7) showScreen('certificate');
-            });
-        }
-
-        window.openPuzzleLightbox = function(textHtml) {
-            const content = document.getElementById('puzzle-lightbox-content');
-            if (content) content.innerHTML = textHtml;
-            const modal = document.getElementById('modal-puzzle-lightbox');
-            const box = document.getElementById('lightbox-box');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                box.classList.remove('scale-95', 'opacity-0');
-                box.classList.add('scale-100', 'opacity-100');
-            }, 10);
-        }
-
-        window.closePuzzleLightbox = function() {
-            playBeep(400, 0.05);
-            closeModalAnim('modal-puzzle-lightbox', 'lightbox-box');
-        }
-
-        // ==========================================
-        // 核心邏輯
-        // ==========================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyCxIinbYw3OhJhKksVHsqPaYCv0-fLUR3s",
-            authDomain: "weee-57379.firebaseapp.com",
-            projectId: "weee-57379",
-            storageBucket: "weee-57379.firebasestorage.app",
-            messagingSenderId: "26784647",
-            appId: "1:26784647:web:e3c682e0915fe43ddf5922"
-        };
-        
-        let db = null;
-        try {
-            if (typeof firebase !== 'undefined') {
-                if (!firebase.apps.length) {
-                    firebase.initializeApp(firebaseConfig);
-                }
-                db = firebase.firestore();
-            } else {
-                console.warn("Firebase SDK 未成功載入，將關閉即時審核功能。");
-            }
-        } catch (e) {
-            console.warn("Firebase 初始化失敗：", e);
-        }
-
         function compressImageFast(file, maxWidth, quality, callback) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -1152,7 +1329,7 @@
             };
             reader.readAsDataURL(file);
         }
-        
+
         let activeUploadUnsubscribe = null;
         let activeUploadPollTimer = null;
         
@@ -1212,242 +1389,7 @@
                 }
             });
         }
-        
-        const GAME_DATA = {
-            levels: [
-                { id: 1, name: '防砲陣地' }, { id: 2, name: '眷村空間與建築' }, { id: 3, name: '村長的家' },
-                { id: 4, name: '榕樹廣場' }, { id: 5, name: '群星之夜' }, { id: 6, name: '時光膠囊' }, { id: 7, name: '市集攤位' }
-            ],
-            level1: {
-                locations: [
-                    { title: "甬道1號出口", code: "1", task: "1.甬道出口：作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，為了不被敵人發現，通常設計得隱蔽，防守方在敵軍不注意時，突然現身進行反擊。\n一村中的甬道有10個出口，請觀察關主後方的地圖找尋【1號出口】，並拍照回傳總部。", desc: "" },
-                    { title: "豎井", code: "9", task: "2.甬道豎井：地下甬道容易因為空氣不流通積聚有害氣體或極度悶熱。豎井利用煙囪效應或外接機械風扇，帶入新鮮空氣，並排出內部廢氣、濕氣或熱量。當甬道不幸發生火災時，豎井是最佳的排煙通道，可防止濃煙在狹窄的水平甬道內快速擴散，為人員爭取逃生時間與空間。\n請走上階梯，觀察是否有高出地面的結構物找尋疑似【豎井】的通氣構造，其中一個可以藉由玻璃這照觀察地下甬道，請找到它並拍照回傳總部確認。", desc: "" },
-                    { title: "甬道4號出入口", code: "4", task: "4號出入口：作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，為了不被敵人發現，通常設計得隱蔽，防守方在敵軍不注意時，突然現身進行反擊。\n一村中的甬道有10個出口，其中有些入口隨著時間堆疊許多構建，請觀察擁到地圖找尋院落中的【4號出口】，並拍照回傳總部確認。", desc: "" },
-                    { title: "5號砲台遺跡", code: "5", task: "5號砲台遺跡：日治時期高射砲陣地留下的6座防空砲台原本是一座長滿草的小山坡，主要是為了防禦美軍空襲時的總督府與物資集散地大稻埕。\n戰後國民政府遷台，空軍高砲部隊駐紮於此，興建眷舍時便以這 6 座防空砲台為核心，將房子圍繞在周圍興建。這種「軍事防衛陣地」與「民居眷村生活」緊密嵌合的奇特景觀，在台灣極為罕見。\n請找尋甬道4號出口前的地板，找尋疑似【高射砲砲座】的構建，並回傳總部確認。", desc: "" }
-                ],
-                passcode: "1945",
-                hints: [
-                    "提示一：防砲陣地是在二戰結束那一年終止任務的。",
-                    "提示二：第二次世界大戰結束於西元 1945 年。"
-                ]
-            },
-            level2: {
-                questions: [
-                    // 測驗 1：特級眷舍
-                    { 
-                        image: "images/l2_map2.jpg", 
-                        photoImage: null, 
-                        q: "空軍一村依據軍階與家庭成員分配房舍，這是一村的建築配置圖請對照地圖找到特級眷舍觀察高階軍官的家擁有哪一個最明顯的建築特征?", 
-                        opts: [
-                            "1 整排的連棟小屋", 
-                            "2 紅色大門", 
-                            "3 綠色大門", 
-                            "4 獨立庭院", 
-                            "5 美麗的斜屋頂", 
-                            "6 迷你游泳池", 
-                            "7 洗石子外牆", 
-                            "8 馬賽克外牆", 
-                            "9 紅磚牆", 
-                            "10 竹籬笆"
-                        ], 
-                        a: [1, 3, 6], // 對應選項 2, 4, 7 為正確解答 (陣列索引)
-                        photo: true, 
-                        photoText: "請隊員們一起與特級眷舍的任一個特徵並拍照吧！", 
-                        desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門。" 
-                    },
-                    // 測驗 2：防洪樓說明牌填空 (改為打字輸入)
-                    { 
-                        image: "images/l2_2.jpg", 
-                        q: "請找尋這個門牌的所在位置，並觀察旁邊的說明牌\n\n糟了！這張線索遺失了重要資訊，請幫忙填起\n\n(填空題)", 
-                        inputType: "text", // 標記為文字輸入題
-                        answers: ["乙", "中校", "淡水河洪患", "防洪樓"], // 設定正確解答字串
-                        opts: [], // 留空即可
-                        a: null,
-                        photo: true, 
-                        photoText: "請玩家找尋【進入防洪樓】閣樓空間，高舉雙手，看看能否碰到閣樓的地板，並拍照紀錄",
-                        desc: "防洪樓是為躲避淡水河洪患而建，保留了躲避水災增建的小閣樓。" 
-                    },
-                    // 測驗 3：一線天填空與拍照 (改為打字輸入)
-                    { 
-                        image: "images/一線天說明牌.jpg", 
-                        q: "居民居住因為空間不足向前後院擴建，形成眷村特殊的狹窄巷道景觀，我們稱為(____)", 
-                        inputType: "text", // 標記為文字輸入題
-                        answers: ["一線天"], // 設定正確解答字串
-                        opts: [],
-                        a: null,
-                        photo: true, 
-                        photoText: "請在眷村中找到「一線天」張開雙手觸碰二側牆壁拍一張照\n\n玩家必須入鏡並雙手碰牆", 
-                        desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成緊鄰樣貌。" 
-                    },
-                    { 
-                        isSequence: true,
-                        q: "請依照村長家的演變順序排列下列事件：\n① 興建防洪樓，增加避難空間\n② 黑瓦竹泥牆平房\n③ 全面改建為三層樓\n④ 加蓋二樓增加空間", 
-                        opts: ["① → ② → ③ → ④", "② → ① → ④ → ③", "② → ④ → ① → ③", "① → ③ → ② → ④"], 
-                        a: 1, 
-                        photo: false, 
-                        desc: "村長家歷經7次改建，從黑瓦平房、防洪樓、二樓加蓋到全面三層樓，完整體現居住演進。" 
-                    },
-                    { photoImage: null, q: "為什麼隨著時間過去，眷村的房屋開始出現更多門窗、鐵窗，生活空間逐漸移回屋內？", opts: ["居民開始重視與鄰居保持距離", "居民確定無法短期返回大陸，長久生活", "政府規定必須將生活空間封閉", "為了防止敵人進入眷村"], a: 1, photo: true, photoText: "請尋找建築上的鐵窗拍照上傳審核\n(各種鐵窗都可以)", desc: "隨著定居長久與人口增加，生活機能全面移入屋內並加裝鐵窗，從開放聚落走向獨立住宅。" }
-                ]
-            },
-            level3: {
-                questions: [
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["麻婆豆腐", "回鍋肉", "水煮魚", "宮保雞丁"], a: 1, desc: "回鍋肉是四川經典家常菜，\n呈現川菜麻、辣、香醇風味。" },
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["酸菜魚", "剁椒魚頭", "清蒸鱸魚", "糖醋魚"], a: 1, desc: "剁椒魚頭搭配辛辣剁椒蒸製，\n展現湘菜鮮、辣、厚重特色。" },
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["安徽板麵", "蘭州拉麵", "刀削麵", "牛肉麵"], a: 0, desc: "安徽板麵以彈牙麵條搭配香辣醬汁，\n是充滿鄉土特色的北方風味。" },
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["打滷麵", "擔擔麵", "炸醬麵", "蔥油拌麵"], a: 2, desc: "炸醬麵濃郁鹹香，以豆瓣醬與肉末慢炒，代表北方家常麵食。" },
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["山東煎餅", "韭菜盒子", "蔥油餅", "牛肉餡餅"], a: 1, desc: "金黃酥脆的韭菜盒子包入冬粉、雞蛋與蝦米，是鄰里分享的溫暖點心。" }
-                ],
-                audios: [
-                    "images/images_1_sichuan.mp3", "images/images_2_hunan.mp3", "images/images_3_anhui.mp3", "images/images_4_beijing.mp3", "images/images_5_shandong.mp3"
-                ],
-                menuImages: [
-                    "images/menu_sichuan.jpg", "images/menu_hunan.jpg", "images/menu_anhui.jpg", "images/menu_beijing.jpg", "images/menu_shandong.jpg"
-                ],
-                foodImages: [
-                    "images/food_huiguorou.jpg", "images/food_duojiaoyutou.jpg", "images/food_banmian.jpg", "images/food_zhajiangmian.jpg", "images/food_jiucaihezi.jpg"
-                ]
-            },
-            level4: {
-                q1: { text: "1. 眷村婦女縫製衣服與裁縫的核心工具：", opts: [{t:"老式黑膠唱片機", c:false}, {t:"勝家腳踏縫紉機", c:true}, {t:"煤油爐", c:false}] },
-                q2: { text: "2. 昔日眷村居民領取生活主食憑證：", opts: [{t:"戰備電影票", c:false}, {t:"米糧油鹽配給證", c:true}, {t:"郵政儲蓄存折", c:false}] }
-            },
-            level5: {
-                passcode: "999",
-                hints: ["提示一：群星會的巔峰時刻，是一個大家都熟悉的三位數字。", "提示二：通關密碼就是 999！"]
-            },
-            level6: {
-                songs: [
-                    { title: "《安童哥買菜》", lyric: "蹌蹌行伊都蹌蹌去\n安童哥仔囉 我一時有仔主意 蹌蹌行伊都蹌蹌去\n上街到菜市 彼囉菜籃叮仔噹耳奧\n安童哥仔囉 雙腳行入到菜市 擱開嘴叫一聲(頭家仔) 目睭十十睨\n東平看過來又擱西平看過去 舉一目 哎喲看一見\n彼囉肥豬肉肥志 哎喲瘦的紅記記", audio: "images/劉福助.mp3", desc: "劉福助｜曲風活潑、充滿市井生活感。" },
-                    { title: "《相思河畔》", lyric: "自從相思河畔別了你\n無限的痛苦埋在心窩裡\n我要輕輕的告訴你 不要把我忘記\n秋風無情 為什麼吹落了丹楓\n青春尚在 為什麼毀褪了殘紅\n啊 人生本是夢", audio: "images/相思河畔.mp3", desc: "吳靜嫻｜氣氛浪漫、充滿深情復古情懷。" },
-                    { title: "《鄉間的小路》", lyric: "走在鄉間的小路上 暮歸的老牛是我同伴\n藍天配朵夕陽在胸膛\n繽紛的雲彩是晚霞的衣裳\n荷把鋤頭在肩上 牧童的歌聲在盪漾\n喔～喔～他們唱\n還有一隻短笛隱約在吹響\n笑意寫在臉上 哼一曲鄉居小唱\n任思緒在晚風中飛揚", audio: "images/葉佳修.mp3", desc: "葉佳修｜民歌時代的純樸與清新。" }
-                ]
-            },
-            puzzles: [
-                { id: 1, class: 'piece-1', text: '阿秀，拍勢啦<br>我可能沒辦法遵守回家的約定了。' },
-                { id: 2, class: 'piece-2', text: '每次走到巷口，聞到那個味道，<br>我就知道，我到家了。' },
-                { id: 3, class: 'piece-3', text: '我總想著，等一切結束，<br>要陪你慢慢吃一輩子的飯。' },
-                { id: 4, class: 'piece-4', text: '答應我，你要好好生活，<br>替我多看看我們的家。' },
-                { id: 5, class: 'piece-5', text: '別難過，因為不管我飛得多遠，<br>我從來沒有忘記回家的方向。' },
-                { id: 6, class: 'piece-6', text: '阿秀，我永遠愛你。' },
-                { id: 7, class: 'piece-7', text: '「半世戎馬，一生清風」<br>—— 永遠想回家的志遠' }
-            ],
-            preloadImages: [
-                "https://placehold.co/400x300/e5d5b5/7c343d?text=Map", "https://placehold.co/200/e5d5b5/7c343d?text=Grandma",
-                "https://placehold.co/200/e5d5b5/7c343d?text=Mom", "https://placehold.co/200/e5d5b5/7c343d?text=Student",
-                "https://placehold.co/200/e5d5b5/7c343d?text=Kid", "images/鄧麗君.png", "images/羅大佑.png", "images/紫薇.png", "images/潘安邦.png",
-                "https://placehold.co/200/e5d5b5/7c343d?text=Grandson", "images/桂花.png", "images/玉蘭花.jpg", "images/梔子花.jpg", "images/秀英花.jpg", "images/玫瑰.jpg", "images/茉莉.png",
-                "images/信.png", "images/l2_map.jpg", "images/l2_map2.jpg", "images/l2_2.jpg", "images/l2_3.jpg", "images/l2_5.jpg", 
-                "images/images_1_sichuan.mp3", "images/images_2_hunan.mp3", "images/images_3_anhui.mp3", "images/images_4_beijing.mp3", "images/images_5_shandong.mp3", 
-                "images/相思河畔.mp3", "images/葉佳修.mp3", "images/劉福助.mp3", "images/眷村.png"
-            ]
-        };
 
-        const GameState = (function() {
-        const STORAGE_KEY = 'sanchong_game_state_v20_retro';
-            let state = {
-                teamName: null, startLevel: 6, customSequence: [6, 1, 4, 2, 5, 3, 7],
-                startTime: null, endTime: null, stamps: [false, false, false, false, false, false, false],
-                currentStageIndex: 0, soundEnabled: true,
-                l1Input: [], l1Collected: [false, false, false, false], l1Errors: 0,
-                l2Photos: [false, false, false, false, false], 
-                l2Answered: [false, false, false, false, false],
-                l2CurrentQ: 0,
-                l3PhotoDone: false, l3CurrentQ: 0, l5Input: [], l5Errors: 0
-            };
-            function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-            return {
-                init: function() {
-                    try {
-                        const data = localStorage.getItem(STORAGE_KEY);
-                        if (data) { state = { ...state, ...JSON.parse(data) }; return true; }
-                    } catch(e) { localStorage.removeItem(STORAGE_KEY); }
-                    return false;
-                },
-                get: function(key) { return state[key]; },
-                set: function(key, value) { state[key] = value; save(); },
-                reset: function() { localStorage.removeItem(STORAGE_KEY); location.reload(); }
-            };
-        })();
-
-        let globalTimerInterval = null;
-        let audioCtx = null;
-        try {
-            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-            if (AudioContextClass) audioCtx = new AudioContextClass();
-        } catch (e) {
-            console.warn("Web Audio API 初始化失敗：", e);
-        }
-        
-        function startAppLifecycle() {
-            const loader = document.getElementById('app-loader');
-            const progressEl = document.getElementById('loader-progress');
-            const images = (GAME_DATA && GAME_DATA.preloadImages) ? GAME_DATA.preloadImages : [];
-            let loaded = 0;
-            let isFinished = false;
-        
-            const finishLoading = () => {
-                if (isFinished) return;
-                isFinished = true;
-        
-                if (loader) {
-                    loader.style.pointerEvents = 'none';
-                    loader.style.opacity = '0';
-                    setTimeout(() => { if (loader.parentNode) loader.remove(); }, 800);
-                }
-        
-                try {
-                    if (GameState.init() && GameState.get('teamName')) {
-                        if (globalTimerInterval) clearInterval(globalTimerInterval);
-                        globalTimerInterval = setInterval(updateTimerDisplay, 1000);
-                        updateTimerDisplay();
-                        const icon = document.getElementById('sound-icon');
-                        if (icon && !GameState.get('soundEnabled')) {
-                            icon.className = "fa-solid fa-volume-xmark text-gold/50 text-lg";
-                        }
-                        if (GameState.get('stamps').filter(Boolean).length === 7) {
-                            showScreen('certificate');
-                        } else {
-                            showScreen('main');
-                        }
-                    } else {
-                        showScreen('entry');
-                    }
-                } catch (err) {
-                    console.error("狀態初始化失敗，強制進入登入畫面：", err);
-                    showScreen('entry');
-                }
-            };
-        
-            const forceTimeout = setTimeout(finishLoading, 1500);
-        
-            if (images.length === 0) {
-                clearTimeout(forceTimeout);
-                finishLoading();
-            } else {
-                images.forEach(src => {
-                    const img = new Image();
-                    img.onload = img.onerror = () => {
-                        loaded++;
-                        const pct = Math.floor((loaded / images.length) * 100);
-                        if (progressEl) progressEl.textContent = `${pct}%`;
-                        if (loaded >= images.length) {
-                            clearTimeout(forceTimeout);
-                            finishLoading();
-                        }
-                    };
-                    img.src = src;
-                });
-            }
-        }
-        
-        if (document.readyState === 'complete') {
-            startAppLifecycle();
-        } else {
-            window.addEventListener('DOMContentLoaded', startAppLifecycle);
-            window.addEventListener('load', startAppLifecycle);
-        }
-        
         function shuffleArray(array) {
             let currentIndex = array.length, randomIndex;
             while (currentIndex !== 0) {
@@ -1484,7 +1426,6 @@
         function playSuccessSound() { playBeep(523, 0.08); setTimeout(() => playBeep(659, 0.08), 90); setTimeout(() => playBeep(784, 0.15), 180); }
         function playErrorSound() { playBeep(220, 0.12, 'sawtooth'); setTimeout(() => playBeep(180, 0.18, 'sawtooth'), 120); }
 
-        // 頂部導覽列標題補充新頁面名稱
         function updateHeader(screenId) {
             const teamEl = document.getElementById('header-team-name');
             const titleEl = document.getElementById('header-level-title');
@@ -1510,6 +1451,7 @@
                 navHqBtn.onclick = () => { playBeep(); showScreen(GameState.get('teamName') ? 'main' : 'entry'); };
             }
         }
+
         async function transitionSubPage(level, fromPage, toPage) {
             playBeep();
             const fromEl = document.getElementById(`l${level}-p${fromPage}`);
@@ -1629,6 +1571,9 @@
             document.getElementById('main-active-title').textContent = lvlData.name;
         }
 
+        // ==========================================
+        // 各關卡邏輯 (Level Rendering)
+        // ==========================================
         let currentL1TargetIdx = null;
         document.getElementById('l1-camera-input').addEventListener('change', function() {
             if (this.files && this.files.length > 0 && currentL1TargetIdx !== null) {
@@ -1804,9 +1749,9 @@
             } else { 
                 qImgContainer.classList.add('hidden'); 
             }
-        
-            // 判斷是「打字填空題」還是「選擇題」
+
             if (qData.inputType === "text") {
+                // 處理填空題
                 const inputWrapper = document.createElement('div');
                 inputWrapper.className = "space-y-4 w-full pt-2";
                 
@@ -1827,8 +1772,8 @@
                 submitBtn.onclick = () => {
                     let allCorrect = true;
                     inputs.forEach((input, i) => {
-                        // 比對答案 (去除前後空白以防誤判)
-                        if (input.value.trim() !== qData.answers[i]) {
+                        // 比對答案 (轉換為小寫、去除空白防誤判)
+                        if (input.value.trim().toLowerCase() !== qData.answers[i].toLowerCase()) {
                             allCorrect = false;
                         }
                     });
@@ -1864,66 +1809,7 @@
                 cont.appendChild(inputWrapper);
 
             } else {
-                // 判斷是「打字填空題」還是「選擇題」
-            if (qData.inputType === "text") {
-                const inputWrapper = document.createElement('div');
-                inputWrapper.className = "space-y-4 w-full pt-2";
-                
-                let inputs = [];
-                // 根據解答數量動態產生對應數量的輸入框
-                qData.answers.forEach((ans, i) => {
-                    const input = document.createElement('input');
-                    input.type = "text";
-                    input.className = "w-full bg-paper border border-ink/20 rounded-md px-4 py-3 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-ink shadow-inner transition-all";
-                    input.placeholder = qData.answers.length > 1 ? `請輸入第 ${i + 1} 個空格答案` : "請輸入答案";
-                    inputs.push(input);
-                    inputWrapper.appendChild(input);
-                });
-
-                const submitBtn = document.createElement('button');
-                submitBtn.className = "btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.1em] mt-6";
-                submitBtn.innerHTML = "確認送出 <i class='fa-solid fa-check ml-2'></i>";
-                submitBtn.onclick = () => {
-                    let allCorrect = true;
-                    inputs.forEach((input, i) => {
-                        // 比對答案 (去除前後空白以防誤判)
-                        if (input.value.trim() !== qData.answers[i]) {
-                            allCorrect = false;
-                        }
-                    });
-
-                    if (allCorrect) {
-                        playSuccessSound();
-                        if (qData.photo) {
-                            let ans = GameState.get('l2Answered') || [false, false, false, false, false];
-                            ans[currentQ] = true;
-                            GameState.set('l2Answered', ans);
-            
-                            showAlert("回答正確！", `${qData.desc}\n\n★ 請前往現場拍攝相應特徵完成查驗！`, "fa-check-circle", "text-emerald-700", () => {
-                                renderL2();
-                            }, "前往拍照取證");
-                        } else {
-                            showAlert("驗證通過", qData.desc, "fa-check-circle", "text-emerald-700", () => {
-                                let cq = GameState.get('l2CurrentQ');
-                                if (cq < 4) { 
-                                    l2SequenceIntroSeen = false; 
-                                    GameState.set('l2CurrentQ', cq + 1); 
-                                    renderL2(); 
-                                } else { 
-                                    handleLevelSuccess(2); 
-                                }
-                            }, "下一題");
-                        }
-                    } else {
-                        playErrorSound();
-                        showAlert("驗證失敗", "文字內容不完全正確，請再仔細比對現場的說明牌！", "fa-circle-xmark", "text-primary", null, "重新作答");
-                    }
-                };
-                inputWrapper.appendChild(submitBtn);
-                cont.appendChild(inputWrapper);
-
-            } else {
-                // 一般選擇題邏輯 (支援複選)
+                // 處理一般選擇題邏輯 (支援複選)
                 let optionsWithIndex = qData.opts.map((opt, index) => ({ 
                     text: opt, 
                     isCorrect: Array.isArray(qData.a) ? qData.a.includes(index) : index === qData.a 
@@ -1967,6 +1853,7 @@
                 });
             }
         }
+
         function prevL2Question() { playBeep(); let cq = GameState.get('l2CurrentQ'); if(cq > 0) { GameState.set('l2CurrentQ', cq - 1); renderL2(); } }
 
         document.getElementById('l3-camera-input').addEventListener('change', function(e) {
@@ -2140,6 +2027,9 @@
             });
         }
 
+        // ==========================================
+        // 全域按鈕與事件綁定 (Events)
+        // ==========================================
         function renderPuzzlePieces(containerId, isFullView) {
             const container = document.getElementById(containerId); if (!container) return; container.innerHTML = '';
             GAME_DATA.puzzles.forEach((p) => {
@@ -2164,6 +2054,7 @@
         
             showScreen('story');
         });
+
         window.verifyLevelCode = function() {
             playBeep();
             const codeInput = document.getElementById('input-level-code');
@@ -2203,6 +2094,7 @@
                 showAlert("代碼錯誤", "查無此任務代碼，請重新確認現場告示牌上的代碼！\n(例：3G100301)", "fa-circle-xmark", "text-primary");
             }
         };
+
         document.getElementById('btn-goto-current').addEventListener('click', () => {
             initAudio(); playBeep(600, 0.05);
             let seq = GameState.get('customSequence'); let idx = GameState.get('currentStageIndex'); const targetLvl = seq[idx];
@@ -2229,9 +2121,11 @@
             document.getElementById('cert-status').textContent = isSClass ? '檔案完全解密' : '委託已完成（超時）';
             document.getElementById('cert-rank').textContent = isSClass ? '【S級結案】' : '【堅毅探尋】';
             document.getElementById('cert-status').className = isSClass ? 'text-emerald-700 font-black text-right' : 'text-amber-700 font-black text-right';
+            
             const msgEl = document.getElementById('cert-msg');
             if (isSClass) msgEl.innerHTML = '恭喜完成所有委託！<br>您成功解開了眷村深埋的記憶，讓跨越時空的思念得以圓滿。';
             else msgEl.innerHTML = '雖然耗費了較多時間，但真相終究水落石出。<br>這段歲月記憶因你的堅持而完整。';
+            
             const claimBtn = document.getElementById('btn-claim-gift');
             if (GameState.get('giftClaimed') === true) {
                 claimBtn.disabled = true; claimBtn.className = "btn-base w-full py-4 bg-stone-200 border border-stone-300 text-stone-500 font-black text-sm cursor-not-allowed shadow-none";
@@ -2248,11 +2142,14 @@
                 GameState.set('giftClaimed', true); GameState.set('giftClaimedTime', timeTag); playSuccessSound(); renderCertificate();
             }, "確認已領獎", 0, true);
         };
+
         function confirmRestartGame() {
             showAlert("銷毀檔案", "確定要銷毀目前調閱檔案並重新開始嗎？所有的解密進度、拼圖與兌獎紀錄都將重置。", "fa-triangle-exclamation", "text-primary", () => { GameState.reset(); }, "確認銷毀", 0, true);
         }
+
         document.getElementById('btn-restart-game').onclick = confirmRestartGame;
         document.getElementById('btn-nav-hq').onclick = () => { playBeep(); showScreen(GameState.get('teamName') ? 'main' : 'entry'); };
+        
         document.getElementById('sound-toggle').onclick = () => {
             let soundOn = !GameState.get('soundEnabled'); GameState.set('soundEnabled', soundOn);
             const icon = document.getElementById('sound-icon');
