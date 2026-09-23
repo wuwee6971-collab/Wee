@@ -1740,6 +1740,7 @@
             let photos = GameState.get('l2Photos') || [false, false, false, false, false];
             let answered = GameState.get('l2Answered') || [false, false, false, false, false];
         
+            // 判斷是否顯示拍照取證畫面
             if (qData.photo && answered[currentQ] && !photos[currentQ]) {
                 pSect.classList.remove('hidden'); 
                 qImgContainer.classList.add('hidden');
@@ -1750,6 +1751,7 @@
             }
             pSect.classList.add('hidden');
         
+            // 第 4 題建築演變前導知識卡
             if (qData.isSequence && !l2SequenceIntroSeen) {
                 qImgContainer.classList.add('hidden'); 
                 qTextEl.textContent = "【建築演變前導知識】";
@@ -1775,26 +1777,88 @@
                 return;
             }
         
+            // 題目文字與題目圖片渲染
             qTextEl.textContent = qData.q;
-                if (qData.image) { 
-                    qImgElement.src = qData.image; 
-                    qImgContainer.classList.remove('hidden'); 
-                
-                    // 若為第 1 題 (索引 0)，啟用點擊放大與提示手勢樣式
-                    if (currentQ === 0) {
-                        qImgContainer.classList.add('cursor-zoom-in');
-                        qImgContainer.title = "點擊可放大地圖";
-                        qImgContainer.onclick = () => openImageLightbox(qData.image);
-                    } else {
-                        qImgContainer.classList.remove('cursor-zoom-in');
-                        qImgContainer.title = "";
-                        qImgContainer.onclick = null;
-                    }
-                } else { 
-                    qImgContainer.classList.add('hidden'); 
+            if (qData.image) { 
+                qImgElement.src = qData.image; 
+                qImgContainer.classList.remove('hidden'); 
+            
+                // 測驗 1 (索引 0)：支援點擊放大地圖
+                if (currentQ === 0) {
+                    qImgContainer.classList.add('cursor-zoom-in');
+                    qImgContainer.title = "點擊可放大地圖";
+                    qImgContainer.onclick = () => openImageLightbox(qData.image);
+                } else {
+                    qImgContainer.classList.remove('cursor-zoom-in');
+                    qImgContainer.title = "";
                     qImgContainer.onclick = null;
-                } else if (qData.isMultiChoice) {
-                // 多選題邏輯（需選齊所有正確答案）
+                }
+            } else { 
+                qImgContainer.classList.add('hidden'); 
+                qImgContainer.onclick = null;
+            }
+
+            // ==========================================
+            // 題型分支判斷：1. 填空題  2. 多選題  3. 單選題
+            // ==========================================
+            if (qData.inputType === "text") {
+                // 【題型 1：文字填空題】（第 2 題、第 3 題）
+                const inputWrapper = document.createElement('div');
+                inputWrapper.className = "space-y-4 w-full pt-2";
+                
+                let inputs = [];
+                qData.answers.forEach((ans, i) => {
+                    const input = document.createElement('input');
+                    input.type = "text";
+                    input.className = "w-full bg-paper border border-ink/20 rounded-md px-4 py-3 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-ink shadow-inner transition-all";
+                    input.placeholder = qData.answers.length > 1 ? `請輸入第 ${i + 1} 個空格答案` : "請輸入答案";
+                    inputs.push(input);
+                    inputWrapper.appendChild(input);
+                });
+
+                const submitBtn = document.createElement('button');
+                submitBtn.className = "btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.1em] mt-6";
+                submitBtn.innerHTML = "確認送出 <i class='fa-solid fa-check ml-2'></i>";
+                submitBtn.onclick = () => {
+                    let allCorrect = true;
+                    inputs.forEach((input, i) => {
+                        if (input.value.trim().toLowerCase() !== qData.answers[i].toLowerCase()) {
+                            allCorrect = false;
+                        }
+                    });
+
+                    if (allCorrect) {
+                        playSuccessSound();
+                        if (qData.photo) {
+                            let ans = GameState.get('l2Answered') || [false, false, false, false, false];
+                            ans[currentQ] = true;
+                            GameState.set('l2Answered', ans);
+            
+                            showAlert("回答正確！", `${qData.desc}\n\n★ 請前往現場拍攝相應特徵完成查驗！`, "fa-check-circle", "text-emerald-700", () => {
+                                renderL2();
+                            }, "前往拍照取證");
+                        } else {
+                            showAlert("驗證通過", qData.desc, "fa-check-circle", "text-emerald-700", () => {
+                                let cq = GameState.get('l2CurrentQ');
+                                if (cq < 4) { 
+                                    l2SequenceIntroSeen = false; 
+                                    GameState.set('l2CurrentQ', cq + 1); 
+                                    renderL2(); 
+                                } else { 
+                                    handleLevelSuccess(2); 
+                                }
+                            }, "下一題");
+                        }
+                    } else {
+                        playErrorSound();
+                        showAlert("驗證失敗", "文字內容不完全正確，請再仔細比對現場的說明牌！", "fa-circle-xmark", "text-primary", null, "重新作答");
+                    }
+                };
+                inputWrapper.appendChild(submitBtn);
+                cont.appendChild(inputWrapper);
+
+            } else if (qData.isMultiChoice) {
+                // 【題型 2：多選題】（測驗 1：需選滿 3 個正確選項）
                 let selectedIndices = new Set();
                 const btnContainer = document.createElement('div');
                 btnContainer.className = "space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-1 max-h-[360px]";
@@ -1820,7 +1884,6 @@
                 });
                 cont.appendChild(btnContainer);
 
-                // 提交按鈕
                 const submitBtn = document.createElement('button');
                 submitBtn.className = "btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.1em] mt-3 shrink-0";
                 submitBtn.innerHTML = "確認送出答案 <i class='fa-solid fa-check ml-2'></i>";
@@ -1859,7 +1922,7 @@
                 cont.appendChild(submitBtn);
 
             } else {
-                // 一般單選題邏輯 (維持第 4 題排序、第 5 題單選運作)
+                // 【題型 3：單選題】（第 4 題排序、第 5 題單選）
                 let optionsWithIndex = qData.opts.map((opt, index) => ({ 
                     text: opt, 
                     isCorrect: index === qData.a 
