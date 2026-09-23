@@ -1343,6 +1343,79 @@
                 if(callback) callback();
             }, 300);
         }
+        // ==========================================
+        // 碎片收納盒與信件彈窗控制 (Stamps & Letter Modals)
+        // ==========================================
+        window.openStampsDrawer = function() {
+            playBeep();
+            renderPuzzlePieces('puzzle-drawer-board', false);
+            const letterBtnContainer = document.getElementById('full-letter-btn-container');
+            if (GameState.get('stamps')[6]) {
+                letterBtnContainer.classList.remove('hidden');
+            } else {
+                letterBtnContainer.classList.add('hidden');
+            }
+        
+            const modal = document.getElementById('modal-stamps');
+            const box = document.getElementById('stamps-box');
+            modal.classList.remove('hidden');
+        
+            box.classList.remove('opacity-0', 'scale-95');
+            setTimeout(() => box.classList.remove('translate-y-full'), 10);
+        };
+
+        if (document.getElementById('close-stamps')) {
+            document.getElementById('close-stamps').onclick = () => {
+                playBeep();
+                closeModalAnim('modal-stamps', 'stamps-box');
+            };
+        }
+
+        window.openFullLetter = function() {
+            playBeep();
+            closeModalAnim('modal-stamps', 'stamps-box');
+            
+            const modal = document.getElementById('modal-full-letter');
+            const box = document.getElementById('letter-box');
+            modal.classList.remove('hidden');
+            
+            const board = document.getElementById('full-letter-board');
+            if (board) {
+                board.style.aspectRatio = 'auto';
+                board.innerHTML = `<img src="images/信.png" alt="跨越時空的信" class="w-full h-auto object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)] rounded">`;
+            }
+            
+            setTimeout(() => {
+                box.classList.remove('scale-95', 'opacity-0');
+                box.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        };
+
+        window.closeFullLetter = function() {
+            playBeep();
+            closeModalAnim('modal-full-letter', 'letter-box', () => {
+                if (GameState.get('stamps').filter(Boolean).length === 7) {
+                    showScreen('certificate');
+                }
+            });
+        };
+
+        window.openPuzzleLightbox = function(textHtml) {
+            const content = document.getElementById('puzzle-lightbox-content');
+            if (content) content.innerHTML = textHtml;
+            const modal = document.getElementById('modal-puzzle-lightbox');
+            const box = document.getElementById('lightbox-box');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                box.classList.remove('scale-95', 'opacity-0');
+                box.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        };
+
+        window.closePuzzleLightbox = function() {
+            playBeep(400, 0.05);
+            closeModalAnim('modal-puzzle-lightbox', 'lightbox-box');
+        };
 
         function compressImageFast(file, maxWidth, quality, callback) {
             const reader = new FileReader();
