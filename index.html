@@ -232,7 +232,7 @@
         <div class="text-3xl font-mono font-black text-primary tracking-widest drop-shadow-sm" id="loader-progress">0%</div>
     </div>
 
-    <!-- 主容器框架 -->
+    <!-- 主容器框架 (Desktop RWD 優化：圓角、陰影、比例) -->
     <div class="relative w-full max-w-[430px] h-[100dvh] sm:h-[860px] paper-bg sm:rounded-[2rem] sm:border-[10px] border-stone-900 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7)] flex flex-col overflow-hidden bg-white">
 
         <!-- 頂部紅色導覽列 -->
@@ -242,7 +242,7 @@
                 <span id="header-team-name" class="font-bold text-sm truncate font-serif tracking-wider">尚未登入</span>
             </div>
             <div id="header-level-title" class="absolute left-1/2 transform -translate-x-1/2 font-black text-lg tracking-[0.2em] text-center w-1/3 truncate text-gold drop-shadow-md font-serif">
-                檔案報到
+                任務總部
             </div>
             <div class="flex items-center justify-end space-x-4 w-1/3">
                 <button id="sound-toggle" class="p-1 hover:text-gold transition-colors min-w-[32px] min-h-[32px] flex justify-center items-center" title="聲音開關">
@@ -256,24 +256,29 @@
 
         <!-- 遊戲主視口 -->
         <div id="game-viewport" class="flex-1 overflow-y-auto overflow-x-hidden scroll-smooth z-10 w-full custom-scrollbar relative bg-transparent" style="-webkit-overflow-scrolling: touch;">
-            <div class="min-h-full flex flex-col relative w-full pb-28">
+            <div class="min-h-full flex flex-col relative w-full pb-28"> <!-- 保留底部導航欄空間 -->
 
                 <!-- SCREEN 0: ENTRY -->
                 <div id="screen-entry" class="screen-panel screen-active p-6 flex flex-col justify-center">
                     <div class="text-center py-8 mb-6">
                         <h1 class="text-4xl font-black tracking-[0.2em] text-primary mb-4 drop-shadow-sm font-serif">三重空軍一村</h1>
+                        <p class="text-sm text-ink font-bold tracking-widest opacity-80 border-t border-ink/20 pt-4 inline-block">穿越時空的等待與思念</p>
                     </div>
                     <div class="level-card p-8 space-y-8">
-                        <!-- 依據您的指示，維持您原本修好未更動的狀態；僅補充新要求的隊員輸入 -->
-                        <div class="space-y-3 hidden">
-                            <!-- 您說隊伍代號必填但不顯示，因此加上 hidden -->
-                            <label class="text-sm font-bold text-ink block tracking-wide">隊伍代號 (必填)：</label>
-                            <input type="text" id="input-team-name" maxlength="15" value="匿名探險隊" class="w-full bg-paper border border-ink/20 rounded-md px-4 py-4 text-base font-bold outline-none text-ink shadow-inner">
+                        <div class="space-y-3">
+                            <label class="text-sm font-bold text-ink block tracking-wide">隊伍代號：</label>
+                            <input type="text" id="input-team-name" maxlength="15" placeholder="例：眷村探險小隊" class="w-full bg-paper border border-ink/20 rounded-md px-4 py-4 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-ink shadow-inner">
                         </div>
                         <div class="space-y-3">
-                            <!-- 新增隊員欄位 -->
-                            <label class="text-sm font-bold text-ink block tracking-wide">隊員：</label>
-                            <textarea id="input-team-members" rows="2" placeholder="請輸入參與隊員的姓名..." class="w-full bg-paper border border-ink/20 rounded-md px-4 py-4 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-ink shadow-inner"></textarea>
+                            <label class="text-sm font-bold text-ink block tracking-wide">起始調查區域：</label>
+                            <select id="start-level-select" class="w-full bg-paper border border-ink/20 rounded-md p-4 text-base font-bold text-primary outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-inner cursor-pointer">
+                                <option value="1">任務 1 (防砲陣地)</option>
+                                <option value="2">任務 2 (眷舍空間)</option>
+                                <option value="3" selected>任務 3 (村長的家)</option>
+                                <option value="4">任務 4 (榕樹廣場)</option>
+                                <option value="5">任務 5 (群星之夜)</option>
+                                <option value="6">任務 6 (時光膠囊)</option>
+                            </select>
                         </div>
                         <button id="btn-start-game" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em] mt-6">
                             <i class="fa-solid fa-stamp mr-2 text-xl"></i>授權調查啟動
@@ -281,49 +286,24 @@
                     </div>
                 </div>
 
-                <!-- SCREEN: STORY (故事引言與7個鎖) -->
+                <!-- SCREEN: STORY (信件碎片引言) - 新增意圖 4 -->
                 <div id="screen-story" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 flex flex-col justify-center min-h-full">
                         <h2 class="text-2xl font-black text-primary mb-8 text-center font-serif tracking-widest border-b border-dashed border-ink/20 pb-4">信件碎片</h2>
-                        <div class="grid grid-cols-3 gap-4 mb-10">
+                        <div class="grid grid-cols-3 gap-4 mb-10 place-items-center">
                             <!-- 7 個上鎖圖示 -->
-                            <div class="aspect-square bg-paper-dark border border-ink/10 flex items-center justify-center rounded-lg shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-3xl"></i></div>
-                            <div class="aspect-square bg-paper-dark border border-ink/10 flex items-center justify-center rounded-lg shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-3xl"></i></div>
-                            <div class="aspect-square bg-paper-dark border border-ink/10 flex items-center justify-center rounded-lg shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-3xl"></i></div>
-                            <div class="aspect-square bg-paper-dark border border-ink/10 flex items-center justify-center rounded-lg shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-3xl"></i></div>
-                            <div class="aspect-square bg-paper-dark border border-ink/10 flex items-center justify-center rounded-lg shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-3xl"></i></div>
-                            <div class="aspect-square bg-paper-dark border border-ink/10 flex items-center justify-center rounded-lg shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-3xl"></i></div>
-                            <div class="aspect-square bg-paper-dark border border-ink/10 flex items-center justify-center rounded-lg shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-3xl"></i></div>
+                            <div class="w-16 h-16 bg-paper-dark border border-ink/10 flex items-center justify-center rounded-lg shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-2xl"></i></div>
+                            <div class="w-16 h-16 bg-paper-dark border border-ink/10 flex items-center justify-center rounded-lg shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-2xl"></i></div>
+                            <div class="w-16 h-16 bg-paper-dark border border-ink/10 flex items-center justify-center rounded-lg shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-2xl"></i></div>
+                            <div class="w-16 h-16 bg-paper-dark border border-ink/10 flex items-center justify-center rounded-lg shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-2xl"></i></div>
+                            <div class="w-16 h-16 bg-paper-dark border border-ink/10 flex items-center justify-center rounded-lg shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-2xl"></i></div>
+                            <div class="w-16 h-16 bg-paper-dark border border-ink/10 flex items-center justify-center rounded-lg shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-2xl"></i></div>
+                            <div class="w-16 h-16 bg-paper-dark border border-ink/10 flex items-center justify-center rounded-lg shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-2xl"></i></div>
                         </div>
                         <p class="text-base font-bold text-ink text-justify leading-relaxed font-serif">
                             請幫助阿秀找尋散落在空軍三重一村中的信件碎片。信上有志遠和阿秀才知道的情話，請幫助阿秀找回志遠留給她的話。
                         </p>
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="showScreen('tutorial')">下一步</button>
-                    </div>
-                </div>
-
-                <!-- SCREEN: TUTORIAL (操作說明) -->
-                <div id="screen-tutorial" class="screen-panel hidden p-6 flex flex-col justify-center">
-                    <div class="level-card p-8 flex flex-col justify-center min-h-full">
-                        <h2 class="text-2xl font-black text-primary mb-8 text-center font-serif tracking-widest border-b border-dashed border-ink/20 pb-4">頁面操作說明</h2>
-                        <ul class="space-y-8 text-base font-bold text-ink/90 leading-[1.8]">
-                            <li class="flex items-start"><i class="fa-solid fa-clock text-primary mt-1 mr-3 text-lg"></i><span>遊戲總時間調整為 <strong>90 分鐘</strong>，請隨時留意總部的剩餘時間。</span></li>
-                            <li class="flex items-start"><i class="fa-solid fa-envelope text-primary mt-1 mr-3 text-lg"></i><span>點擊下方「信件碎片」按鈕，可隨時查看目前已收集到的線索。</span></li>
-                            <li class="flex items-start"><i class="fa-solid fa-house text-primary mt-1 mr-3 text-lg"></i><span>如需確認下一個關卡目標，可點擊下方「回主畫面」。</span></li>
-                        </ul>
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-10" onclick="showScreen('level-select')">開始調查</button>
-                    </div>
-                </div>
-
-                <!-- SCREEN: LEVEL SELECT (輸入代碼選關) -->
-                <div id="screen-level-select" class="screen-panel hidden p-6 flex flex-col justify-center">
-                    <div class="level-card p-8 space-y-8">
-                        <h2 class="text-2xl font-black text-primary text-center font-serif tracking-widest border-b border-dashed border-ink/20 pb-4">輸入任務代碼</h2>
-                        <p class="text-sm font-bold text-ink/70 text-center">請輸入關卡現場獲得的任務代碼</p>
-                        <input type="text" id="input-level-code" class="w-full bg-paper border border-ink/20 rounded-md px-4 py-4 text-center text-xl font-bold font-mono outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-primary tracking-widest shadow-inner uppercase" placeholder="例如：3G100301">
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em] mt-4" onclick="verifyLevelCode()">
-                            進入關卡
-                        </button>
+                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="showScreen('main')">前往任務總部</button>
                     </div>
                 </div>
 
@@ -331,10 +311,16 @@
                 <div id="screen-main" class="screen-panel hidden p-6 flex flex-col space-y-6">
                     <div class="level-card p-6 text-center flex flex-col items-center justify-center">
                         <div class="text-xs font-bold text-ink/60 mb-2 tracking-widest uppercase">委託剩餘時間</div>
-                        <div id="main-timer" class="text-5xl font-mono font-black text-primary tracking-wider drop-shadow-sm">01:30:00</div>
+                        <div id="main-timer" class="text-5xl font-mono font-black text-primary tracking-wider drop-shadow-sm">02:00:00</div>
                     </div>
-                    <!-- 原本的地圖區塊已直接刪除 -->
-                    <div class="level-card p-8 text-center bg-paper/50 mt-auto">
+                    <div class="level-card p-5 flex flex-col items-center">
+                        <span class="text-ink font-black mb-5 text-sm tracking-[0.2em] border-b border-dashed border-ink/20 pb-2 w-full text-center font-serif">【 空照地圖 】</span>
+                        <div class="w-full aspect-[4/3] vintage-photo flex items-center justify-center">
+                            <div class="skeleton-bg absolute inset-0"></div>
+                            <img src="images/眷村.png" alt="三重一村地圖" onload="this.parentElement.querySelector('.skeleton-bg').classList.add('hidden'); this.classList.add('loaded')">
+                        </div>
+                    </div>
+                    <div class="level-card p-8 text-center bg-paper/50">
                         <div class="text-xs font-bold text-ink/60 mb-3 tracking-widest">下一步，請前往</div>
                         <div class="text-2xl font-black text-primary mb-8 tracking-[0.1em] font-serif">《 <span id="main-active-title"></span> 》</div>
                         <button id="btn-goto-current" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em]">
@@ -343,18 +329,15 @@
                     </div>
                 </div>
 
-                <!-- LEVEL 1: 防砲陣地 -->
+                <!-- LEVEL 1: 防砲陣地 - 依照新意圖改為子頁面結構 -->
                 <div id="screen-level-1" class="screen-panel hidden p-6 flex flex-col">
                     <input type="file" accept="image/*" capture="environment" id="l1-camera-input" class="hidden">
                     
-                    <!-- P1: 現場位置提示與說明 -->
+                    <!-- P1: 關卡現場位置提示 -->
                     <div id="l1-p1" class="level-card p-6 flex flex-col justify-center min-h-full">
                         <h2 class="text-xl text-primary font-black text-center border-b border-dashed border-ink/20 pb-4 font-serif tracking-widest mb-6">關卡現場位置提示</h2>
-                        <div class="w-full aspect-[4/3] vintage-photo flex items-center justify-center mb-6">
-                            <img src="https://placehold.co/600x400/e5d5b5/7c343d?text=甬道圖" alt="甬道圖" class="w-full h-full object-cover loaded">
-                        </div>
-                        <div class="text-sm leading-[1.8] font-bold text-ink text-justify font-serif space-y-4">
-                            <p>園區中央的地下甬道是二戰時期日軍台灣軍司令部選定的「高射砲陣地」，負責防守台北橋與總督府。</p>
+                        <div class="text-sm leading-[1.8] font-bold text-ink text-justify font-serif space-y-4 flex-1">
+                            <p>園區中央的地下甬道是二戰時期是日軍台灣軍司令部選定的「高射砲陣地」，負責防守台北橋與總督府。</p>
                             <p>為了因應戰爭與空襲威脅，日軍在這一帶設置防空相關設施，除了地面上的防空砲台之外，也建造了地下甬道與相關空間。這些地下設施讓人員能夠在不同的防空位置之間移動，也具有躲避空襲及存放物資等用途。甬道出口就是這套地下防空系統留下來的歷史痕跡之一。</p>
                             <p class="text-primary border-t border-ink/10 pt-4">請觀察一村中的空間，找尋屬於「日軍高射砲陣地」的遺構：</p>
                         </div>
@@ -1215,14 +1198,14 @@
         const GAME_DATA = {
             levels: [
                 { id: 1, name: '防砲陣地' }, { id: 2, name: '眷村空間與建築' }, { id: 3, name: '村長的家' },
-                { id: 4, name: '榕樹廣場' }, { id: 5, name: '群星之夜' }, { id: 6, name: '時光膠囊' }, { id: 7, name: '市集攤位' }
+                { id: 4, name: '榕樹廣場' }, { id: 5, name: '群星之夜' }, { id: 6, name: '時光膠囊' }, { id: 7, name: '最後一封信' }
             ],
             level1: {
                 locations: [
-                    { title: "甬道1號出口", code: "1", task: "作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，為了不被敵人發現，通常設計得隱蔽，防守方在敵軍不注意時，突然現身進行反擊。\n\n一村中的甬道有10個出口，請觀察關主後方的地圖找尋【1號出口】，並拍照回傳總部。", desc: "" },
-                    { title: "甬道豎井", code: "9", task: "地下甬道容易因為空氣不流通積聚有害氣體或極度悶熱。豎井利用煙囪效應或外接機械風扇，帶入新鮮空氣，並排出內部廢氣、濕氣或熱量。當甬道不幸發生火災時，豎井是最佳的排煙通道，可防止濃煙在狹窄的水平甬道內快速擴散，為人員爭取逃生時間與空間。\n\n請走上階梯，觀察是否有高出地面的結構物找尋疑似【豎井】的通氣構造，其中一個可以藉由玻璃罩觀察地下甬道，請找到它並拍照回傳總部確認。", desc: "" },
-                    { title: "4號出入口", code: "4", task: "作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，為了不被敵人發現，通常設計得隱蔽，防守方在敵軍不注意時，突然現身進行反擊。\n\n一村中的甬道有10個出口，其中有些入口隨著時間堆疊許多構建，請觀察甬道地圖找尋院落中的【4號出口】，並拍照回傳總部確認。", desc: "" },
-                    { title: "5號砲台遺跡", code: "5", task: "日治時期高射砲陣地留下的6座防空砲台原本是一座長滿草的小山坡，主要是為了防禦美軍空襲時的總督府與物資集散地大稻埕。\n戰後國民政府遷台，空軍高砲部隊駐紮於此，興建眷舍時便以這 6 座防空砲台為核心，將房子圍繞在周圍興建。這種「軍事防衛陣地」與「民居眷村生活」緊密嵌合的奇特景觀，在台灣極為罕見。\n\n請找尋甬道4號出口前的地板，找尋疑似【高射砲砲座】的構建，並回傳總部確認。", desc: "" }
+                    { title: "甬道1號出口", code: "1", task: "1.甬道出口：作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，為了不被敵人發現，通常設計得隱蔽，防守方在敵軍不注意時，突然現身進行反擊。\n一村中的甬道有10個出口，請觀察關主後方的地圖找尋【1號出口】，並拍照回傳總部。", desc: "" },
+                    { title: "甬道豎井", code: "9", task: "2.甬道豎井：地下甬道容易因為空氣不流通積聚有害氣體或極度悶熱。豎井利用煙囪效應或外接機械風扇，帶入新鮮空氣，並排出內部廢氣、濕氣或熱量。當甬道不幸發生火災時，豎井是最佳的排煙通道，可防止濃煙在狹窄的水平甬道內快速擴散，為人員爭取逃生時間與空間。\n請走上階梯，觀察是否有高出地面的結構物找尋疑似【豎井】的通氣構造，其中一個可以藉由玻璃這照觀察地下甬道，請找到它並拍照回傳總部確認。", desc: "" },
+                    { title: "4號出入口", code: "4", task: "3.4號出入口：作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，為了不被敵人發現，通常設計得隱蔽，防守方在敵軍不注意時，突然現身進行反擊。\n一村中的甬道有10個出口，其中有些入口隨著時間堆疊許多構建，請觀察擁到地圖找尋院落中的【4號出口】，並拍照回傳總部確認。", desc: "" },
+                    { title: "5號砲台遺跡", code: "5", task: "4.5號砲台遺跡：日治時期高射砲陣地留下的6座防空砲台原本是一座長滿草的小山坡，主要是為了防禦美軍空襲時的總督府與物資集散地大稻埕。\n戰後國民政府遷台，空軍高砲部隊駐紮於此，興建眷舍時便以這 6 座防空砲台為核心，將房子圍繞在周圍興建。這種「軍事防衛陣地」與「民居眷村生活」緊密嵌合的奇特景觀，在台灣極為罕見。\n請找尋甬道4號出口前的地板，找尋疑似【高射砲砲座】的構建，並回傳總部確認。", desc: "" }
                 ],
                 passcode: "1945",
                 hints: [
@@ -1302,7 +1285,7 @@
         const GameState = (function() {
             const STORAGE_KEY = 'sanchong_game_state_v20_retro';
             let state = {
-                teamName: null, startLevel: 3, customSequence: [6, 1, 4, 2, 5, 3, 7],
+                teamName: null, startLevel: 3, customSequence: [3, 4, 5, 6, 1, 2, 7],
                 startTime: null, endTime: null, stamps: [false, false, false, false, false, false, false],
                 currentStageIndex: 0, soundEnabled: true,
                 l1Input: [], l1Collected: [false, false, false, false], l1Errors: 0,
@@ -1523,7 +1506,7 @@
 
             if (screenId === 'certificate') renderCertificate();
             if (screenId === 'main') renderMain();
-            if (screenId === 'level-1') forceSubPageInit(1, 1, 2);
+            if (screenId === 'level-1') { forceSubPageInit(1, 1, 2); renderL1(); }
             if (screenId === 'level-2') renderL2();
             if (screenId === 'level-3') renderL3();
             if (screenId === 'level-4') forceSubPageInit(4, 1, 4);
@@ -1569,9 +1552,7 @@
                 openFullLetter();
             } else {
                 let msg = "獲得一塊歷史碎片，\n準備進入下一階段調查。";
-                if (lvlNum === 1) msg = "警報響起，任務成功！我們將蒐集到的暗號數字重組成關鍵年份「1945 年」——這是日軍防止美軍大空襲的高峰年代，也是二次世界大戰結束、防砲陣地完成歷史使命的轉折點。\n\n獲得一塊歷史碎片！";
-                if (lvlNum === 2) msg = "眷村空間演變記錄了『人用生活塑造建築，建築也見證了人』的歷史。\n\n獲得一塊歷史碎片！";
-                if (lvlNum === 6) msg = "您已獲得第 6 塊碎片。\n\n請前往觀賞《市集攤位》沉浸式劇場，解鎖最後一塊拼圖碎片！";
+                if (lvlNum === 1) msg = "警報響起，任務成功！我們將蒐集到的暗號數字重組成關鍵年份「1945 年」——這是日軍防止美軍大空襲的高峰年代，也是二次世界大戰結束、防砲陣地完成歷史使命的轉折點。";
                 showAlert("調查成功", msg, "", "", () => showScreen('main'), "返回總部");
             }
         }
@@ -1582,41 +1563,6 @@
             const currentLvlId = parseInt(seq[idx]) || 1;
             const lvlData = GAME_DATA.levels.find(l => l.id === currentLvlId) || GAME_DATA.levels[0];
             document.getElementById('main-active-title').textContent = lvlData.name;
-        }
-
-        // --- 選關代碼驗證 ---
-        window.verifyLevelCode = function() {
-            playBeep();
-            const code = document.getElementById('input-level-code').value.trim().toUpperCase();
-            const codeMap = {
-                '3G100306': 6,
-                '3G100301': 1,
-                '3G100304': 4,
-                '3G100302': 2,
-                '3G100305': 5,
-                '3G100303': 3,
-                '3G100307': 7
-            };
-            if(codeMap[code]) {
-                const targetLvl = codeMap[code];
-                let seq = GameState.get('customSequence');
-                let idx = seq.indexOf(targetLvl);
-                if(idx !== -1) {
-                    GameState.set('currentStageIndex', idx);
-                } else {
-                    GameState.set('currentStageIndex', 0);
-                    seq[0] = targetLvl;
-                    GameState.set('customSequence', seq);
-                }
-                if(!GameState.get('startTime')) GameState.set('startTime', Date.now());
-                if(globalTimerInterval) clearInterval(globalTimerInterval);
-                globalTimerInterval = setInterval(updateTimerDisplay, 1000);
-                updateTimerDisplay();
-                showScreen('main');
-            } else {
-                playErrorSound();
-                showAlert("代碼錯誤", "找不到對應的任務代碼，請確認輸入是否正確！", "fa-circle-xmark", "text-primary");
-            }
         }
 
         let currentL1TargetIdx = null;
@@ -1633,11 +1579,9 @@
                         collected[currentL1TargetIdx] = true;
                         GameState.set('l1Collected', collected);
                         renderL1();
-                        // 移除歷史考證文字，僅顯示密碼
                         showAlert("審核通過", `長官已確認【${loc.title}】之構件特徵！\n\n★ 解密通關密碼：【<b class="text-3xl text-primary font-mono">${targetNumber}</b>】`, "fa-circle-check", "text-emerald-700", null, "收到！");
                     } else {
                         playErrorSound();
-                        // 加入退回的三個選項提示
                         showAlert("審核未通過", `長官回報審核未通過！\n\n可能原因：\n1. 內容錯誤\n2. 照片模糊\n3. 照片不完整\n\n請至現場確認【${loc.title}】特徵並重新拍攝！`, "fa-circle-xmark", "text-primary");
                     }
                 });
@@ -2022,28 +1966,27 @@
         }
 
         document.getElementById('btn-start-game').addEventListener('click', () => {
-            // 在這裡我們跳過原本的「輸入隊伍代碼必填但不顯示」，這部分您已修好，我們僅加上直接跳入故事頁
-            initAudio(); playBeep(700, 0.05); 
-            const nameInput = document.getElementById('input-team-name'); 
-            const name = (nameInput && nameInput.value) ? nameInput.value.trim() : "探險隊";
-            GameState.set('teamName', name.substring(0, 15));
-            // 進入全新的流程：故事引言 -> 操作說明 -> 代碼選關
-            showScreen('story');
+            const nameInput = document.getElementById('input-team-name'); const name = nameInput.value.trim();
+            if (!name) return showAlert("資料缺失", "請輸入隊伍代號！", "fa-triangle-exclamation");
+            initAudio(); playBeep(700, 0.05); GameState.set('teamName', name.substring(0, 15));
+            let sLvl = parseInt(document.getElementById('start-level-select').value); GameState.set('startLevel', sLvl);
+            let seq = Array.from({length: 6}, (_, i) => ((sLvl - 1 + i) % 6) + 1); seq.push(7); GameState.set('customSequence', seq);
+            if(!GameState.get('startTime')) GameState.set('startTime', Date.now());
+            if(globalTimerInterval) clearInterval(globalTimerInterval);
+            globalTimerInterval = setInterval(updateTimerDisplay, 1000); updateTimerDisplay(); showScreen('story');
         });
 
         document.getElementById('btn-goto-current').addEventListener('click', () => {
             initAudio(); playBeep(600, 0.05);
             let seq = GameState.get('customSequence'); let idx = GameState.get('currentStageIndex'); const targetLvl = seq[idx];
-            if(targetLvl === 4) renderL4Questions(); 
-            showScreen(`level-${targetLvl}`);
+            if(targetLvl === 4) renderL4Questions(); showScreen(`level-${targetLvl}`);
         });
 
         function updateTimerDisplay() {
             if (!GameState.get('startTime')) return;
             const now = GameState.get('endTime') ? GameState.get('endTime') : Date.now();
             let elapsed = Math.floor((now - GameState.get('startTime')) / 1000);
-            // 改為 90 分鐘倒數 (90 * 60 = 5400)
-            let remain = (90 * 60) - elapsed; if (remain < 0) remain = 0;
+            let remain = (2 * 3600) - elapsed; if (remain < 0) remain = 0;
             const h = String(Math.floor(remain / 3600)).padStart(2, '0');
             const m = String(Math.floor((remain % 3600) / 60)).padStart(2, '0');
             const s = String(remain % 60).padStart(2, '0');
@@ -2053,7 +1996,7 @@
         function renderCertificate() {
             const elapsed = Math.floor(((GameState.get('endTime') || Date.now()) - GameState.get('startTime')) / 1000);
             const h = String(Math.floor(elapsed / 3600)).padStart(2, '0'); const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0'); const s = String(elapsed % 60).padStart(2, '0');
-            const timeStr = `${h}:${m}:${s}`; const isSClass = elapsed <= 5400; // 90分以內
+            const timeStr = `${h}:${m}:${s}`; const isSClass = elapsed <= 7200;
             document.getElementById('cert-time').textContent = isSClass ? `${timeStr} (時限內)` : timeStr;
             document.getElementById('cert-status').textContent = isSClass ? '檔案完全解密' : '委託已完成（超時）';
             document.getElementById('cert-rank').textContent = isSClass ? '【S級結案】' : '【堅毅探尋】';
@@ -2078,7 +2021,7 @@
             }, "確認已領獎", 0, true);
         };
         function confirmRestartGame() {
-            showAlert("銷毀檔案", "確定要銷毀目前調閱檔案並重新開始嗎？所有的解密進度、信件與兌獎紀錄都將重置。", "fa-triangle-exclamation", "text-primary", () => { GameState.reset(); }, "確認銷毀", 0, true);
+            showAlert("銷毀檔案", "確定要銷毀目前調閱檔案並重新開始嗎？所有的解密進度、拼圖與兌獎紀錄都將重置。", "fa-triangle-exclamation", "text-primary", () => { GameState.reset(); }, "確認銷毀", 0, true);
         }
         document.getElementById('btn-restart-game').onclick = confirmRestartGame;
         document.getElementById('btn-nav-hq').onclick = () => { playBeep(); showScreen(GameState.get('teamName') ? 'main' : 'entry'); };
