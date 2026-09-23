@@ -965,6 +965,18 @@
             </div>
         </div>
     </div>
+    <!-- MODAL: IMAGE LIGHTBOX (圖片放大檢視) -->
+    <div id="modal-image-lightbox" class="fixed inset-0 bg-ink/90 backdrop-blur-md z-[1020] flex items-center justify-center p-4 hidden transition-opacity duration-300" onclick="closeImageLightbox()">
+        <div class="relative max-w-full max-h-full flex flex-col items-center" onclick="event.stopPropagation()">
+            <button onclick="closeImageLightbox()" class="absolute -top-12 right-0 text-white/70 hover:text-white text-2xl w-10 h-10 flex items-center justify-center bg-white/10 rounded-full active:scale-95 transition-transform">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="vintage-photo p-1 bg-paper rounded shadow-2xl max-w-[92vw] max-h-[80vh] overflow-hidden flex items-center justify-center">
+                <img id="image-lightbox-src" src="" alt="放大檢視" class="max-w-full max-h-[75vh] object-contain">
+            </div>
+            <p class="text-xs font-bold text-gold/80 mt-3 tracking-widest">點擊任意處或右上角關閉</p>
+        </div>
+    </div>
 
     <script>
         // ==========================================
@@ -1106,6 +1118,24 @@
                 "images/images_1_sichuan.mp3", "images/images_2_hunan.mp3", "images/images_3_anhui.mp3", "images/images_4_beijing.mp3", "images/images_5_shandong.mp3", 
                 "images/相思河畔.mp3", "images/葉佳修.mp3", "images/劉福助.mp3", "images/眷村.png"
             ]
+        };
+        window.openImageLightbox = function(src) {
+            if (!src) return;
+            playBeep(650, 0.05);
+            const modal = document.getElementById('modal-image-lightbox');
+            const imgEl = document.getElementById('image-lightbox-src');
+            if (modal && imgEl) {
+                imgEl.src = src;
+                modal.classList.remove('hidden');
+            }
+        };
+        
+        window.closeImageLightbox = function() {
+            playBeep(400, 0.05);
+            const modal = document.getElementById('modal-image-lightbox');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
         };
 
         const GameState = (function() {
@@ -1746,12 +1776,24 @@
             }
         
             qTextEl.textContent = qData.q;
-            if (qData.image) { 
-                qImgElement.src = qData.image; 
-                qImgContainer.classList.remove('hidden'); 
-            } else { 
-                qImgContainer.classList.add('hidden'); 
-            } else if (qData.isMultiChoice) {
+                if (qData.image) { 
+                    qImgElement.src = qData.image; 
+                    qImgContainer.classList.remove('hidden'); 
+                
+                    // 若為第 1 題 (索引 0)，啟用點擊放大與提示手勢樣式
+                    if (currentQ === 0) {
+                        qImgContainer.classList.add('cursor-zoom-in');
+                        qImgContainer.title = "點擊可放大地圖";
+                        qImgContainer.onclick = () => openImageLightbox(qData.image);
+                    } else {
+                        qImgContainer.classList.remove('cursor-zoom-in');
+                        qImgContainer.title = "";
+                        qImgContainer.onclick = null;
+                    }
+                } else { 
+                    qImgContainer.classList.add('hidden'); 
+                    qImgContainer.onclick = null;
+                } else if (qData.isMultiChoice) {
                 // 多選題邏輯（需選齊所有正確答案）
                 let selectedIndices = new Set();
                 const btnContainer = document.createElement('div');
