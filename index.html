@@ -1233,9 +1233,52 @@
             },
             level2: {
                 questions: [
-                    { image: "images/l2_map2.jpg", photoImage: null, q: "依據軍階與家庭成員分配房舍。請對照地圖找到特級眷舍，高階軍官的家擁有哪一個最明顯的建築特徵？", opts: ["獨立庭院與紅色大門", "只能側身通過的窄巷", "蓋在屋頂上的小閣樓", "共用牆壁的連棟小屋"], a: 0, photo: true, photoText: "請至現場尋找特級眷舍特徵並拍照上傳審核", desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門；基層官兵則居住於共用牆壁的窄房。" },
-                    { image: "images/l2_2.jpg", q: "為什麼防洪樓裡會有小閣樓？", opts: ["放雜物", "放武器", "洪水來時避難", "養鴿子"], a: 2, photo: false, desc: "過去常受淡水河洪患，於1960年代興建「防洪樓」避難，樓內保留躲避水災增建的小閣樓。" },
-                    { q: "「一線天」是眷村特殊的狹窄巷道景觀。造成一線天形成的主要原因為何？\n\n【線索】：兩側皆有眷舍/巷道狹窄/抬頭見一線天(旁有介紹板子)", opts: ["建村時為了節省土地設計", "居民居住空間不足向前後院擴建", "為了讓鄰居方便交流", "為了遮陽避雨刻意縮小"], a: 1, photo: true, photoText: "請在眷村中找到「一線天」拍照上傳(旁有介紹板子)", desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成緊鄰樣貌。" },
+                    // 測驗 1：特級眷舍
+                    { 
+                        image: "images/l2_map2.jpg", 
+                        photoImage: null, 
+                        q: "空軍一村依據軍階與家庭成員分配房舍，這是一村的建築配置圖請對照地圖找到特級眷舍觀察高階軍官的家擁有哪一個最明顯的建築特征?", 
+                        opts: [
+                            "1 整排的連棟小屋", 
+                            "2 紅色大門", 
+                            "3 綠色大門", 
+                            "4 獨立庭院", 
+                            "5 美麗的斜屋頂", 
+                            "6 迷你游泳池", 
+                            "7 洗石子外牆", 
+                            "8 馬賽克外牆", 
+                            "9 紅磚牆", 
+                            "10 竹籬笆"
+                        ], 
+                        a: [1, 3, 6], // 對應選項 2, 4, 7 為正確解答 (陣列索引)
+                        photo: true, 
+                        photoText: "請隊員們一起與特級眷舍的任一個特徵並拍照吧！", 
+                        desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門。" 
+                    },
+                    // 測驗 2：防洪樓說明牌填空 (改為打字輸入)
+                    { 
+                        image: "images/l2_2.jpg", 
+                        q: "請找尋這個門牌的所在位置，並觀察旁邊的說明牌\n\n糟了！這張線索遺失了重要資訊，請幫忙填起\n\n(填空題)", 
+                        inputType: "text", // 標記為文字輸入題
+                        answers: ["乙", "中校", "淡水河洪患", "防洪樓"], // 設定正確解答字串
+                        opts: [], // 留空即可
+                        a: null,
+                        photo: true, 
+                        photoText: "請玩家找尋【進入防洪樓】閣樓空間，高舉雙手，看看能否碰到閣樓板，並拍照紀錄",
+                        desc: "防洪樓是為躲避淡水河洪患而建，保留了躲避水災增建的小閣樓。" 
+                    },
+                    // 測驗 3：一線天填空與拍照 (改為打字輸入)
+                    { 
+                        image: "images/一線天說明牌.jpg", 
+                        q: "居民居住因為空間不足向前後院擴建，形成眷村特殊的狹窄巷道景觀，我們稱為(____)", 
+                        inputType: "text", // 標記為文字輸入題
+                        answers: ["一線天"], // 設定正確解答字串
+                        opts: [],
+                        a: null,
+                        photo: true, 
+                        photoText: "請在眷村中找到「一線天」張開雙手觸碰二側牆壁拍一張照\n\n玩家必須入鏡並雙手碰牆", 
+                        desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成緊鄰樣貌。" 
+                    },
                     { 
                         isSequence: true,
                         q: "請依照村長家的演變順序排列下列事件：\n① 興建防洪樓，增加避難空間\n② 黑瓦竹泥牆平房\n③ 全面改建為三層樓\n④ 加蓋二樓增加空間", 
@@ -1722,7 +1765,7 @@
             if (qData.photo && answered[currentQ] && !photos[currentQ]) {
                 pSect.classList.remove('hidden'); 
                 qImgContainer.classList.add('hidden');
-                qTextEl.textContent = `【任務解鎖】：選擇題答對！\n請完成現場取證以通關。`;
+                qTextEl.textContent = `【任務解鎖】：請完成拍照任務以通關`;
                 document.getElementById('l2-photo-img-container').classList.add('hidden');
                 document.getElementById('l2-photo-req-text').textContent = "📸 " + qData.photoText;
                 return;
@@ -1762,22 +1805,41 @@
                 qImgContainer.classList.add('hidden'); 
             }
         
-            let optionsWithIndex = qData.opts.map((opt, index) => ({ text: opt, isCorrect: index === qData.a }));
-            let shuffledOptions = shuffleArray([...optionsWithIndex]);
-            
-            shuffledOptions.forEach((o) => {
-                const btn = document.createElement('button');
-                btn.className = "opt-btn font-serif text-base tracking-wide"; 
-                btn.textContent = o.text;
-                btn.onclick = () => {
-                    if (o.isCorrect) {
+            // 判斷是「打字填空題」還是「選擇題」
+            if (qData.inputType === "text") {
+                const inputWrapper = document.createElement('div');
+                inputWrapper.className = "space-y-4 w-full pt-2";
+                
+                let inputs = [];
+                // 根據解答數量動態產生對應數量的輸入框
+                qData.answers.forEach((ans, i) => {
+                    const input = document.createElement('input');
+                    input.type = "text";
+                    input.className = "w-full bg-paper border border-ink/20 rounded-md px-4 py-3 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-ink shadow-inner transition-all";
+                    input.placeholder = qData.answers.length > 1 ? `請輸入第 ${i + 1} 個空格答案` : "請輸入答案";
+                    inputs.push(input);
+                    inputWrapper.appendChild(input);
+                });
+
+                const submitBtn = document.createElement('button');
+                submitBtn.className = "btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.1em] mt-6";
+                submitBtn.innerHTML = "確認送出 <i class='fa-solid fa-check ml-2'></i>";
+                submitBtn.onclick = () => {
+                    let allCorrect = true;
+                    inputs.forEach((input, i) => {
+                        // 比對答案 (去除前後空白以防誤判)
+                        if (input.value.trim() !== qData.answers[i]) {
+                            allCorrect = false;
+                        }
+                    });
+
+                    if (allCorrect) {
                         playSuccessSound();
-                        
                         if (qData.photo) {
                             let ans = GameState.get('l2Answered') || [false, false, false, false, false];
                             ans[currentQ] = true;
                             GameState.set('l2Answered', ans);
-        
+            
                             showAlert("回答正確！", `${qData.desc}\n\n★ 請前往現場拍攝相應特徵完成查驗！`, "fa-check-circle", "text-emerald-700", () => {
                                 renderL2();
                             }, "前往拍照取證");
@@ -1795,11 +1857,115 @@
                         }
                     } else {
                         playErrorSound();
-                        showAlert("驗證失敗", "歷史記載與您的答案不符，請重新比對演變脈絡！", "fa-circle-xmark", "text-primary", null, "重新作答");
+                        showAlert("驗證失敗", "文字內容不完全正確，請再仔細比對現場的說明牌！", "fa-circle-xmark", "text-primary", null, "重新作答");
                     }
                 };
-                cont.appendChild(btn);
-            });
+                inputWrapper.appendChild(submitBtn);
+                cont.appendChild(inputWrapper);
+
+            } else {
+                // 判斷是「打字填空題」還是「選擇題」
+            if (qData.inputType === "text") {
+                const inputWrapper = document.createElement('div');
+                inputWrapper.className = "space-y-4 w-full pt-2";
+                
+                let inputs = [];
+                // 根據解答數量動態產生對應數量的輸入框
+                qData.answers.forEach((ans, i) => {
+                    const input = document.createElement('input');
+                    input.type = "text";
+                    input.className = "w-full bg-paper border border-ink/20 rounded-md px-4 py-3 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-ink shadow-inner transition-all";
+                    input.placeholder = qData.answers.length > 1 ? `請輸入第 ${i + 1} 個空格答案` : "請輸入答案";
+                    inputs.push(input);
+                    inputWrapper.appendChild(input);
+                });
+
+                const submitBtn = document.createElement('button');
+                submitBtn.className = "btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.1em] mt-6";
+                submitBtn.innerHTML = "確認送出 <i class='fa-solid fa-check ml-2'></i>";
+                submitBtn.onclick = () => {
+                    let allCorrect = true;
+                    inputs.forEach((input, i) => {
+                        // 比對答案 (去除前後空白以防誤判)
+                        if (input.value.trim() !== qData.answers[i]) {
+                            allCorrect = false;
+                        }
+                    });
+
+                    if (allCorrect) {
+                        playSuccessSound();
+                        if (qData.photo) {
+                            let ans = GameState.get('l2Answered') || [false, false, false, false, false];
+                            ans[currentQ] = true;
+                            GameState.set('l2Answered', ans);
+            
+                            showAlert("回答正確！", `${qData.desc}\n\n★ 請前往現場拍攝相應特徵完成查驗！`, "fa-check-circle", "text-emerald-700", () => {
+                                renderL2();
+                            }, "前往拍照取證");
+                        } else {
+                            showAlert("驗證通過", qData.desc, "fa-check-circle", "text-emerald-700", () => {
+                                let cq = GameState.get('l2CurrentQ');
+                                if (cq < 4) { 
+                                    l2SequenceIntroSeen = false; 
+                                    GameState.set('l2CurrentQ', cq + 1); 
+                                    renderL2(); 
+                                } else { 
+                                    handleLevelSuccess(2); 
+                                }
+                            }, "下一題");
+                        }
+                    } else {
+                        playErrorSound();
+                        showAlert("驗證失敗", "文字內容不完全正確，請再仔細比對現場的說明牌！", "fa-circle-xmark", "text-primary", null, "重新作答");
+                    }
+                };
+                inputWrapper.appendChild(submitBtn);
+                cont.appendChild(inputWrapper);
+
+            } else {
+                // 一般選擇題邏輯 (支援複選)
+                let optionsWithIndex = qData.opts.map((opt, index) => ({ 
+                    text: opt, 
+                    isCorrect: Array.isArray(qData.a) ? qData.a.includes(index) : index === qData.a 
+                }));
+                let shuffledOptions = shuffleArray([...optionsWithIndex]);
+                
+                shuffledOptions.forEach((o) => {
+                    const btn = document.createElement('button');
+                    btn.className = "opt-btn font-serif text-base tracking-wide"; 
+                    btn.textContent = o.text;
+                    btn.onclick = () => {
+                        if (o.isCorrect) {
+                            playSuccessSound();
+                            
+                            if (qData.photo) {
+                                let ans = GameState.get('l2Answered') || [false, false, false, false, false];
+                                ans[currentQ] = true;
+                                GameState.set('l2Answered', ans);
+                
+                                showAlert("回答正確！", `${qData.desc}\n\n★ 請前往現場拍攝相應特徵完成查驗！`, "fa-check-circle", "text-emerald-700", () => {
+                                    renderL2();
+                                }, "前往拍照取證");
+                            } else {
+                                showAlert("驗證通過", qData.desc, "fa-check-circle", "text-emerald-700", () => {
+                                    let cq = GameState.get('l2CurrentQ');
+                                    if (cq < 4) { 
+                                        l2SequenceIntroSeen = false; 
+                                        GameState.set('l2CurrentQ', cq + 1); 
+                                        renderL2(); 
+                                    } else { 
+                                        handleLevelSuccess(2); 
+                                    }
+                                }, "下一題");
+                            }
+                        } else {
+                            playErrorSound();
+                            showAlert("驗證失敗", "歷史記載與您的答案不符，請重新比對演變脈絡！", "fa-circle-xmark", "text-primary", null, "重新作答");
+                        }
+                    };
+                    cont.appendChild(btn);
+                });
+            }
         }
         function prevL2Question() { playBeep(); let cq = GameState.get('l2CurrentQ'); if(cq > 0) { GameState.set('l2CurrentQ', cq - 1); renderL2(); } }
 
