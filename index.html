@@ -126,16 +126,23 @@
 
         .code-box { background: #F7F3E8; border: 2px solid #2C1E16; border-radius: 6px; box-shadow: inset 2px 2px 6px rgba(0,0,0,0.08); }
 
-        /* 照片與圖像渲染優化 */
+        /* 照片與圖像渲染優化 (修復不裁切問題) */
         .vintage-photo { 
-            border: 6px solid #F7F3E8; border-bottom-width: 20px; 
+            border: 6px solid #F7F3E8; border-bottom-width: 18px; 
             box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
-            filter: sepia(0.3) contrast(1.05); background-color: #E8DFCC; 
+            filter: sepia(0.2) contrast(1.05); background-color: #E8DFCC; 
             position: relative; overflow: hidden; border-radius: 2px;
-            transform: rotate(-1deg); transition: transform 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.3s ease;
         }
-        .vintage-photo:hover { transform: rotate(0deg) scale(1.02); }
-        .vintage-photo img { position: relative; z-index: 2; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.5s ease; }
+        .vintage-photo:hover { transform: scale(1.01); }
+        .vintage-photo img { 
+            position: relative; z-index: 2; 
+            max-width: 100%; max-height: 100%; 
+            width: auto; height: auto; 
+            object-fit: contain !important; /* 確保不裁切完整顯示 */
+            opacity: 0; transition: opacity 0.5s ease; 
+        }
         .vintage-photo img.loaded { opacity: 1; }
         
         .skeleton-bg { 
@@ -149,7 +156,7 @@
             font-weight: 700; color: #832729; opacity: 0.6; font-size: 0.875rem; letter-spacing: 0.05em; z-index: 1; 
         }
 
-        /* 角色卡片 (Flex/Grid) 修正 */
+        /* 角色卡片 */
         .char-card-grid { 
             display: flex;
             flex-direction: column;
@@ -177,7 +184,14 @@
             justify-content: center; 
             overflow: hidden; 
             position: relative; 
-            flex-shrink: 0;
+            flex-shrink: 0; 
+        }
+        .char-img-box img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain !important;
         }
 
         /* ==========================================
@@ -203,7 +217,7 @@
         
         .puzzle-piece {
             position: absolute; background-color: #D8C8A7;
-            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.1"/></svg>');
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.1"/></svg>');
             display: flex; align-items: center; justify-content: center; text-align: center;
             color: #2C1E16; font-family: 'Noto Serif TC', serif; font-weight: 900;
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); cursor: pointer;
@@ -226,7 +240,8 @@
         .piece-6 { top: 40%; left: 62%; width: 25%; height: 62%; clip-path: polygon(0 5%, 95% 0, 100% 100%, 5% 95%); transform: rotate(1deg); }
         .piece-7 { top: 44%; left: 78%; width: 22%; height: 56%; clip-path: polygon(5% 0, 100% 5%, 90% 100%, 0 95%); transform: rotate(-1.5deg); }
 
-        .food-feedback-box { width: 100%; max-height: 180px; overflow: hidden; border-radius: 8px; margin: 12px 0; background-color: #E8DFCC; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); border: 2px solid rgba(44, 30, 22, 0.1); }
+        .food-feedback-box { width: 100%; max-height: 220px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 8px; margin: 12px 0; background-color: #E8DFCC; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); border: 2px solid rgba(44, 30, 22, 0.1); }
+        .food-feedback-box img { max-width: 100%; max-height: 200px; width: auto; height: auto; object-fit: contain; }
         .intro-history-card { background: #F7F3E8; border: 1px solid rgba(4, 120, 87, 0.2); padding: 16px; border-radius: 8px; box-shadow: 0 4px 12px rgba(4, 120, 87, 0.05); border-left: 4px solid #047857; }
         
         #app-loader { transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1); }
@@ -303,7 +318,7 @@
                     </div>
                 </div>
 
-                <!-- 三-3 SCREEN: STORY -->
+                <!-- SCREEN: STORY -->
                 <div id="screen-story" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 flex flex-col justify-center min-h-full">
                         <h2 class="text-2xl font-black text-primary mb-6 text-center font-serif tracking-widest border-b border-dashed border-ink/20 pb-4">信件碎片</h2>
@@ -325,7 +340,7 @@
                     </div>
                 </div>
                 
-                <!-- 三-4 SCREEN: TUTORIAL -->
+                <!-- SCREEN: TUTORIAL -->
                 <div id="screen-tutorial" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 flex flex-col justify-center min-h-full">
                         <h2 class="text-2xl font-black text-primary mb-8 text-center font-serif tracking-widest border-b border-dashed border-ink/20 pb-4">頁面操作說明</h2>
@@ -340,7 +355,7 @@
                     </div>
                 </div>
                 
-                <!-- 三-2 SCREEN: LEVEL SELECT -->
+                <!-- SCREEN: LEVEL SELECT -->
                 <div id="screen-level-select" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 space-y-6">
                         <h2 class="text-2xl font-black text-primary text-center font-serif tracking-widest border-b border-dashed border-ink/20 pb-4">輸入任務代碼</h2>
@@ -372,8 +387,8 @@
                     <input type="file" accept="image/*" capture="environment" id="l1-camera-input" class="hidden">
                     <div id="l1-p1" class="level-card p-6 flex flex-col justify-center min-h-full">
                         <h2 class="text-xl text-primary font-black text-center border-b border-dashed border-ink/20 pb-4 font-serif tracking-widest mb-5">關卡現場位置提示</h2>
-                        <div class="w-full aspect-[16/9] vintage-photo flex items-center justify-center mb-5 shrink-0">
-                            <img src="images/甬道圖.jpg" alt="甬道圖" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=甬道配置圖'" class="w-full h-full object-cover loaded">
+                        <div class="w-full min-h-[190px] max-h-[260px] vintage-photo flex items-center justify-center mb-5 shrink-0 overflow-hidden">
+                            <img src="images/甬道圖.jpg" alt="甬道圖" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=甬道配置圖'" class="max-w-full max-h-[250px] w-auto h-auto object-contain loaded">
                         </div>
                         <div class="text-sm leading-[1.8] font-bold text-ink text-justify font-serif space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-1">
                             <p>園區中央的地下甬道是二戰時期是日軍台灣軍司令部選定的「高射砲陣地」，負責防守台北橋與總督府。為了因應戰爭與空襲威脅，日軍在這一帶設置防空相關設施，除了地面上的防空砲台之外，也建造了地下甬道與相關空間。這些地下設施讓人員能夠在不同的防空位置之間移動，也具有躲避空襲及存放物資等用途。甬道出口就是這套地下防空系統留下來的歷史痕跡之一。</p>
@@ -439,8 +454,8 @@
                         
                         <!-- 現場拍照取證區塊 -->
                         <div id="l2-photo-section" class="hidden bg-military/5 p-6 rounded-lg border border-dashed border-military/30 mb-8 text-center shrink-0">
-                            <div id="l2-photo-img-container" class="hidden mb-5 vintage-photo w-full">
-                                <img id="l2-photo-img" src="" class="w-full h-auto object-cover" onload="this.classList.add('loaded')">
+                            <div id="l2-photo-img-container" class="hidden mb-5 vintage-photo w-full min-h-[160px] max-h-[300px]">
+                                <img id="l2-photo-img" src="" class="max-w-full max-h-[280px] w-auto h-auto object-contain" onload="this.classList.add('loaded')">
                             </div>
                             <p id="l2-photo-req-text" class="text-sm font-bold text-military mb-6 tracking-wide"></p>
                             <label for="l2-camera-input" class="btn-base w-full py-4 bg-military border border-military-light text-paper shadow-[4px_4px_0_theme(colors.military.light)] font-black text-lg flex space-x-2 cursor-pointer">
@@ -450,11 +465,11 @@
                         </div>
 
                         <!-- 題目配圖容器 -->
-                        <div id="l2-question-img-container" class="hidden mb-8 w-full vintage-photo shrink-0">
-                            <img id="l2-question-img" src="images/l2_map.jpg" class="w-full h-auto object-cover" onload="this.classList.add('loaded')">
+                        <div id="l2-question-img-container" class="hidden mb-6 w-full vintage-photo shrink-0 min-h-[160px] max-h-[300px] overflow-hidden">
+                            <img id="l2-question-img" src="images/l2_map.jpg" class="max-w-full max-h-[280px] w-auto h-auto object-contain" onload="this.classList.add('loaded')">
                         </div>
 
-                        <div id="l2-question-text" class="text-lg font-bold leading-[1.8] mb-8 whitespace-pre-line text-ink shrink-0 text-justify font-serif tracking-wide"></div>
+                        <div id="l2-question-text" class="text-lg font-bold leading-[1.8] mb-6 whitespace-pre-line text-ink shrink-0 text-justify font-serif tracking-wide"></div>
                         <div id="l2-options-container" class="space-y-4 flex-1 flex flex-col justify-end pb-2"></div>
                     </div>
                 </div>
@@ -599,26 +614,27 @@
                         <h2 class="text-center text-primary text-2xl mb-4 font-black border-b border-dashed border-ink/20 pb-4 tracking-widest shrink-0 font-serif">黃金娛樂時光</h2>
                         
                         <div class="text-base leading-[1.9] font-bold text-ink text-justify flex-1 font-serif overflow-y-auto custom-scrollbar pr-2 pb-2">
-                            <div class="w-full mb-4 vintage-photo aspect-[16/9] flex items-center justify-center shrink-0">
-                                <img src="images/l5-1.jpg" alt="老唱片與歌廳記憶" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=老唱片與歌廳記憶'" class="w-full h-full object-cover loaded">
+                            <div class="w-full mb-4 vintage-photo min-h-[190px] max-h-[300px] flex items-center justify-center shrink-0 overflow-hidden">
+                                <img src="images/l5-1.jpg" alt="老唱片與歌廳記憶" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=老唱片與歌廳記憶'" class="max-w-full max-h-[290px] w-auto h-auto object-contain loaded">
                             </div>
                             
                             <p class="mb-5">當黑膠唱片旋轉、霓虹燈光閃爍，空氣中流淌著老歌與電影的熟悉旋律。這裡不只是歷史的記憶，更是我們今晚一同尋找青春與鄉愁的舞台。</p>
                             
-                            <div class="w-full mb-4 vintage-photo aspect-[16/9] flex items-center justify-center shrink-0">
-                                <img src="images/l5-2.jpg" alt="天台廣場繁華盛景" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=天台廣場繁華盛景'" class="w-full h-full object-cover loaded">
+                            <div class="w-full mb-4 vintage-photo min-h-[190px] max-h-[300px] flex items-center justify-center shrink-0 overflow-hidden">
+                                <img src="images/l5-2.jpg" alt="天台廣場繁華盛景" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=天台廣場繁華盛景'" class="max-w-full max-h-[290px] w-auto h-auto object-contain loaded">
                             </div>
-                            <div class="w-full mb-4 vintage-photo aspect-[16/9] flex items-center justify-center shrink-0">
-                                <img src="images/l5-3.jpg" alt="天台廣場繁華盛景" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=天台廣場繁華盛景'" class="w-full h-full object-cover loaded">
+                            <div class="w-full mb-4 vintage-photo min-h-[190px] max-h-[300px] flex items-center justify-center shrink-0 overflow-hidden">
+                                <img src="images/l5-3.jpg" alt="天台廣場繁華盛景" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=天台廣場繁華盛景'" class="max-w-full max-h-[290px] w-auto h-auto object-contain loaded">
                             </div>
                             
                             <p class="mb-5">1950至1980年代，三重天台廣場曾是北台灣最繁華的娛樂地標，歌廳、戲院、夜總會林立。第一代外省移民在眷村裡，用歌聲撫平離鄉背井的鄉愁。</p>
                             
-                            <div class="w-full mb-4 vintage-photo aspect-[16/9] flex items-center justify-center shrink-0">
-                                <img src="images/l5-4.jpg" alt="接歌挑戰現場" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=接歌挑戰現場'" class="w-full h-full object-cover loaded">
+                            <!-- 修復直式照片高度適應，不裁切人物與舞廳畫面 -->
+                            <div class="w-full mb-4 vintage-photo min-h-[240px] max-h-[380px] flex items-center justify-center shrink-0 overflow-hidden">
+                                <img src="images/l5-4.jpg" alt="接歌挑戰現場" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=接歌挑戰現場'" class="max-w-full max-h-[370px] w-auto h-auto object-contain loaded">
                             </div>
-                            <div class="w-full mb-4 vintage-photo aspect-[16/9] flex items-center justify-center shrink-0">
-                                <img src="images/l5-5.jpg" alt="接歌挑戰現場" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=接歌挑戰現場'" class="w-full h-full object-cover loaded">
+                            <div class="w-full mb-4 vintage-photo min-h-[240px] max-h-[380px] flex items-center justify-center shrink-0 overflow-hidden">
+                                <img src="images/l5-5.jpg" alt="接歌挑戰現場" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=接歌挑戰現場'" class="max-w-full max-h-[370px] w-auto h-auto object-contain loaded">
                             </div>
                             
                             <p>今晚，我們將透過一場「接歌挑戰」，帶領大家走入這段熱鬧又帶點感傷的青春歲月。</p>
@@ -698,33 +714,34 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="transitionSubPage(5, 4, 5)">前往輸入密碼</button>
                     </div>
 
-                    <!-- P5：通關密語 -->
+                    <!-- P5：通關密語 (修復 4 位數密碼排版與輸入格) -->
                     <div id="l5-p5" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(5, 5, 4)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">通關密語</h2>
                         </div>
                         <div class="level-card p-8 flex-1 flex flex-col justify-center bg-paper/30">
-                            <p class="text-base font-bold text-ink/70 mb-8 text-center tracking-widest font-serif">請輸入現場獲取的四位數密碼</p>
-                            <div id="l5-code-container" class="grid grid-cols-3 gap-4 max-w-[260px] mx-auto mt-2">
-                                <div class="code-box h-20 flex items-center justify-center text-5xl font-black font-mono text-primary bg-white shadow-inner"></div>
-                                <div class="code-box h-20 flex items-center justify-center text-5xl font-black font-mono text-primary bg-white shadow-inner"></div>
-                                <div class="code-box h-20 flex items-center justify-center text-5xl font-black font-mono text-primary bg-white shadow-inner"></div>
-                                <div class="code-box h-20 flex items-center justify-center text-5xl font-black font-mono text-primary bg-white shadow-inner"></div>
+                            <p class="text-base font-bold text-ink/70 mb-6 text-center tracking-widest font-serif">請輸入現場獲取的四位數密碼</p>
+                            <!-- 修正：改為 4 欄以完整容納 4 格密碼 -->
+                            <div id="l5-code-container" class="grid grid-cols-4 gap-3 max-w-[280px] mx-auto mt-2">
+                                <div class="code-box h-16 flex items-center justify-center text-4xl font-black font-mono text-primary bg-white shadow-inner"></div>
+                                <div class="code-box h-16 flex items-center justify-center text-4xl font-black font-mono text-primary bg-white shadow-inner"></div>
+                                <div class="code-box h-16 flex items-center justify-center text-4xl font-black font-mono text-primary bg-white shadow-inner"></div>
+                                <div class="code-box h-16 flex items-center justify-center text-4xl font-black font-mono text-primary bg-white shadow-inner"></div>
                             </div>
-                            <div class="grid grid-cols-3 gap-4 pt-12 max-w-[280px] mx-auto w-full">
-                                <button class="l5-key btn-base military-btn py-5 text-3xl font-mono font-black" data-val="1">1</button>
-                                <button class="l5-key btn-base military-btn py-5 text-3xl font-mono font-black" data-val="2">2</button>
-                                <button class="l5-key btn-base military-btn py-5 text-3xl font-mono font-black" data-val="3">3</button>
-                                <button class="l5-key btn-base military-btn py-5 text-3xl font-mono font-black" data-val="4">4</button>
-                                <button class="l5-key btn-base military-btn py-5 text-3xl font-mono font-black" data-val="5">5</button>
-                                <button class="l5-key btn-base military-btn py-5 text-3xl font-mono font-black" data-val="6">6</button>
-                                <button class="l5-key btn-base military-btn py-5 text-3xl font-mono font-black" data-val="7">7</button>
-                                <button class="l5-key btn-base military-btn py-5 text-3xl font-mono font-black" data-val="8">8</button>
-                                <button class="l5-key btn-base military-btn py-5 text-3xl font-mono font-black" data-val="9">9</button>
-                                <button id="l5-btn-del" class="btn-base military-btn py-5 text-2xl font-black text-primary"><i class="fa-solid fa-delete-left"></i></button>
-                                <button class="l5-key btn-base military-btn py-5 text-3xl font-mono font-black" data-val="0">0</button>
-                                <button id="l5-btn-submit" class="btn-base military-btn py-5 text-2xl font-black text-emerald-700"><i class="fa-solid fa-check"></i></button>
+                            <div class="grid grid-cols-3 gap-4 pt-10 max-w-[280px] mx-auto w-full">
+                                <button class="l5-key btn-base military-btn py-4 text-3xl font-mono font-black" data-val="1">1</button>
+                                <button class="l5-key btn-base military-btn py-4 text-3xl font-mono font-black" data-val="2">2</button>
+                                <button class="l5-key btn-base military-btn py-4 text-3xl font-mono font-black" data-val="3">3</button>
+                                <button class="l5-key btn-base military-btn py-4 text-3xl font-mono font-black" data-val="4">4</button>
+                                <button class="l5-key btn-base military-btn py-4 text-3xl font-mono font-black" data-val="5">5</button>
+                                <button class="l5-key btn-base military-btn py-4 text-3xl font-mono font-black" data-val="6">6</button>
+                                <button class="l5-key btn-base military-btn py-4 text-3xl font-mono font-black" data-val="7">7</button>
+                                <button class="l5-key btn-base military-btn py-4 text-3xl font-mono font-black" data-val="8">8</button>
+                                <button class="l5-key btn-base military-btn py-4 text-3xl font-mono font-black" data-val="9">9</button>
+                                <button id="l5-btn-del" class="btn-base military-btn py-4 text-2xl font-black text-primary"><i class="fa-solid fa-delete-left"></i></button>
+                                <button class="l5-key btn-base military-btn py-4 text-3xl font-mono font-black" data-val="0">0</button>
+                                <button id="l5-btn-submit" class="btn-base military-btn py-4 text-2xl font-black text-emerald-700"><i class="fa-solid fa-check"></i></button>
                             </div>
                         </div>
                     </div>
@@ -750,7 +767,7 @@
                         <div class="flex-1 flex flex-col space-y-3 min-h-0 overflow-y-auto custom-scrollbar pr-1">
                             <div class="char-card-flex shrink-0">
                                 <div class="char-img-box w-24 h-24 border-r border-ink/10 skeleton-bg">
-                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandma" alt="奶奶" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
+                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandma" alt="奶奶" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-contain">
                                 </div>
                                 <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white">
                                     <b class="text-sm tracking-widest text-primary mb-1 border-b border-dashed border-ink/10 pb-1 font-serif">奶奶 (NPC)</b>
@@ -759,7 +776,7 @@
                             </div>
                             <div class="char-card-flex shrink-0">
                                 <div class="char-img-box w-24 h-24 border-r border-ink/10 skeleton-bg">
-                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandson" alt="孫子" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
+                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandson" alt="孫子" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-contain">
                                 </div>
                                 <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white">
                                     <b class="text-sm tracking-widest text-primary mb-1 border-b border-dashed border-ink/10 pb-1 font-serif">孫子 (NPC)</b>
@@ -788,27 +805,27 @@
                             <p class="text-sm font-bold bg-white p-4 rounded-md border border-ink/10 mb-5 shrink-0 text-justify leading-relaxed shadow-sm text-ink font-serif">奶奶：「桌上有瓶明星花露水，裡面藏著哪些花香？畫面上有六種花，答案共有兩種，快從中把它們找出來吧！」</p>
                             <div class="grid grid-cols-2 gap-4 flex-1 overflow-y-auto custom-scrollbar pb-4 pr-1" id="flower-grid">
                                 <div class="flower-card flex flex-col border border-ink/10 rounded-lg overflow-hidden bg-white shadow-sm transition-all duration-200 active:scale-95 cursor-pointer hover:shadow-md" onclick="toggleFlower(this, '秀英花')">
-                                    <div class="bg-orange-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/秀英花.jpg" class="absolute inset-0 w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
+                                    <div class="bg-orange-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/秀英花.jpg" class="absolute inset-0 w-full h-full object-contain" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                     <div class="text-center text-sm font-bold py-2.5 bg-white text-orange-700 shrink-0 border-t border-ink/5 tracking-wider">秀英花</div>
                                 </div>
                                 <div class="flower-card flex flex-col border border-ink/10 rounded-lg overflow-hidden bg-white shadow-sm transition-all duration-200 active:scale-95 cursor-pointer hover:shadow-md" onclick="toggleFlower(this, '茉莉')">
-                                    <div class="bg-stone-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/茉莉.png" class="absolute inset-0 w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
+                                    <div class="bg-stone-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/茉莉.png" class="absolute inset-0 w-full h-full object-contain" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                     <div class="text-center text-sm font-bold py-2.5 bg-white text-stone-700 shrink-0 border-t border-ink/5 tracking-wider">茉莉</div>
                                 </div>
                                 <div class="flower-card flex flex-col border border-ink/10 rounded-lg overflow-hidden bg-white shadow-sm transition-all duration-200 active:scale-95 cursor-pointer hover:shadow-md" onclick="toggleFlower(this, '桂花')">
-                                    <div class="bg-yellow-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/桂花.png" class="absolute inset-0 w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
+                                    <div class="bg-yellow-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/桂花.png" class="absolute inset-0 w-full h-full object-contain" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                     <div class="text-center text-sm font-bold py-2.5 bg-white text-yellow-700 shrink-0 border-t border-ink/5 tracking-wider">桂花</div>
                                 </div>
                                 <div class="flower-card flex flex-col border border-ink/10 rounded-lg overflow-hidden bg-white shadow-sm transition-all duration-200 active:scale-95 cursor-pointer hover:shadow-md" onclick="toggleFlower(this, '梔子花')">
-                                    <div class="bg-neutral-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/梔子花.jpg" class="absolute inset-0 w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
+                                    <div class="bg-neutral-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/梔子花.jpg" class="absolute inset-0 w-full h-full object-contain" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                     <div class="text-center text-sm font-bold py-2.5 bg-white text-neutral-700 shrink-0 border-t border-ink/5 tracking-wider">梔子花</div>
                                 </div>
                                 <div class="flower-card flex flex-col border border-ink/10 rounded-lg overflow-hidden bg-white shadow-sm transition-all duration-200 active:scale-95 cursor-pointer hover:shadow-md" onclick="toggleFlower(this, '玫瑰')">
-                                    <div class="bg-rose-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/玫瑰.jpg" class="absolute inset-0 w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
+                                    <div class="bg-rose-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/玫瑰.jpg" class="absolute inset-0 w-full h-full object-contain" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                     <div class="text-center text-sm font-bold py-2.5 bg-white text-primary shrink-0 border-t border-ink/5 tracking-wider">玫瑰</div>
                                 </div>
                                 <div class="flower-card flex flex-col border border-ink/10 rounded-lg overflow-hidden bg-white shadow-sm transition-all duration-200 active:scale-95 cursor-pointer hover:shadow-md" onclick="toggleFlower(this, '玉蘭花')">
-                                    <div class="bg-pink-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/玉蘭花.jpg" class="absolute inset-0 w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
+                                    <div class="bg-pink-50 flex items-center justify-center relative skeleton-bg aspect-square w-full"><img src="images/玉蘭花.jpg" class="absolute inset-0 w-full h-full object-contain" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');"></div>
                                     <div class="text-center text-sm font-bold py-2.5 bg-white text-pink-700 shrink-0 border-t border-ink/5 tracking-wider">玉蘭花</div>
                                 </div>
                             </div>
@@ -837,7 +854,7 @@
                                     <i class="fa-solid fa-record-vinyl fa-spin"></i><span>Now Playing</span>
                                 </div>
                                 <div id="l6-song-title" class="text-lg font-black text-ink font-serif truncate mb-2"></div>
-                                <p id="l6-lyrics" class="text-xs italic text-ink/60 min-h-[2.5rem] flex items-center justify-center font-bold px-2 leading-relaxed"></p>
+                                <p id="l6-lyrics" class="text-xs italic text-ink/60 min-h-[2.5rem] flex items-center justify-center font-bold px-2 leading-relaxed whitespace-pre-line"></p>
                                 <div class="w-full bg-paper-dark h-1.5 mt-4 overflow-hidden rounded-full">
                                     <div id="l6-progress" class="h-full w-0 bg-primary transition-all duration-100 ease-linear rounded-full"></div>
                                 </div>
@@ -1183,15 +1200,15 @@
                     },
                     {
                         title: "月亮代表我的心",
-                        lines: "輕輕的一個吻，已經打動我的心，深深的一段情，教我思念到如今，你問我愛你有多深\n＊＊＊＊＊＊",
+                        lines: "輕輕的一個吻，已經打動我的心，深深的一段情，教我思念到如今，你問我愛你有多深\n＊＊＊＊＊＊"
                     },
                     {
                         title: "綠島小夜曲",
-                        lines: "這綠島像一隻船，在月夜裡搖啊搖情郎呀，你也在我的心海裡飄呀飄\n＊＊＊＊＊＊＊＊＊\n＊＊＊＊＊＊＊",
+                        lines: "這綠島像一隻船，在月夜裡搖啊搖情郎呀，你也在我的心海裡飄呀飄\n＊＊＊＊＊＊＊＊＊\n＊＊＊＊＊＊＊"
                     },
                     {
                         title: "童年",
-                        lines: "池塘邊的榕樹上，知了在聲聲叫著夏天，操場邊的鞦韆上，只有蝴蝶停在上面\n＊＊＊＊＊＊＊＊\n＊＊＊＊＊＊＊＊＊＊＊＊\n＊＊＊＊＊\n＊＊＊＊＊\n＊＊＊＊＊＊＊",
+                        lines: "池塘邊的榕樹上，知了在聲聲叫著夏天，操場邊的鞦韆上，只有蝴蝶停在上面\n＊＊＊＊＊＊＊＊\n＊＊＊＊＊＊＊＊＊＊＊＊\n＊＊＊＊＊\n＊＊＊＊＊\n＊＊＊＊＊＊＊"
                     }
                 ]
             },
@@ -1212,16 +1229,13 @@
                 { id: 7, class: 'piece-7', text: '「半世戎馬，一生清風」<br>—— 永遠想回家的志遠' }
             ],
             preloadImages: [
-                // 關卡 1：防砲陣地
                 "images/甬道圖.jpg",
-                // 關卡 2：眷村空間與建築
                 "images/l2_map.jpg",
                 "images/l2_map2.jpg",
                 "images/l2-1.jpg",
                 "images/l2-2.jpg",
                 "images/S__10690571.jpg",
                 "images/S__10690579_0.jpg",
-                // 關卡 3：村長的家（眷村料理菜單）
                 "images/麻婆豆腐.jpg",
                 "images/回鍋肉.jpg",
                 "images/水煮魚.jpg",
@@ -1242,10 +1256,8 @@
                 "images/韭菜盒子.jpg",
                 "images/蔥油餅.jpg",
                 "images/牛肉餡餅.jpg",
-                // 關卡 4：榕樹廣場（人物特徵照）
                 "images/人物照_0.png",
                 "images/周昀萱_0.jpg",
-                // 關卡 5：群星之夜（歷史現場與歌手）
                 "images/l5-1.jpg",
                 "images/l5-2.jpg",
                 "images/l5-3.jpg",
@@ -1255,14 +1267,12 @@
                 "images/潘安邦.png",
                 "images/鄧麗君.png",
                 "images/羅大佑.png",
-                // 關卡 6：時光膠囊（香氛花卉）
                 "images/秀英花.jpg",
                 "images/茉莉.png",
                 "images/桂花.png",
                 "images/梔子花.jpg",
                 "images/玫瑰.jpg",
                 "images/玉蘭花.jpg",
-                // 結局與彈窗（跨越時空的信）
                 "images/信.png"
             ]
         };
@@ -1692,7 +1702,6 @@
             }
         }
 
-        // 修正後的子頁面轉場函式
         async function transitionSubPage(level, fromPage, toPage) {
             playBeep();
             const fromEl = document.getElementById(`l${level}-p${fromPage}`);
@@ -1723,7 +1732,6 @@
             document.getElementById('game-viewport').scrollTop = 0;
         }
 
-        // 修正後的強制子頁面初始化函式
         function forceSubPageInit(level, targetPage, totalPages) {
             for (let i = 1; i <= totalPages; i++) {
                 const el = document.getElementById(`l${level}-p${i}`);
@@ -1956,7 +1964,6 @@
             let photos = GameState.get('l2Photos') || [false, false, false, false, false];
             let answered = GameState.get('l2Answered') || [false, false, false, false, false];
         
-            // 核心修正：若本題有拍照需求且已回答正確，但未拍照完成 -> 強制鎖定在拍照任務指示牆
             if (qData.photo && answered[currentQ] && !photos[currentQ]) {
                 pSect.classList.remove('hidden'); 
                 qImgContainer.classList.add('hidden');
@@ -1976,8 +1983,8 @@
                         <div class="font-black text-military text-base border-b border-military/30 pb-2">
                             <i class="fa-solid fa-landmark mr-2"></i>村長家的七次擴建歷程
                         </div>
-                        <div class="w-full vintage-photo !border-2 rounded overflow-hidden cursor-zoom-in shadow-sm" onclick="openImageLightbox('images/S__10690579_0.jpg')" title="點擊放大圖示">
-                            <img src="images/S__10690579_0.jpg" alt="村長家擴建歷程" class="w-full h-auto object-cover loaded" onerror="this.src='https://placehold.co/600x400/e5d5b5/7c343d?text=建物擴建歷程圖'">
+                        <div class="w-full vintage-photo !border-2 rounded overflow-hidden cursor-zoom-in shadow-sm min-h-[160px] max-h-[280px]" onclick="openImageLightbox('images/S__10690579_0.jpg')" title="點擊放大圖示">
+                            <img src="images/S__10690579_0.jpg" alt="村長家擴建歷程" class="max-w-full max-h-[260px] w-auto h-auto object-contain loaded" onerror="this.src='https://placehold.co/600x400/e5d5b5/7c343d?text=建物擴建歷程圖'">
                         </div>
                         <p class="text-sm leading-[1.8] text-ink font-bold text-justify">
                             民國38年隨軍撤退來台時，村長家最初僅是簡陋的<b>黑瓦竹泥牆平房</b>。
@@ -1998,7 +2005,6 @@
         
             qTextEl.textContent = qData.q;
             
-            // 清空舊圖容器並重新渲染多圖/單圖
             qImgContainer.innerHTML = '';
             const imgList = qData.images || (qData.image ? [qData.image] : []);
 
@@ -2006,13 +2012,13 @@
                 qImgContainer.classList.remove('hidden');
                 qImgContainer.className = imgList.length > 1 
                     ? "mb-6 w-full grid grid-cols-2 gap-3 shrink-0" 
-                    : "mb-6 w-full vintage-photo shrink-0 cursor-zoom-in";
+                    : "mb-6 w-full vintage-photo shrink-0 cursor-zoom-in min-h-[160px] max-h-[300px]";
 
                 imgList.forEach((src) => {
                     const wrap = document.createElement('div');
-                    wrap.className = "vintage-photo cursor-zoom-in w-full aspect-[4/3] overflow-hidden";
+                    wrap.className = "vintage-photo cursor-zoom-in w-full min-h-[140px] max-h-[260px] overflow-hidden";
                     wrap.onclick = () => openImageLightbox(src);
-                    wrap.innerHTML = `<img src="${src}" class="w-full h-full object-cover loaded" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=線索圖片'">`;
+                    wrap.innerHTML = `<img src="${src}" class="max-w-full max-h-[240px] w-auto h-auto object-contain loaded" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=線索圖片'">`;
                     qImgContainer.appendChild(wrap);
                 });
             } else {
@@ -2240,8 +2246,8 @@
                 btn.className = "l3-opt-btn flex flex-col items-center justify-center border border-ink/20 rounded-lg overflow-hidden bg-white shadow-sm opacity-50 cursor-not-allowed transition-all active:scale-95";
                 btn.disabled = true;
                 btn.innerHTML = `
-                    <div class="w-full aspect-square bg-paper-dark relative border-b border-ink/10">
-                        <img src="${o.opt.img}" alt="${o.opt.text}" class="absolute inset-0 w-full h-full object-cover" onerror="this.src='https://placehold.co/150/e5d5b5/7c343d?text=${o.opt.text}'">
+                    <div class="w-full aspect-square bg-paper-dark relative border-b border-ink/10 flex items-center justify-center overflow-hidden">
+                        <img src="${o.opt.img}" alt="${o.opt.text}" class="max-w-full max-h-full w-auto h-auto object-contain" onerror="this.src='https://placehold.co/150/e5d5b5/7c343d?text=${o.opt.text}'">
                     </div>
                     <div class="w-full py-2.5 text-sm font-black text-ink tracking-wider bg-white">${o.opt.text}</div>
                 `;
@@ -2249,7 +2255,7 @@
                 btn.onclick = () => {
                     const feedbackHtml = `
                         <div class="food-feedback-box aspect-[16/9] mb-3 overflow-hidden rounded-md border border-ink/20">
-                            <img src="${o.opt.img}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=${o.opt.text}'">
+                            <img src="${o.opt.img}" class="max-w-full max-h-full object-contain" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=${o.opt.text}'">
                         </div>
                         <p class="text-sm font-bold text-ink leading-[1.8] font-serif text-justify">${o.opt.desc}</p>
                     `;
@@ -2356,16 +2362,14 @@
                 `;
                 btn.onclick = () => {
                     playBeep();
+                    // 修正：移除未定義的 ${song.stars}，避免印出 undefined 字串
                     const html = `
-                        <div class="bg-black/90 p-4 rounded-lg border border-gold/40 text-center space-y-4 my-2 shadow-2xl">
+                        <div class="bg-black/90 p-5 rounded-lg border border-gold/40 text-center space-y-4 my-2 shadow-2xl">
                             <div class="text-[11px] text-gold/70 tracking-widest uppercase font-mono flex items-center justify-center gap-1.5">
                                 <i class="fa-solid fa-music text-primary"></i> 經典接唱挑戰 <i class="fa-solid fa-music text-primary"></i>
                             </div>
-                            <div class="text-base font-black text-amber-300 tracking-wider leading-relaxed font-sans drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] text-justify">
+                            <div class="text-base font-black text-amber-300 tracking-wider leading-relaxed font-sans drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] whitespace-pre-line text-center">
                                 ${song.lines}
-                            </div>
-                            <div class="text-base font-black text-rose-400 tracking-[0.25em] font-mono drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] break-all border-t border-dashed border-white/20 pt-3">
-                                ${song.stars}
                             </div>
                         </div>
                     `;
@@ -2375,12 +2379,18 @@
             });
         }
 
+        // 修正：密碼限制改為 4 位數，避免第 4 位無法鍵入
         document.querySelectorAll('.l5-key').forEach(btn => btn.onclick = () => {
-            let input = GameState.get('l5Input');
-            if (input.length < 3) { playBeep(); input.push(btn.dataset.val); GameState.set('l5Input', input); updateL5Display(); }
+            let input = GameState.get('l5Input') || [];
+            if (input.length < 4) { 
+                playBeep(); 
+                input.push(btn.dataset.val); 
+                GameState.set('l5Input', input); 
+                updateL5Display(); 
+            }
         });
         document.getElementById('l5-btn-del').onclick = () => {
-            let input = GameState.get('l5Input');
+            let input = GameState.get('l5Input') || [];
             if (input.length > 0) { playBeep(400); input.pop(); GameState.set('l5Input', input); updateL5Display(); }
         };
         document.getElementById('l5-btn-submit').onclick = () => {
@@ -2392,7 +2402,7 @@
                 let errCount = (GameState.get('l5Errors') || 0) + 1; 
                 GameState.set('l5Errors', errCount); 
                 GameState.set('l5Input', []); 
-                updateL5Display();
+                updateL5Display(); 
                 
                 if (errCount >= 2) {
                     showAlert("密碼錯誤", "密碼錯誤，請向群星會主持人求救！", "fa-triangle-exclamation", "text-primary", null, "尋求關主支援");
