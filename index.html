@@ -6,6 +6,7 @@
     <title>眷村實境解謎大冒險</title>
     
     <!-- 引入 Tailwind CSS 並配置專屬 Design Token (主題系統) -->
+    <!-- 註：正式上線若有效能考量，建議改用 Tailwind CLI 編譯靜態 CSS 以避免手機端解析的 FOUC 現象 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -177,6 +178,11 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(44, 30, 22, 0.2); border-radius: 4px; }
 
+        /* 隱藏底部導覽列防擋虛擬鍵盤 */
+        @media (max-height: 480px) {
+            #bottom-nav-bar { display: none !important; }
+        }
+
         /* ==========================================
            5. 遊戲核心組件 (Puzzle Pieces)
            ========================================== */
@@ -188,10 +194,11 @@
             display: flex; align-items: center; justify-content: center; text-align: center;
             color: #2C1E16; font-family: 'Noto Serif TC', serif; font-weight: 900;
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); cursor: pointer;
-            filter: url(#torn-edge) drop-shadow(0px 8px 12px rgba(44, 30, 22, 0.2)); z-index: 10;
+            filter: drop-shadow(0px 8px 12px rgba(44, 30, 22, 0.2)); z-index: 10;
         }
-        .puzzle-piece:active, .puzzle-piece:hover { transform: scale(1.08); z-index: 50 !important; filter: url(#torn-edge) drop-shadow(0px 12px 20px rgba(44, 30, 22, 0.3)); }
-        .puzzle-piece.locked { background-color: #2a2522; background-image: none; filter: url(#torn-edge); box-shadow: inset 0 0 20px rgba(0,0,0,0.5); pointer-events: none; }
+        /* 由於 SVG 濾鏡 (url(#torn-edge)) 在部分行動裝置易導致掉幀發熱，此處簡化為陰影。如需維持破邊效果，建議改用遮罩圖 */
+        .puzzle-piece:active, .puzzle-piece:hover { transform: scale(1.08); z-index: 50 !important; filter: drop-shadow(0px 12px 20px rgba(44, 30, 22, 0.3)); }
+        .puzzle-piece.locked { background-color: #2a2522; background-image: none; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); pointer-events: none; }
         .puzzle-piece span { 
             padding: 4%; pointer-events: none; line-height: 1.5; letter-spacing: 0.5px; 
             font-size: max(10px, 3.5cqi); background: rgba(216, 200, 167, 0.7); 
@@ -215,14 +222,6 @@
     </style>
 </head>
 <body class="min-h-[100dvh] flex items-center justify-center p-0 sm:p-6 overflow-x-hidden">
-
-    <!-- 撕裂邊緣 SVG 濾鏡 -->
-    <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
-        <filter id="torn-edge" x="-10%" y="-10%" width="120%" height="120%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-    </svg>
 
     <!-- App Loader -->
     <div id="app-loader" class="fixed inset-0 bg-paper-dark vintage-paper z-[9999] flex flex-col items-center justify-center">
@@ -572,7 +571,6 @@
                     <div id="l5-p1" class="level-card p-6 flex flex-col">
                         <h2 class="text-center text-primary text-2xl mb-6 font-black border-b border-dashed border-ink/20 pb-4 tracking-widest shrink-0 font-serif">黃金娛樂時光</h2>
                         
-                        <!-- 移除內部 overflow，由外部視口統一原生滾動，防止 iOS 雙層滾動衝突 -->
                         <div class="text-base leading-[1.9] font-bold text-ink text-justify font-serif space-y-4">
                             <!-- 圖 1 插入點 -->
                             <div class="w-full vintage-photo aspect-[16/9] flex items-center justify-center">
@@ -713,7 +711,7 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(6, 1, 2)">認識角色</button>
                     </div>
 
-                    <!-- 角色介紹已補齊 flex、固定寬高比與防止壓縮類別 -->
+                    <!-- 角色介紹 -->
                     <div id="l6-p2" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-4 shrink-0">
                             <button onclick="transitionSubPage(6, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
@@ -997,7 +995,7 @@
             </div>
         </div>
 
-        <!-- MODAL: IMAGE LIGHTBOX（已修復 opacity: 0 隱形問題） -->
+        <!-- MODAL: IMAGE LIGHTBOX -->
         <div id="modal-image-lightbox" class="fixed inset-0 bg-ink/90 backdrop-blur-md z-[1020] flex items-center justify-center p-4 hidden transition-opacity duration-300" onclick="closeImageLightbox()">
             <div class="relative max-w-full max-h-full flex flex-col items-center" onclick="event.stopPropagation()">
                 <button onclick="closeImageLightbox()" class="absolute -top-12 right-0 text-white/70 hover:text-white text-2xl w-10 h-10 flex items-center justify-center bg-white/10 rounded-full active:scale-95 transition-transform">
@@ -1051,11 +1049,16 @@
                         desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門。" 
                     },
                     { 
-                        // 改用雙圖陣列，徹底修復門牌圖片鍵值重複被覆蓋的問題
                         images: ["images/l2-1.jpg", "images/l2-2.jpg"],
                         q: "請找尋這個門牌的所在位置，並觀察旁邊的說明牌\n\n糟了！這張線索遺失了重要資訊，請幫忙填起\n\n(填空題)", 
                         inputType: "text",
-                        answers: ["乙", "中校", "淡水河洪患", "防洪樓"], 
+                        // 修正：支援多種同義詞輸入，增加防卡死容錯
+                        answers: [
+                            ["乙"], 
+                            ["中校"], 
+                            ["淡水河洪患", "淡水河水災", "水災", "洪災", "洪患", "水患", "淹水"], 
+                            ["防洪樓", "閣樓", "小閣樓"]
+                        ], 
                         opts: [], 
                         a: null,
                         photo: true, 
@@ -1066,7 +1069,7 @@
                         image: "images/S__10690571.jpg", 
                         q: "居民居住因為空間不足向前後院擴建，形成眷村特殊的狹窄巷道景觀，我們稱為(____)", 
                         inputType: "text",
-                        answers: ["一線天"],
+                        answers: [["一線天"]],
                         opts: [],
                         a: null,
                         photo: true, 
@@ -1391,7 +1394,7 @@
                 };
                 cancelBtn.onclick = () => {
                     playBeep(300, 0.05);
-                    cancelUploadVerification(); // 點擊取消時銷毀 Firestore 監聽與輪詢，防止幽靈跳轉
+                    cancelUploadVerification();
                     closeModalAnim('modal-alert', 'alert-box');
                 };
             }
@@ -1506,6 +1509,8 @@
             reader.readAsDataURL(file);
         }
         
+        // 【修正 1】優化 Firestore 連線邏輯：去除無效的 1 秒輪詢，降低 Quota 消耗
+        // 僅存單一圖片欄位，節省 50% Storage 空間限制
         function uploadAndListenVerification(file, levelName, onSuccess) {
             cancelUploadVerification();
         
@@ -1515,8 +1520,10 @@
                 const teamName = GameState.get('teamName') || "匿名隊伍";
                 try {
                     const docRef = await db.collection("submissions").add({
-                        teamName: teamName, levelId: levelName, photoUrl: base64Str,
-                        imageBase64: base64Str, status: "pending",
+                        teamName: teamName, 
+                        levelId: levelName, 
+                        photoUrl: base64Str,
+                        status: "pending",
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
         
@@ -1529,31 +1536,34 @@
         
                     const handleResult = (approved) => {
                         if (isHandled) return;
-                        isHandled = true; cleanUp(); 
+                        isHandled = true; 
+                        cleanUp(); 
                         closeModalAnim('modal-alert', 'alert-box', () => onSuccess(approved));
                     };
         
+                    // 純靠 Snapshot 即時通訊
                     activeUploadUnsubscribe = docRef.onSnapshot((doc) => {
                         if (!doc.exists) return;
                         const data = doc.data();
                         if (data.status === "approved") handleResult(true);
                         else if (data.status === "rejected") handleResult(false);
-                    }, (err) => { console.warn("Snapshot 斷線，交由輪詢處理", err); });
-        
-                    activeUploadPollTimer = setInterval(async () => {
-                        try {
-                            const docSnap = await docRef.get();
-                            if (docSnap.exists) {
-                                const data = docSnap.data();
-                                if (data.status === "approved") handleResult(true);
-                                else if (data.status === "rejected") handleResult(false);
-                            }
-                        } catch (e) {}
-                    }, 1000);
+                    }, (err) => { 
+                        console.warn("Snapshot 斷線，啟動低頻率備用輪詢 (5秒)", err); 
+                        activeUploadPollTimer = setInterval(async () => {
+                            try {
+                                const snap = await docRef.get();
+                                if (snap.exists) {
+                                    const d = snap.data();
+                                    if (d.status === "approved") handleResult(true);
+                                    else if (d.status === "rejected") handleResult(false);
+                                }
+                            } catch (e) {}
+                        }, 5000);
+                    });
         
                 } catch (error) {
                     cancelUploadVerification();
-                    showAlert("連線中斷", "無法將影像送達指揮所，請再拍一次。\n" + error.message, "fa-triangle-exclamation", "text-primary");
+                    showAlert("連線中斷", "無法將影像送達指揮所，請檢查網路後再試。\n" + error.message, "fa-triangle-exclamation", "text-primary");
                 }
             });
         }
@@ -1568,6 +1578,15 @@
         }
 
         function initAudio() { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); }
+
+        // 安全的 Audio Play 方法，避免 iOS AbortError 洗版
+        async function safePlayAudio(audioElement) {
+            try {
+                await audioElement.play();
+            } catch (err) {
+                if (err.name !== 'AbortError') console.warn('音訊播放失敗:', err);
+            }
+        }
 
         function stopAllMedia() {
             document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
@@ -1964,8 +1983,11 @@
                 submitBtn.innerHTML = "確認送出 <i class='fa-solid fa-check ml-2'></i>";
                 submitBtn.onclick = () => {
                     let allCorrect = true;
+                    // 【修正 2】放寬填空題比對條件，增加同義詞陣列支援
                     inputs.forEach((input, i) => {
-                        if (input.value.trim().toLowerCase() !== qData.answers[i].toLowerCase()) allCorrect = false;
+                        const userVal = input.value.trim().toLowerCase();
+                        const accepted = qData.answers[i].map(a => a.toLowerCase());
+                        if (!accepted.includes(userVal)) allCorrect = false;
                     });
 
                     if (allCorrect) {
@@ -2212,6 +2234,8 @@
                     }, "拍打兩下 (確認)");
                 }
             }, 5000);
+            
+            // 安全播放音頻，即使被中斷也會進入 catch 並觸發 fallback 解鎖
             player.play().then(() => {
                 isPlaying = true; clearTimeout(timeout); document.getElementById('l3-audio-hint').classList.add('hidden'); 
                 document.querySelectorAll('.l3-opt-btn').forEach(b => { b.disabled = false; b.classList.remove('opacity-50', 'cursor-not-allowed'); });
@@ -2350,9 +2374,11 @@
             container.innerHTML = '';
             const audioEl = document.getElementById('l6-audio-player'); 
             const prog = document.getElementById('l6-progress');
+            
             audioEl.ontimeupdate = () => { 
-                if (audioEl.duration) { 
-                    const pct = (audioEl.currentTime / audioEl.duration) * 100; 
+                // 【修正 3】嚴格過濾 NaN 或 0 duration，避免引發樣式錯誤
+                if (Number.isFinite(audioEl.duration) && audioEl.duration > 0) { 
+                    const pct = Math.min(100, Math.max(0, (audioEl.currentTime / audioEl.duration) * 100)); 
                     prog.style.width = `${pct}%`; 
                 } 
             };
@@ -2380,111 +2406,17 @@
                     document.getElementById('l6-song-title').textContent = song.title; 
                     document.getElementById('l6-lyrics').textContent = song.lyric;
                     audioEl.src = song.audio; 
-                    audioEl.play().catch(e => { console.log("Audio play blocked", e); });
+                    
+                    // 【修正 4】安全啟動 Audio
+                    safePlayAudio(audioEl);
                 };
                 container.appendChild(btn);
             });
         }
 
         // ==========================================
-        // 全域按鈕與事件綁定
+        // LEVEL 7 與結束邏輯
         // ==========================================
-        function renderPuzzlePieces(containerId, isFullView) {
-            const container = document.getElementById(containerId); 
-            if (!container) return; 
-            container.innerHTML = '';
-            GAME_DATA.puzzles.forEach((p) => {
-                let stamps = GameState.get('stamps'); 
-                const isUnlocked = isFullView ? true : stamps[p.id - 1];
-                const div = document.createElement('div'); 
-                div.className = `puzzle-piece ${p.class}`;
-                if (!isUnlocked) { 
-                    div.classList.add('locked'); 
-                    div.innerHTML = '<i class="fa-solid fa-lock text-white/20 text-3xl opacity-80"></i>'; 
-                } else { 
-                    div.innerHTML = `<span>${p.text}</span>`; 
-                }
-                if (!isFullView) { 
-                    div.onclick = () => { 
-                        if (isUnlocked) { playBeep(700, 0.05); openPuzzleLightbox(p.text); } 
-                    }; 
-                }
-                container.appendChild(div);
-            });
-        }
-
-        document.getElementById('btn-start-game').addEventListener('click', () => {
-            const nameInput = document.getElementById('input-team-name'); 
-            const name = nameInput ? nameInput.value.trim() : "";
-            if (!name) return showAlert("資料缺失", "請輸入隊伍代號！", "fa-triangle-exclamation");
-            
-            initAudio(); playBeep(700, 0.05); 
-            GameState.set('teamName', name.substring(0, 15));
-            const membersInput = document.getElementById('input-team-members');
-            if (membersInput) GameState.set('teamMembers', membersInput.value.trim());
-            showScreen('story');
-        });
-
-        window.verifyLevelCode = function() {
-            playBeep();
-            const codeInput = document.getElementById('input-level-code');
-            const code = codeInput ? codeInput.value.trim().toUpperCase() : "";
-            
-            const codeMap = {
-                '3G100301': 1, '3G100302': 2, '3G100303': 3,
-                '3G100304': 4, '3G100305': 5, '3G100306': 6, '3G100307': 7
-            };
-        
-            if (codeMap[code]) {
-                const startLvl = codeMap[code];
-                GameState.set('startLevel', startLvl);
-        
-                let newSeq = [];
-                if (startLvl === 7) {
-                    newSeq = [7, 6, 1, 4, 2, 5, 3];
-                } else {
-                    const coreSeq = [6, 1, 4, 2, 5, 3];
-                    const coreIdx = coreSeq.indexOf(startLvl);
-                    newSeq = Array.from({length: 6}, (_, i) => coreSeq[(coreIdx + i) % 6]);
-                    newSeq.push(7);
-                }
-                GameState.set('customSequence', newSeq);
-                GameState.set('currentStageIndex', 0);
-        
-                if (!GameState.get('startTime')) GameState.set('startTime', Date.now());
-                if (globalTimerInterval) clearInterval(globalTimerInterval);
-                globalTimerInterval = setInterval(updateTimerDisplay, 1000);
-                updateTimerDisplay();
-        
-                showScreen('main');
-            } else {
-                playErrorSound();
-                showAlert("代碼錯誤", "查無此任務代碼，請重新確認現場告示牌上的代碼！\n(例：3G100301)", "fa-circle-xmark", "text-primary");
-            }
-        };
-
-        document.getElementById('btn-goto-current').addEventListener('click', () => {
-            initAudio(); playBeep(600, 0.05);
-            let seq = GameState.get('customSequence'); 
-            let idx = GameState.get('currentStageIndex'); 
-            const targetLvl = seq[idx];
-            if (targetLvl === 4) renderL4Questions(); 
-            showScreen(`level-${targetLvl}`);
-        });
-
-        function updateTimerDisplay() {
-            if (!GameState.get('startTime')) return;
-            const now = GameState.get('endTime') ? GameState.get('endTime') : Date.now();
-            let elapsed = Math.floor((now - GameState.get('startTime')) / 1000);
-            let remain = (90 * 60) - elapsed; 
-            if (remain < 0) remain = 0;
-            const h = String(Math.floor(remain / 3600)).padStart(2, '0');
-            const m = String(Math.floor((remain % 3600) / 60)).padStart(2, '0');
-            const s = String(remain % 60).padStart(2, '0');
-            const mainTimerEl = document.getElementById('main-timer'); 
-            if (mainTimerEl) mainTimerEl.textContent = `${h}:${m}:${s}`;
-        }
-
         function renderCertificate() {
             const elapsed = Math.floor(((GameState.get('endTime') || Date.now()) - GameState.get('startTime')) / 1000);
             const h = String(Math.floor(elapsed / 3600)).padStart(2, '0'); 
@@ -2529,7 +2461,7 @@
         }
 
         document.getElementById('btn-restart-game').onclick = confirmRestartGame;
-        document.getElementById('btn-nav-hq').onclick = () => { playBeep(); showScreen(GameState.get('teamName') ? 'main' : 'entry'); };
+        // 原本末尾錯誤覆蓋導覽列點擊的 Bug，已被刪除修正
         
         document.getElementById('sound-toggle').onclick = () => {
             let soundOn = !GameState.get('soundEnabled'); 
