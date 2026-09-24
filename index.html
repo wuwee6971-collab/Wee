@@ -81,7 +81,6 @@
         /* ==========================================
            3. UI 元件模組 (UI Components)
            ========================================== */
-        /* 按鈕系統 - 導入現代微互動與復古陰影 */
         .btn-base {
             transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
             border-radius: 4px;
@@ -195,7 +194,6 @@
             -webkit-box-orient: vertical; overflow: hidden; 
         }
 
-        /* 拼圖座標系保留原狀 */
         .piece-1 { top: 0%; left: 0%; width: 42%; height: 44%; clip-path: polygon(0 0, 95% 8%, 85% 100%, 0 92%); transform: rotate(-1deg); }
         .piece-2 { top: 0%; left: 35%; width: 40%; height: 46%; clip-path: polygon(10% 0, 100% 4%, 85% 100%, 0 95%); transform: rotate(1.5deg); }
         .piece-3 { top: 5%; left: 68%; width: 32%; height: 42%; clip-path: polygon(5% 5%, 100% 0, 95% 95%, 0 100%); transform: rotate(-0.5deg); }
@@ -204,8 +202,7 @@
         .piece-6 { top: 40%; left: 62%; width: 25%; height: 62%; clip-path: polygon(0 5%, 95% 0, 100% 100%, 5% 95%); transform: rotate(1deg); }
         .piece-7 { top: 44%; left: 78%; width: 22%; height: 56%; clip-path: polygon(5% 0, 100% 5%, 90% 100%, 0 95%); transform: rotate(-1.5deg); }
 
-        /* 特殊模塊修飾 */
-        .food-feedback-box { width: 100%; max-height: 180px; overflow: hidden; border-radius: 8px; margin: 12px 0; background-color: #E8DFCC; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); }
+        .food-feedback-box { width: 100%; max-height: 180px; overflow: hidden; border-radius: 8px; margin: 12px 0; background-color: #E8DFCC; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); border: 2px solid rgba(44, 30, 22, 0.1); }
         .intro-history-card { background: #F7F3E8; border: 1px solid rgba(4, 120, 87, 0.2); padding: 16px; border-radius: 8px; box-shadow: 0 4px 12px rgba(4, 120, 87, 0.05); border-left: 4px solid #047857; }
         
         #app-loader { transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1); }
@@ -232,7 +229,7 @@
         <div class="text-3xl font-mono font-black text-primary tracking-widest drop-shadow-sm" id="loader-progress">0%</div>
     </div>
 
-    <!-- 主容器框架 (Desktop RWD 優化：圓角、陰影、比例) -->
+    <!-- 主容器框架 -->
     <div class="relative w-full max-w-[430px] h-[100dvh] sm:h-[860px] paper-bg sm:rounded-[2rem] sm:border-[10px] border-stone-900 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7)] flex flex-col overflow-hidden bg-white">
 
         <!-- 頂部紅色導覽列 -->
@@ -256,7 +253,7 @@
 
         <!-- 遊戲主視口 -->
         <div id="game-viewport" class="flex-1 overflow-y-auto overflow-x-hidden scroll-smooth z-10 w-full custom-scrollbar relative bg-transparent" style="-webkit-overflow-scrolling: touch;">
-            <div class="min-h-full flex flex-col relative w-full pb-28"> <!-- 保留底部導航欄空間 -->
+            <div class="min-h-full flex flex-col relative w-full pb-28">
 
                 <!-- SCREEN 0: ENTRY -->
                 <div id="screen-entry" class="screen-panel screen-active p-6 flex flex-col justify-center">
@@ -278,7 +275,7 @@
                     </div>
                 </div>
 
-                <!-- 三-3 SCREEN: STORY (信件碎片與 7 個鎖) -->
+                <!-- 三-3 SCREEN: STORY -->
                 <div id="screen-story" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 flex flex-col justify-center min-h-full">
                         <h2 class="text-2xl font-black text-primary mb-6 text-center font-serif tracking-widest border-b border-dashed border-ink/20 pb-4">信件碎片</h2>
@@ -300,7 +297,7 @@
                     </div>
                 </div>
                 
-                <!-- 三-4 SCREEN: TUTORIAL (頁面操作說明) -->
+                <!-- 三-4 SCREEN: TUTORIAL -->
                 <div id="screen-tutorial" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 flex flex-col justify-center min-h-full">
                         <h2 class="text-2xl font-black text-primary mb-8 text-center font-serif tracking-widest border-b border-dashed border-ink/20 pb-4">頁面操作說明</h2>
@@ -315,7 +312,7 @@
                     </div>
                 </div>
                 
-                <!-- 三-2 SCREEN: LEVEL SELECT (獨立代碼選關頁) -->
+                <!-- 三-2 SCREEN: LEVEL SELECT -->
                 <div id="screen-level-select" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 space-y-6">
                         <h2 class="text-2xl font-black text-primary text-center font-serif tracking-widest border-b border-dashed border-ink/20 pb-4">輸入任務代碼</h2>
@@ -326,6 +323,7 @@
                         </button>
                     </div>
                 </div>
+
                 <!-- SCREEN: MAIN (總部主畫面) -->
                 <div id="screen-main" class="screen-panel hidden p-6 flex flex-col space-y-6 justify-center">
                     <div class="level-card p-6 text-center flex flex-col items-center justify-center">
@@ -344,7 +342,6 @@
                 <!-- LEVEL 1: 防砲陣地 -->
                 <div id="screen-level-1" class="screen-panel hidden p-6 flex flex-col">
                     <input type="file" accept="image/*" capture="environment" id="l1-camera-input" class="hidden">
-                    <!-- LEVEL 1: P1 現場位置提示 -->
                     <div id="l1-p1" class="level-card p-6 flex flex-col justify-center min-h-full">
                         <h2 class="text-xl text-primary font-black text-center border-b border-dashed border-ink/20 pb-4 font-serif tracking-widest mb-5">關卡現場位置提示</h2>
                         <div class="w-full aspect-[16/9] vintage-photo flex items-center justify-center mb-5 shrink-0">
@@ -357,7 +354,6 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-5 shrink-0" onclick="transitionSubPage(1, 1, 2)">進入任務牆</button>
                     </div>
 
-                    <!-- P2: 四點巡查任務牆 -->
                     <div id="l1-p2" class="hidden flex-col space-y-6">
                         <div class="flex items-center mb-2 shrink-0">
                             <button onclick="transitionSubPage(1, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
@@ -374,7 +370,6 @@
                         </div>
                         
                         <div class="level-card p-6 space-y-6 relative">
-                            <!-- Blur Overlay -->
                             <div id="l1-keypad-overlay" class="absolute inset-0 bg-paper-dark/80 backdrop-blur-sm z-20 flex items-center justify-center transition-opacity duration-300 rounded-lg">
                                 <div class="bg-ink text-gold text-sm font-bold px-6 py-4 rounded-md shadow-2xl border border-gold/30 tracking-widest text-center">機密鎖定：請先完成巡查</div>
                             </div>
@@ -448,17 +443,28 @@
                     </div>
 
                     <div id="l3-qa-section" class="hidden flex-1 flex flex-col">
-                       <div class="mt-4 flex flex-col items-center justify-center shrink-0 mb-4 relative">
-                                <button id="l3-btn-voice" class="btn-base w-24 h-24 bg-vintage-paper border-[3px] border-ink rounded-full text-ink flex items-center justify-center shadow-[0_6px_0_theme(colors.ink)] transition-transform active:translate-y-2 active:shadow-[0_0px_0_theme(colors.ink)]">
-                                    <i id="l3-voice-icon" class="fa-solid fa-radio text-4xl opacity-80"></i>
+                        <div class="level-card l3 p-6 flex-1 flex flex-col relative">
+                            <div class="text-center mb-4 shrink-0 relative flex justify-between items-center border-b border-dashed border-gold-dark/40 pb-3">
+                                <button onclick="prevL3Question()" class="btn-base bg-gold/10 text-gold-dark px-4 py-2 hidden shadow-retro-sm rounded-md border border-gold/30" id="btn-l3-prev"><i class="fa-solid fa-chevron-left"></i></button>
+                                <span class="px-5 py-2 bg-gold/10 border border-gold/30 rounded-md text-sm font-black text-gold-dark shadow-retro-sm mx-auto tracking-widest font-mono" id="l3-q-counter">菜單 1 / 5</span>
+                            </div>
+
+                            <div id="l3-audio-hint" class="absolute top-20 left-1/2 -translate-x-1/2 w-11/12 max-w-xs bg-paper text-gold-dark text-xs font-bold p-2.5 border border-gold-dark rounded-md text-center z-10 shadow-lg font-serif tracking-wide">
+                                ⚠ 點擊播放收音機，聆聽線索解鎖檔案
+                            </div>
+                            
+                            <div class="mt-2 flex flex-col items-center justify-center shrink-0 mb-3 relative">
+                                <button id="l3-btn-voice" class="btn-base w-20 h-20 bg-vintage-paper border-[3px] border-ink rounded-full text-ink flex items-center justify-center shadow-[0_6px_0_theme(colors.ink)] transition-transform active:translate-y-2 active:shadow-[0_0px_0_theme(colors.ink)]">
+                                    <i id="l3-voice-icon" class="fa-solid fa-radio text-3xl opacity-80"></i>
                                 </button>
                                 <audio id="l3-audio-player" class="hidden"></audio>
                             </div>
                             
-                            <p id="l3-question-text" class="text-base font-black text-center leading-[1.8] mb-4 text-ink font-serif tracking-widest"></p>
+                            <p id="l3-question-text" class="text-base font-black text-center leading-[1.8] mb-3 text-ink font-serif tracking-widest"></p>
                             
                             <!-- 四宮格料理圖片按鈕容器（點擊彈出介紹） -->
                             <div id="l3-options-container" class="grid grid-cols-2 gap-3 flex-1 content-end pb-2"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -479,7 +485,6 @@
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">【尋人啟事】目標特徵</h2>
                         </div>
                         <div class="grid grid-cols-2 gap-4 flex-1 overflow-y-auto custom-scrollbar content-start pb-4">
-                            <!-- 奶奶 -->
                             <div class="char-card-grid flex flex-col">
                                 <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-[3px] !border-b-8 m-3 shadow-sm">
                                     <img src="https://placehold.co/200/e5d5b5/7c343d?text=Grandma" alt="奶奶" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
@@ -490,7 +495,6 @@
                                     <span class="font-bold leading-[1.6] text-ink text-[11px]">主動前往攀談，聽取歷史解說啟動互動。</span>
                                 </div>
                             </div>
-                            <!-- 媽媽 -->
                             <div class="char-card-grid flex flex-col">
                                 <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-[3px] !border-b-8 m-3 shadow-sm">
                                     <img src="https://placehold.co/200/e5d5b5/7c343d?text=Mom" alt="媽媽翠芳" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
@@ -501,7 +505,6 @@
                                     <span class="font-bold leading-[1.6] text-ink text-[11px]">尋找其身影，引導眷村大團聚開場。</span>
                                 </div>
                             </div>
-                            <!-- 中學生 -->
                             <div class="char-card-grid flex flex-col">
                                 <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-[3px] !border-b-8 m-3 shadow-sm">
                                     <img src="https://placehold.co/200/e5d5b5/7c343d?text=Student" alt="中學生" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
@@ -512,7 +515,6 @@
                                     <span class="font-bold leading-[1.6] text-ink text-[11px]">請找到他，一起完成「編繩子」任務。</span>
                                 </div>
                             </div>
-                            <!-- 在地兒童 -->
                             <div class="char-card-grid flex flex-col">
                                 <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-[3px] !border-b-8 m-3 shadow-sm">
                                     <img src="https://placehold.co/200/e5d5b5/7c343d?text=Kid" alt="小孩" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');">
@@ -564,32 +566,32 @@
                 <!-- LEVEL 5: 群星之夜 -->
                 <div id="screen-level-5" class="screen-panel hidden p-6 flex flex-col">
                     <div id="l5-p1" class="level-card p-6 flex flex-col min-h-full">
-                        <h2 class="text-center text-primary text-2xl mb-4 font-black border-b border-dashed border-ink/20 pb-4 tracking-widest shrink-0">黃金娛樂時光</h2>
+                        <h2 class="text-center text-primary text-2xl mb-4 font-black border-b border-dashed border-ink/20 pb-4 tracking-widest shrink-0 font-serif">黃金娛樂時光</h2>
                         
                         <div class="text-base leading-[1.9] font-bold text-ink text-justify flex-1 font-serif overflow-y-auto custom-scrollbar pr-2 pb-2">
                             <!-- 圖 1 插入點 -->
-                            <div class="w-full mb-4 rounded overflow-hidden shadow-sm border border-ink/10">
-                                <img src="https://placehold.co/600x300/e5d5b5/7c343d?text=圖1" alt="黃金娛樂時光1" class="w-full h-auto object-cover">
+                            <div class="w-full mb-4 vintage-photo aspect-[16/9] flex items-center justify-center shrink-0">
+                                <img src="images/l5_photo_1.jpg" alt="老唱片與歌廳記憶" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=老唱片與歌廳記憶'" class="w-full h-full object-cover loaded">
                             </div>
                             
                             <p class="mb-5">當黑膠唱片旋轉、霓虹燈光閃爍，空氣中流淌著老歌與電影的熟悉旋律。這裡不只是歷史的記憶，更是我們今晚一同尋找青春與鄉愁的舞台。</p>
                             
                             <!-- 圖 2 插入點 -->
-                            <div class="w-full mb-4 rounded overflow-hidden shadow-sm border border-ink/10">
-                                <img src="https://placehold.co/600x300/e5d5b5/7c343d?text=圖2" alt="黃金娛樂時光2" class="w-full h-auto object-cover">
+                            <div class="w-full mb-4 vintage-photo aspect-[16/9] flex items-center justify-center shrink-0">
+                                <img src="images/l5_photo_2.jpg" alt="天台廣場繁華盛景" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=天台廣場繁華盛景'" class="w-full h-full object-cover loaded">
                             </div>
                             
                             <p class="mb-5">1950至1980年代，三重天台廣場曾是北台灣最繁華的娛樂地標，歌廳、戲院、夜總會林立。第一代外省移民在眷村裡，用歌聲撫平離鄉背井的鄉愁。</p>
                             
                             <!-- 圖 3 插入點 -->
-                            <div class="w-full mb-4 rounded overflow-hidden shadow-sm border border-ink/10">
-                                <img src="https://placehold.co/600x300/e5d5b5/7c343d?text=圖3" alt="黃金娛樂時光3" class="w-full h-auto object-cover">
+                            <div class="w-full mb-4 vintage-photo aspect-[16/9] flex items-center justify-center shrink-0">
+                                <img src="images/l5_photo_3.jpg" alt="接歌挑戰現場" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=接歌挑戰現場'" class="w-full h-full object-cover loaded">
                             </div>
                             
                             <p>今晚，我們將透過一場「接歌挑戰」，帶領大家走入這段熱鬧又帶點感傷的青春歲月。</p>
                         </div>
                         
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-5 shrink-0" onclick="transitionSubPage(5, 1, 2)">查閱群星</button>
+                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="transitionSubPage(5, 1, 2)">查閱群星</button>
                     </div>
 
                     <div id="l5-p2" class="hidden flex-col min-h-full">
@@ -647,25 +649,23 @@
                                 <li><b>通關條件：</b>全體合力完成 3 首歌，即可獲得密碼！</li>
                             </ol>
                         </div>
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(5, 3, 4)">輸入密碼</button>
+                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(5, 3, 4)">前往接歌挑戰</button>
                     </div>
 
-                    <!-- 新增的 P4：接歌挑戰歌單 -->
+                    <!-- P4：接歌挑戰歌單 -->
                     <div id="l5-p4" class="hidden flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(5, 4, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">接歌挑戰</h2>
                         </div>
                         <div class="level-card p-6 flex-1 flex flex-col justify-start bg-paper/30 space-y-4 overflow-hidden relative">
-                            <p class="text-sm font-bold text-ink/80 text-center mb-1 shrink-0">點擊歌單，看看你能否接出後面的歌詞！</p>
-                            <div id="l5-song-list" class="space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-1">
-                                <!-- JS injects songs here -->
-                            </div>
+                            <p class="text-sm font-bold text-ink/80 text-center mb-1 shrink-0 font-serif">點擊歌單，看看你能否接出後面的歌詞！</p>
+                            <div id="l5-song-list" class="space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-1"></div>
                         </div>
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="transitionSubPage(5, 4, 5)">前往輸入密碼</button>
                     </div>
 
-                    <!-- 原本的 P4 變成 P5：通關密語 -->
+                    <!-- P5：通關密語 -->
                     <div id="l5-p5" class="hidden flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(5, 5, 4)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
@@ -933,8 +933,8 @@
 
                 <div id="alert-icon" class="shrink-0 mb-2"></div>
                 <h3 id="alert-title" class="text-xl font-black text-ink shrink-0 border-b border-dashed border-ink/20 pb-3 font-serif tracking-widest">提示</h3>
-                <div class="py-2 text-center">
-                    <p id="alert-desc" class="text-sm text-ink/90 font-bold leading-[1.8] whitespace-pre-line tracking-wide"></p>
+                <div class="py-2 text-center max-h-[300px] overflow-y-auto custom-scrollbar">
+                    <div id="alert-desc" class="text-sm text-ink/90 font-bold leading-[1.8] whitespace-pre-line tracking-wide"></div>
                 </div>
                 <div class="pt-4 shrink-0 grid grid-cols-2 gap-3" id="alert-btn-container">
                     <button id="alert-cancel-btn" class="btn-base py-3.5 military-btn font-black text-sm tracking-widest">返回</button>
@@ -943,7 +943,7 @@
             </div>
         </div>
 
-        <!-- MODAL: STAMPS (碎紙片拼圖收納盒) -->
+        <!-- MODAL: STAMPS -->
         <div id="modal-stamps" class="fixed inset-0 bg-ink/80 backdrop-blur-lg z-[990] flex items-end justify-center hidden transition-opacity duration-400">
             <div class="w-full max-w-[430px] bg-[#221711] border-t border-gold/30 rounded-t-2xl p-6 space-y-4 h-[85%] flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.5)] relative pb-[env(safe-area-inset-bottom,20px)] transform translate-y-full transition-transform duration-400 ease-out" id="stamps-box">
                 <div class="flex justify-between items-center border-b border-white/10 pb-4 shrink-0">
@@ -961,7 +961,7 @@
             </div>
         </div>
 
-        <!-- MODAL: FULL LETTER (完整破碎信件) -->
+        <!-- MODAL: FULL LETTER -->
         <div id="modal-full-letter" class="fixed inset-0 bg-ink/95 backdrop-blur-xl z-[1000] flex items-center justify-center p-6 hidden transition-opacity duration-500">
             <div class="w-full max-w-[430px] flex flex-col items-center relative opacity-0 transform scale-95 transition-all duration-500" id="letter-box">
                 <button class="absolute -top-16 right-0 text-white/50 hover:text-white text-3xl active:scale-90 transition-transform w-12 h-12 flex items-center justify-center bg-white/5 rounded-full" onclick="closeFullLetter()"><i class="fa-solid fa-xmark"></i></button>
@@ -973,7 +973,7 @@
             </div>
         </div>
         
-        <!-- MODAL: PUZZLE LIGHTBOX (單張拼圖檢視) -->
+        <!-- MODAL: PUZZLE LIGHTBOX -->
         <div id="modal-puzzle-lightbox" class="fixed inset-0 bg-ink/80 backdrop-blur-md z-[1010] flex items-center justify-center p-6 hidden transition-opacity duration-300" onclick="closePuzzleLightbox()">
             <div class="vintage-paper p-8 rounded-xl max-w-[340px] w-full text-center space-y-6 shadow-glass border border-gold/40 relative transform transition-all scale-95 opacity-0" id="lightbox-box" onclick="event.stopPropagation()" style="transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
                 <div class="flex justify-between items-center border-b border-dashed border-ink/20 pb-3">
@@ -984,17 +984,18 @@
                 <p class="text-[10px] font-sans font-bold text-ink/40 tracking-widest">點擊任意處關閉</p>
             </div>
         </div>
-    </div>
-    <!-- MODAL: IMAGE LIGHTBOX (圖片放大檢視) -->
-    <div id="modal-image-lightbox" class="fixed inset-0 bg-ink/90 backdrop-blur-md z-[1020] flex items-center justify-center p-4 hidden transition-opacity duration-300" onclick="closeImageLightbox()">
-        <div class="relative max-w-full max-h-full flex flex-col items-center" onclick="event.stopPropagation()">
-            <button onclick="closeImageLightbox()" class="absolute -top-12 right-0 text-white/70 hover:text-white text-2xl w-10 h-10 flex items-center justify-center bg-white/10 rounded-full active:scale-95 transition-transform">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <div class="vintage-photo p-1 bg-paper rounded shadow-2xl max-w-[92vw] max-h-[80vh] overflow-hidden flex items-center justify-center">
-                <img id="image-lightbox-src" src="" alt="放大檢視" class="max-w-full max-h-[75vh] object-contain">
+
+        <!-- MODAL: IMAGE LIGHTBOX -->
+        <div id="modal-image-lightbox" class="fixed inset-0 bg-ink/90 backdrop-blur-md z-[1020] flex items-center justify-center p-4 hidden transition-opacity duration-300" onclick="closeImageLightbox()">
+            <div class="relative max-w-full max-h-full flex flex-col items-center" onclick="event.stopPropagation()">
+                <button onclick="closeImageLightbox()" class="absolute -top-12 right-0 text-white/70 hover:text-white text-2xl w-10 h-10 flex items-center justify-center bg-white/10 rounded-full active:scale-95 transition-transform">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div class="vintage-photo p-1 bg-paper rounded shadow-2xl max-w-[92vw] max-h-[80vh] overflow-hidden flex items-center justify-center">
+                    <img id="image-lightbox-src" src="" alt="放大檢視" class="max-w-full max-h-[75vh] object-contain">
+                </div>
+                <p class="text-xs font-bold text-gold/80 mt-3 tracking-widest">點擊任意處或右上角關閉</p>
             </div>
-            <p class="text-xs font-bold text-gold/80 mt-3 tracking-widest">點擊任意處或右上角關閉</p>
         </div>
     </div>
 
@@ -1009,10 +1010,10 @@
             ],
             level1: {
                 locations: [
-                    { title: "甬道1號出口", code: "1", task: "1.甬道出口：作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，為了不被敵人發現，通常設計得隱蔽，防守方在敵軍不注意時，突然現身進行反擊。\n一村中的甬道有10個出口，請觀察關主後方的地圖找尋【1號出口】，並拍照回傳總部。", desc: "" },
-                    { title: "豎井", code: "9", task: "2.甬道豎井：地下甬道容易因為空氣不流通積聚有害氣體或極度悶熱。豎井利用煙囪效應或外接機械風扇，帶入新鮮空氣，並排出內部廢氣、濕氣或熱量。當甬道不幸發生火災時，豎井是最佳的排煙通道，可防止濃煙在狹窄的水平甬道內快速擴散，為人員爭取逃生時間與空間。\n請走上階梯，觀察是否有高出地面的結構物找尋疑似【豎井】的通氣構造，其中一個可以藉由玻璃這照觀察地下甬道，請找到它並拍照回傳總部確認。", desc: "" },
-                    { title: "甬道4號出入口", code: "4", task: "4號出入口：作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，為了不被敵人發現，通常設計得隱蔽，防守方在敵軍不注意時，突然現身進行反擊。\n一村中的甬道有10個出口，其中有些入口隨著時間堆疊許多構建，請觀察擁到地圖找尋院落中的【4號出口】，並拍照回傳總部確認。", desc: "" },
-                    { title: "5號砲台遺跡", code: "5", task: "5號砲台遺跡：日治時期高射砲陣地留下的6座防空砲台原本是一座長滿草的小山坡，主要是為了防禦美軍空襲時的總督府與物資集散地大稻埕。\n戰後國民政府遷台，空軍高砲部隊駐紮於此，興建眷舍時便以這 6 座防空砲台為核心，將房子圍繞在周圍興建。這種「軍事防衛陣地」與「民居眷村生活」緊密嵌合的奇特景觀，在台灣極為罕見。\n請找尋甬道4號出口前的地板，找尋疑似【高射砲砲座】的構建，並回傳總部確認。", desc: "" }
+                    { title: "甬道1號出口", code: "1", task: "1.甬道出口：作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，通常設計隱蔽。\n一村中的甬道有10個出口，請觀察關主後方的地圖找尋【1號出口】，並拍照回傳總部。", desc: "" },
+                    { title: "豎井", code: "9", task: "2.甬道豎井：地下甬道容易積聚廢氣或悶熱。豎井利用煙囪效應帶來新鮮空氣，亦是火災排煙通道。\n請找尋疑似【豎井】的通氣構造，其中一個可透過玻璃罩觀察地下甬道，找到後拍照回傳確認。", desc: "" },
+                    { title: "甬道4號出入口", code: "4", task: "4號出入口：人員物資快速撤離出入口。\n請觀察甬道地圖找尋院落中的【4號出口】，並拍照回傳總部確認。", desc: "" },
+                    { title: "5號砲台遺跡", code: "5", task: "5號砲台遺跡：日治時期高射砲陣地留下的防空砲台。\n戰後眷舍便圍繞這6座防空砲台興建。請找尋4號出口前地板疑似【高射砲砲座】構建並拍照確認。", desc: "" }
                 ],
                 passcode: "1945",
                 hints: [
@@ -1022,25 +1023,17 @@
             },
             level2: {
                 questions: [
-                    // 測驗 1：特級眷舍
                     { 
                         image: "images/l2_map2.jpg", 
                         photoImage: null, 
                         q: "空軍一村依據軍階與家庭成員分配房舍，這是一村的建築配置圖請對照地圖找到特級眷舍觀察高階軍官的家擁有哪一個最明顯的建築特征?", 
-                        isMultiChoice: true, // 標記為多選題
+                        isMultiChoice: true,
                         opts: [
-                            " 整排的連棟小屋", 
-                            " 紅色大門", 
-                            " 綠色大門", 
-                            " 獨立庭院", 
-                            " 美麗的斜屋頂", 
-                            " 迷你游泳池", 
-                            " 洗石子外牆", 
-                            " 馬賽克外牆", 
-                            " 紅磚牆", 
-                            " 竹籬笆"
+                            " 整排的連棟小屋", " 紅色大門", " 綠色大門", " 獨立庭院", 
+                            " 美麗的斜屋頂", " 迷你游泳池", " 洗石子外牆", " 馬賽克外牆", 
+                            " 紅磚牆", " 竹籬笆"
                         ], 
-                        a: [1, 3, 6], // 索引 1, 3, 6 分別代表選項 2, 4, 7
+                        a: [1, 3, 6], 
                         photo: true, 
                         photoText: "請隊員們一起與特級眷舍的任一個特徵並拍照吧！", 
                         desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門。" 
@@ -1048,7 +1041,6 @@
                     { 
                         image: "images/l2-1.jpg", 
                         q: "請找尋這個門牌的所在位置，並觀察旁邊的說明牌\n\n糟了！這張線索遺失了重要資訊，請幫忙填起\n\n(填空題)", 
-                        image: "images/l2-2.jpg",
                         inputType: "text",
                         answers: ["乙", "中校", "淡水河洪患", "防洪樓"], 
                         opts: [], 
@@ -1153,7 +1145,7 @@
                 songs: [
                     {
                         title: "外婆的澎湖灣",
-                        lines: "晚風輕拂澎湖灣，白浪逐沙灘，沒有椰林綴斜陽，只是一片海藍藍......",
+                        lines: "晚風輕拂澎湖灣，白浪逐沙灘，沒有椰林綴斜陽，只是一片海藍藍.......",
                         stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊" // 14字：坐在門前的矮牆上 一遍遍懷想
                     },
                     {
@@ -1190,15 +1182,12 @@
                 { id: 7, class: 'piece-7', text: '「半世戎馬，一生清風」<br>—— 永遠想回家的志遠' }
             ],
             preloadImages: [
-                "https://placehold.co/400x300/e5d5b5/7c343d?text=Map", "https://placehold.co/200/e5d5b5/7c343d?text=Grandma",
-                "https://placehold.co/200/e5d5b5/7c343d?text=Mom", "https://placehold.co/200/e5d5b5/7c343d?text=Student",
-                "https://placehold.co/200/e5d5b5/7c343d?text=Kid", "images/鄧麗君.png", "images/羅大佑.png", "images/紫薇.png", "images/潘安邦.png",
-                "https://placehold.co/200/e5d5b5/7c343d?text=Grandson", "images/桂花.png", "images/玉蘭花.jpg", "images/梔子花.jpg", "images/秀英花.jpg", "images/玫瑰.jpg", "images/茉莉.png",
-                "images/信.png", "images/l2_map.jpg", "images/l2_map2.jpg", "images/l2_2.jpg", "images/l2_3.jpg", "images/l2_5.jpg", 
-                "images/images_1_sichuan.mp3", "images/images_2_hunan.mp3", "images/images_3_anhui.mp3", "images/images_4_beijing.mp3", "images/images_5_shandong.mp3", 
-                "images/相思河畔.mp3", "images/葉佳修.mp3", "images/劉福助.mp3", "images/眷村.png"
+                "images/S__10690579_0.jpg", "images/鄧麗君.png", "images/羅大佑.png", "images/紫薇.png", "images/潘安邦.png",
+                "images/桂花.png", "images/玉蘭花.jpg", "images/梔子花.jpg", "images/秀英花.jpg", "images/玫瑰.jpg", "images/茉莉.png",
+                "images/信.png", "images/l2_map.jpg", "images/l2_map2.jpg", "images/l2-1.jpg", "images/l2-2.jpg", "images/S__10690571.jpg"
             ]
         };
+
         window.openImageLightbox = function(src) {
             if (!src) return;
             playBeep(650, 0.05);
@@ -1213,9 +1202,7 @@
         window.closeImageLightbox = function() {
             playBeep(400, 0.05);
             const modal = document.getElementById('modal-image-lightbox');
-            if (modal) {
-                modal.classList.add('hidden');
-            }
+            if (modal) modal.classList.add('hidden');
         };
 
         const GameState = (function() {
@@ -1254,9 +1241,6 @@
             console.warn("Web Audio API 初始化失敗：", e);
         }
 
-        // ==========================================
-        // Firebase 與生命週期
-        // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyCxIinbYw3OhJhKksVHsqPaYCv0-fLUR3s",
             authDomain: "weee-57379.firebaseapp.com",
@@ -1269,12 +1253,8 @@
         let db = null;
         try {
             if (typeof firebase !== 'undefined') {
-                if (!firebase.apps.length) {
-                    firebase.initializeApp(firebaseConfig);
-                }
+                if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
                 db = firebase.firestore();
-            } else {
-                console.warn("Firebase SDK 未成功載入，將關閉即時審核功能。");
             }
         } catch (e) {
             console.warn("Firebase 初始化失敗：", e);
@@ -1290,13 +1270,11 @@
             const finishLoading = () => {
                 if (isFinished) return;
                 isFinished = true;
-        
                 if (loader) {
                     loader.style.pointerEvents = 'none';
                     loader.style.opacity = '0';
                     setTimeout(() => { if (loader.parentNode) loader.remove(); }, 800);
                 }
-        
                 try {
                     if (GameState.init() && GameState.get('teamName')) {
                         if (globalTimerInterval) clearInterval(globalTimerInterval);
@@ -1315,13 +1293,11 @@
                         showScreen('entry');
                     }
                 } catch (err) {
-                    console.error("狀態初始化失敗，強制進入登入畫面：", err);
                     showScreen('entry');
                 }
             };
         
             const forceTimeout = setTimeout(finishLoading, 1500);
-        
             if (images.length === 0) {
                 clearTimeout(forceTimeout);
                 finishLoading();
@@ -1342,18 +1318,12 @@
             }
         }
         
-        if (document.readyState === 'complete') {
-            startAppLifecycle();
-        } else {
-            window.addEventListener('DOMContentLoaded', startAppLifecycle);
-            window.addEventListener('load', startAppLifecycle);
-        }
+        if (document.readyState === 'complete') startAppLifecycle();
+        else window.addEventListener('DOMContentLoaded', startAppLifecycle);
 
         // ==========================================
         // 核心功能 (Utils)
         // ==========================================
-        // 覆蓋原本的 showAlert 使其支援動畫
-        const originalShowAlert = window.showAlert;
         window.showAlert = function(title, desc, iconClass = "", colorClass = "text-primary", callback = null, btnText = "確認", autoCloseDelay = 0, showCancel = false) {
             document.getElementById('alert-title').textContent = title;
             document.getElementById('alert-desc').innerHTML = desc;
@@ -1375,7 +1345,6 @@
             } else {
                 btnContainer.classList.remove('hidden');
                 btn.textContent = btnText;
-                
                 if (showCancel) {
                     cancelBtn.classList.remove('hidden');
                     btnContainer.className = "pt-6 shrink-0 grid grid-cols-2 gap-3";
@@ -1405,41 +1374,34 @@
             if (autoCloseDelay > 0) {
                 setTimeout(() => closeModalAnim('modal-alert', 'alert-box', callback), autoCloseDelay);
             }
-        }
+        };
 
         function closeModalAnim(modalId, boxId, callback = null) {
             const modal = document.getElementById(modalId);
             const box = document.getElementById(boxId);
-            if(box) {
-                if(modalId === 'modal-stamps') {
-                    box.classList.add('translate-y-full');
-                } else {
+            if (box) {
+                if (modalId === 'modal-stamps') box.classList.add('translate-y-full');
+                else {
                     box.classList.remove('scale-100', 'opacity-100');
                     box.classList.add('scale-95', 'opacity-0');
                 }
             }
             setTimeout(() => {
                 modal.classList.add('hidden');
-                if(callback) callback();
+                if (callback) callback();
             }, 300);
         }
-        // ==========================================
-        // 碎片收納盒與信件彈窗控制 (Stamps & Letter Modals)
-        // ==========================================
+
         window.openStampsDrawer = function() {
             playBeep();
             renderPuzzlePieces('puzzle-drawer-board', false);
             const letterBtnContainer = document.getElementById('full-letter-btn-container');
-            if (GameState.get('stamps')[6]) {
-                letterBtnContainer.classList.remove('hidden');
-            } else {
-                letterBtnContainer.classList.add('hidden');
-            }
+            if (GameState.get('stamps')[6]) letterBtnContainer.classList.remove('hidden');
+            else letterBtnContainer.classList.add('hidden');
         
             const modal = document.getElementById('modal-stamps');
             const box = document.getElementById('stamps-box');
             modal.classList.remove('hidden');
-        
             box.classList.remove('opacity-0', 'scale-95');
             setTimeout(() => box.classList.remove('translate-y-full'), 10);
         };
@@ -1454,7 +1416,6 @@
         window.openFullLetter = function() {
             playBeep();
             closeModalAnim('modal-stamps', 'stamps-box');
-            
             const modal = document.getElementById('modal-full-letter');
             const box = document.getElementById('letter-box');
             modal.classList.remove('hidden');
@@ -1464,7 +1425,6 @@
                 board.style.aspectRatio = 'auto';
                 board.innerHTML = `<img src="images/信.png" alt="跨越時空的信" class="w-full h-auto object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)] rounded">`;
             }
-            
             setTimeout(() => {
                 box.classList.remove('scale-95', 'opacity-0');
                 box.classList.add('scale-100', 'opacity-100');
@@ -1474,9 +1434,7 @@
         window.closeFullLetter = function() {
             playBeep();
             closeModalAnim('modal-full-letter', 'letter-box', () => {
-                if (GameState.get('stamps').filter(Boolean).length === 7) {
-                    showScreen('certificate');
-                }
+                if (GameState.get('stamps').filter(Boolean).length === 7) showScreen('certificate');
             });
         };
 
@@ -1508,8 +1466,7 @@
                     canvas.height = Math.round(img.height * scale);
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    const base64 = canvas.toDataURL('image/jpeg', quality);
-                    callback(base64);
+                    callback(canvas.toDataURL('image/jpeg', quality));
                 };
                 img.src = e.target.result;
             };
@@ -1570,7 +1527,6 @@
                     }, 1000);
         
                 } catch (error) {
-                    console.error("傳輸失敗：", error);
                     showAlert("連線中斷", "無法將影像送達指揮所，請再拍一次。\n" + error.message, "fa-triangle-exclamation", "text-primary");
                 }
             });
@@ -1585,16 +1541,16 @@
             return array;
         }
 
-        function initAudio() { if(audioCtx.state === 'suspended') audioCtx.resume(); }
+        function initAudio() { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); }
 
         function stopAllMedia() {
             document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
-            const l3Icon = document.getElementById('l3-voice-icon'); if(l3Icon) l3Icon.className = "fa-solid fa-radio text-5xl opacity-80";
-            const l3Btn = document.getElementById('l3-btn-voice'); if(l3Btn) l3Btn.disabled = false;
+            const l3Icon = document.getElementById('l3-voice-icon'); if (l3Icon) l3Icon.className = "fa-solid fa-radio text-3xl opacity-80";
+            const l3Btn = document.getElementById('l3-btn-voice'); if (l3Btn) l3Btn.disabled = false;
         }
 
         function playBeep(freq = 600, duration = 0.05, type = 'sine') {
-            if (!GameState.get('soundEnabled')) return;
+            if (!GameState.get('soundEnabled') || !audioCtx) return;
             try {
                 initAudio(); 
                 const osc = audioCtx.createOscillator(); 
@@ -1643,18 +1599,18 @@
             const fromEl = document.getElementById(`l${level}-p${fromPage}`);
             const toEl = document.getElementById(`l${level}-p${toPage}`);
 
-            if(fromEl) {
+            if (fromEl) {
                 fromEl.classList.remove('screen-active');
                 fromEl.classList.add('screen-exit');
                 fromEl.style.pointerEvents = 'none';
             }
             await new Promise(r => setTimeout(r, 200));
-            if(fromEl) {
+            if (fromEl) {
                 fromEl.classList.add('hidden');
                 fromEl.classList.remove('screen-exit');
                 fromEl.style.pointerEvents = 'auto';
             }
-            if(toEl) {
+            if (toEl) {
                 toEl.classList.remove('hidden');
                 toEl.classList.add('screen-enter');
                 void toEl.offsetWidth; 
@@ -1680,7 +1636,7 @@
                 currentActive.style.pointerEvents = 'auto';
             } else {
                 document.querySelectorAll('[id^="screen-"]').forEach(s => {
-                    if(s !== targetScreen) s.classList.add('hidden');
+                    if (s !== targetScreen) s.classList.add('hidden');
                 });
             }
 
@@ -1710,16 +1666,13 @@
         }
 
         function forceSubPageInit(level, targetPage, totalPages) {
-            for(let i = 1; i <= totalPages; i++) {
+            for (let i = 1; i <= totalPages; i++) {
                 const el = document.getElementById(`l${level}-p${i}`);
-                if(el) {
-                    el.classList.add('hidden');
-                    el.classList.remove('screen-active', 'screen-enter', 'screen-exit');
-                }
+                if (el) el.classList.add('hidden', 'screen-enter', 'screen-exit');
             }
             const targetEl = document.getElementById(`l${level}-p${targetPage}`);
-            if(targetEl) {
-                targetEl.classList.remove('hidden');
+            if (targetEl) {
+                targetEl.classList.remove('hidden', 'screen-enter', 'screen-exit');
                 targetEl.classList.add('screen-active');
             }
         }
@@ -1737,10 +1690,10 @@
 
             let seq = GameState.get('customSequence');
             let idx = GameState.get('currentStageIndex');
-            if (idx < 6 && seq[idx] === lvlNum) { GameState.set('currentStageIndex', idx + 1); }
+            if (idx < 6 && seq[idx] === lvlNum) GameState.set('currentStageIndex', idx + 1);
 
             if (lvlNum === 7) {
-                if(!GameState.get('endTime')) GameState.set('endTime', Date.now());
+                if (!GameState.get('endTime')) GameState.set('endTime', Date.now());
                 openFullLetter();
             } else {
                 let msg = "獲得一塊歷史碎片，\n準備進入下一階段調查。";
@@ -1758,7 +1711,7 @@
         }
 
         // ==========================================
-        // 各關卡邏輯 (Level Rendering)
+        // LEVEL 1 邏輯
         // ==========================================
         let currentL1TargetIdx = null;
         document.getElementById('l1-camera-input').addEventListener('change', function() {
@@ -1777,7 +1730,7 @@
                         showAlert("審核通過", `長官已確認【${loc.title}】之構件特徵！\n\n★ 解密通關密碼：【<b class="text-3xl text-primary font-mono">${targetNumber}</b>】`, "fa-circle-check", "text-emerald-700", null, "收到！");
                     } else {
                         playErrorSound();
-                        showAlert("審核未通過", `長官回報審核未通過！\n\n可能原因：\n1. 內容錯誤\n2. 照片模糊\n3. 照片不完整\n\n請至現場確認【${loc.title}】特徵並重新拍攝！`, "fa-circle-xmark", "text-primary");
+                        showAlert("審核未通過", `長官回報審核未通過！\n\n請至現場確認【${loc.title}】特徵並重新拍攝！`, "fa-circle-xmark", "text-primary");
                     }
                 });
             }
@@ -1847,6 +1800,9 @@
             document.querySelectorAll('#l1-code-container .code-box').forEach((box, i) => { box.textContent = input[i] || ''; });
         }
 
+        // ==========================================
+        // LEVEL 2 邏輯
+        // ==========================================
         document.getElementById('l2-camera-input').addEventListener('change', function(e) {
             if (this.files && this.files.length > 0) {
                 const file = this.files[0]; this.value = '';
@@ -1893,7 +1849,6 @@
             let photos = GameState.get('l2Photos') || [false, false, false, false, false];
             let answered = GameState.get('l2Answered') || [false, false, false, false, false];
         
-            // 判斷是否顯示拍照取證畫面
             if (qData.photo && answered[currentQ] && !photos[currentQ]) {
                 pSect.classList.remove('hidden'); 
                 qImgContainer.classList.add('hidden');
@@ -1904,7 +1859,6 @@
             }
             pSect.classList.add('hidden');
         
-            // 第 4 題建築演變前導知識卡
             if (qData.isSequence && !l2SequenceIntroSeen) {
                 qImgContainer.classList.add('hidden'); 
                 qTextEl.textContent = "【建築演變前導知識】";
@@ -1913,7 +1867,9 @@
                         <div class="font-black text-military text-base border-b border-military/30 pb-2">
                             <i class="fa-solid fa-landmark mr-2"></i>村長家的七次擴建歷程
                         </div>
-                        <img src="images/S__10690579_0.jpg" alt="擴建歷程" class="w-full h-auto rounded shadow-sm border border-military/20 mb-2">
+                        <div class="w-full vintage-photo !border-2 rounded overflow-hidden cursor-zoom-in shadow-sm" onclick="openImageLightbox('images/S__10690579_0.jpg')" title="點擊放大圖示">
+                            <img src="images/S__10690579_0.jpg" alt="村長家擴建歷程" class="w-full h-auto object-cover loaded" onerror="this.src='https://placehold.co/600x400/e5d5b5/7c343d?text=建物擴建歷程圖'">
+                        </div>
                         <p class="text-sm leading-[1.8] text-ink font-bold text-justify">
                             民國38年隨軍撤退來台時，村長家最初僅是簡陋的<b>黑瓦竹泥牆平房</b>。
                             民國50年代因淡水河頻繁氾濫，特別增建了挑高的<b>防洪樓</b>避難；
@@ -1931,13 +1887,10 @@
                 return;
             }
         
-            // 題目文字與題目圖片渲染
             qTextEl.textContent = qData.q;
             if (qData.image) { 
                 qImgElement.src = qData.image; 
                 qImgContainer.classList.remove('hidden'); 
-            
-                // 測驗 1 (索引 0)：支援點擊放大地圖
                 if (currentQ === 0) {
                     qImgContainer.classList.add('cursor-zoom-in');
                     qImgContainer.title = "點擊可放大地圖";
@@ -1952,14 +1905,9 @@
                 qImgContainer.onclick = null;
             }
 
-            // ==========================================
-            // 題型分支判斷：1. 填空題  2. 多選題  3. 單選題
-            // ==========================================
             if (qData.inputType === "text") {
-                // 【題型 1：文字填空題】（第 2 題、第 3 題）
                 const inputWrapper = document.createElement('div');
                 inputWrapper.className = "space-y-4 w-full pt-2";
-                
                 let inputs = [];
                 qData.answers.forEach((ans, i) => {
                     const input = document.createElement('input');
@@ -1976,9 +1924,7 @@
                 submitBtn.onclick = () => {
                     let allCorrect = true;
                     inputs.forEach((input, i) => {
-                        if (input.value.trim().toLowerCase() !== qData.answers[i].toLowerCase()) {
-                            allCorrect = false;
-                        }
+                        if (input.value.trim().toLowerCase() !== qData.answers[i].toLowerCase()) allCorrect = false;
                     });
 
                     if (allCorrect) {
@@ -1987,7 +1933,6 @@
                             let ans = GameState.get('l2Answered') || [false, false, false, false, false];
                             ans[currentQ] = true;
                             GameState.set('l2Answered', ans);
-            
                             showAlert("回答正確！", `${qData.desc}\n\n★ 請前往現場拍攝相應特徵完成查驗！`, "fa-check-circle", "text-emerald-700", () => {
                                 renderL2();
                             }, "前往拍照取證");
@@ -2012,7 +1957,6 @@
                 cont.appendChild(inputWrapper);
 
             } else if (qData.isMultiChoice) {
-                // 【題型 2：多選題】（測驗 1：需選滿 3 個正確選項）
                 let selectedIndices = new Set();
                 const btnContainer = document.createElement('div');
                 btnContainer.className = "space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-1 max-h-[360px]";
@@ -2052,7 +1996,6 @@
                             let ans = GameState.get('l2Answered') || [false, false, false, false, false];
                             ans[currentQ] = true;
                             GameState.set('l2Answered', ans);
-
                             showAlert("回答正確！", `${qData.desc}\n\n★ 請前往現場拍攝相應特徵完成查驗！`, "fa-check-circle", "text-emerald-700", () => {
                                 renderL2();
                             }, "前往拍照取證");
@@ -2076,7 +2019,6 @@
                 cont.appendChild(submitBtn);
 
             } else {
-                // 【題型 3：單選題】（第 4 題排序、第 5 題單選）
                 let optionsWithIndex = qData.opts.map((opt, index) => ({ 
                     text: opt, 
                     isCorrect: index === qData.a 
@@ -2094,7 +2036,6 @@
                                 let ans = GameState.get('l2Answered') || [false, false, false, false, false];
                                 ans[currentQ] = true;
                                 GameState.set('l2Answered', ans);
-                
                                 showAlert("回答正確！", `${qData.desc}\n\n★ 請前往現場拍攝相應特徵完成查驗！`, "fa-check-circle", "text-emerald-700", () => {
                                     renderL2();
                                 }, "前往拍照取證");
@@ -2120,27 +2061,37 @@
             }
         }
 
-        function prevL2Question() { playBeep(); let cq = GameState.get('l2CurrentQ'); if(cq > 0) { GameState.set('l2CurrentQ', cq - 1); renderL2(); } }
+        function prevL2Question() { playBeep(); let cq = GameState.get('l2CurrentQ'); if (cq > 0) { GameState.set('l2CurrentQ', cq - 1); renderL2(); } }
 
+        // ==========================================
+        // LEVEL 3 邏輯
+        // ==========================================
         document.getElementById('l3-camera-input').addEventListener('change', function(e) {
             if (this.files && this.files.length > 0) {
                 const file = this.files[0]; this.value = '';
                 uploadAndListenVerification(file, "任務三：村長的家", (isApproved) => {
                     if (isApproved) {
                         playSuccessSound();
-                        showAlert("審核通過", "已確認到達村長家現場！\n解鎖眷村廣播線索。", "fa-circle-check", "text-gold-dark", () => { GameState.set('l3PhotoDone', true); renderL3(); });
+                        showAlert("審核通過", "已確認到達村長家現場！\n解鎖眷村廣播線索。", "fa-circle-check", "text-gold-dark", () => { 
+                            GameState.set('l3PhotoDone', true); 
+                            renderL3(); 
+                        });
                     } else {
-                        playErrorSound(); showAlert("審核未通過", "長官回報：地標辨認失敗，請確認站在村長家門前重新拍攝！", "fa-circle-xmark", "text-primary");
+                        playErrorSound(); 
+                        showAlert("審核未通過", "長官回報：地標辨認失敗，請確認站在村長家門前重新拍攝！", "fa-circle-xmark", "text-primary");
                     }
                 });
             }
         });
 
         function renderL3() {
-            if(!GameState.get('l3PhotoDone')) {
-                document.getElementById('l3-photo-section').classList.remove('hidden'); document.getElementById('l3-qa-section').classList.add('hidden');
+            if (!GameState.get('l3PhotoDone')) {
+                document.getElementById('l3-photo-section').classList.remove('hidden'); 
+                document.getElementById('l3-qa-section').classList.add('hidden');
             } else {
-                document.getElementById('l3-photo-section').classList.add('hidden'); document.getElementById('l3-qa-section').classList.remove('hidden'); showL3Question();
+                document.getElementById('l3-photo-section').classList.add('hidden'); 
+                document.getElementById('l3-qa-section').classList.remove('hidden'); 
+                showL3Question();
             }
         }
 
@@ -2153,9 +2104,6 @@
             document.getElementById('l3-question-text').textContent = qData.q;
             document.getElementById('l3-audio-hint').classList.remove('hidden');
             document.getElementById('l3-audio-player').src = GAME_DATA.level3.audios[currentQ];
-
-            const menuImg = document.getElementById('l3-menu-img');
-            if (menuImg && GAME_DATA.level3.menuImages) { menuImg.src = GAME_DATA.level3.menuImages[currentQ] || ''; }
 
             const cont = document.getElementById('l3-options-container'); 
             cont.innerHTML = '';
@@ -2183,8 +2131,12 @@
                         playSuccessSound();
                         showAlert(`【${o.opt.text}】`, feedbackHtml, "fa-bowl-rice", "text-gold-dark", () => {
                             let cq = GameState.get('l3CurrentQ');
-                            if (cq < 4) { GameState.set('l3CurrentQ', cq + 1); showL3Question(); } 
-                            else { showAlert("調查成功", "每一道料理都不只是滋味，更是一段跨越海峽的生活記憶。\n\n眷村廚房匯聚了大江南北的家鄉味，也成為文化交流的場所。", "", "text-gold-dark", () => handleLevelSuccess(3)); }
+                            if (cq < 4) { 
+                                GameState.set('l3CurrentQ', cq + 1); 
+                                showL3Question(); 
+                            } else { 
+                                showAlert("調查成功", "每一道料理都不只是滋味，更是一段跨越海峽的生活記憶。\n\n眷村廚房匯聚了大江南北的家鄉味，也成為文化交流的場所。", "", "text-gold-dark", () => handleLevelSuccess(3)); 
+                            }
                         }, "正確，品鑑下一道");
                     } else {
                         playErrorSound(); 
@@ -2195,22 +2147,24 @@
                 cont.appendChild(btn);
             });
         }
-        function prevL3Question() { playBeep(); let cq = GameState.get('l3CurrentQ'); if(cq > 0) { GameState.set('l3CurrentQ', cq - 1); showL3Question(); } }
+        function prevL3Question() { playBeep(); let cq = GameState.get('l3CurrentQ'); if (cq > 0) { GameState.set('l3CurrentQ', cq - 1); showL3Question(); } }
 
         document.getElementById('l3-btn-voice').onclick = () => {
-            const btnVoice = document.getElementById('l3-btn-voice'); const icon = document.getElementById('l3-voice-icon'); const player = document.getElementById('l3-audio-player');
-            if(btnVoice.disabled || !GameState.get('soundEnabled')) {
-                if(!GameState.get('soundEnabled')) { 
+            const btnVoice = document.getElementById('l3-btn-voice'); 
+            const icon = document.getElementById('l3-voice-icon'); 
+            const player = document.getElementById('l3-audio-player');
+            if (btnVoice.disabled || !GameState.get('soundEnabled')) {
+                if (!GameState.get('soundEnabled')) { 
                     document.getElementById('l3-audio-hint').classList.add('hidden'); 
                     document.querySelectorAll('.l3-opt-btn').forEach(b => { b.disabled = false; b.classList.remove('opacity-50', 'cursor-not-allowed'); }); 
                 }
                 return;
             }
-            initAudio(); playBeep(); icon.className = "fa-solid fa-gear fa-spin text-4xl"; btnVoice.disabled = true;
+            initAudio(); playBeep(); icon.className = "fa-solid fa-gear fa-spin text-3xl"; btnVoice.disabled = true;
             let isPlaying = false;
             let timeout = setTimeout(() => {
                 if (!isPlaying) {
-                    player.pause(); icon.className = "fa-solid fa-radio text-5xl opacity-80"; btnVoice.disabled = false;
+                    player.pause(); icon.className = "fa-solid fa-radio text-3xl opacity-80"; btnVoice.disabled = false;
                     showAlert("收音機訊號不佳", "現場雜訊過多播放失敗，請拍打兩下！\n(已為您強制解鎖選項)", "fa-radio", "text-gold-dark", () => {
                         document.getElementById('l3-audio-hint').classList.add('hidden'); 
                         document.querySelectorAll('.l3-opt-btn').forEach(b => { b.disabled = false; b.classList.remove('opacity-50', 'cursor-not-allowed'); });
@@ -2220,9 +2174,9 @@
             player.play().then(() => {
                 isPlaying = true; clearTimeout(timeout); document.getElementById('l3-audio-hint').classList.add('hidden'); 
                 document.querySelectorAll('.l3-opt-btn').forEach(b => { b.disabled = false; b.classList.remove('opacity-50', 'cursor-not-allowed'); });
-                setTimeout(() => { icon.className = "fa-solid fa-radio text-5xl opacity-80"; btnVoice.disabled = false; }, 2000);
-            }).catch((err) => {
-                isPlaying = true; clearTimeout(timeout); icon.className = "fa-solid fa-radio text-5xl opacity-80"; btnVoice.disabled = false;
+                setTimeout(() => { icon.className = "fa-solid fa-radio text-3xl opacity-80"; btnVoice.disabled = false; }, 2000);
+            }).catch(() => {
+                isPlaying = true; clearTimeout(timeout); icon.className = "fa-solid fa-radio text-3xl opacity-80"; btnVoice.disabled = false;
                 showAlert("收音機訊號不佳", "現場雜訊過多播放失敗，請拍打兩下！\n(已為您強制解鎖選項)", "fa-radio", "text-gold-dark", () => {
                     document.getElementById('l3-audio-hint').classList.add('hidden'); 
                     document.querySelectorAll('.l3-opt-btn').forEach(b => { b.disabled = false; b.classList.remove('opacity-50', 'cursor-not-allowed'); });
@@ -2230,36 +2184,66 @@
             });
         };
 
+        // ==========================================
+        // LEVEL 4 邏輯
+        // ==========================================
         function renderL4Questions() {
-            const q1Select = document.getElementById('l4-q1'); const q2Select = document.getElementById('l4-q2');
-            document.getElementById('l4-q1-label').textContent = GAME_DATA.level4.q1.text; document.getElementById('l4-q2-label').textContent = GAME_DATA.level4.q2.text;
-            let s1 = shuffleArray([...GAME_DATA.level4.q1.opts]); let s2 = shuffleArray([...GAME_DATA.level4.q2.opts]);
-            q1Select.innerHTML = '<option value="" disabled selected>請選擇...</option>'; s1.forEach(o => q1Select.innerHTML += `<option value="${o.c ? 'correct' : 'wrong'}">${o.t}</option>`);
-            q2Select.innerHTML = '<option value="" disabled selected>請選擇...</option>'; s2.forEach(o => q2Select.innerHTML += `<option value="${o.c ? 'correct' : 'wrong'}">${o.t}</option>`);
+            const q1Select = document.getElementById('l4-q1'); 
+            const q2Select = document.getElementById('l4-q2');
+            document.getElementById('l4-q1-label').textContent = GAME_DATA.level4.q1.text; 
+            document.getElementById('l4-q2-label').textContent = GAME_DATA.level4.q2.text;
+            let s1 = shuffleArray([...GAME_DATA.level4.q1.opts]); 
+            let s2 = shuffleArray([...GAME_DATA.level4.q2.opts]);
+            q1Select.innerHTML = '<option value="" disabled selected>請選擇...</option>'; 
+            s1.forEach(o => q1Select.innerHTML += `<option value="${o.c ? 'correct' : 'wrong'}">${o.t}</option>`);
+            q2Select.innerHTML = '<option value="" disabled selected>請選擇...</option>'; 
+            s2.forEach(o => q2Select.innerHTML += `<option value="${o.c ? 'correct' : 'wrong'}">${o.t}</option>`);
         }
         document.getElementById('l4-btn-verify').onclick = () => {
-            const q1 = document.getElementById('l4-q1').value; const q2 = document.getElementById('l4-q2').value;
-            if(q1 === 'correct' && q2 === 'correct') { handleLevelSuccess(4); } 
-            else { playErrorSound(); showAlert("檔案不符", "選擇有誤，請再試一次！", "fa-circle-xmark", "text-primary"); }
+            const q1 = document.getElementById('l4-q1').value; 
+            const q2 = document.getElementById('l4-q2').value;
+            if (q1 === 'correct' && q2 === 'correct') handleLevelSuccess(4); 
+            else { 
+                playErrorSound(); 
+                showAlert("檔案不符", "選擇有誤，請再試一次！", "fa-circle-xmark", "text-primary"); 
+            }
         };
 
+        // ==========================================
+        // LEVEL 5 邏輯
+        // ==========================================
         function renderL5Songs() {
             const container = document.getElementById('l5-song-list');
-            if(!container) return;
+            if (!container) return;
             container.innerHTML = '';
             GAME_DATA.level5.songs.forEach(song => {
                 const btn = document.createElement('button');
-                btn.className = "w-full text-left bg-white border border-ink/15 p-4 rounded-lg shadow-sm hover:shadow-md transition-all active:scale-95 text-ink";
-                btn.innerHTML = `<div class="font-black text-primary text-lg font-serif mb-1"><i class="fa-solid fa-music mr-2 opacity-70"></i>${song.title}</div><div class="text-[11px] font-mono tracking-widest opacity-50 mt-1">點擊查閱歌詞</div>`;
+                btn.className = "w-full text-left bg-white border border-ink/15 p-4 rounded-lg shadow-sm hover:shadow-md transition-all active:scale-95 text-ink flex items-center justify-between";
+                btn.innerHTML = `
+                    <div class="flex-1 min-w-0 pr-3">
+                        <div class="font-black text-primary text-base font-serif mb-1 truncate"><i class="fa-solid fa-music mr-2 opacity-70"></i>${song.title}</div>
+                        <div class="text-[11px] font-mono tracking-widest text-ink/60 truncate">點擊查閱接歌字幕</div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-paper border border-ink/20 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-microphone text-primary text-xs"></i>
+                    </div>
+                `;
                 btn.onclick = () => {
                     playBeep();
                     const html = `
-                        <div class="text-left font-bold text-ink text-sm leading-relaxed space-y-3 mt-1 bg-paper/50 p-4 rounded border border-ink/10">
-                            <p>${song.lines}</p>
-                            <p class="text-primary font-mono font-black tracking-widest break-all">${song.stars}</p>
+                        <div class="bg-black/90 p-4 rounded-lg border border-gold/40 text-center space-y-4 my-2 shadow-2xl">
+                            <div class="text-[11px] text-gold/70 tracking-widest uppercase font-mono flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-music text-primary"></i> 經典接唱挑戰 <i class="fa-solid fa-music text-primary"></i>
+                            </div>
+                            <div class="text-base font-black text-amber-300 tracking-wider leading-relaxed font-sans drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] text-justify">
+                                ${song.lines}
+                            </div>
+                            <div class="text-base font-black text-rose-400 tracking-[0.25em] font-mono drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] break-all border-t border-dashed border-white/20 pt-3">
+                                ${song.stars}
+                            </div>
                         </div>
                     `;
-                    showAlert(`《${song.title}》`, html, "fa-microphone", "text-gold-dark", null, "關閉返回");
+                    showAlert(`《${song.title}》`, html, "", "", null, "關閉返回");
                 };
                 container.appendChild(btn);
             });
@@ -2267,11 +2251,11 @@
 
         document.querySelectorAll('.l5-key').forEach(btn => btn.onclick = () => {
             let input = GameState.get('l5Input');
-            if(input.length < 3) { playBeep(); input.push(btn.dataset.val); GameState.set('l5Input', input); updateL5Display(); }
+            if (input.length < 3) { playBeep(); input.push(btn.dataset.val); GameState.set('l5Input', input); updateL5Display(); }
         });
         document.getElementById('l5-btn-del').onclick = () => {
             let input = GameState.get('l5Input');
-            if(input.length > 0) { playBeep(400); input.pop(); GameState.set('l5Input', input); updateL5Display(); }
+            if (input.length > 0) { playBeep(400); input.pop(); GameState.set('l5Input', input); updateL5Display(); }
         };
         document.getElementById('l5-btn-submit').onclick = () => {
             let input = GameState.get('l5Input') || [];
@@ -2292,33 +2276,54 @@
             }
         };
         function updateL5Display() {
-            let input = GameState.get('l5Input'); document.querySelectorAll('#l5-code-container .code-box').forEach((box, i) => box.textContent = input[i] || '');
+            let input = GameState.get('l5Input') || []; 
+            document.querySelectorAll('#l5-code-container .code-box').forEach((box, i) => box.textContent = input[i] || '');
         }
 
+        // ==========================================
+        // LEVEL 6 邏輯
+        // ==========================================
         let l6SelectedFlowers = [];
         function toggleFlower(el, fName) {
             playBeep();
-            if(el.classList.contains('ring-4')) { el.classList.remove('ring-4', 'ring-primary'); l6SelectedFlowers = l6SelectedFlowers.filter(f => f !== fName); } 
-            else { el.classList.add('ring-4', 'ring-primary'); l6SelectedFlowers.push(fName); }
+            if (el.classList.contains('ring-4')) { 
+                el.classList.remove('ring-4', 'ring-primary'); 
+                l6SelectedFlowers = l6SelectedFlowers.filter(f => f !== fName); 
+            } else { 
+                el.classList.add('ring-4', 'ring-primary'); 
+                l6SelectedFlowers.push(fName); 
+            }
         }
         function verifyFlowers() {
-            if(l6SelectedFlowers.length === 2 && l6SelectedFlowers.includes('玫瑰') && l6SelectedFlowers.includes('茉莉')) { 
-                playSuccessSound(); showAlert("成分分析正確", "成功找出了隱藏的玫瑰與茉莉花香！\n前往下一階段。", "fa-flask", "text-emerald-700", () => transitionSubPage(6, 3, 4)); 
+            if (l6SelectedFlowers.length === 2 && l6SelectedFlowers.includes('玫瑰') && l6SelectedFlowers.includes('茉莉')) { 
+                playSuccessSound(); 
+                showAlert("成分分析正確", "成功找出了隱藏的玫瑰與茉莉花香！\n前往下一階段。", "fa-flask", "text-emerald-700", () => transitionSubPage(6, 3, 4)); 
             } else { 
-                playErrorSound(); showAlert("成分錯誤", "請確認是否剛好選擇了正確的【兩種】花卉喔！", "fa-circle-xmark", "text-primary"); 
+                playErrorSound(); 
+                showAlert("成分錯誤", "請確認是否剛好選擇了正確的【兩種】花卉喔！", "fa-circle-xmark", "text-primary"); 
             }
         }
 
         function renderL6Songs() {
-            const container = document.getElementById('l6-songs-container'); container.innerHTML = '';
-            const audioEl = document.getElementById('l6-audio-player'); const prog = document.getElementById('l6-progress');
-            audioEl.ontimeupdate = () => { if (audioEl.duration) { const pct = (audioEl.currentTime / audioEl.duration) * 100; prog.style.width = `${pct}%`; } };
+            const container = document.getElementById('l6-songs-container'); 
+            container.innerHTML = '';
+            const audioEl = document.getElementById('l6-audio-player'); 
+            const prog = document.getElementById('l6-progress');
+            audioEl.ontimeupdate = () => { 
+                if (audioEl.duration) { 
+                    const pct = (audioEl.currentTime / audioEl.duration) * 100; 
+                    prog.style.width = `${pct}%`; 
+                } 
+            };
             audioEl.onended = () => {
                 prog.style.width = '100%';
-                setTimeout(() => { showAlert("點播完畢", "歌曲已完整播放完畢！\n請至背景牆前將您的推薦詞貼上去與大家分享！", "fa-record-vinyl", "text-ink", () => handleLevelSuccess(6)); }, 300);
+                setTimeout(() => { 
+                    showAlert("點播完畢", "歌曲已完整播放完畢！\n請至背景牆前將您的推薦詞貼上去與大家分享！", "fa-record-vinyl", "text-ink", () => handleLevelSuccess(6)); 
+                }, 300);
             };
             GAME_DATA.level6.songs.forEach((song) => {
-                const btn = document.createElement('button'); btn.className = "flex items-center text-left w-full p-4 bg-white border border-ink/10 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 active:scale-95";
+                const btn = document.createElement('button'); 
+                btn.className = "flex items-center text-left w-full p-4 bg-white border border-ink/10 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 active:scale-95";
                 btn.innerHTML = `
                     <div class="flex-1 min-w-0 pr-3">
                         <div class="font-black text-base text-primary truncate font-serif">${song.title}</div>
@@ -2331,24 +2336,38 @@
                     if (!GameState.get('soundEnabled')) return showAlert("靜音鎖定", "請先點擊右上角開啟音效喇叭。");
                     initAudio(); playBeep(800, 0.1); audioEl.pause(); audioEl.currentTime = 0; prog.style.width = '0%';
                     const pUI = document.getElementById('l6-player'); pUI.classList.remove('hidden');
-                    document.getElementById('l6-song-title').textContent = song.title; document.getElementById('l6-lyrics').textContent = song.lyric;
-                    audioEl.src = song.audio; audioEl.play().catch(e => { console.log("Audio play blocked", e); });
+                    document.getElementById('l6-song-title').textContent = song.title; 
+                    document.getElementById('l6-lyrics').textContent = song.lyric;
+                    audioEl.src = song.audio; 
+                    audioEl.play().catch(e => { console.log("Audio play blocked", e); });
                 };
                 container.appendChild(btn);
             });
         }
 
         // ==========================================
-        // 全域按鈕與事件綁定 (Events)
+        // 全域按鈕與事件綁定
         // ==========================================
         function renderPuzzlePieces(containerId, isFullView) {
-            const container = document.getElementById(containerId); if (!container) return; container.innerHTML = '';
+            const container = document.getElementById(containerId); 
+            if (!container) return; 
+            container.innerHTML = '';
             GAME_DATA.puzzles.forEach((p) => {
-                let stamps = GameState.get('stamps'); const isUnlocked = isFullView ? true : stamps[p.id - 1];
-                const div = document.createElement('div'); div.className = `puzzle-piece ${p.class}`;
-                if (!isUnlocked) { div.classList.add('locked'); div.innerHTML = '<i class="fa-solid fa-lock text-white/20 text-3xl opacity-80"></i>'; } 
-                else { div.innerHTML = `<span>${p.text}</span>`; }
-                if (!isFullView) { div.onclick = () => { if (isUnlocked) { playBeep(700, 0.05); openPuzzleLightbox(p.text); } }; }
+                let stamps = GameState.get('stamps'); 
+                const isUnlocked = isFullView ? true : stamps[p.id - 1];
+                const div = document.createElement('div'); 
+                div.className = `puzzle-piece ${p.class}`;
+                if (!isUnlocked) { 
+                    div.classList.add('locked'); 
+                    div.innerHTML = '<i class="fa-solid fa-lock text-white/20 text-3xl opacity-80"></i>'; 
+                } else { 
+                    div.innerHTML = `<span>${p.text}</span>`; 
+                }
+                if (!isFullView) { 
+                    div.onclick = () => { 
+                        if (isUnlocked) { playBeep(700, 0.05); openPuzzleLightbox(p.text); } 
+                    }; 
+                }
                 container.appendChild(div);
             });
         }
@@ -2362,7 +2381,6 @@
             GameState.set('teamName', name.substring(0, 15));
             const membersInput = document.getElementById('input-team-members');
             if (membersInput) GameState.set('teamMembers', membersInput.value.trim());
-        
             showScreen('story');
         });
 
@@ -2371,7 +2389,6 @@
             const codeInput = document.getElementById('input-level-code');
             const code = codeInput ? codeInput.value.trim().toUpperCase() : "";
             
-            // 代碼映射表：3G100301 ~ 3G100307 對應 任務 1 ~ 7
             const codeMap = {
                 '3G100301': 1, '3G100302': 2, '3G100303': 3,
                 '3G100304': 4, '3G100305': 5, '3G100306': 6, '3G100307': 7
@@ -2381,7 +2398,6 @@
                 const startLvl = codeMap[code];
                 GameState.set('startLevel', startLvl);
         
-                // 依據新動線排列：[6, 1, 4, 2, 5, 3, 7]
                 let newSeq = [];
                 if (startLvl === 7) {
                     newSeq = [7, 6, 1, 4, 2, 5, 3];
@@ -2394,8 +2410,8 @@
                 GameState.set('customSequence', newSeq);
                 GameState.set('currentStageIndex', 0);
         
-                if(!GameState.get('startTime')) GameState.set('startTime', Date.now());
-                if(globalTimerInterval) clearInterval(globalTimerInterval);
+                if (!GameState.get('startTime')) GameState.set('startTime', Date.now());
+                if (globalTimerInterval) clearInterval(globalTimerInterval);
                 globalTimerInterval = setInterval(updateTimerDisplay, 1000);
                 updateTimerDisplay();
         
@@ -2408,24 +2424,31 @@
 
         document.getElementById('btn-goto-current').addEventListener('click', () => {
             initAudio(); playBeep(600, 0.05);
-            let seq = GameState.get('customSequence'); let idx = GameState.get('currentStageIndex'); const targetLvl = seq[idx];
-            if(targetLvl === 4) renderL4Questions(); showScreen(`level-${targetLvl}`);
+            let seq = GameState.get('customSequence'); 
+            let idx = GameState.get('currentStageIndex'); 
+            const targetLvl = seq[idx];
+            if (targetLvl === 4) renderL4Questions(); 
+            showScreen(`level-${targetLvl}`);
         });
 
         function updateTimerDisplay() {
             if (!GameState.get('startTime')) return;
             const now = GameState.get('endTime') ? GameState.get('endTime') : Date.now();
             let elapsed = Math.floor((now - GameState.get('startTime')) / 1000);
-            let remain = (90 * 60) - elapsed; if (remain < 0) remain = 0;
+            let remain = (90 * 60) - elapsed; 
+            if (remain < 0) remain = 0;
             const h = String(Math.floor(remain / 3600)).padStart(2, '0');
             const m = String(Math.floor((remain % 3600) / 60)).padStart(2, '0');
             const s = String(remain % 60).padStart(2, '0');
-            const mainTimerEl = document.getElementById('main-timer'); if(mainTimerEl) mainTimerEl.textContent = `${h}:${m}:${s}`;
+            const mainTimerEl = document.getElementById('main-timer'); 
+            if (mainTimerEl) mainTimerEl.textContent = `${h}:${m}:${s}`;
         }
 
         function renderCertificate() {
             const elapsed = Math.floor(((GameState.get('endTime') || Date.now()) - GameState.get('startTime')) / 1000);
-            const h = String(Math.floor(elapsed / 3600)).padStart(2, '0'); const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0'); const s = String(elapsed % 60).padStart(2, '0');
+            const h = String(Math.floor(elapsed / 3600)).padStart(2, '0'); 
+            const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0'); 
+            const s = String(elapsed % 60).padStart(2, '0');
             const timeStr = `${h}:${m}:${s}`; 
             const isSClass = elapsed <= 5400;
             document.getElementById('cert-time').textContent = isSClass ? `${timeStr} (時限內)` : timeStr;
@@ -2439,18 +2462,24 @@
             
             const claimBtn = document.getElementById('btn-claim-gift');
             if (GameState.get('giftClaimed') === true) {
-                claimBtn.disabled = true; claimBtn.className = "btn-base w-full py-4 bg-stone-200 border border-stone-300 text-stone-500 font-black text-sm cursor-not-allowed shadow-none";
+                claimBtn.disabled = true; 
+                claimBtn.className = "btn-base w-full py-4 bg-stone-200 border border-stone-300 text-stone-500 font-black text-sm cursor-not-allowed shadow-none";
                 claimBtn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-700 mr-2"></i>已於 ${GameState.get('giftClaimedTime') || ''} 兌換完畢`;
             } else {
-                claimBtn.disabled = false; claimBtn.className = "btn-base primary-btn w-full py-4 font-black text-base tracking-[0.15em] flex justify-center space-x-2";
+                claimBtn.disabled = false; 
+                claimBtn.className = "btn-base primary-btn w-full py-4 font-black text-base tracking-[0.15em] flex justify-center space-x-2";
                 claimBtn.innerHTML = `<i class="fa-solid fa-stamp"></i><span>現場人員點擊核銷</span>`;
             }
         }
 
         document.getElementById('btn-claim-gift').onclick = () => {
             showAlert("服務台兌獎核銷", "⚠【此操作限工作人員點擊】\n\n確認已發放實體紀念品？\n一旦核銷後將永久鎖定，無法重複領取！", "fa-gift", "text-gold-dark", () => {
-                const now = new Date(); const timeTag = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-                GameState.set('giftClaimed', true); GameState.set('giftClaimedTime', timeTag); playSuccessSound(); renderCertificate();
+                const now = new Date(); 
+                const timeTag = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+                GameState.set('giftClaimed', true); 
+                GameState.set('giftClaimedTime', timeTag); 
+                playSuccessSound(); 
+                renderCertificate();
             }, "確認已領獎", 0, true);
         };
 
@@ -2462,9 +2491,10 @@
         document.getElementById('btn-nav-hq').onclick = () => { playBeep(); showScreen(GameState.get('teamName') ? 'main' : 'entry'); };
         
         document.getElementById('sound-toggle').onclick = () => {
-            let soundOn = !GameState.get('soundEnabled'); GameState.set('soundEnabled', soundOn);
+            let soundOn = !GameState.get('soundEnabled'); 
+            GameState.set('soundEnabled', soundOn);
             const icon = document.getElementById('sound-icon');
-            if(soundOn) icon.className = "fa-solid fa-volume-high text-gold text-lg";
+            if (soundOn) icon.className = "fa-solid fa-volume-high text-gold text-lg";
             else { icon.className = "fa-solid fa-volume-xmark text-gold/50 text-lg"; stopAllMedia(); }
         };
     </script>
