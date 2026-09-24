@@ -150,7 +150,12 @@
         }
 
         /* 角色卡片 (Flex/Grid) */
-        .char-card-grid, .char-card-flex { 
+        .char-card-grid { 
+            border: 1px solid rgba(44, 30, 22, 0.2); border-radius: 8px; overflow: hidden; 
+            background: #FFFFFF; box-shadow: 0 4px 12px rgba(44, 30, 22, 0.08); 
+        }
+        .char-card-flex { 
+            display: flex;
             border: 1px solid rgba(44, 30, 22, 0.2); border-radius: 8px; overflow: hidden; 
             background: #FFFFFF; box-shadow: 0 4px 12px rgba(44, 30, 22, 0.08); 
         }
@@ -420,9 +425,8 @@
                             <input type="file" accept="image/*" capture="environment" id="l2-camera-input" class="hidden">
                         </div>
 
-                        <div id="l2-question-img-container" class="hidden mb-8 w-full vintage-photo shrink-0">
-                            <img id="l2-question-img" src="images/l2_map.jpg" class="w-full h-auto object-cover" onload="this.classList.add('loaded')">
-                        </div>
+                        <!-- 支援單張或多張線索圖 -->
+                        <div id="l2-question-img-container" class="hidden mb-6 w-full shrink-0"></div>
 
                         <div id="l2-question-text" class="text-lg font-bold leading-[1.8] mb-8 whitespace-pre-line text-ink shrink-0 text-justify font-serif tracking-wide"></div>
                         <div id="l2-options-container" class="space-y-4 flex-1 flex flex-col justify-end pb-2"></div>
@@ -565,33 +569,34 @@
 
                 <!-- LEVEL 5: 群星之夜 -->
                 <div id="screen-level-5" class="screen-panel hidden p-6 flex flex-col">
-                    <div id="l5-p1" class="level-card p-6 flex flex-col min-h-full">
-                        <h2 class="text-center text-primary text-2xl mb-4 font-black border-b border-dashed border-ink/20 pb-4 tracking-widest shrink-0 font-serif">黃金娛樂時光</h2>
+                    <div id="l5-p1" class="level-card p-6 flex flex-col">
+                        <h2 class="text-center text-primary text-2xl mb-6 font-black border-b border-dashed border-ink/20 pb-4 tracking-widest shrink-0 font-serif">黃金娛樂時光</h2>
                         
-                        <div class="text-base leading-[1.9] font-bold text-ink text-justify flex-1 font-serif overflow-y-auto custom-scrollbar pr-2 pb-2">
+                        <!-- 移除內部 overflow，由外部視口統一原生滾動，防止 iOS 雙層滾動衝突 -->
+                        <div class="text-base leading-[1.9] font-bold text-ink text-justify font-serif space-y-4">
                             <!-- 圖 1 插入點 -->
-                            <div class="w-full mb-4 vintage-photo aspect-[16/9] flex items-center justify-center shrink-0">
+                            <div class="w-full vintage-photo aspect-[16/9] flex items-center justify-center">
                                 <img src="images/l5_photo_1.jpg" alt="老唱片與歌廳記憶" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=老唱片與歌廳記憶'" class="w-full h-full object-cover loaded">
                             </div>
                             
-                            <p class="mb-5">當黑膠唱片旋轉、霓虹燈光閃爍，空氣中流淌著老歌與電影的熟悉旋律。這裡不只是歷史的記憶，更是我們今晚一同尋找青春與鄉愁的舞台。</p>
+                            <p>當黑膠唱片旋轉、霓虹燈光閃爍，空氣中流淌著老歌與電影的熟悉旋律。這裡不只是歷史的記憶，更是我們今晚一同尋找青春與鄉愁的舞台。</p>
                             
                             <!-- 圖 2 插入點 -->
-                            <div class="w-full mb-4 vintage-photo aspect-[16/9] flex items-center justify-center shrink-0">
+                            <div class="w-full vintage-photo aspect-[16/9] flex items-center justify-center">
                                 <img src="images/l5_photo_2.jpg" alt="天台廣場繁華盛景" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=天台廣場繁華盛景'" class="w-full h-full object-cover loaded">
                             </div>
                             
-                            <p class="mb-5">1950至1980年代，三重天台廣場曾是北台灣最繁華的娛樂地標，歌廳、戲院、夜總會林立。第一代外省移民在眷村裡，用歌聲撫平離鄉背井的鄉愁。</p>
+                            <p>1950至1980年代，三重天台廣場曾是北台灣最繁華的娛樂地標，歌廳、戲院、夜總會林立。第一代外省移民在眷村裡，用歌聲撫平離鄉背井的鄉愁。</p>
                             
                             <!-- 圖 3 插入點 -->
-                            <div class="w-full mb-4 vintage-photo aspect-[16/9] flex items-center justify-center shrink-0">
+                            <div class="w-full vintage-photo aspect-[16/9] flex items-center justify-center">
                                 <img src="images/l5_photo_3.jpg" alt="接歌挑戰現場" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=接歌挑戰現場'" class="w-full h-full object-cover loaded">
                             </div>
                             
                             <p>今晚，我們將透過一場「接歌挑戰」，帶領大家走入這段熱鬧又帶點感傷的青春歲月。</p>
                         </div>
                         
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="transitionSubPage(5, 1, 2)">查閱群星</button>
+                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8 shrink-0" onclick="transitionSubPage(5, 1, 2)">查閱群星</button>
                     </div>
 
                     <div id="l5-p2" class="hidden flex-col min-h-full">
@@ -708,41 +713,49 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(6, 1, 2)">認識角色</button>
                     </div>
 
-                    <div id="l6-p2" class="hidden flex-col min-h-full">
-                        <div class="flex items-center justify-between mb-6 shrink-0">
+                    <!-- 角色介紹已補齊 flex、固定寬高比與防止壓縮類別 -->
+                    <div id="l6-p2" class="hidden flex flex-col min-h-full">
+                        <div class="flex items-center justify-between mb-4 shrink-0">
                             <button onclick="transitionSubPage(6, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">角色介紹</h2>
                         </div>
-                        <div class="flex-1 flex flex-col space-y-4 min-h-0">
-                            <div class="char-card-flex flex-1">
-                                <div class="char-img-box w-1/3 shrink-0 border-r border-ink/10 skeleton-bg relative">
-                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandma" alt="奶奶" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
+                        
+                        <div class="flex-1 flex flex-col space-y-3 overflow-y-auto custom-scrollbar pr-1 pb-2">
+                            <!-- 奶奶 -->
+                            <div class="char-card-flex border border-ink/15 rounded-lg overflow-hidden bg-white shadow-sm shrink-0">
+                                <div class="char-img-box w-24 sm:w-28 aspect-square shrink-0 border-r border-ink/10 bg-paper-dark relative">
+                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandma" alt="奶奶" class="w-full h-full object-cover loaded" onerror="this.src='https://placehold.co/150/e5d5b5/7c343d?text=奶奶'">
                                 </div>
-                                <div class="p-5 text-ink flex-1 flex flex-col justify-center bg-white">
-                                    <b class="text-base tracking-widest text-primary mb-2 border-b border-dashed border-ink/10 pb-1.5 font-serif">奶奶 (NPC)</b>
-                                    <span class="font-bold text-sm leading-[1.6] text-justify text-ink/80">三重一村老居民，負責帶出過去產業與回憶。</span>
-                                </div>
-                            </div>
-                            <div class="char-card-flex flex-1">
-                                <div class="char-img-box w-1/3 shrink-0 border-r border-ink/10 skeleton-bg relative">
-                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandson" alt="孫子" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-5 text-ink flex-1 flex flex-col justify-center bg-white">
-                                    <b class="text-base tracking-widest text-primary mb-2 border-b border-dashed border-ink/10 pb-1.5 font-serif">孫子 (NPC)</b>
-                                    <span class="font-bold text-sm leading-[1.6] text-justify text-ink/80">三重一村的小孩，和大家討論、帶氣氛。</span>
+                                <div class="p-3.5 text-ink flex-1 flex flex-col justify-center bg-white">
+                                    <b class="text-sm tracking-wider text-primary mb-1 border-b border-dashed border-ink/10 pb-1 font-serif">奶奶 (NPC)</b>
+                                    <span class="font-bold text-xs leading-relaxed text-justify text-ink/80">三重一村老居民，負責帶出過去產業與回憶。</span>
                                 </div>
                             </div>
-                            <div class="char-card-flex flex-1">
-                                <div class="char-img-box w-1/3 shrink-0 border-r border-ink/10 text-4xl text-primary opacity-40 bg-paper-dark">
+                            
+                            <!-- 孫子 -->
+                            <div class="char-card-flex border border-ink/15 rounded-lg overflow-hidden bg-white shadow-sm shrink-0">
+                                <div class="char-img-box w-24 sm:w-28 aspect-square shrink-0 border-r border-ink/10 bg-paper-dark relative">
+                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandson" alt="孫子" class="w-full h-full object-cover loaded" onerror="this.src='https://placehold.co/150/e5d5b5/7c343d?text=孫子'">
+                                </div>
+                                <div class="p-3.5 text-ink flex-1 flex flex-col justify-center bg-white">
+                                    <b class="text-sm tracking-wider text-primary mb-1 border-b border-dashed border-ink/10 pb-1 font-serif">孫子 (NPC)</b>
+                                    <span class="font-bold text-xs leading-relaxed text-justify text-ink/80">三重一村的小孩，和大家討論、帶氣氛。</span>
+                                </div>
+                            </div>
+
+                            <!-- 遊客 (你) -->
+                            <div class="char-card-flex border border-ink/15 rounded-lg overflow-hidden bg-white shadow-sm shrink-0">
+                                <div class="char-img-box w-24 sm:w-28 aspect-square shrink-0 border-r border-ink/10 text-3xl text-primary opacity-60 bg-paper-dark flex items-center justify-center">
                                     <i class="fa-solid fa-user-astronaut"></i>
                                 </div>
-                                <div class="p-5 text-ink flex-1 flex flex-col justify-center bg-white">
-                                    <b class="text-base tracking-widest text-primary mb-2 border-b border-dashed border-ink/10 pb-1.5 font-serif">遊客 (你)</b>
-                                    <span class="font-bold text-sm leading-[1.6] text-justify text-ink/80">本次闖關者，跟著奶奶認識花香與歌聲。</span>
+                                <div class="p-3.5 text-ink flex-1 flex flex-col justify-center bg-white">
+                                    <b class="text-sm tracking-wider text-primary mb-1 border-b border-dashed border-ink/10 pb-1 font-serif">遊客 (你)</b>
+                                    <span class="font-bold text-xs leading-relaxed text-justify text-ink/80">本次闖關者，跟著奶奶認識花香與歌聲。</span>
                                 </div>
                             </div>
                         </div>
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(6, 2, 3)">進入調查</button>
+
+                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-3 shrink-0" onclick="transitionSubPage(6, 2, 3)">進入調查</button>
                     </div>
 
                     <div id="l6-p3" class="hidden flex-col min-h-full">
@@ -813,7 +826,7 @@
                     </div>
                 </div>
 
-                <!-- LEVEL 7: 任務 7 (市集攤位 / 原最後一封信) -->
+                <!-- LEVEL 7: 任務 7 -->
                 <div id="screen-level-7" class="screen-panel hidden p-6 flex flex-col">
                     <div id="l7-p1" class="level-card l7 p-8 flex flex-col justify-center min-h-full text-center relative z-10 w-full h-full">
                         <h1 class="text-4xl font-black tracking-[0.3em] text-gold mb-6 font-serif" style="text-shadow: 0 4px 20px rgba(0,0,0,0.8);">最後一封信</h1>
@@ -901,7 +914,6 @@
                             <span class="leading-relaxed opacity-90">請「截圖保留」此認證畫面，並出示您獲得的【跨越時空的信】（點擊下方信件碎片查看），前往起點服務台領取專屬獎勵！</span>
                         </div>
                         
-                        <!-- 服務台現場核銷專區 -->
                         <div class="bg-paper-dark/30 p-5 rounded-lg border border-ink/10 mb-6 text-center">
                             <div class="text-[11px] font-bold text-ink/60 mb-3 tracking-widest flex items-center justify-center uppercase">
                                 <i class="fa-solid fa-user-shield text-primary mr-1.5"></i>工作人員核銷專區
@@ -985,14 +997,14 @@
             </div>
         </div>
 
-        <!-- MODAL: IMAGE LIGHTBOX -->
+        <!-- MODAL: IMAGE LIGHTBOX（已修復 opacity: 0 隱形問題） -->
         <div id="modal-image-lightbox" class="fixed inset-0 bg-ink/90 backdrop-blur-md z-[1020] flex items-center justify-center p-4 hidden transition-opacity duration-300" onclick="closeImageLightbox()">
             <div class="relative max-w-full max-h-full flex flex-col items-center" onclick="event.stopPropagation()">
                 <button onclick="closeImageLightbox()" class="absolute -top-12 right-0 text-white/70 hover:text-white text-2xl w-10 h-10 flex items-center justify-center bg-white/10 rounded-full active:scale-95 transition-transform">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
-                <div class="vintage-photo p-1 bg-paper rounded shadow-2xl max-w-[92vw] max-h-[80vh] overflow-hidden flex items-center justify-center">
-                    <img id="image-lightbox-src" src="" alt="放大檢視" class="max-w-full max-h-[75vh] object-contain">
+                <div class="p-1 bg-paper rounded shadow-2xl max-w-[92vw] max-h-[80vh] overflow-hidden flex items-center justify-center border-4 border-paper-dark">
+                    <img id="image-lightbox-src" src="" alt="放大檢視" class="max-w-full max-h-[75vh] object-contain opacity-100">
                 </div>
                 <p class="text-xs font-bold text-gold/80 mt-3 tracking-widest">點擊任意處或右上角關閉</p>
             </div>
@@ -1039,7 +1051,8 @@
                         desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門。" 
                     },
                     { 
-                        image: "images/l2-1.jpg", 
+                        // 改用雙圖陣列，徹底修復門牌圖片鍵值重複被覆蓋的問題
+                        images: ["images/l2-1.jpg", "images/l2-2.jpg"],
                         q: "請找尋這個門牌的所在位置，並觀察旁邊的說明牌\n\n糟了！這張線索遺失了重要資訊，請幫忙填起\n\n(填空題)", 
                         inputType: "text",
                         answers: ["乙", "中校", "淡水河洪患", "防洪樓"], 
@@ -1146,22 +1159,22 @@
                     {
                         title: "外婆的澎湖灣",
                         lines: "晚風輕拂澎湖灣，白浪逐沙灘，沒有椰林綴斜陽，只是一片海藍藍.......",
-                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊" // 14字：坐在門前的矮牆上 一遍遍懷想
+                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊" 
                     },
                     {
                         title: "月亮代表我的心",
                         lines: "輕輕的一個吻，已經打動我的心，深深的一段情，教我思念到如今，你問我愛你有多深......",
-                        stars: "＊＊＊＊＊＊" // 6字：我愛你有幾分
+                        stars: "＊＊＊＊＊＊" 
                     },
                     {
                         title: "綠島小夜曲",
                         lines: "這綠島像一隻船，在月夜裡搖啊搖情郎呀，你也在我的心海裡飄呀飄......",
-                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊" // 16字：讓我的歌聲隨那微風 吹開了你的窗簾
+                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊" 
                     },
                     {
                         title: "童年",
                         lines: "池塘邊的榕樹上，知了在聲聲叫著夏天，操場邊的鞦韆上，只有蝴蝶停在上面......",
-                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊" // 41字：黑板上老師的粉筆，還在拚命嘰嘰喳喳寫個不停，等待著下課，等待著放學，等待遊戲的童年
+                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊" 
                     }
                 ]
             },
@@ -1324,9 +1337,28 @@
         // ==========================================
         // 核心功能 (Utils)
         // ==========================================
+        let activeUploadUnsubscribe = null;
+        let activeUploadPollTimer = null;
+
+        function cancelUploadVerification() {
+            if (activeUploadPollTimer) { clearInterval(activeUploadPollTimer); activeUploadPollTimer = null; }
+            if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
+        }
+
         window.showAlert = function(title, desc, iconClass = "", colorClass = "text-primary", callback = null, btnText = "確認", autoCloseDelay = 0, showCancel = false) {
             document.getElementById('alert-title').textContent = title;
-            document.getElementById('alert-desc').innerHTML = desc;
+            const descEl = document.getElementById('alert-desc');
+            descEl.innerHTML = desc;
+            
+            // 若傳入內容含 HTML 標籤，切換為 normal 避免換行空白破壞樣式
+            if (/<[a-z][\s\S]*>/i.test(desc)) {
+                descEl.classList.remove('whitespace-pre-line');
+                descEl.classList.add('whitespace-normal');
+            } else {
+                descEl.classList.add('whitespace-pre-line');
+                descEl.classList.remove('whitespace-normal');
+            }
+
             const iconEl = document.getElementById('alert-icon');
             if (iconClass) { 
                 iconEl.innerHTML = `<i class="fa-solid ${iconClass}"></i>`; 
@@ -1359,6 +1391,7 @@
                 };
                 cancelBtn.onclick = () => {
                     playBeep(300, 0.05);
+                    cancelUploadVerification(); // 點擊取消時銷毀 Firestore 監聽與輪詢，防止幽靈跳轉
                     closeModalAnim('modal-alert', 'alert-box');
                 };
             }
@@ -1472,13 +1505,9 @@
             };
             reader.readAsDataURL(file);
         }
-
-        let activeUploadUnsubscribe = null;
-        let activeUploadPollTimer = null;
         
         function uploadAndListenVerification(file, levelName, onSuccess) {
-            if (activeUploadPollTimer) { clearInterval(activeUploadPollTimer); activeUploadPollTimer = null; }
-            if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
+            cancelUploadVerification();
         
             showAlert("檔案加密中", "正在快速傳送現場照片至指揮所...", "fa-satellite-dish fa-spin", "text-primary", null, false);
         
@@ -1491,15 +1520,11 @@
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
         
-                    const alertDesc = document.getElementById('alert-desc');
-                    const alertIcon = document.getElementById('alert-icon');
-                    if (alertDesc) alertDesc.textContent = "照片已送達指揮所，審核官查驗中...\n(請保持畫面，審核通過將自動跳轉)";
-                    if (alertIcon) alertIcon.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-5xl text-primary"></i>';
+                    showAlert("現場照片查驗中", "照片已送達指揮所，審核官查驗中...\n(請保持畫面，審核通過將自動跳轉)", "fa-spinner fa-spin", "text-primary", null, "取消等待", 0, true);
         
                     let isHandled = false;
                     const cleanUp = () => {
-                        if (activeUploadPollTimer) { clearInterval(activeUploadPollTimer); activeUploadPollTimer = null; }
-                        if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
+                        cancelUploadVerification();
                     };
         
                     const handleResult = (approved) => {
@@ -1527,6 +1552,7 @@
                     }, 1000);
         
                 } catch (error) {
+                    cancelUploadVerification();
                     showAlert("連線中斷", "無法將影像送達指揮所，請再拍一次。\n" + error.message, "fa-triangle-exclamation", "text-primary");
                 }
             });
@@ -1842,7 +1868,6 @@
             const cont = document.getElementById('l2-options-container');
             const pSect = document.getElementById('l2-photo-section');
             const qImgContainer = document.getElementById('l2-question-img-container');
-            const qImgElement = document.getElementById('l2-question-img');
             const qTextEl = document.getElementById('l2-question-text');
             cont.innerHTML = '';
             
@@ -1888,9 +1913,24 @@
             }
         
             qTextEl.textContent = qData.q;
-            if (qData.image) { 
-                qImgElement.src = qData.image; 
-                qImgContainer.classList.remove('hidden'); 
+
+            // 支援雙圖並排與單圖展示
+            if (qData.images && Array.isArray(qData.images)) {
+                qImgContainer.classList.remove('hidden');
+                qImgContainer.className = "mb-6 w-full shrink-0";
+                qImgContainer.innerHTML = `
+                    <div class="grid grid-cols-2 gap-3 w-full">
+                        ${qData.images.map((imgSrc, idx) => `
+                            <div class="vintage-photo aspect-[4/3] cursor-zoom-in overflow-hidden rounded shadow-sm" onclick="openImageLightbox('${imgSrc}')" title="點擊放大檢視">
+                                <img src="${imgSrc}" class="w-full h-full object-cover loaded" alt="線索圖${idx+1}">
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (qData.image) {
+                qImgContainer.classList.remove('hidden');
+                qImgContainer.className = "mb-6 w-full vintage-photo shrink-0";
+                qImgContainer.innerHTML = `<img id="l2-question-img" src="${qData.image}" class="w-full h-auto object-cover loaded" alt="題目圖片">`;
                 if (currentQ === 0) {
                     qImgContainer.classList.add('cursor-zoom-in');
                     qImgContainer.title = "點擊可放大地圖";
@@ -1900,8 +1940,9 @@
                     qImgContainer.title = "";
                     qImgContainer.onclick = null;
                 }
-            } else { 
-                qImgContainer.classList.add('hidden'); 
+            } else {
+                qImgContainer.classList.add('hidden');
+                qImgContainer.innerHTML = '';
                 qImgContainer.onclick = null;
             }
 
