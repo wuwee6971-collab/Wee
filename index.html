@@ -149,13 +149,36 @@
             font-weight: 700; color: #832729; opacity: 0.6; font-size: 0.875rem; letter-spacing: 0.05em; z-index: 1; 
         }
 
-        /* 角色卡片 (Flex/Grid) */
-        .char-card-grid, .char-card-flex { 
-            border: 1px solid rgba(44, 30, 22, 0.2); border-radius: 8px; overflow: hidden; 
-            background: #FFFFFF; box-shadow: 0 4px 12px rgba(44, 30, 22, 0.08); 
+        /* 角色卡片 (Flex/Grid) 修正 */
+        .char-card-grid { 
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(44, 30, 22, 0.2); 
+            border-radius: 8px; 
+            overflow: hidden; 
+            background: #FFFFFF; 
+            box-shadow: 0 4px 12px rgba(44, 30, 22, 0.08); 
         }
-        .char-img-box { background: #E8DFCC; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-
+        
+        .char-card-flex { 
+            display: flex !important;
+            flex-direction: row;
+            border: 1px solid rgba(44, 30, 22, 0.2); 
+            border-radius: 8px; 
+            overflow: hidden; 
+            background: #FFFFFF; 
+            box-shadow: 0 4px 12px rgba(44, 30, 22, 0.08); 
+            min-height: 90px;
+        }
+        .char-img-box { 
+            background: #E8DFCC; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            position: relative; 
+            flex-shrink: 0;
+        }
         /* ==========================================
            4. 動態轉場與佈局 (Transitions & Layout)
            ========================================== */
@@ -207,6 +230,9 @@
         
         #app-loader { transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1); }
         .pb-viewport-safe { padding-bottom: calc(100px + env(safe-area-inset-bottom, 20px)); }
+        #modal-image-lightbox .vintage-photo img {
+            opacity: 1 !important;
+        }
     </style>
 </head>
 <body class="min-h-[100dvh] flex items-center justify-center p-0 sm:p-6 overflow-x-hidden">
@@ -708,42 +734,42 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(6, 1, 2)">認識角色</button>
                     </div>
 
-                    <div id="l6-p2" class="hidden flex-col min-h-full">
-                        <div class="flex items-center justify-between mb-6 shrink-0">
-                            <button onclick="transitionSubPage(6, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">角色介紹</h2>
-                        </div>
-                        <div class="flex-1 flex flex-col space-y-4 min-h-0">
-                            <div class="char-card-flex flex-1">
-                                <div class="char-img-box w-1/3 shrink-0 border-r border-ink/10 skeleton-bg relative">
-                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandma" alt="奶奶" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-5 text-ink flex-1 flex flex-col justify-center bg-white">
-                                    <b class="text-base tracking-widest text-primary mb-2 border-b border-dashed border-ink/10 pb-1.5 font-serif">奶奶 (NPC)</b>
-                                    <span class="font-bold text-sm leading-[1.6] text-justify text-ink/80">三重一村老居民，負責帶出過去產業與回憶。</span>
-                                </div>
-                            </div>
-                            <div class="char-card-flex flex-1">
-                                <div class="char-img-box w-1/3 shrink-0 border-r border-ink/10 skeleton-bg relative">
-                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandson" alt="孫子" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
-                                </div>
-                                <div class="p-5 text-ink flex-1 flex flex-col justify-center bg-white">
-                                    <b class="text-base tracking-widest text-primary mb-2 border-b border-dashed border-ink/10 pb-1.5 font-serif">孫子 (NPC)</b>
-                                    <span class="font-bold text-sm leading-[1.6] text-justify text-ink/80">三重一村的小孩，和大家討論、帶氣氛。</span>
-                                </div>
-                            </div>
-                            <div class="char-card-flex flex-1">
-                                <div class="char-img-box w-1/3 shrink-0 border-r border-ink/10 text-4xl text-primary opacity-40 bg-paper-dark">
-                                    <i class="fa-solid fa-user-astronaut"></i>
-                                </div>
-                                <div class="p-5 text-ink flex-1 flex flex-col justify-center bg-white">
-                                    <b class="text-base tracking-widest text-primary mb-2 border-b border-dashed border-ink/10 pb-1.5 font-serif">遊客 (你)</b>
-                                    <span class="font-bold text-sm leading-[1.6] text-justify text-ink/80">本次闖關者，跟著奶奶認識花香與歌聲。</span>
-                                </div>
-                            </div>
-                        </div>
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(6, 2, 3)">進入調查</button>
+                    <div id="l6-p2" class="hidden flex flex-col min-h-full">
+                    <div class="flex items-center justify-between mb-4 shrink-0">
+                        <button onclick="transitionSubPage(6, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">角色介紹</h2>
                     </div>
+                    <div class="flex-1 flex flex-col space-y-3 min-h-0 overflow-y-auto custom-scrollbar pr-1">
+                        <div class="char-card-flex shrink-0">
+                            <div class="char-img-box w-24 h-24 border-r border-ink/10 skeleton-bg">
+                                <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandma" alt="奶奶" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
+                            </div>
+                            <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white">
+                                <b class="text-sm tracking-widest text-primary mb-1 border-b border-dashed border-ink/10 pb-1 font-serif">奶奶 (NPC)</b>
+                                <span class="font-bold text-xs leading-[1.6] text-justify text-ink/80">三重一村老居民，負責帶出過去產業與回憶。</span>
+                            </div>
+                        </div>
+                        <div class="char-card-flex shrink-0">
+                            <div class="char-img-box w-24 h-24 border-r border-ink/10 skeleton-bg">
+                                <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandson" alt="孫子" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
+                            </div>
+                            <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white">
+                                <b class="text-sm tracking-widest text-primary mb-1 border-b border-dashed border-ink/10 pb-1 font-serif">孫子 (NPC)</b>
+                                <span class="font-bold text-xs leading-[1.6] text-justify text-ink/80">三重一村的小孩，和大家討論、帶氣氛。</span>
+                            </div>
+                        </div>
+                        <div class="char-card-flex shrink-0">
+                            <div class="char-img-box w-24 h-24 border-r border-ink/10 text-3xl text-primary opacity-40 bg-paper-dark">
+                                <i class="fa-solid fa-user-astronaut"></i>
+                            </div>
+                            <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white">
+                                <b class="text-sm tracking-widest text-primary mb-1 border-b border-dashed border-ink/10 pb-1 font-serif">遊客 (你)</b>
+                                <span class="font-bold text-xs leading-[1.6] text-justify text-ink/80">本次闖關者，跟著奶奶認識花香與歌聲。</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="transitionSubPage(6, 2, 3)">進入調查</button>
+                </div>
 
                     <div id="l6-p3" class="hidden flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
@@ -1039,7 +1065,7 @@
                         desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門。" 
                     },
                     { 
-                        image: "images/l2-1.jpg", 
+                        images: ["images/l2-1.jpg", "images/l2-2.jpg"], 
                         q: "請找尋這個門牌的所在位置，並觀察旁邊的說明牌\n\n糟了！這張線索遺失了重要資訊，請幫忙填起\n\n(填空題)", 
                         inputType: "text",
                         answers: ["乙", "中校", "淡水河洪患", "防洪樓"], 
@@ -1194,7 +1220,10 @@
             const modal = document.getElementById('modal-image-lightbox');
             const imgEl = document.getElementById('image-lightbox-src');
             if (modal && imgEl) {
+                imgEl.classList.remove('loaded');
+                imgEl.onload = () => imgEl.classList.add('loaded');
                 imgEl.src = src;
+                if (imgEl.complete) imgEl.classList.add('loaded');
                 modal.classList.remove('hidden');
             }
         };
@@ -1480,9 +1509,27 @@
             if (activeUploadPollTimer) { clearInterval(activeUploadPollTimer); activeUploadPollTimer = null; }
             if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
         
-            showAlert("檔案加密中", "正在快速傳送現場照片至指揮所...", "fa-satellite-dish fa-spin", "text-primary", null, false);
+            let isHandled = false;
+            const cleanUp = () => {
+                isHandled = true;
+                if (activeUploadPollTimer) { clearInterval(activeUploadPollTimer); activeUploadPollTimer = null; }
+                if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
+            };
+        
+            // 呼叫彈窗時開放「取消」按鈕
+            showAlert("檔案加密中", "正在快速傳送現場照片至指揮所...", "fa-satellite-dish fa-spin", "text-primary", null, "取消上傳", 0, true);
+            
+            // 綁定返回/取消按鈕的清理邏輯
+            const cancelBtn = document.getElementById('alert-cancel-btn');
+            if (cancelBtn) {
+                cancelBtn.onclick = () => {
+                    cleanUp();
+                    closeModalAnim('modal-alert', 'alert-box');
+                };
+            }
         
             compressImageFast(file, 640, 0.5, async (base64Str) => {
+                if (isHandled) return; // 使用者已在此期間取消
                 const teamName = GameState.get('teamName') || "匿名隊伍";
                 try {
                     const docRef = await db.collection("submissions").add({
@@ -1491,31 +1538,28 @@
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
         
+                    if (isHandled) return;
+        
                     const alertDesc = document.getElementById('alert-desc');
                     const alertIcon = document.getElementById('alert-icon');
                     if (alertDesc) alertDesc.textContent = "照片已送達指揮所，審核官查驗中...\n(請保持畫面，審核通過將自動跳轉)";
                     if (alertIcon) alertIcon.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-5xl text-primary"></i>';
         
-                    let isHandled = false;
-                    const cleanUp = () => {
-                        if (activeUploadPollTimer) { clearInterval(activeUploadPollTimer); activeUploadPollTimer = null; }
-                        if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
-                    };
-        
                     const handleResult = (approved) => {
                         if (isHandled) return;
-                        isHandled = true; cleanUp(); 
+                        cleanUp(); 
                         closeModalAnim('modal-alert', 'alert-box', () => onSuccess(approved));
                     };
         
                     activeUploadUnsubscribe = docRef.onSnapshot((doc) => {
-                        if (!doc.exists) return;
+                        if (isHandled || !doc.exists) return;
                         const data = doc.data();
                         if (data.status === "approved") handleResult(true);
                         else if (data.status === "rejected") handleResult(false);
                     }, (err) => { console.warn("Snapshot 斷線，交由輪詢處理", err); });
         
                     activeUploadPollTimer = setInterval(async () => {
+                        if (isHandled) return;
                         try {
                             const docSnap = await docRef.get();
                             if (docSnap.exists) {
@@ -1527,7 +1571,10 @@
                     }, 1000);
         
                 } catch (error) {
-                    showAlert("連線中斷", "無法將影像送達指揮所，請再拍一次。\n" + error.message, "fa-triangle-exclamation", "text-primary");
+                    if (!isHandled) {
+                        cleanUp();
+                        showAlert("連線中斷", "無法將影像送達指揮所，請檢查網路後再試。\n" + error.message, "fa-triangle-exclamation", "text-primary");
+                    }
                 }
             });
         }
@@ -1888,21 +1935,25 @@
             }
         
             qTextEl.textContent = qData.q;
-            if (qData.image) { 
-                qImgElement.src = qData.image; 
-                qImgContainer.classList.remove('hidden'); 
-                if (currentQ === 0) {
-                    qImgContainer.classList.add('cursor-zoom-in');
-                    qImgContainer.title = "點擊可放大地圖";
-                    qImgContainer.onclick = () => openImageLightbox(qData.image);
-                } else {
-                    qImgContainer.classList.remove('cursor-zoom-in');
-                    qImgContainer.title = "";
-                    qImgContainer.onclick = null;
-                }
-            } else { 
-                qImgContainer.classList.add('hidden'); 
-                qImgContainer.onclick = null;
+            // 清空舊圖容器並重新渲染
+            qImgContainer.innerHTML = '';
+            const imgList = qData.images || (qData.image ? [qData.image] : []);
+            
+            if (imgList.length > 0) {
+                qImgContainer.classList.remove('hidden');
+                qImgContainer.className = imgList.length > 1 
+                    ? "mb-6 w-full grid grid-cols-2 gap-3 shrink-0" 
+                    : "mb-6 w-full vintage-photo shrink-0 cursor-zoom-in";
+            
+                imgList.forEach((src) => {
+                    const wrap = document.createElement('div');
+                    wrap.className = "vintage-photo cursor-zoom-in w-full aspect-[4/3] overflow-hidden";
+                    wrap.onclick = () => openImageLightbox(src);
+                    wrap.innerHTML = `<img src="${src}" class="w-full h-full object-cover loaded" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=線索圖片'">`;
+                    qImgContainer.appendChild(wrap);
+                });
+            } else {
+                qImgContainer.classList.add('hidden');
             }
 
             if (qData.inputType === "text") {
@@ -2122,9 +2173,12 @@
                     <div class="w-full py-2.5 text-sm font-black text-ink tracking-wider bg-white">${o.opt.text}</div>
                 `;
                 
+                // 在 showL3Question 內生成按鈕處，確保包含食品彈窗卡片：
                 btn.onclick = () => {
                     const feedbackHtml = `
-                        <div class="food-feedback-box"><img src="${o.opt.img}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=${o.opt.text}'"></div>
+                        <div class="food-feedback-box aspect-[16/9] mb-3 overflow-hidden rounded-md border border-ink/20">
+                            <img src="${o.opt.img}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=${o.opt.text}'">
+                        </div>
                         <p class="text-sm font-bold text-ink leading-[1.8] font-serif text-justify">${o.opt.desc}</p>
                     `;
                     if (o.isCorrect) {
@@ -2137,7 +2191,7 @@
                             } else { 
                                 showAlert("調查成功", "每一道料理都不只是滋味，更是一段跨越海峽的生活記憶。\n\n眷村廚房匯聚了大江南北的家鄉味，也成為文化交流的場所。", "", "text-gold-dark", () => handleLevelSuccess(3)); 
                             }
-                        }, "正確，品鑑下一道");
+                        }, "品鑑下一道");
                     } else {
                         playErrorSound(); 
                         const errorHtml = feedbackHtml + `<div class="text-primary mt-3 pt-3 border-t border-dashed border-ink/15 font-black text-xs text-center"><i class="fa-solid fa-circle-xmark mr-1"></i> 收音機裡長輩描述的味道似乎不是這道，請再聽一次！</div>`;
@@ -2269,9 +2323,9 @@
                 updateL5Display();
                 
                 if (errCount >= 2) {
-                    showAlert("密碼錯誤", "密碼錯誤，請向群星會主詞人求救！", "fa-triangle-exclamation", "text-primary");
+                    showAlert("密碼錯誤", "密碼錯誤，請向群星會主持人求救！", "fa-triangle-exclamation", "text-primary", null, "尋求關主支援");
                 } else {
-                    showAlert("密碼錯誤", "通關密語錯誤！請重新確認。", "fa-circle-xmark", "text-primary");
+                    showAlert("密碼錯誤", "通關密語錯誤！請重新確認或點閱歌單驗證。", "fa-circle-xmark", "text-primary", null, "重新輸入");
                 }
             }
         };
