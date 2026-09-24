@@ -1997,11 +1997,19 @@
                         playSuccessSound();
                         if (qData.photo) {
                             let ans = GameState.get('l2Answered') || [false, false, false, false, false];
+                            let photos = GameState.get('l2Photos') || [false, false, false, false, false];
                             ans[currentQ] = true;
+                            photos[currentQ] = false;
                             GameState.set('l2Answered', ans);
+                            GameState.set('l2Photos', photos);
+                            
                             showAlert("回答正確！", `${qData.desc}\n\n★ 請前往現場拍攝相應特徵完成查驗！`, "fa-check-circle", "text-emerald-700", () => {
                                 renderL2();
-                            }, "前往拍照取證");
+                                setTimeout(() => {
+                                    const camInput = document.getElementById('l2-camera-input');
+                                    if (camInput) camInput.click();
+                                }, 300);
+                            }, "啟動相機拍照");
                         } else {
                             showAlert("驗證通過", qData.desc, "fa-check-circle", "text-emerald-700", () => {
                                 let cq = GameState.get('l2CurrentQ');
