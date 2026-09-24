@@ -380,7 +380,7 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-5 shrink-0" onclick="transitionSubPage(1, 1, 2)">進入任務牆</button>
                     </div>
 
-                    <div id="l1-p2" class="hidden flex-col space-y-6">
+                    <div id="l1-p2" class="hidden flex flex-col space-y-6">
                         <div class="flex items-center mb-2 shrink-0">
                             <button onclick="transitionSubPage(1, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-xl font-serif tracking-[0.15em] text-center flex-1 pr-10">陣地巡查任務牆</h2>
@@ -505,7 +505,7 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(4, 1, 2)">展開圖鑑</button>
                     </div>
                     
-                    <div id="l4-p2" class="hidden flex-col min-h-full">
+                    <div id="l4-p2" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(4, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">【尋人啟事】目標特徵</h2>
@@ -620,7 +620,8 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="transitionSubPage(5, 1, 2)">查閱群星</button>
                     </div>
 
-                    <div id="l5-p2" class="hidden flex-col min-h-full">
+                    <!-- 原本：class="hidden flex-col min-h-full" -->
+                    <div id="l5-p2" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(5, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">關主圖鑑</h2>
@@ -734,7 +735,8 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(6, 1, 2)">認識角色</button>
                     </div>
 
-                    <div id="l6-p2" class="hidden flex flex-col min-h-full">
+                <!-- 原本：class="hidden flex-col min-h-full" -->
+                <div id="l6-p2" class="hidden flex flex-col min-h-full">
                     <div class="flex items-center justify-between mb-4 shrink-0">
                         <button onclick="transitionSubPage(6, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                         <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">角色介紹</h2>
@@ -854,7 +856,8 @@
                         </button>
                     </div>
 
-                    <div id="l7-p2" class="hidden flex-col min-h-full">
+                    <!-- 原本：class="hidden flex-col min-h-full" -->
+                    <div id="l7-p2" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center mb-6 shrink-0">
                             <button onclick="transitionSubPage(7, 2, 1)" class="btn-base bg-transparent border border-gold/30 w-10 h-10 flex items-center justify-center rounded text-gold hover:bg-gold/10 transition-colors"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="flex-1 text-center font-black text-gold text-lg pr-10 font-serif tracking-[0.2em]">故事前言</h2>
@@ -1641,30 +1644,54 @@
             }
         }
 
+        // 修正後的子頁面轉場式
         async function transitionSubPage(level, fromPage, toPage) {
             playBeep();
             const fromEl = document.getElementById(`l${level}-p${fromPage}`);
             const toEl = document.getElementById(`l${level}-p${toPage}`);
-
+        
             if (fromEl) {
                 fromEl.classList.remove('screen-active');
                 fromEl.classList.add('screen-exit');
                 fromEl.style.pointerEvents = 'none';
             }
+            
             await new Promise(r => setTimeout(r, 200));
+            
             if (fromEl) {
                 fromEl.classList.add('hidden');
-                fromEl.classList.remove('screen-exit');
+                fromEl.classList.remove('screen-exit', 'screen-enter');
                 fromEl.style.pointerEvents = 'auto';
             }
+            
             if (toEl) {
-                toEl.classList.remove('hidden');
+                // 核心修復：進場前必須把舊有的 screen-exit 與 hidden 徹底清除
+                toEl.classList.remove('hidden', 'screen-exit', 'screen-enter');
+                toEl.style.pointerEvents = 'auto';
                 toEl.classList.add('screen-enter');
-                void toEl.offsetWidth; 
+                void toEl.offsetWidth; // 強制重繪
                 toEl.classList.remove('screen-enter');
                 toEl.classList.add('screen-active');
             }
             document.getElementById('game-viewport').scrollTop = 0;
+        }
+        
+        // 修正後的強制子頁面初始化函式
+        function forceSubPageInit(level, targetPage, totalPages) {
+            for (let i = 1; i <= totalPages; i++) {
+                const el = document.getElementById(`l${level}-p${i}`);
+                if (el) {
+                    el.classList.add('hidden');
+                    // 核心修復：不要在隱藏元素上預先掛載 screen-enter / screen-exit
+                    el.classList.remove('screen-active', 'screen-enter', 'screen-exit');
+                    el.style.pointerEvents = 'auto';
+                }
+            }
+            const targetEl = document.getElementById(`l${level}-p${targetPage}`);
+            if (targetEl) {
+                targetEl.classList.remove('hidden', 'screen-enter', 'screen-exit');
+                targetEl.classList.add('screen-active');
+            }
         }
 
         async function showScreen(screenId) {
@@ -1710,18 +1737,6 @@
             if (screenId === 'level-7') forceSubPageInit(7, 1, 4);
 
             updateStampBadgeCount();
-        }
-
-        function forceSubPageInit(level, targetPage, totalPages) {
-            for (let i = 1; i <= totalPages; i++) {
-                const el = document.getElementById(`l${level}-p${i}`);
-                if (el) el.classList.add('hidden', 'screen-enter', 'screen-exit');
-            }
-            const targetEl = document.getElementById(`l${level}-p${targetPage}`);
-            if (targetEl) {
-                targetEl.classList.remove('hidden', 'screen-enter', 'screen-exit');
-                targetEl.classList.add('screen-active');
-            }
         }
 
         function updateStampBadgeCount() {
