@@ -467,9 +467,10 @@
                             
                             <p id="l3-question-text" class="text-lg font-black text-center leading-[1.8] mb-8 text-ink font-serif tracking-widest"></p>
                             
-                            <div id="l3-menu-box" class="w-full vintage-photo !border-4 !border-b-8 mb-6 max-h-48 flex items-center justify-center overflow-hidden shrink-0 shadow-md">
-                                <img id="l3-menu-img" src="" class="w-full h-auto object-cover" onload="this.classList.add('loaded')" onerror="this.src='https://placehold.co/400x200/e5d5b5/6a2932?text=菜單檔案調閱中'">
-                            </div>
+                            <p id="l3-question-text" class="text-base font-black text-center leading-[1.8] mb-6 text-ink font-serif tracking-widest"></p>
+                            
+                            <!-- 移除原本的菜單大圖，改用四格圖 -->
+                            <div id="l3-options-container" class="grid grid-cols-2 gap-3 flex-1 content-end pb-2"></div>
                             
                             <div id="l3-options-container" class="space-y-4 flex-1 flex flex-col justify-end pb-2"></div>
                         </div>
@@ -577,15 +578,33 @@
 
                 <!-- LEVEL 5: 群星之夜 -->
                 <div id="screen-level-5" class="screen-panel hidden p-6 flex flex-col">
-                    <div id="l5-p1" class="level-card p-8 flex flex-col justify-center min-h-full">
-                        <div class="text-base leading-[2] font-bold text-ink text-justify flex-1 font-serif flex flex-col justify-center">
-                            <h2 class="text-center text-primary text-2xl mb-8 font-black border-b border-dashed border-ink/20 pb-4 tracking-widest">黃金娛樂時光</h2>
-                            <p>當黑膠唱片旋轉、霓虹燈光閃爍，空氣中流淌著老歌與電影的熟悉旋律。這裡不只是歷史的記憶，更是我們今晚一同尋找青春與鄉愁的舞台。</p>
-                            <div class="text-center my-6 text-ink/30 tracking-[0.5em] text-sm">··· ✦ ···</div>
-                            <p>1950至1980年代，三重天台廣場曾是北台灣最繁華的娛樂地標，歌廳、戲院、夜總會林立。第一代外省移民在眷村裡，用歌聲撫平離鄉背井的鄉愁。</p>
-                            <p class="mt-6">今晚，我們將透過一場「接歌挑戰」，帶領大家走入這段熱鬧又帶點感傷的青春歲月。</p>
+                    <div id="l5-p1" class="level-card p-6 flex flex-col min-h-full">
+                        <h2 class="text-center text-primary text-2xl mb-4 font-black border-b border-dashed border-ink/20 pb-4 tracking-widest shrink-0">黃金娛樂時光</h2>
+                        
+                        <div class="text-base leading-[1.9] font-bold text-ink text-justify flex-1 font-serif overflow-y-auto custom-scrollbar pr-2 pb-2">
+                            <!-- 圖 1 插入點 -->
+                            <div class="w-full mb-4 rounded overflow-hidden shadow-sm border border-ink/10">
+                                <img src="https://placehold.co/600x300/e5d5b5/7c343d?text=圖1" alt="黃金娛樂時光1" class="w-full h-auto object-cover">
+                            </div>
+                            
+                            <p class="mb-5">當黑膠唱片旋轉、霓虹燈光閃爍，空氣中流淌著老歌與電影的熟悉旋律。這裡不只是歷史的記憶，更是我們今晚一同尋找青春與鄉愁的舞台。</p>
+                            
+                            <!-- 圖 2 插入點 -->
+                            <div class="w-full mb-4 rounded overflow-hidden shadow-sm border border-ink/10">
+                                <img src="https://placehold.co/600x300/e5d5b5/7c343d?text=圖2" alt="黃金娛樂時光2" class="w-full h-auto object-cover">
+                            </div>
+                            
+                            <p class="mb-5">1950至1980年代，三重天台廣場曾是北台灣最繁華的娛樂地標，歌廳、戲院、夜總會林立。第一代外省移民在眷村裡，用歌聲撫平離鄉背井的鄉愁。</p>
+                            
+                            <!-- 圖 3 插入點 -->
+                            <div class="w-full mb-4 rounded overflow-hidden shadow-sm border border-ink/10">
+                                <img src="https://placehold.co/600x300/e5d5b5/7c343d?text=圖3" alt="黃金娛樂時光3" class="w-full h-auto object-cover">
+                            </div>
+                            
+                            <p>今晚，我們將透過一場「接歌挑戰」，帶領大家走入這段熱鬧又帶點感傷的青春歲月。</p>
                         </div>
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(5, 1, 2)">查閱群星</button>
+                        
+                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-5 shrink-0" onclick="transitionSubPage(5, 1, 2)">查閱群星</button>
                     </div>
 
                     <div id="l5-p2" class="hidden flex-col min-h-full">
@@ -646,9 +665,25 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(5, 3, 4)">輸入密碼</button>
                     </div>
 
+                    <!-- 新增的 P4：接歌挑戰歌單 -->
                     <div id="l5-p4" class="hidden flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(5, 4, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">接歌挑戰</h2>
+                        </div>
+                        <div class="level-card p-6 flex-1 flex flex-col justify-start bg-paper/30 space-y-4 overflow-hidden relative">
+                            <p class="text-sm font-bold text-ink/80 text-center mb-1 shrink-0">點擊歌單，看看你能否接出後面的歌詞！</p>
+                            <div id="l5-song-list" class="space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-1">
+                                <!-- JS injects songs here -->
+                            </div>
+                        </div>
+                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="transitionSubPage(5, 4, 5)">前往輸入密碼</button>
+                    </div>
+
+                    <!-- 原本的 P4 變成 P5：通關密語 -->
+                    <div id="l5-p5" class="hidden flex-col min-h-full">
+                        <div class="flex items-center justify-between mb-6 shrink-0">
+                            <button onclick="transitionSubPage(5, 5, 4)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">通關密語</h2>
                         </div>
                         <div class="level-card p-8 flex-1 flex flex-col justify-center bg-paper/30">
@@ -1622,7 +1657,7 @@
             if (screenId === 'level-2') renderL2();
             if (screenId === 'level-3') renderL3();
             if (screenId === 'level-4') forceSubPageInit(4, 1, 4);
-            if (screenId === 'level-5') { forceSubPageInit(5, 1, 4); updateL5Display(); }
+            if (screenId === 'level-5') { forceSubPageInit(5, 1, 5); renderL5Songs(); updateL5Display(); }
             if (screenId === 'level-6') { forceSubPageInit(6, 1, 4); renderL6Songs(); }
             if (screenId === 'level-7') forceSubPageInit(7, 1, 4);
 
@@ -1833,6 +1868,7 @@
                         <div class="font-black text-military text-base border-b border-military/30 pb-2">
                             <i class="fa-solid fa-landmark mr-2"></i>村長家的七次擴建歷程
                         </div>
+                        <img src="images/S__10690579_0.jpg" alt="擴建歷程" class="w-full h-auto rounded shadow-sm border border-military/20 mb-2">
                         <p class="text-sm leading-[1.8] text-ink font-bold text-justify">
                             民國38年隨軍撤退來台時，村長家最初僅是簡陋的<b>黑瓦竹泥牆平房</b>。
                             民國50年代因淡水河頻繁氾濫，特別增建了挑高的<b>防洪樓</b>避難；
@@ -2076,24 +2112,39 @@
             const menuImg = document.getElementById('l3-menu-img');
             if (menuImg && GAME_DATA.level3.menuImages) { menuImg.src = GAME_DATA.level3.menuImages[currentQ] || ''; }
 
-            const cont = document.getElementById('l3-options-container'); cont.innerHTML = '';
-            let optionsWithIndex = qData.opts.map((opt, index) => ({ text: opt, isCorrect: index === qData.a }));
+            const cont = document.getElementById('l3-options-container'); 
+            cont.innerHTML = '';
+            
+            let optionsWithIndex = qData.opts.map((opt, index) => ({ opt: opt, isCorrect: index === qData.a }));
             let shuffledOptions = shuffleArray([...optionsWithIndex]);
+            
             shuffledOptions.forEach((o) => {
                 const btn = document.createElement('button');
-                btn.className = "opt-btn l3-opt-btn font-serif text-base tracking-wide opacity-50 cursor-not-allowed"; btn.textContent = o.text; btn.disabled = true;
+                btn.className = "l3-opt-btn flex flex-col items-center justify-center border border-ink/20 rounded-lg overflow-hidden bg-white shadow-sm opacity-50 cursor-not-allowed transition-all active:scale-95";
+                btn.disabled = true;
+                btn.innerHTML = `
+                    <div class="w-full aspect-square bg-paper-dark relative border-b border-ink/10">
+                        <img src="${o.opt.img}" alt="${o.opt.text}" class="absolute inset-0 w-full h-full object-cover" onerror="this.src='https://placehold.co/150/e5d5b5/7c343d?text=${o.opt.text}'">
+                    </div>
+                    <div class="w-full py-2.5 text-sm font-black text-ink tracking-wider bg-white">${o.opt.text}</div>
+                `;
+                
                 btn.onclick = () => {
+                    const feedbackHtml = `
+                        <div class="food-feedback-box"><img src="${o.opt.img}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=${o.opt.text}'"></div>
+                        <p class="text-sm font-bold text-ink leading-[1.8] font-serif text-justify">${o.opt.desc}</p>
+                    `;
                     if (o.isCorrect) {
                         playSuccessSound();
-                        const foodImgSrc = GAME_DATA.level3.foodImages ? GAME_DATA.level3.foodImages[currentQ] : '';
-                        const feedbackHtml = `<div class="food-feedback-box"><img src="${foodImgSrc}" class="w-full h-full object-cover" onerror="this.parentElement.style.display='none'"></div><p class="text-sm font-bold text-ink leading-[1.8] font-serif">${qData.desc}</p>`;
-                        showAlert("品鑑正確", feedbackHtml, "fa-bowl-rice", "text-gold-dark", () => {
+                        showAlert(`【${o.opt.text}】`, feedbackHtml, "fa-bowl-rice", "text-gold-dark", () => {
                             let cq = GameState.get('l3CurrentQ');
                             if (cq < 4) { GameState.set('l3CurrentQ', cq + 1); showL3Question(); } 
                             else { showAlert("調查成功", "每一道料理都不只是滋味，更是一段跨越海峽的生活記憶。\n\n眷村廚房匯聚了大江南北的家鄉味，也成為文化交流的場所。", "", "text-gold-dark", () => handleLevelSuccess(3)); }
-                        }, "品鑑下一道");
+                        }, "正確，品鑑下一道");
                     } else {
-                        playErrorSound(); showAlert("品鑑錯誤", "收音機裡長輩描述的味道似乎不是這道，請再聽一次！", "fa-xmark-circle", "text-primary", null, "重新選擇");
+                        playErrorSound(); 
+                        const errorHtml = feedbackHtml + `<div class="text-primary mt-3 pt-3 border-t border-dashed border-ink/15 font-black text-xs text-center"><i class="fa-solid fa-circle-xmark mr-1"></i> 收音機裡長輩描述的味道似乎不是這道，請再聽一次！</div>`;
+                        showAlert(`【${o.opt.text}】`, errorHtml, "fa-magnifying-glass", "text-primary", null, "重新選擇");
                     }
                 };
                 cont.appendChild(btn);
@@ -2147,6 +2198,28 @@
             else { playErrorSound(); showAlert("檔案不符", "選擇有誤，請再試一次！", "fa-circle-xmark", "text-primary"); }
         };
 
+        function renderL5Songs() {
+            const container = document.getElementById('l5-song-list');
+            if(!container) return;
+            container.innerHTML = '';
+            GAME_DATA.level5.songs.forEach(song => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left bg-white border border-ink/15 p-4 rounded-lg shadow-sm hover:shadow-md transition-all active:scale-95 text-ink";
+                btn.innerHTML = `<div class="font-black text-primary text-lg font-serif mb-1"><i class="fa-solid fa-music mr-2 opacity-70"></i>${song.title}</div><div class="text-[11px] font-mono tracking-widest opacity-50 mt-1">點擊查閱歌詞</div>`;
+                btn.onclick = () => {
+                    playBeep();
+                    const html = `
+                        <div class="text-left font-bold text-ink text-sm leading-relaxed space-y-3 mt-1 bg-paper/50 p-4 rounded border border-ink/10">
+                            <p>${song.lines}</p>
+                            <p class="text-primary font-mono font-black tracking-widest break-all">${song.stars}</p>
+                        </div>
+                    `;
+                    showAlert(`《${song.title}》`, html, "fa-microphone", "text-gold-dark", null, "關閉返回");
+                };
+                container.appendChild(btn);
+            });
+        }
+
         document.querySelectorAll('.l5-key').forEach(btn => btn.onclick = () => {
             let input = GameState.get('l5Input');
             if(input.length < 3) { playBeep(); input.push(btn.dataset.val); GameState.set('l5Input', input); updateL5Display(); }
@@ -2159,10 +2232,17 @@
             let input = GameState.get('l5Input');
             if(input.join('').trim() === GAME_DATA.level5.passcode) { handleLevelSuccess(5); } 
             else {
-                playErrorSound(); let errCount = GameState.get('l5Errors') + 1; GameState.set('l5Errors', errCount); GameState.set('l5Input', []); updateL5Display();
-                if (errCount >= 4) showAlert("機密檔案調閱", GAME_DATA.level5.hints[1], "fa-lightbulb", "text-gold-dark");
-                else if (errCount >= 2) showAlert("調查線索", GAME_DATA.level5.hints[0], "fa-magnifying-glass", "text-ink");
-                else showAlert("密碼錯誤", "通關密語錯誤！請重新確認。", "fa-circle-xmark", "text-primary");
+                playErrorSound(); 
+                let errCount = (GameState.get('l5Errors') || 0) + 1; 
+                GameState.set('l5Errors', errCount); 
+                GameState.set('l5Input', []); 
+                updateL5Display();
+                
+                if (errCount >= 2) {
+                    showAlert("密碼錯誤", "密碼錯誤，請向群星會主持人求救！", "fa-triangle-exclamation", "text-primary");
+                } else {
+                    showAlert("密碼錯誤", "通關密語錯誤！請重新確認。", "fa-circle-xmark", "text-primary");
+                }
             }
         };
         function updateL5Display() {
