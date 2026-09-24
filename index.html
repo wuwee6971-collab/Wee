@@ -448,32 +448,17 @@
                     </div>
 
                     <div id="l3-qa-section" class="hidden flex-1 flex flex-col">
-                        <div class="level-card l3 p-8 flex-1 flex flex-col relative">
-                            <div class="text-center mb-8 shrink-0 relative flex justify-between items-center border-b border-dashed border-gold-dark/40 pb-4">
-                                <button onclick="prevL3Question()" class="btn-base bg-gold/10 text-gold-dark px-4 py-2 hidden shadow-retro-sm rounded-md border border-gold/30" id="btn-l3-prev"><i class="fa-solid fa-chevron-left"></i></button>
-                                <span class="px-5 py-2 bg-gold/10 border border-gold/30 rounded-md text-sm font-black text-gold-dark shadow-retro-sm mx-auto tracking-widest font-mono" id="l3-q-counter"></span>
-                            </div>
-
-                            <div id="l3-audio-hint" class="absolute top-24 left-1/2 -translate-x-1/2 w-11/12 max-w-xs bg-paper text-gold-dark text-sm font-bold p-3 border border-gold-dark rounded-md text-center z-10 shadow-lg font-serif tracking-wide">
-                                ⚠ 點擊播放收音機，聆聽線索解鎖檔案
-                            </div>
-                            
-                            <div class="mt-10 flex flex-col items-center justify-center shrink-0 mb-10 relative">
-                                <button id="l3-btn-voice" class="btn-base w-28 h-28 bg-vintage-paper border-[3px] border-ink rounded-full text-ink flex items-center justify-center shadow-[0_8px_0_theme(colors.ink)] transition-transform active:translate-y-2 active:shadow-[0_0px_0_theme(colors.ink)]">
-                                    <i id="l3-voice-icon" class="fa-solid fa-radio text-5xl opacity-80"></i>
+                       <div class="mt-4 flex flex-col items-center justify-center shrink-0 mb-4 relative">
+                                <button id="l3-btn-voice" class="btn-base w-24 h-24 bg-vintage-paper border-[3px] border-ink rounded-full text-ink flex items-center justify-center shadow-[0_6px_0_theme(colors.ink)] transition-transform active:translate-y-2 active:shadow-[0_0px_0_theme(colors.ink)]">
+                                    <i id="l3-voice-icon" class="fa-solid fa-radio text-4xl opacity-80"></i>
                                 </button>
                                 <audio id="l3-audio-player" class="hidden"></audio>
                             </div>
                             
-                            <p id="l3-question-text" class="text-lg font-black text-center leading-[1.8] mb-8 text-ink font-serif tracking-widest"></p>
+                            <p id="l3-question-text" class="text-base font-black text-center leading-[1.8] mb-4 text-ink font-serif tracking-widest"></p>
                             
-                            <p id="l3-question-text" class="text-base font-black text-center leading-[1.8] mb-6 text-ink font-serif tracking-widest"></p>
-                            
-                            <!-- 移除原本的菜單大圖，改用四格圖 -->
+                            <!-- 四宮格料理圖片按鈕容器（點擊彈出介紹） -->
                             <div id="l3-options-container" class="grid grid-cols-2 gap-3 flex-1 content-end pb-2"></div>
-                            
-                            <div id="l3-options-container" class="space-y-4 flex-1 flex flex-col justify-end pb-2"></div>
-                        </div>
                     </div>
                 </div>
 
@@ -1104,20 +1089,59 @@
             },
             level3: {
                 questions: [
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["麻婆豆腐", "回鍋肉", "水煮魚", "宮保雞丁"], a: 1, desc: "回鍋肉是四川經典家常菜，\n呈現川菜麻、辣、香醇風味。" },
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["酸菜魚", "剁椒魚頭", "清蒸鱸魚", "糖醋魚"], a: 1, desc: "剁椒魚頭搭配辛辣剁椒蒸製，\n展現湘菜鮮、辣、厚重特色。" },
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["安徽板麵", "蘭州拉麵", "刀削麵", "牛肉麵"], a: 0, desc: "安徽板麵以彈牙麵條搭配香辣醬汁，\n是充滿鄉土特色的北方風味。" },
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["打滷麵", "擔擔麵", "炸醬麵", "蔥油拌麵"], a: 2, desc: "炸醬麵濃郁鹹香，以豆瓣醬與肉末慢炒，代表北方家常麵食。" },
-                    { q: "請問語音中提到的料理是哪一道？", opts: ["山東煎餅", "韭菜盒子", "蔥油餅", "牛肉餡餅"], a: 1, desc: "金黃酥脆的韭菜盒子包入冬粉、雞蛋與蝦米，是鄰里分享的溫暖點心。" }
+                    {
+                        q: "請問語音中提到的料理是哪一道？",
+                        opts: [
+                            { text: "麻婆豆腐", img: "images/麻婆豆腐.jpg", desc: "豆腐滑嫩，麻辣鮮香，是川菜經典代表。（介紹內容待補）" },
+                            { text: "回鍋肉", img: "images/回鍋肉.jpg", desc: "回鍋肉是四川經典家常菜，呈現川菜麻、辣、香醇風味。" },
+                            { text: "水煮魚", img: "images/水煮魚.jpg", desc: "魚肉鮮美滑嫩，配以濃烈的麻辣湯汁。（介紹內容待補）" },
+                            { text: "宮保雞丁", img: "images/宮保雞丁.jpg", desc: "雞丁鮮嫩，花生香脆，甜酸微辣。（介紹內容待補）" }
+                        ],
+                        a: 1
+                    },
+                    {
+                        q: "請問語音中提到的料理是哪一道？",
+                        opts: [
+                            { text: "酸菜魚", img: "images/酸菜魚.jpg", desc: "酸爽開胃，魚片滑嫩，非常下飯。（介紹內容待補）" },
+                            { text: "剁椒魚頭", img: "images/剁椒魚頭.jpg", desc: "剁椒魚頭搭配辛辣剁椒蒸製，展現湘菜鮮、辣、厚重特色。" },
+                            { text: "清蒸鱸魚", img: "images/清蒸鱸魚.jpg", desc: "保留魚肉最原始的鮮甜，清淡卻回味無窮。（介紹內容待補）" },
+                            { text: "糖醋魚", img: "images/糖醋魚.jpg", desc: "外酥內嫩，酸甜可口，老少咸宜。（介紹內容待補）" }
+                        ],
+                        a: 1
+                    },
+                    {
+                        q: "請問語音中提到的料理是哪一道？",
+                        opts: [
+                            { text: "安徽板麵", img: "images/安徽板麵.jpg", desc: "安徽板麵以彈牙麵條搭配香辣醬汁，是充滿鄉土特色的北方風味。" },
+                            { text: "蘭州拉麵", img: "images/蘭州拉麵.jpg", desc: "湯清肉爛麵細，有著濃郁的西北風情。（介紹內容待補）" },
+                            { text: "刀削麵", img: "images/刀削麵.jpg", desc: "麵條外滑內筋，軟而不粘，越嚼越香。（介紹內容待補）" },
+                            { text: "牛肉麵", img: "images/牛肉麵.jpg", desc: "台灣眷村最具代表性的麵食，紅燒湯頭醇厚。（介紹內容待補）" }
+                        ],
+                        a: 0
+                    },
+                    {
+                        q: "請問語音中提到的料理是哪一道？",
+                        opts: [
+                            { text: "打滷麵", img: "images/打滷麵.jpg", desc: "豐富配料勾芡成濃郁滷汁，拌麵極佳。（介紹內容待補）" },
+                            { text: "擔擔麵", img: "images/擔擔麵.jpg", desc: "細滑麵條裹著香濃麻醬與紅油，香氣撲鼻。（介紹內容待補）" },
+                            { text: "炸醬麵", img: "images/炸醬麵.jpg", desc: "炸醬麵濃郁鹹香，以豆瓣醬與肉末慢炒，代表北方家常麵食。" },
+                            { text: "蔥油拌麵", img: "images/蔥油拌麵.jpg", desc: "簡單蔥油帶來極致鮮香，令人食指大動。（介紹內容待補）" }
+                        ],
+                        a: 2
+                    },
+                    {
+                        q: "請問語音中提到的料理是哪一道？",
+                        opts: [
+                            { text: "山東煎餅", img: "images/山東煎餅.jpg", desc: "餅皮薄脆，夾入大蔥與甜麵醬，充滿嚼勁。（介紹內容待補）" },
+                            { text: "韭菜盒子", img: "images/韭菜盒子.jpg", desc: "金黃酥脆的韭菜盒子包入冬粉、雞蛋與蝦米，是鄰里分享的溫暖點心。" },
+                            { text: "蔥油餅", img: "images/蔥油餅.jpg", desc: "層次分明，蔥香濃郁，是眷村常見小吃。（介紹內容待補）" },
+                            { text: "牛肉餡餅", img: "images/牛肉餡餅.jpg", desc: "皮薄餡多，咬下滿滿的鮮甜肉汁。（介紹內容待補）" }
+                        ],
+                        a: 1
+                    }
                 ],
                 audios: [
                     "images/images_1_sichuan.mp3", "images/images_2_hunan.mp3", "images/images_3_anhui.mp3", "images/images_4_beijing.mp3", "images/images_5_shandong.mp3"
-                ],
-                menuImages: [
-                    "images/menu_sichuan.jpg", "images/menu_hunan.jpg", "images/menu_anhui.jpg", "images/menu_beijing.jpg", "images/menu_shandong.jpg"
-                ],
-                foodImages: [
-                    "images/food_huiguorou.jpg", "images/food_duojiaoyutou.jpg", "images/food_banmian.jpg", "images/food_zhajiangmian.jpg", "images/food_jiucaihezi.jpg"
                 ]
             },
             level4: {
@@ -1126,7 +1150,28 @@
             },
             level5: {
                 passcode: "999",
-                hints: ["提示一：群星會的巔峰時刻，是一個大家都熟悉的三位數字。", "提示二：通關密碼就是 999！"]
+                songs: [
+                    {
+                        title: "外婆的澎湖灣",
+                        lines: "晚風輕拂澎湖灣，白浪逐沙灘，沒有椰林綴斜陽，只是一片海藍藍......",
+                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊" // 14字：坐在門前的矮牆上 一遍遍懷想
+                    },
+                    {
+                        title: "月亮代表我的心",
+                        lines: "輕輕的一個吻，已經打動我的心，深深的一段情，教我思念到如今，你問我愛你有多深......",
+                        stars: "＊＊＊＊＊＊" // 6字：我愛你有幾分
+                    },
+                    {
+                        title: "綠島小夜曲",
+                        lines: "這綠島像一隻船，在月夜裡搖啊搖情郎呀，你也在我的心海裡飄呀飄......",
+                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊" // 16字：讓我的歌聲隨那微風 吹開了你的窗簾
+                    },
+                    {
+                        title: "童年",
+                        lines: "池塘邊的榕樹上，知了在聲聲叫著夏天，操場邊的鞦韆上，只有蝴蝶停在上面......",
+                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊" // 41字：黑板上老師的粉筆，還在拚命嘰嘰喳喳寫個不停，等待著下課，等待著放學，等待遊戲的童年
+                    }
+                ]
             },
             level6: {
                 songs: [
@@ -2229,9 +2274,10 @@
             if(input.length > 0) { playBeep(400); input.pop(); GameState.set('l5Input', input); updateL5Display(); }
         };
         document.getElementById('l5-btn-submit').onclick = () => {
-            let input = GameState.get('l5Input');
-            if(input.join('').trim() === GAME_DATA.level5.passcode) { handleLevelSuccess(5); } 
-            else {
+            let input = GameState.get('l5Input') || [];
+            if (input.join('').trim() === GAME_DATA.level5.passcode) { 
+                handleLevelSuccess(5); 
+            } else {
                 playErrorSound(); 
                 let errCount = (GameState.get('l5Errors') || 0) + 1; 
                 GameState.set('l5Errors', errCount); 
@@ -2239,7 +2285,7 @@
                 updateL5Display();
                 
                 if (errCount >= 2) {
-                    showAlert("密碼錯誤", "密碼錯誤，請向群星會主持人求救！", "fa-triangle-exclamation", "text-primary");
+                    showAlert("密碼錯誤", "密碼錯誤，請向群星會主詞人求救！", "fa-triangle-exclamation", "text-primary");
                 } else {
                     showAlert("密碼錯誤", "通關密語錯誤！請重新確認。", "fa-circle-xmark", "text-primary");
                 }
