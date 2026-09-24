@@ -150,12 +150,7 @@
         }
 
         /* 角色卡片 (Flex/Grid) */
-        .char-card-grid { 
-            border: 1px solid rgba(44, 30, 22, 0.2); border-radius: 8px; overflow: hidden; 
-            background: #FFFFFF; box-shadow: 0 4px 12px rgba(44, 30, 22, 0.08); 
-        }
-        .char-card-flex { 
-            display: flex;
+        .char-card-grid, .char-card-flex { 
             border: 1px solid rgba(44, 30, 22, 0.2); border-radius: 8px; overflow: hidden; 
             background: #FFFFFF; box-shadow: 0 4px 12px rgba(44, 30, 22, 0.08); 
         }
@@ -177,10 +172,6 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(44, 30, 22, 0.2); border-radius: 4px; }
 
-        @media (max-height: 480px) {
-            #bottom-nav-bar { display: none !important; }
-        }
-
         /* ==========================================
            5. 遊戲核心組件 (Puzzle Pieces)
            ========================================== */
@@ -188,14 +179,14 @@
         
         .puzzle-piece {
             position: absolute; background-color: #D8C8A7;
-            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.1"/></svg>');
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.1"/></svg>');
             display: flex; align-items: center; justify-content: center; text-align: center;
             color: #2C1E16; font-family: 'Noto Serif TC', serif; font-weight: 900;
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); cursor: pointer;
-            filter: drop-shadow(0px 8px 12px rgba(44, 30, 22, 0.2)); z-index: 10;
+            filter: url(#torn-edge) drop-shadow(0px 8px 12px rgba(44, 30, 22, 0.2)); z-index: 10;
         }
-        .puzzle-piece:active, .puzzle-piece:hover { transform: scale(1.08); z-index: 50 !important; filter: drop-shadow(0px 12px 20px rgba(44, 30, 22, 0.3)); }
-        .puzzle-piece.locked { background-color: #2a2522; background-image: none; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); pointer-events: none; }
+        .puzzle-piece:active, .puzzle-piece:hover { transform: scale(1.08); z-index: 50 !important; filter: url(#torn-edge) drop-shadow(0px 12px 20px rgba(44, 30, 22, 0.3)); }
+        .puzzle-piece.locked { background-color: #2a2522; background-image: none; filter: url(#torn-edge); box-shadow: inset 0 0 20px rgba(0,0,0,0.5); pointer-events: none; }
         .puzzle-piece span { 
             padding: 4%; pointer-events: none; line-height: 1.5; letter-spacing: 0.5px; 
             font-size: max(10px, 3.5cqi); background: rgba(216, 200, 167, 0.7); 
@@ -215,9 +206,18 @@
         .intro-history-card { background: #F7F3E8; border: 1px solid rgba(4, 120, 87, 0.2); padding: 16px; border-radius: 8px; box-shadow: 0 4px 12px rgba(4, 120, 87, 0.05); border-left: 4px solid #047857; }
         
         #app-loader { transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1); }
+        .pb-viewport-safe { padding-bottom: calc(100px + env(safe-area-inset-bottom, 20px)); }
     </style>
 </head>
 <body class="min-h-[100dvh] flex items-center justify-center p-0 sm:p-6 overflow-x-hidden">
+
+    <!-- 撕裂邊緣 SVG 濾鏡 -->
+    <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+        <filter id="torn-edge" x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+    </svg>
 
     <!-- App Loader -->
     <div id="app-loader" class="fixed inset-0 bg-paper-dark vintage-paper z-[9999] flex flex-col items-center justify-center">
@@ -354,7 +354,7 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-5 shrink-0" onclick="transitionSubPage(1, 1, 2)">進入任務牆</button>
                     </div>
 
-                    <div id="l1-p2" class="hidden flex flex-col space-y-6">
+                    <div id="l1-p2" class="hidden flex-col space-y-6">
                         <div class="flex items-center mb-2 shrink-0">
                             <button onclick="transitionSubPage(1, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-xl font-serif tracking-[0.15em] text-center flex-1 pr-10">陣地巡查任務牆</h2>
@@ -420,8 +420,9 @@
                             <input type="file" accept="image/*" capture="environment" id="l2-camera-input" class="hidden">
                         </div>
 
-                        <!-- 支援單張或多張線索圖 -->
-                        <div id="l2-question-img-container" class="hidden mb-6 w-full shrink-0"></div>
+                        <div id="l2-question-img-container" class="hidden mb-8 w-full vintage-photo shrink-0">
+                            <img id="l2-question-img" src="images/l2_map.jpg" class="w-full h-auto object-cover" onload="this.classList.add('loaded')">
+                        </div>
 
                         <div id="l2-question-text" class="text-lg font-bold leading-[1.8] mb-8 whitespace-pre-line text-ink shrink-0 text-justify font-serif tracking-wide"></div>
                         <div id="l2-options-container" class="space-y-4 flex-1 flex flex-col justify-end pb-2"></div>
@@ -461,6 +462,7 @@
                             
                             <p id="l3-question-text" class="text-base font-black text-center leading-[1.8] mb-3 text-ink font-serif tracking-widest"></p>
                             
+                            <!-- 四宮格料理圖片按鈕容器（點擊彈出介紹） -->
                             <div id="l3-options-container" class="grid grid-cols-2 gap-3 flex-1 content-end pb-2"></div>
                         </div>
                     </div>
@@ -477,7 +479,7 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(4, 1, 2)">展開圖鑑</button>
                     </div>
                     
-                    <div id="l4-p2" class="hidden flex flex-col min-h-full">
+                    <div id="l4-p2" class="hidden flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(4, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">【尋人啟事】目標特徵</h2>
@@ -527,7 +529,7 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6" onclick="transitionSubPage(4, 2, 3)">查看指引</button>
                     </div>
 
-                    <div id="l4-p3" class="hidden flex flex-col min-h-full">
+                    <div id="l4-p3" class="hidden flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(4, 3, 2)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">活動指引</h2>
@@ -542,7 +544,7 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(4, 3, 4)">進入測驗</button>
                     </div>
 
-                    <div id="l4-p4" class="hidden flex flex-col min-h-full">
+                    <div id="l4-p4" class="hidden flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(4, 4, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">知識測驗</h2>
@@ -563,33 +565,36 @@
 
                 <!-- LEVEL 5: 群星之夜 -->
                 <div id="screen-level-5" class="screen-panel hidden p-6 flex flex-col">
-                    <div id="l5-p1" class="level-card p-6 flex flex-col">
-                        <h2 class="text-center text-primary text-2xl mb-6 font-black border-b border-dashed border-ink/20 pb-4 tracking-widest shrink-0 font-serif">黃金娛樂時光</h2>
+                    <div id="l5-p1" class="level-card p-6 flex flex-col min-h-full">
+                        <h2 class="text-center text-primary text-2xl mb-4 font-black border-b border-dashed border-ink/20 pb-4 tracking-widest shrink-0 font-serif">黃金娛樂時光</h2>
                         
-                        <div class="text-base leading-[1.9] font-bold text-ink text-justify font-serif space-y-4">
-                            <div class="w-full vintage-photo aspect-[16/9] flex items-center justify-center">
+                        <div class="text-base leading-[1.9] font-bold text-ink text-justify flex-1 font-serif overflow-y-auto custom-scrollbar pr-2 pb-2">
+                            <!-- 圖 1 插入點 -->
+                            <div class="w-full mb-4 vintage-photo aspect-[16/9] flex items-center justify-center shrink-0">
                                 <img src="images/l5_photo_1.jpg" alt="老唱片與歌廳記憶" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=老唱片與歌廳記憶'" class="w-full h-full object-cover loaded">
                             </div>
                             
-                            <p>當黑膠唱片旋轉、霓虹燈光閃爍，空氣中流淌著老歌與電影的熟悉旋律。這裡不只是歷史的記憶，更是我們今晚一同尋找青春與鄉愁的舞台。</p>
+                            <p class="mb-5">當黑膠唱片旋轉、霓虹燈光閃爍，空氣中流淌著老歌與電影的熟悉旋律。這裡不只是歷史的記憶，更是我們今晚一同尋找青春與鄉愁的舞台。</p>
                             
-                            <div class="w-full vintage-photo aspect-[16/9] flex items-center justify-center">
+                            <!-- 圖 2 插入點 -->
+                            <div class="w-full mb-4 vintage-photo aspect-[16/9] flex items-center justify-center shrink-0">
                                 <img src="images/l5_photo_2.jpg" alt="天台廣場繁華盛景" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=天台廣場繁華盛景'" class="w-full h-full object-cover loaded">
                             </div>
                             
-                            <p>1950至1980年代，三重天台廣場曾是北台灣最繁華的娛樂地標，歌廳、戲院、夜總會林立。第一代外省移民在眷村裡，用歌聲撫平離鄉背井的鄉愁。</p>
+                            <p class="mb-5">1950至1980年代，三重天台廣場曾是北台灣最繁華的娛樂地標，歌廳、戲院、夜總會林立。第一代外省移民在眷村裡，用歌聲撫平離鄉背井的鄉愁。</p>
                             
-                            <div class="w-full vintage-photo aspect-[16/9] flex items-center justify-center">
+                            <!-- 圖 3 插入點 -->
+                            <div class="w-full mb-4 vintage-photo aspect-[16/9] flex items-center justify-center shrink-0">
                                 <img src="images/l5_photo_3.jpg" alt="接歌挑戰現場" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=接歌挑戰現場'" class="w-full h-full object-cover loaded">
                             </div>
                             
                             <p>今晚，我們將透過一場「接歌挑戰」，帶領大家走入這段熱鬧又帶點感傷的青春歲月。</p>
                         </div>
                         
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8 shrink-0" onclick="transitionSubPage(5, 1, 2)">查閱群星</button>
+                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="transitionSubPage(5, 1, 2)">查閱群星</button>
                     </div>
 
-                    <div id="l5-p2" class="hidden flex flex-col min-h-full">
+                    <div id="l5-p2" class="hidden flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(5, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">關主圖鑑</h2>
@@ -631,7 +636,7 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6" onclick="transitionSubPage(5, 2, 3)">查看規則</button>
                     </div>
 
-                    <div id="l5-p3" class="hidden flex flex-col min-h-full">
+                    <div id="l5-p3" class="hidden flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(5, 3, 2)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">遊戲規則</h2>
@@ -648,7 +653,7 @@
                     </div>
 
                     <!-- P4：接歌挑戰歌單 -->
-                    <div id="l5-p4" class="hidden flex flex-col min-h-full">
+                    <div id="l5-p4" class="hidden flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(5, 4, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">接歌挑戰</h2>
@@ -661,7 +666,7 @@
                     </div>
 
                     <!-- P5：通關密語 -->
-                    <div id="l5-p5" class="hidden flex flex-col min-h-full">
+                    <div id="l5-p5" class="hidden flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(5, 5, 4)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">通關密語</h2>
@@ -703,48 +708,44 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(6, 1, 2)">認識角色</button>
                     </div>
 
-                    <div id="l6-p2" class="hidden flex flex-col min-h-full">
-                        <div class="flex items-center justify-between mb-4 shrink-0">
+                    <div id="l6-p2" class="hidden flex-col min-h-full">
+                        <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(6, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">角色介紹</h2>
                         </div>
-                        
-                        <div class="flex-1 flex flex-col space-y-3 overflow-y-auto custom-scrollbar pr-1 pb-2">
-                            <div class="char-card-flex border border-ink/15 rounded-lg overflow-hidden bg-white shadow-sm shrink-0">
-                                <div class="char-img-box w-24 sm:w-28 aspect-square shrink-0 border-r border-ink/10 bg-paper-dark relative">
-                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandma" alt="奶奶" class="w-full h-full object-cover loaded" onerror="this.src='https://placehold.co/150/e5d5b5/7c343d?text=奶奶'">
+                        <div class="flex-1 flex flex-col space-y-4 min-h-0">
+                            <div class="char-card-flex flex-1">
+                                <div class="char-img-box w-1/3 shrink-0 border-r border-ink/10 skeleton-bg relative">
+                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandma" alt="奶奶" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
                                 </div>
-                                <div class="p-3.5 text-ink flex-1 flex flex-col justify-center bg-white">
-                                    <b class="text-sm tracking-wider text-primary mb-1 border-b border-dashed border-ink/10 pb-1 font-serif">奶奶 (NPC)</b>
-                                    <span class="font-bold text-xs leading-relaxed text-justify text-ink/80">三重一村老居民，負責帶出過去產業與回憶。</span>
-                                </div>
-                            </div>
-                            
-                            <div class="char-card-flex border border-ink/15 rounded-lg overflow-hidden bg-white shadow-sm shrink-0">
-                                <div class="char-img-box w-24 sm:w-28 aspect-square shrink-0 border-r border-ink/10 bg-paper-dark relative">
-                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandson" alt="孫子" class="w-full h-full object-cover loaded" onerror="this.src='https://placehold.co/150/e5d5b5/7c343d?text=孫子'">
-                                </div>
-                                <div class="p-3.5 text-ink flex-1 flex flex-col justify-center bg-white">
-                                    <b class="text-sm tracking-wider text-primary mb-1 border-b border-dashed border-ink/10 pb-1 font-serif">孫子 (NPC)</b>
-                                    <span class="font-bold text-xs leading-relaxed text-justify text-ink/80">三重一村的小孩，和大家討論、帶氣氛。</span>
+                                <div class="p-5 text-ink flex-1 flex flex-col justify-center bg-white">
+                                    <b class="text-base tracking-widest text-primary mb-2 border-b border-dashed border-ink/10 pb-1.5 font-serif">奶奶 (NPC)</b>
+                                    <span class="font-bold text-sm leading-[1.6] text-justify text-ink/80">三重一村老居民，負責帶出過去產業與回憶。</span>
                                 </div>
                             </div>
-
-                            <div class="char-card-flex border border-ink/15 rounded-lg overflow-hidden bg-white shadow-sm shrink-0">
-                                <div class="char-img-box w-24 sm:w-28 aspect-square shrink-0 border-r border-ink/10 text-3xl text-primary opacity-60 bg-paper-dark flex items-center justify-center">
+                            <div class="char-card-flex flex-1">
+                                <div class="char-img-box w-1/3 shrink-0 border-r border-ink/10 skeleton-bg relative">
+                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandson" alt="孫子" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
+                                </div>
+                                <div class="p-5 text-ink flex-1 flex flex-col justify-center bg-white">
+                                    <b class="text-base tracking-widest text-primary mb-2 border-b border-dashed border-ink/10 pb-1.5 font-serif">孫子 (NPC)</b>
+                                    <span class="font-bold text-sm leading-[1.6] text-justify text-ink/80">三重一村的小孩，和大家討論、帶氣氛。</span>
+                                </div>
+                            </div>
+                            <div class="char-card-flex flex-1">
+                                <div class="char-img-box w-1/3 shrink-0 border-r border-ink/10 text-4xl text-primary opacity-40 bg-paper-dark">
                                     <i class="fa-solid fa-user-astronaut"></i>
                                 </div>
-                                <div class="p-3.5 text-ink flex-1 flex flex-col justify-center bg-white">
-                                    <b class="text-sm tracking-wider text-primary mb-1 border-b border-dashed border-ink/10 pb-1 font-serif">遊客 (你)</b>
-                                    <span class="font-bold text-xs leading-relaxed text-justify text-ink/80">本次闖關者，跟著奶奶認識花香與歌聲。</span>
+                                <div class="p-5 text-ink flex-1 flex flex-col justify-center bg-white">
+                                    <b class="text-base tracking-widest text-primary mb-2 border-b border-dashed border-ink/10 pb-1.5 font-serif">遊客 (你)</b>
+                                    <span class="font-bold text-sm leading-[1.6] text-justify text-ink/80">本次闖關者，跟著奶奶認識花香與歌聲。</span>
                                 </div>
                             </div>
                         </div>
-
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-3 shrink-0" onclick="transitionSubPage(6, 2, 3)">進入調查</button>
+                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(6, 2, 3)">進入調查</button>
                     </div>
 
-                    <div id="l6-p3" class="hidden flex flex-col min-h-full">
+                    <div id="l6-p3" class="hidden flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(6, 3, 2)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">尋找香氛記憶</h2>
@@ -785,7 +786,7 @@
                         </div>
                     </div>
 
-                    <div id="l6-p4" class="hidden flex flex-col min-h-full">
+                    <div id="l6-p4" class="hidden flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(6, 4, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">點播時代金曲</h2>
@@ -812,7 +813,7 @@
                     </div>
                 </div>
 
-                <!-- LEVEL 7: 任務 7 -->
+                <!-- LEVEL 7: 任務 7 (市集攤位 / 原最後一封信) -->
                 <div id="screen-level-7" class="screen-panel hidden p-6 flex flex-col">
                     <div id="l7-p1" class="level-card l7 p-8 flex flex-col justify-center min-h-full text-center relative z-10 w-full h-full">
                         <h1 class="text-4xl font-black tracking-[0.3em] text-gold mb-6 font-serif" style="text-shadow: 0 4px 20px rgba(0,0,0,0.8);">最後一封信</h1>
@@ -827,7 +828,7 @@
                         </button>
                     </div>
 
-                    <div id="l7-p2" class="hidden flex flex-col min-h-full">
+                    <div id="l7-p2" class="hidden flex-col min-h-full">
                         <div class="flex items-center mb-6 shrink-0">
                             <button onclick="transitionSubPage(7, 2, 1)" class="btn-base bg-transparent border border-gold/30 w-10 h-10 flex items-center justify-center rounded text-gold hover:bg-gold/10 transition-colors"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="flex-1 text-center font-black text-gold text-lg pr-10 font-serif tracking-[0.2em]">故事前言</h2>
@@ -842,7 +843,7 @@
                         <button class="btn-base w-full py-4 mt-8 bg-gold text-ink font-black text-lg transition-all tracking-[0.2em] shrink-0" onclick="transitionSubPage(7, 2, 3)">檢視圖鑑</button>
                     </div>
 
-                    <div id="l7-p3" class="hidden flex flex-col min-h-full">
+                    <div id="l7-p3" class="hidden flex-col min-h-full">
                         <div class="flex items-center mb-6 shrink-0">
                             <button onclick="transitionSubPage(7, 3, 2)" class="btn-base bg-transparent border border-gold/30 w-10 h-10 flex items-center justify-center rounded text-gold hover:bg-gold/10 transition-colors"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="flex-1 text-center font-black text-gold text-lg pr-10 font-serif tracking-[0.2em]">人物圖鑑</h2>
@@ -864,7 +865,7 @@
                         <button class="btn-base w-full py-4 mt-8 bg-gold text-ink font-black text-lg transition-all tracking-[0.2em] shrink-0" onclick="transitionSubPage(7, 3, 4)">準備出發</button>
                     </div>
 
-                    <div id="l7-p4" class="hidden flex flex-col min-h-full text-center justify-center relative">
+                    <div id="l7-p4" class="hidden flex-col min-h-full text-center justify-center relative">
                         <div class="flex items-center mb-8 absolute top-0 left-0 w-full z-20">
                             <button onclick="transitionSubPage(7, 4, 3)" class="btn-base bg-transparent border border-gold/30 px-4 py-2 flex items-center justify-center rounded text-gold hover:bg-gold/10 transition-colors text-sm font-bold tracking-widest"><i class="fa-solid fa-chevron-left mr-2"></i> 返回</button>
                         </div>
@@ -900,6 +901,7 @@
                             <span class="leading-relaxed opacity-90">請「截圖保留」此認證畫面，並出示您獲得的【跨越時空的信】（點擊下方信件碎片查看），前往起點服務台領取專屬獎勵！</span>
                         </div>
                         
+                        <!-- 服務台現場核銷專區 -->
                         <div class="bg-paper-dark/30 p-5 rounded-lg border border-ink/10 mb-6 text-center">
                             <div class="text-[11px] font-bold text-ink/60 mb-3 tracking-widest flex items-center justify-center uppercase">
                                 <i class="fa-solid fa-user-shield text-primary mr-1.5"></i>工作人員核銷專區
@@ -989,8 +991,8 @@
                 <button onclick="closeImageLightbox()" class="absolute -top-12 right-0 text-white/70 hover:text-white text-2xl w-10 h-10 flex items-center justify-center bg-white/10 rounded-full active:scale-95 transition-transform">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
-                <div class="p-1 bg-paper rounded shadow-2xl max-w-[92vw] max-h-[80vh] overflow-hidden flex items-center justify-center border-4 border-paper-dark">
-                    <img id="image-lightbox-src" src="" alt="放大檢視" class="max-w-full max-h-[75vh] object-contain opacity-100">
+                <div class="vintage-photo p-1 bg-paper rounded shadow-2xl max-w-[92vw] max-h-[80vh] overflow-hidden flex items-center justify-center">
+                    <img id="image-lightbox-src" src="" alt="放大檢視" class="max-w-full max-h-[75vh] object-contain">
                 </div>
                 <p class="text-xs font-bold text-gold/80 mt-3 tracking-widest">點擊任意處或右上角關閉</p>
             </div>
@@ -1037,15 +1039,10 @@
                         desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門。" 
                     },
                     { 
-                        images: ["images/l2-1.jpg", "images/l2-2.jpg"],
+                        image: "images/l2-1.jpg", 
                         q: "請找尋這個門牌的所在位置，並觀察旁邊的說明牌\n\n糟了！這張線索遺失了重要資訊，請幫忙填起\n\n(填空題)", 
                         inputType: "text",
-                        answers: [
-                            ["乙"], 
-                            ["中校"], 
-                            ["淡水河洪患", "淡水河水災", "水災", "洪災", "洪患", "水患", "淹水"], 
-                            ["防洪樓", "閣樓", "小閣樓"]
-                        ], 
+                        answers: ["乙", "中校", "淡水河洪患", "防洪樓"], 
                         opts: [], 
                         a: null,
                         photo: true, 
@@ -1056,7 +1053,7 @@
                         image: "images/S__10690571.jpg", 
                         q: "居民居住因為空間不足向前後院擴建，形成眷村特殊的狹窄巷道景觀，我們稱為(____)", 
                         inputType: "text",
-                        answers: [["一線天"]],
+                        answers: ["一線天"],
                         opts: [],
                         a: null,
                         photo: true, 
@@ -1149,22 +1146,22 @@
                     {
                         title: "外婆的澎湖灣",
                         lines: "晚風輕拂澎湖灣，白浪逐沙灘，沒有椰林綴斜陽，只是一片海藍藍.......",
-                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊" 
+                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊" // 14字：坐在門前的矮牆上 一遍遍懷想
                     },
                     {
                         title: "月亮代表我的心",
                         lines: "輕輕的一個吻，已經打動我的心，深深的一段情，教我思念到如今，你問我愛你有多深......",
-                        stars: "＊＊＊＊＊＊" 
+                        stars: "＊＊＊＊＊＊" // 6字：我愛你有幾分
                     },
                     {
                         title: "綠島小夜曲",
                         lines: "這綠島像一隻船，在月夜裡搖啊搖情郎呀，你也在我的心海裡飄呀飄......",
-                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊" 
+                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊" // 16字：讓我的歌聲隨那微風 吹開了你的窗簾
                     },
                     {
                         title: "童年",
                         lines: "池塘邊的榕樹上，知了在聲聲叫著夏天，操場邊的鞦韆上，只有蝴蝶停在上面......",
-                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊" 
+                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊" // 41字：黑板上老師的粉筆，還在拚命嘰嘰喳喳寫個不停，等待著下課，等待著放學，等待遊戲的童年
                     }
                 ]
             },
@@ -1327,27 +1324,9 @@
         // ==========================================
         // 核心功能 (Utils)
         // ==========================================
-        let activeUploadUnsubscribe = null;
-        let activeUploadPollTimer = null;
-
-        function cancelUploadVerification() {
-            if (activeUploadPollTimer) { clearInterval(activeUploadPollTimer); activeUploadPollTimer = null; }
-            if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
-        }
-
         window.showAlert = function(title, desc, iconClass = "", colorClass = "text-primary", callback = null, btnText = "確認", autoCloseDelay = 0, showCancel = false) {
             document.getElementById('alert-title').textContent = title;
-            const descEl = document.getElementById('alert-desc');
-            descEl.innerHTML = desc;
-            
-            if (/<[a-z][\s\S]*>/i.test(desc)) {
-                descEl.classList.remove('whitespace-pre-line');
-                descEl.classList.add('whitespace-normal');
-            } else {
-                descEl.classList.add('whitespace-pre-line');
-                descEl.classList.remove('whitespace-normal');
-            }
-
+            document.getElementById('alert-desc').innerHTML = desc;
             const iconEl = document.getElementById('alert-icon');
             if (iconClass) { 
                 iconEl.innerHTML = `<i class="fa-solid ${iconClass}"></i>`; 
@@ -1380,7 +1359,6 @@
                 };
                 cancelBtn.onclick = () => {
                     playBeep(300, 0.05);
-                    cancelUploadVerification();
                     closeModalAnim('modal-alert', 'alert-box');
                 };
             }
@@ -1494,39 +1472,39 @@
             };
             reader.readAsDataURL(file);
         }
+
+        let activeUploadUnsubscribe = null;
+        let activeUploadPollTimer = null;
         
         function uploadAndListenVerification(file, levelName, onSuccess) {
-            cancelUploadVerification();
+            if (activeUploadPollTimer) { clearInterval(activeUploadPollTimer); activeUploadPollTimer = null; }
+            if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
         
-            if (!db) {
-                showAlert("離線查驗", "目前處於離線測試模式，已為您自動通過審核！", "fa-circle-check", "text-emerald-700", () => onSuccess(true));
-                return;
-            }
-
             showAlert("檔案加密中", "正在快速傳送現場照片至指揮所...", "fa-satellite-dish fa-spin", "text-primary", null, false);
         
             compressImageFast(file, 640, 0.5, async (base64Str) => {
                 const teamName = GameState.get('teamName') || "匿名隊伍";
                 try {
                     const docRef = await db.collection("submissions").add({
-                        teamName: teamName, 
-                        levelId: levelName, 
-                        photoUrl: base64Str,
-                        status: "pending",
+                        teamName: teamName, levelId: levelName, photoUrl: base64Str,
+                        imageBase64: base64Str, status: "pending",
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
         
-                    showAlert("現場照片查驗中", "照片已送達指揮所，審核官查驗中...\n(請保持畫面，審核通過將自動跳轉)", "fa-spinner fa-spin", "text-primary", null, "取消等待", 0, true);
+                    const alertDesc = document.getElementById('alert-desc');
+                    const alertIcon = document.getElementById('alert-icon');
+                    if (alertDesc) alertDesc.textContent = "照片已送達指揮所，審核官查驗中...\n(請保持畫面，審核通過將自動跳轉)";
+                    if (alertIcon) alertIcon.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-5xl text-primary"></i>';
         
                     let isHandled = false;
                     const cleanUp = () => {
-                        cancelUploadVerification();
+                        if (activeUploadPollTimer) { clearInterval(activeUploadPollTimer); activeUploadPollTimer = null; }
+                        if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
                     };
         
                     const handleResult = (approved) => {
                         if (isHandled) return;
-                        isHandled = true; 
-                        cleanUp(); 
+                        isHandled = true; cleanUp(); 
                         closeModalAnim('modal-alert', 'alert-box', () => onSuccess(approved));
                     };
         
@@ -1535,23 +1513,21 @@
                         const data = doc.data();
                         if (data.status === "approved") handleResult(true);
                         else if (data.status === "rejected") handleResult(false);
-                    }, (err) => { 
-                        console.warn("Snapshot 斷線，啟動低頻率備用輪詢 (5秒)", err); 
-                        activeUploadPollTimer = setInterval(async () => {
-                            try {
-                                const snap = await docRef.get();
-                                if (snap.exists) {
-                                    const d = snap.data();
-                                    if (d.status === "approved") handleResult(true);
-                                    else if (d.status === "rejected") handleResult(false);
-                                }
-                            } catch (e) {}
-                        }, 5000);
-                    });
+                    }, (err) => { console.warn("Snapshot 斷線，交由輪詢處理", err); });
+        
+                    activeUploadPollTimer = setInterval(async () => {
+                        try {
+                            const docSnap = await docRef.get();
+                            if (docSnap.exists) {
+                                const data = docSnap.data();
+                                if (data.status === "approved") handleResult(true);
+                                else if (data.status === "rejected") handleResult(false);
+                            }
+                        } catch (e) {}
+                    }, 1000);
         
                 } catch (error) {
-                    cancelUploadVerification();
-                    showAlert("連線中斷", "無法將影像送達指揮所，請檢查網路後再試。\n" + error.message, "fa-triangle-exclamation", "text-primary");
+                    showAlert("連線中斷", "無法將影像送達指揮所，請再拍一次。\n" + error.message, "fa-triangle-exclamation", "text-primary");
                 }
             });
         }
@@ -1566,14 +1542,6 @@
         }
 
         function initAudio() { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); }
-
-        async function safePlayAudio(audioElement) {
-            try {
-                await audioElement.play();
-            } catch (err) {
-                if (err.name !== 'AbortError') console.warn('音訊播放失敗:', err);
-            }
-        }
 
         function stopAllMedia() {
             document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
@@ -1643,7 +1611,7 @@
                 fromEl.style.pointerEvents = 'auto';
             }
             if (toEl) {
-                toEl.classList.remove('hidden', 'screen-exit'); 
+                toEl.classList.remove('hidden');
                 toEl.classList.add('screen-enter');
                 void toEl.offsetWidth; 
                 toEl.classList.remove('screen-enter');
@@ -1668,15 +1636,12 @@
                 currentActive.style.pointerEvents = 'auto';
             } else {
                 document.querySelectorAll('[id^="screen-"]').forEach(s => {
-                    if (s !== targetScreen) {
-                        s.classList.add('hidden');
-                        s.classList.remove('screen-active', 'screen-enter', 'screen-exit');
-                    }
+                    if (s !== targetScreen) s.classList.add('hidden');
                 });
             }
 
             if (targetScreen) {
-                targetScreen.classList.remove('hidden', 'screen-exit');
+                targetScreen.classList.remove('hidden');
                 targetScreen.classList.add('screen-enter');
                 void targetScreen.offsetWidth;
                 targetScreen.classList.remove('screen-enter');
@@ -1692,7 +1657,7 @@
             if (screenId === 'level-1') { forceSubPageInit(1, 1, 2); renderL1(); }
             if (screenId === 'level-2') renderL2();
             if (screenId === 'level-3') renderL3();
-            if (screenId === 'level-4') { forceSubPageInit(4, 1, 4); renderL4Questions(); }
+            if (screenId === 'level-4') forceSubPageInit(4, 1, 4);
             if (screenId === 'level-5') { forceSubPageInit(5, 1, 5); renderL5Songs(); updateL5Display(); }
             if (screenId === 'level-6') { forceSubPageInit(6, 1, 4); renderL6Songs(); }
             if (screenId === 'level-7') forceSubPageInit(7, 1, 4);
@@ -1703,10 +1668,7 @@
         function forceSubPageInit(level, targetPage, totalPages) {
             for (let i = 1; i <= totalPages; i++) {
                 const el = document.getElementById(`l${level}-p${i}`);
-                if (el) {
-                    el.classList.add('hidden');
-                    el.classList.remove('screen-active', 'screen-enter', 'screen-exit');
-                }
+                if (el) el.classList.add('hidden', 'screen-enter', 'screen-exit');
             }
             const targetEl = document.getElementById(`l${level}-p${targetPage}`);
             if (targetEl) {
@@ -1880,6 +1842,7 @@
             const cont = document.getElementById('l2-options-container');
             const pSect = document.getElementById('l2-photo-section');
             const qImgContainer = document.getElementById('l2-question-img-container');
+            const qImgElement = document.getElementById('l2-question-img');
             const qTextEl = document.getElementById('l2-question-text');
             cont.innerHTML = '';
             
@@ -1925,23 +1888,9 @@
             }
         
             qTextEl.textContent = qData.q;
-
-            if (qData.images && Array.isArray(qData.images)) {
-                qImgContainer.classList.remove('hidden');
-                qImgContainer.className = "mb-6 w-full shrink-0";
-                qImgContainer.innerHTML = `
-                    <div class="grid grid-cols-2 gap-3 w-full">
-                        ${qData.images.map((imgSrc, idx) => `
-                            <div class="vintage-photo aspect-[4/3] cursor-zoom-in overflow-hidden rounded shadow-sm" onclick="openImageLightbox('${imgSrc}')" title="點擊放大檢視">
-                                <img src="${imgSrc}" class="w-full h-full object-cover loaded" alt="線索圖${idx+1}" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=門牌線索${idx+1}'">
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-            } else if (qData.image) {
-                qImgContainer.classList.remove('hidden');
-                qImgContainer.className = "mb-6 w-full vintage-photo shrink-0";
-                qImgContainer.innerHTML = `<img id="l2-question-img" src="${qData.image}" class="w-full h-auto object-cover loaded" alt="題目圖片" onerror="this.src='https://placehold.co/600x400/e5d5b5/7c343d?text=題目線索圖'">`;
+            if (qData.image) { 
+                qImgElement.src = qData.image; 
+                qImgContainer.classList.remove('hidden'); 
                 if (currentQ === 0) {
                     qImgContainer.classList.add('cursor-zoom-in');
                     qImgContainer.title = "點擊可放大地圖";
@@ -1951,9 +1900,8 @@
                     qImgContainer.title = "";
                     qImgContainer.onclick = null;
                 }
-            } else {
-                qImgContainer.classList.add('hidden');
-                qImgContainer.innerHTML = '';
+            } else { 
+                qImgContainer.classList.add('hidden'); 
                 qImgContainer.onclick = null;
             }
 
@@ -1976,11 +1924,7 @@
                 submitBtn.onclick = () => {
                     let allCorrect = true;
                     inputs.forEach((input, i) => {
-                        const userVal = input.value.trim().toLowerCase();
-                        const accepted = Array.isArray(qData.answers[i]) 
-                            ? qData.answers[i].map(a => a.toLowerCase()) 
-                            : [String(qData.answers[i]).toLowerCase()];
-                        if (!accepted.includes(userVal)) allCorrect = false;
+                        if (input.value.trim().toLowerCase() !== qData.answers[i].toLowerCase()) allCorrect = false;
                     });
 
                     if (allCorrect) {
@@ -2227,7 +2171,6 @@
                     }, "拍打兩下 (確認)");
                 }
             }, 5000);
-            
             player.play().then(() => {
                 isPlaying = true; clearTimeout(timeout); document.getElementById('l3-audio-hint').classList.add('hidden'); 
                 document.querySelectorAll('.l3-opt-btn').forEach(b => { b.disabled = false; b.classList.remove('opacity-50', 'cursor-not-allowed'); });
@@ -2366,10 +2309,9 @@
             container.innerHTML = '';
             const audioEl = document.getElementById('l6-audio-player'); 
             const prog = document.getElementById('l6-progress');
-            
             audioEl.ontimeupdate = () => { 
-                if (Number.isFinite(audioEl.duration) && audioEl.duration > 0) { 
-                    const pct = Math.min(100, Math.max(0, (audioEl.currentTime / audioEl.duration) * 100)); 
+                if (audioEl.duration) { 
+                    const pct = (audioEl.currentTime / audioEl.duration) * 100; 
                     prog.style.width = `${pct}%`; 
                 } 
             };
@@ -2379,10 +2321,6 @@
                     showAlert("點播完畢", "歌曲已完整播放完畢！\n請至背景牆前將您的推薦詞貼上去與大家分享！", "fa-record-vinyl", "text-ink", () => handleLevelSuccess(6)); 
                 }, 300);
             };
-            audioEl.onerror = () => {
-                showAlert("點播完成", "已成功點播年代金曲！\n請至背景牆前分享您的推薦詞！", "fa-record-vinyl", "text-ink", () => handleLevelSuccess(6));
-            };
-
             GAME_DATA.level6.songs.forEach((song) => {
                 const btn = document.createElement('button'); 
                 btn.className = "flex items-center text-left w-full p-4 bg-white border border-ink/10 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 active:scale-95";
@@ -2401,14 +2339,14 @@
                     document.getElementById('l6-song-title').textContent = song.title; 
                     document.getElementById('l6-lyrics').textContent = song.lyric;
                     audioEl.src = song.audio; 
-                    safePlayAudio(audioEl);
+                    audioEl.play().catch(e => { console.log("Audio play blocked", e); });
                 };
                 container.appendChild(btn);
             });
         }
 
         // ==========================================
-        // 拼圖與全局按鈕綁定
+        // 全域按鈕與事件綁定
         // ==========================================
         function renderPuzzlePieces(containerId, isFullView) {
             const container = document.getElementById(containerId); 
@@ -2489,6 +2427,7 @@
             let seq = GameState.get('customSequence'); 
             let idx = GameState.get('currentStageIndex'); 
             const targetLvl = seq[idx];
+            if (targetLvl === 4) renderL4Questions(); 
             showScreen(`level-${targetLvl}`);
         });
 
@@ -2498,16 +2437,13 @@
             let elapsed = Math.floor((now - GameState.get('startTime')) / 1000);
             let remain = (90 * 60) - elapsed; 
             if (remain < 0) remain = 0;
-            const h = String(Math.floor(remain / 3600)).padStart(2, '0'); 
-            const m = String(Math.floor((remain % 3600) / 60)).padStart(2, '0'); 
+            const h = String(Math.floor(remain / 3600)).padStart(2, '0');
+            const m = String(Math.floor((remain % 3600) / 60)).padStart(2, '0');
             const s = String(remain % 60).padStart(2, '0');
             const mainTimerEl = document.getElementById('main-timer'); 
             if (mainTimerEl) mainTimerEl.textContent = `${h}:${m}:${s}`;
         }
 
-        // ==========================================
-        // 結案認證與核銷
-        // ==========================================
         function renderCertificate() {
             const elapsed = Math.floor(((GameState.get('endTime') || Date.now()) - GameState.get('startTime')) / 1000);
             const h = String(Math.floor(elapsed / 3600)).padStart(2, '0'); 
@@ -2552,6 +2488,7 @@
         }
 
         document.getElementById('btn-restart-game').onclick = confirmRestartGame;
+        document.getElementById('btn-nav-hq').onclick = () => { playBeep(); showScreen(GameState.get('teamName') ? 'main' : 'entry'); };
         
         document.getElementById('sound-toggle').onclick = () => {
             let soundOn = !GameState.get('soundEnabled'); 
