@@ -179,6 +179,7 @@
             position: relative; 
             flex-shrink: 0;
         }
+
         /* ==========================================
            4. 動態轉場與佈局 (Transitions & Layout)
            ========================================== */
@@ -230,6 +231,7 @@
         
         #app-loader { transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1); }
         .pb-viewport-safe { padding-bottom: calc(100px + env(safe-area-inset-bottom, 20px)); }
+        
         #modal-image-lightbox .vintage-photo img {
             opacity: 1 !important;
         }
@@ -435,6 +437,7 @@
                             <span class="px-5 py-2 bg-military/10 border border-military/20 rounded-md text-sm font-black text-military shadow-retro-sm mx-auto tracking-widest font-mono" id="l2-q-counter">測驗 1 / 5</span>
                         </div>
                         
+                        <!-- 現場拍照取證區塊 -->
                         <div id="l2-photo-section" class="hidden bg-military/5 p-6 rounded-lg border border-dashed border-military/30 mb-8 text-center shrink-0">
                             <div id="l2-photo-img-container" class="hidden mb-5 vintage-photo w-full">
                                 <img id="l2-photo-img" src="" class="w-full h-auto object-cover" onload="this.classList.add('loaded')">
@@ -446,6 +449,7 @@
                             <input type="file" accept="image/*" capture="environment" id="l2-camera-input" class="hidden">
                         </div>
 
+                        <!-- 題目配圖容器 -->
                         <div id="l2-question-img-container" class="hidden mb-8 w-full vintage-photo shrink-0">
                             <img id="l2-question-img" src="images/l2_map.jpg" class="w-full h-auto object-cover" onload="this.classList.add('loaded')">
                         </div>
@@ -555,7 +559,7 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6" onclick="transitionSubPage(4, 2, 3)">查看指引</button>
                     </div>
 
-                    <div id="l4-p3" class="hidden flex-col min-h-full">
+                    <div id="l4-p3" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(4, 3, 2)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">活動指引</h2>
@@ -570,7 +574,7 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(4, 3, 4)">進入測驗</button>
                     </div>
 
-                    <div id="l4-p4" class="hidden flex-col min-h-full">
+                    <div id="l4-p4" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(4, 4, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">知識測驗</h2>
@@ -595,21 +599,18 @@
                         <h2 class="text-center text-primary text-2xl mb-4 font-black border-b border-dashed border-ink/20 pb-4 tracking-widest shrink-0 font-serif">黃金娛樂時光</h2>
                         
                         <div class="text-base leading-[1.9] font-bold text-ink text-justify flex-1 font-serif overflow-y-auto custom-scrollbar pr-2 pb-2">
-                            <!-- 圖 1 插入點 -->
                             <div class="w-full mb-4 vintage-photo aspect-[16/9] flex items-center justify-center shrink-0">
                                 <img src="images/l5_photo_1.jpg" alt="老唱片與歌廳記憶" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=老唱片與歌廳記憶'" class="w-full h-full object-cover loaded">
                             </div>
                             
                             <p class="mb-5">當黑膠唱片旋轉、霓虹燈光閃爍，空氣中流淌著老歌與電影的熟悉旋律。這裡不只是歷史的記憶，更是我們今晚一同尋找青春與鄉愁的舞台。</p>
                             
-                            <!-- 圖 2 插入點 -->
                             <div class="w-full mb-4 vintage-photo aspect-[16/9] flex items-center justify-center shrink-0">
                                 <img src="images/l5_photo_2.jpg" alt="天台廣場繁華盛景" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=天台廣場繁華盛景'" class="w-full h-full object-cover loaded">
                             </div>
                             
                             <p class="mb-5">1950至1980年代，三重天台廣場曾是北台灣最繁華的娛樂地標，歌廳、戲院、夜總會林立。第一代外省移民在眷村裡，用歌聲撫平離鄉背井的鄉愁。</p>
                             
-                            <!-- 圖 3 插入點 -->
                             <div class="w-full mb-4 vintage-photo aspect-[16/9] flex items-center justify-center shrink-0">
                                 <img src="images/l5_photo_3.jpg" alt="接歌挑戰現場" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=接歌挑戰現場'" class="w-full h-full object-cover loaded">
                             </div>
@@ -620,7 +621,6 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="transitionSubPage(5, 1, 2)">查閱群星</button>
                     </div>
 
-                    <!-- 原本：class="hidden flex-col min-h-full" -->
                     <div id="l5-p2" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(5, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
@@ -663,7 +663,7 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6" onclick="transitionSubPage(5, 2, 3)">查看規則</button>
                     </div>
 
-                    <div id="l5-p3" class="hidden flex-col min-h-full">
+                    <div id="l5-p3" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(5, 3, 2)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">遊戲規則</h2>
@@ -680,7 +680,7 @@
                     </div>
 
                     <!-- P4：接歌挑戰歌單 -->
-                    <div id="l5-p4" class="hidden flex-col min-h-full">
+                    <div id="l5-p4" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(5, 4, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">接歌挑戰</h2>
@@ -693,7 +693,7 @@
                     </div>
 
                     <!-- P5：通關密語 -->
-                    <div id="l5-p5" class="hidden flex-col min-h-full">
+                    <div id="l5-p5" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(5, 5, 4)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">通關密語</h2>
@@ -735,45 +735,44 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(6, 1, 2)">認識角色</button>
                     </div>
 
-                <!-- 原本：class="hidden flex-col min-h-full" -->
-                <div id="l6-p2" class="hidden flex flex-col min-h-full">
-                    <div class="flex items-center justify-between mb-4 shrink-0">
-                        <button onclick="transitionSubPage(6, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
-                        <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">角色介紹</h2>
+                    <div id="l6-p2" class="hidden flex flex-col min-h-full">
+                        <div class="flex items-center justify-between mb-4 shrink-0">
+                            <button onclick="transitionSubPage(6, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">角色介紹</h2>
+                        </div>
+                        <div class="flex-1 flex flex-col space-y-3 min-h-0 overflow-y-auto custom-scrollbar pr-1">
+                            <div class="char-card-flex shrink-0">
+                                <div class="char-img-box w-24 h-24 border-r border-ink/10 skeleton-bg">
+                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandma" alt="奶奶" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
+                                </div>
+                                <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white">
+                                    <b class="text-sm tracking-widest text-primary mb-1 border-b border-dashed border-ink/10 pb-1 font-serif">奶奶 (NPC)</b>
+                                    <span class="font-bold text-xs leading-[1.6] text-justify text-ink/80">三重一村老居民，負責帶出過去產業與回憶。</span>
+                                </div>
+                            </div>
+                            <div class="char-card-flex shrink-0">
+                                <div class="char-img-box w-24 h-24 border-r border-ink/10 skeleton-bg">
+                                    <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandson" alt="孫子" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
+                                </div>
+                                <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white">
+                                    <b class="text-sm tracking-widest text-primary mb-1 border-b border-dashed border-ink/10 pb-1 font-serif">孫子 (NPC)</b>
+                                    <span class="font-bold text-xs leading-[1.6] text-justify text-ink/80">三重一村的小孩，和大家討論、帶氣氛。</span>
+                                </div>
+                            </div>
+                            <div class="char-card-flex shrink-0">
+                                <div class="char-img-box w-24 h-24 border-r border-ink/10 text-3xl text-primary opacity-40 bg-paper-dark">
+                                    <i class="fa-solid fa-user-astronaut"></i>
+                                </div>
+                                <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white">
+                                    <b class="text-sm tracking-widest text-primary mb-1 border-b border-dashed border-ink/10 pb-1 font-serif">遊客 (你)</b>
+                                    <span class="font-bold text-xs leading-[1.6] text-justify text-ink/80">本次闖關者，跟著奶奶認識花香與歌聲。</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="transitionSubPage(6, 2, 3)">進入調查</button>
                     </div>
-                    <div class="flex-1 flex flex-col space-y-3 min-h-0 overflow-y-auto custom-scrollbar pr-1">
-                        <div class="char-card-flex shrink-0">
-                            <div class="char-img-box w-24 h-24 border-r border-ink/10 skeleton-bg">
-                                <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandma" alt="奶奶" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
-                            </div>
-                            <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white">
-                                <b class="text-sm tracking-widest text-primary mb-1 border-b border-dashed border-ink/10 pb-1 font-serif">奶奶 (NPC)</b>
-                                <span class="font-bold text-xs leading-[1.6] text-justify text-ink/80">三重一村老居民，負責帶出過去產業與回憶。</span>
-                            </div>
-                        </div>
-                        <div class="char-card-flex shrink-0">
-                            <div class="char-img-box w-24 h-24 border-r border-ink/10 skeleton-bg">
-                                <img src="https://placehold.co/150/e5d5b5/7c343d?text=Grandson" alt="孫子" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg');" class="w-full h-full object-cover">
-                            </div>
-                            <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white">
-                                <b class="text-sm tracking-widest text-primary mb-1 border-b border-dashed border-ink/10 pb-1 font-serif">孫子 (NPC)</b>
-                                <span class="font-bold text-xs leading-[1.6] text-justify text-ink/80">三重一村的小孩，和大家討論、帶氣氛。</span>
-                            </div>
-                        </div>
-                        <div class="char-card-flex shrink-0">
-                            <div class="char-img-box w-24 h-24 border-r border-ink/10 text-3xl text-primary opacity-40 bg-paper-dark">
-                                <i class="fa-solid fa-user-astronaut"></i>
-                            </div>
-                            <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white">
-                                <b class="text-sm tracking-widest text-primary mb-1 border-b border-dashed border-ink/10 pb-1 font-serif">遊客 (你)</b>
-                                <span class="font-bold text-xs leading-[1.6] text-justify text-ink/80">本次闖關者，跟著奶奶認識花香與歌聲。</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="transitionSubPage(6, 2, 3)">進入調查</button>
-                </div>
 
-                    <div id="l6-p3" class="hidden flex-col min-h-full">
+                    <div id="l6-p3" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(6, 3, 2)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">尋找香氛記憶</h2>
@@ -814,7 +813,7 @@
                         </div>
                     </div>
 
-                    <div id="l6-p4" class="hidden flex-col min-h-full">
+                    <div id="l6-p4" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(6, 4, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">點播時代金曲</h2>
@@ -856,7 +855,6 @@
                         </button>
                     </div>
 
-                    <!-- 原本：class="hidden flex-col min-h-full" -->
                     <div id="l7-p2" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center mb-6 shrink-0">
                             <button onclick="transitionSubPage(7, 2, 1)" class="btn-base bg-transparent border border-gold/30 w-10 h-10 flex items-center justify-center rounded text-gold hover:bg-gold/10 transition-colors"><i class="fa-solid fa-chevron-left"></i></button>
@@ -872,7 +870,7 @@
                         <button class="btn-base w-full py-4 mt-8 bg-gold text-ink font-black text-lg transition-all tracking-[0.2em] shrink-0" onclick="transitionSubPage(7, 2, 3)">檢視圖鑑</button>
                     </div>
 
-                    <div id="l7-p3" class="hidden flex-col min-h-full">
+                    <div id="l7-p3" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center mb-6 shrink-0">
                             <button onclick="transitionSubPage(7, 3, 2)" class="btn-base bg-transparent border border-gold/30 w-10 h-10 flex items-center justify-center rounded text-gold hover:bg-gold/10 transition-colors"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="flex-1 text-center font-black text-gold text-lg pr-10 font-serif tracking-[0.2em]">人物圖鑑</h2>
@@ -894,7 +892,7 @@
                         <button class="btn-base w-full py-4 mt-8 bg-gold text-ink font-black text-lg transition-all tracking-[0.2em] shrink-0" onclick="transitionSubPage(7, 3, 4)">準備出發</button>
                     </div>
 
-                    <div id="l7-p4" class="hidden flex-col min-h-full text-center justify-center relative">
+                    <div id="l7-p4" class="hidden flex flex-col min-h-full text-center justify-center relative">
                         <div class="flex items-center mb-8 absolute top-0 left-0 w-full z-20">
                             <button onclick="transitionSubPage(7, 4, 3)" class="btn-base bg-transparent border border-gold/30 px-4 py-2 flex items-center justify-center rounded text-gold hover:bg-gold/10 transition-colors text-sm font-bold tracking-widest"><i class="fa-solid fa-chevron-left mr-2"></i> 返回</button>
                         </div>
@@ -1113,20 +1111,20 @@
                     {
                         q: "請問語音中提到的料理是哪一道？",
                         opts: [
-                            { text: "麻婆豆腐", img: "images/麻婆豆腐.jpg", desc: "豆腐滑嫩，麻辣鮮香，是川菜經典代表。（介紹內容待補）" },
+                            { text: "麻婆豆腐", img: "images/麻婆豆腐.jpg", desc: "豆腐滑嫩，麻辣鮮香，是川菜經典代表。" },
                             { text: "回鍋肉", img: "images/回鍋肉.jpg", desc: "回鍋肉是四川經典家常菜，呈現川菜麻、辣、香醇風味。" },
-                            { text: "水煮魚", img: "images/水煮魚.jpg", desc: "魚肉鮮美滑嫩，配以濃烈的麻辣湯汁。（介紹內容待補）" },
-                            { text: "宮保雞丁", img: "images/宮保雞丁.jpg", desc: "雞丁鮮嫩，花生香脆，甜酸微辣。（介紹內容待補）" }
+                            { text: "水煮魚", img: "images/水煮魚.jpg", desc: "魚肉鮮美滑嫩，配以濃烈的麻辣湯汁。" },
+                            { text: "宮保雞丁", img: "images/宮保雞丁.jpg", desc: "雞丁鮮嫩，花生香脆，甜酸微辣。" }
                         ],
                         a: 1
                     },
                     {
                         q: "請問語音中提到的料理是哪一道？",
                         opts: [
-                            { text: "酸菜魚", img: "images/酸菜魚.jpg", desc: "酸爽開胃，魚片滑嫩，非常下飯。（介紹內容待補）" },
+                            { text: "酸菜魚", img: "images/酸菜魚.jpg", desc: "酸爽開胃，魚片滑嫩，非常下飯。" },
                             { text: "剁椒魚頭", img: "images/剁椒魚頭.jpg", desc: "剁椒魚頭搭配辛辣剁椒蒸製，展現湘菜鮮、辣、厚重特色。" },
-                            { text: "清蒸鱸魚", img: "images/清蒸鱸魚.jpg", desc: "保留魚肉最原始的鮮甜，清淡卻回味無窮。（介紹內容待補）" },
-                            { text: "糖醋魚", img: "images/糖醋魚.jpg", desc: "外酥內嫩，酸甜可口，老少咸宜。（介紹內容待補）" }
+                            { text: "清蒸鱸魚", img: "images/清蒸鱸魚.jpg", desc: "保留魚肉最原始的鮮甜，清淡卻回味無窮。" },
+                            { text: "糖醋魚", img: "images/糖醋魚.jpg", desc: "外酥內嫩，酸甜可口，老少咸宜。" }
                         ],
                         a: 1
                     },
@@ -1134,29 +1132,29 @@
                         q: "請問語音中提到的料理是哪一道？",
                         opts: [
                             { text: "安徽板麵", img: "images/安徽板麵.jpg", desc: "安徽板麵以彈牙麵條搭配香辣醬汁，是充滿鄉土特色的北方風味。" },
-                            { text: "蘭州拉麵", img: "images/蘭州拉麵.jpg", desc: "湯清肉爛麵細，有著濃郁的西北風情。（介紹內容待補）" },
-                            { text: "刀削麵", img: "images/刀削麵.jpg", desc: "麵條外滑內筋，軟而不粘，越嚼越香。（介紹內容待補）" },
-                            { text: "牛肉麵", img: "images/牛肉麵.jpg", desc: "台灣眷村最具代表性的麵食，紅燒湯頭醇厚。（介紹內容待補）" }
+                            { text: "蘭州拉麵", img: "images/蘭州拉麵.jpg", desc: "湯清肉爛麵細，有著濃郁的西北風情。" },
+                            { text: "刀削麵", img: "images/刀削麵.jpg", desc: "麵條外滑內筋，軟而不粘，越嚼越香。" },
+                            { text: "牛肉麵", img: "images/牛肉麵.jpg", desc: "台灣眷村最具代表性的麵食，紅燒湯頭醇厚。" }
                         ],
                         a: 0
                     },
                     {
                         q: "請問語音中提到的料理是哪一道？",
                         opts: [
-                            { text: "打滷麵", img: "images/打滷麵.jpg", desc: "豐富配料勾芡成濃郁滷汁，拌麵極佳。（介紹內容待補）" },
-                            { text: "擔擔麵", img: "images/擔擔麵.jpg", desc: "細滑麵條裹著香濃麻醬與紅油，香氣撲鼻。（介紹內容待補）" },
+                            { text: "打滷麵", img: "images/打滷麵.jpg", desc: "豐富配料勾芡成濃郁滷汁，拌麵極佳。" },
+                            { text: "擔擔麵", img: "images/擔擔麵.jpg", desc: "細滑麵條裹著香濃麻醬與紅油，香氣撲鼻。" },
                             { text: "炸醬麵", img: "images/炸醬麵.jpg", desc: "炸醬麵濃郁鹹香，以豆瓣醬與肉末慢炒，代表北方家常麵食。" },
-                            { text: "蔥油拌麵", img: "images/蔥油拌麵.jpg", desc: "簡單蔥油帶來極致鮮香，令人食指大動。（介紹內容待補）" }
+                            { text: "蔥油拌麵", img: "images/蔥油拌麵.jpg", desc: "簡單蔥油帶來極致鮮香，令人食指大動。" }
                         ],
                         a: 2
                     },
                     {
                         q: "請問語音中提到的料理是哪一道？",
                         opts: [
-                            { text: "山東煎餅", img: "images/山東煎餅.jpg", desc: "餅皮薄脆，夾入大蔥與甜麵醬，充滿嚼勁。（介紹內容待補）" },
+                            { text: "山東煎餅", img: "images/山東煎餅.jpg", desc: "餅皮薄脆，夾入大蔥與甜麵醬，充滿嚼勁。" },
                             { text: "韭菜盒子", img: "images/韭菜盒子.jpg", desc: "金黃酥脆的韭菜盒子包入冬粉、雞蛋與蝦米，是鄰里分享的溫暖點心。" },
-                            { text: "蔥油餅", img: "images/蔥油餅.jpg", desc: "層次分明，蔥香濃郁，是眷村常見小吃。（介紹內容待補）" },
-                            { text: "牛肉餡餅", img: "images/牛肉餡餅.jpg", desc: "皮薄餡多，咬下滿滿的鮮甜肉汁。（介紹內容待補）" }
+                            { text: "蔥油餅", img: "images/蔥油餅.jpg", desc: "層次分明，蔥香濃郁，是眷村常見小吃。" },
+                            { text: "牛肉餡餅", img: "images/牛肉餡餅.jpg", desc: "皮薄餡多，咬下滿滿的鮮甜肉汁。" }
                         ],
                         a: 1
                     }
@@ -1175,22 +1173,22 @@
                     {
                         title: "外婆的澎湖灣",
                         lines: "晚風輕拂澎湖灣，白浪逐沙灘，沒有椰林綴斜陽，只是一片海藍藍.......",
-                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊" // 14字：坐在門前的矮牆上 一遍遍懷想
+                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
                     },
                     {
                         title: "月亮代表我的心",
                         lines: "輕輕的一個吻，已經打動我的心，深深的一段情，教我思念到如今，你問我愛你有多深......",
-                        stars: "＊＊＊＊＊＊" // 6字：我愛你有幾分
+                        stars: "＊＊＊＊＊＊"
                     },
                     {
                         title: "綠島小夜曲",
                         lines: "這綠島像一隻船，在月夜裡搖啊搖情郎呀，你也在我的心海裡飄呀飄......",
-                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊" // 16字：讓我的歌聲隨那微風 吹開了你的窗簾
+                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
                     },
                     {
                         title: "童年",
                         lines: "池塘邊的榕樹上，知了在聲聲叫著夏天，操場邊的鞦韆上，只有蝴蝶停在上面......",
-                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊" // 41字：黑板上老師的粉筆，還在拚命嘰嘰喳喳寫個不停，等待著下課，等待著放學，等待遊戲的童年
+                        stars: "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
                     }
                 ]
             },
@@ -1519,10 +1517,8 @@
                 if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
             };
         
-            // 呼叫彈窗時開放「取消」按鈕
             showAlert("檔案加密中", "正在快速傳送現場照片至指揮所...", "fa-satellite-dish fa-spin", "text-primary", null, "取消上傳", 0, true);
             
-            // 綁定返回/取消按鈕的清理邏輯
             const cancelBtn = document.getElementById('alert-cancel-btn');
             if (cancelBtn) {
                 cancelBtn.onclick = () => {
@@ -1532,7 +1528,7 @@
             }
         
             compressImageFast(file, 640, 0.5, async (base64Str) => {
-                if (isHandled) return; // 使用者已在此期間取消
+                if (isHandled) return;
                 const teamName = GameState.get('teamName') || "匿名隊伍";
                 try {
                     const docRef = await db.collection("submissions").add({
@@ -1644,12 +1640,12 @@
             }
         }
 
-        // 修正後的子頁面轉場式
+        // 修正後的子頁面轉場函式
         async function transitionSubPage(level, fromPage, toPage) {
             playBeep();
             const fromEl = document.getElementById(`l${level}-p${fromPage}`);
             const toEl = document.getElementById(`l${level}-p${toPage}`);
-        
+
             if (fromEl) {
                 fromEl.classList.remove('screen-active');
                 fromEl.classList.add('screen-exit');
@@ -1665,24 +1661,22 @@
             }
             
             if (toEl) {
-                // 核心修復：進場前必須把舊有的 screen-exit 與 hidden 徹底清除
                 toEl.classList.remove('hidden', 'screen-exit', 'screen-enter');
                 toEl.style.pointerEvents = 'auto';
                 toEl.classList.add('screen-enter');
-                void toEl.offsetWidth; // 強制重繪
+                void toEl.offsetWidth;
                 toEl.classList.remove('screen-enter');
                 toEl.classList.add('screen-active');
             }
             document.getElementById('game-viewport').scrollTop = 0;
         }
-        
+
         // 修正後的強制子頁面初始化函式
         function forceSubPageInit(level, targetPage, totalPages) {
             for (let i = 1; i <= totalPages; i++) {
                 const el = document.getElementById(`l${level}-p${i}`);
                 if (el) {
                     el.classList.add('hidden');
-                    // 核心修復：不要在隱藏元素上預先掛載 screen-enter / screen-exit
                     el.classList.remove('screen-active', 'screen-enter', 'screen-exit');
                     el.style.pointerEvents = 'auto';
                 }
@@ -1904,19 +1898,20 @@
             const cont = document.getElementById('l2-options-container');
             const pSect = document.getElementById('l2-photo-section');
             const qImgContainer = document.getElementById('l2-question-img-container');
-            const qImgElement = document.getElementById('l2-question-img');
             const qTextEl = document.getElementById('l2-question-text');
             cont.innerHTML = '';
             
             let photos = GameState.get('l2Photos') || [false, false, false, false, false];
             let answered = GameState.get('l2Answered') || [false, false, false, false, false];
         
+            // 核心修正：若本題有拍照需求且已回答正確，但未拍照完成 -> 強制鎖定在拍照任務指示牆
             if (qData.photo && answered[currentQ] && !photos[currentQ]) {
                 pSect.classList.remove('hidden'); 
                 qImgContainer.classList.add('hidden');
-                qTextEl.textContent = `【任務解鎖】：請完成拍照任務以通關`;
+                qTextEl.textContent = `【現場勘查任務】：請前往拍攝目標特徵`;
                 document.getElementById('l2-photo-img-container').classList.add('hidden');
                 document.getElementById('l2-photo-req-text').textContent = "📸 " + qData.photoText;
+                cont.innerHTML = '';
                 return;
             }
             pSect.classList.add('hidden');
@@ -1950,16 +1945,17 @@
             }
         
             qTextEl.textContent = qData.q;
-            // 清空舊圖容器並重新渲染
+            
+            // 清空舊圖容器並重新渲染多圖/單圖
             qImgContainer.innerHTML = '';
             const imgList = qData.images || (qData.image ? [qData.image] : []);
-            
+
             if (imgList.length > 0) {
                 qImgContainer.classList.remove('hidden');
                 qImgContainer.className = imgList.length > 1 
                     ? "mb-6 w-full grid grid-cols-2 gap-3 shrink-0" 
                     : "mb-6 w-full vintage-photo shrink-0 cursor-zoom-in";
-            
+
                 imgList.forEach((src) => {
                     const wrap = document.createElement('div');
                     wrap.className = "vintage-photo cursor-zoom-in w-full aspect-[4/3] overflow-hidden";
@@ -1997,19 +1993,15 @@
                         playSuccessSound();
                         if (qData.photo) {
                             let ans = GameState.get('l2Answered') || [false, false, false, false, false];
-                            let photos = GameState.get('l2Photos') || [false, false, false, false, false];
+                            let p = GameState.get('l2Photos') || [false, false, false, false, false];
                             ans[currentQ] = true;
-                            photos[currentQ] = false;
+                            p[currentQ] = false;
                             GameState.set('l2Answered', ans);
-                            GameState.set('l2Photos', photos);
-                            
-                            showAlert("回答正確！", `${qData.desc}\n\n★ 請前往現場拍攝相應特徵完成查驗！`, "fa-check-circle", "text-emerald-700", () => {
+                            GameState.set('l2Photos', p);
+
+                            showAlert("回答正確！", `${qData.desc}\n\n★ 任務解鎖：請前往現場依指示拍照取證！`, "fa-circle-check", "text-emerald-700", () => {
                                 renderL2();
-                                setTimeout(() => {
-                                    const camInput = document.getElementById('l2-camera-input');
-                                    if (camInput) camInput.click();
-                                }, 300);
-                            }, "啟動相機拍照");
+                            }, "前往拍照取證");
                         } else {
                             showAlert("驗證通過", qData.desc, "fa-check-circle", "text-emerald-700", () => {
                                 let cq = GameState.get('l2CurrentQ');
@@ -2068,9 +2060,12 @@
                         playSuccessSound();
                         if (qData.photo) {
                             let ans = GameState.get('l2Answered') || [false, false, false, false, false];
+                            let p = GameState.get('l2Photos') || [false, false, false, false, false];
                             ans[currentQ] = true;
+                            p[currentQ] = false;
                             GameState.set('l2Answered', ans);
-                            showAlert("回答正確！", `${qData.desc}\n\n★ 請前往現場拍攝相應特徵完成查驗！`, "fa-check-circle", "text-emerald-700", () => {
+                            GameState.set('l2Photos', p);
+                            showAlert("回答正確！", `${qData.desc}\n\n★ 任務解鎖：請前往現場依指示拍照取證！`, "fa-check-circle", "text-emerald-700", () => {
                                 renderL2();
                             }, "前往拍照取證");
                         } else {
@@ -2108,9 +2103,12 @@
                             playSuccessSound();
                             if (qData.photo) {
                                 let ans = GameState.get('l2Answered') || [false, false, false, false, false];
+                                let p = GameState.get('l2Photos') || [false, false, false, false, false];
                                 ans[currentQ] = true;
+                                p[currentQ] = false;
                                 GameState.set('l2Answered', ans);
-                                showAlert("回答正確！", `${qData.desc}\n\n★ 請前往現場拍攝相應特徵完成查驗！`, "fa-check-circle", "text-emerald-700", () => {
+                                GameState.set('l2Photos', p);
+                                showAlert("回答正確！", `${qData.desc}\n\n★ 任務解鎖：請前往現場依指示拍照取證！`, "fa-check-circle", "text-emerald-700", () => {
                                     renderL2();
                                 }, "前往拍照取證");
                             } else {
@@ -2196,7 +2194,6 @@
                     <div class="w-full py-2.5 text-sm font-black text-ink tracking-wider bg-white">${o.opt.text}</div>
                 `;
                 
-                // 在 showL3Question 內生成按鈕處，確保包含食品彈窗卡片：
                 btn.onclick = () => {
                     const feedbackHtml = `
                         <div class="food-feedback-box aspect-[16/9] mb-3 overflow-hidden rounded-md border border-ink/20">
