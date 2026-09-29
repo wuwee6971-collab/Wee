@@ -742,7 +742,8 @@
                     
                     <div id="l5-p2" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
-                            <button onclick="transitionSubPage(5, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <!-- 修正：返回 corridor 走廊頁 -->
+                            <button onclick="transitionSubPage(5, 2, 'corridor')" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">關主圖鑑</h2>
                         </div>
                         <div class="grid grid-cols-2 gap-4 flex-1 content-start">
@@ -779,7 +780,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6" onclick="transitionSubPage(5, 2, 'corridor')">查看規則</button>
+                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6" onclick="transitionSubPage(5, 2, 3)">查看規則</button>
                     </div>
 
                     <div id="l5-p3" class="hidden flex flex-col min-h-full">
@@ -1063,6 +1064,9 @@
                 <div class="mt-12 text-gold text-sm font-bold flex items-center space-x-3 bg-black/40 px-6 py-3.5 rounded-full border border-gold/20 backdrop-blur-md shadow-lg">
                     <i class="fa-solid fa-stamp text-stamp text-lg"></i><span class="tracking-[0.15em]">這份思念，已完整拼湊。</span>
                 </div>
+                <p class="text-xs font-black text-amber-300/90 tracking-widest text-center font-serif">
+                    請跟著阿秀一起唸出志遠留下的 8 個字
+                </p>
             </div>
         </div>
         
@@ -1414,15 +1418,23 @@
                         if (globalTimerInterval) clearInterval(globalTimerInterval);
                         globalTimerInterval = setInterval(updateTimerDisplay, 1000);
                         updateTimerDisplay();
+                    
                         const icon = document.getElementById('sound-icon');
                         if (icon && !GameState.get('soundEnabled')) {
                             icon.className = "fa-solid fa-volume-xmark text-gold/50 text-lg";
                         }
-                        if (GameState.get('stamps').filter(Boolean).length === 7) {
+                    
+                        // 新增：若已超時，強制鎖定在最終地點並隱藏底欄
+                        if (GameState.get('timeExpiredHandled')) {
+                            const navBar = document.getElementById('bottom-nav-bar');
+                            if (navBar) navBar.classList.add('hidden');
+                            showScreen('level-7');
+                        } else if (GameState.get('stamps').filter(Boolean).length === 7) {
                             showScreen('certificate');
                         } else {
                             showScreen('main');
                         }
+                    }
                     } else {
                         showScreen('entry');
                     }
@@ -1722,7 +1734,9 @@
             const teamEl = document.getElementById('header-team-name');
             const titleEl = document.getElementById('header-level-title');
             teamEl.textContent = GameState.get('teamName') || "未登入";
-            if (screenId === 'entry') titleEl.textContent = "檔案報到";
+           if (screenId === 'entry') titleEl.textContent = "檔案報到";
+            else if (screenId === 'intro-chars') titleEl.textContent = "人物圖鑑";
+            else if (screenId === 'intro-story') titleEl.textContent = "故事前言";
             else if (screenId === 'story') titleEl.textContent = "信件碎片";
             else if (screenId === 'tutorial') titleEl.textContent = "操作說明";
             else if (screenId === 'level-select') titleEl.textContent = "任務代碼";
