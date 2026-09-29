@@ -317,7 +317,82 @@
                         </button>
                     </div>
                 </div>
-
+                <!-- SCREEN: INTRO CHARACTERS (前導人物介紹) -->
+                <div id="screen-intro-chars" class="screen-panel hidden p-6 flex flex-col justify-center">
+                    <div class="level-card p-6 flex flex-col min-h-full">
+                        <div class="flex items-center mb-4 shrink-0">
+                            <button onclick="showScreen('entry')" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-9 h-9 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-primary text-xl pr-9 font-serif tracking-[0.15em]">人物圖鑑</h2>
+                        </div>
+                        <div class="flex-1 flex flex-col space-y-3 overflow-y-auto custom-scrollbar pr-1">
+                            <div class="char-card-flex shrink-0">
+                                <div class="char-img-box w-20 h-20 border-r border-ink/10 flex items-center justify-center text-primary/40 bg-paper-dark">
+                                    <i class="fa-solid fa-user-astronaut text-2xl"></i>
+                                </div>
+                                <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white">
+                                    <b class="text-sm font-serif text-primary mb-1">玩家 (你)</b>
+                                    <span class="text-xs font-bold leading-[1.6] text-ink/80">劇情的推動者與歷史的見證者。穿梭於現代與五十年代之間，搜集線索、拼湊真相。</span>
+                                </div>
+                            </div>
+                
+                            <!-- 林志遠 (含照片欄位) -->
+                            <div class="char-card-flex shrink-0">
+                                <div class="char-img-box w-20 h-20 border-r border-ink/10 skeleton-bg vintage-photo !border-2">
+                                    <img src="images/林志遠.jpg" alt="林志遠" class="w-full h-full object-contain" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg'); this.src='https://placehold.co/150/e5d5b5/7c343d?text=志遠'">
+                                </div>
+                                <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white">
+                                    <b class="text-sm font-serif text-primary mb-1">林志遠 (軍人)</b>
+                                    <span class="text-xs font-bold leading-[1.6] text-ink/80">深情、堅毅、富有責任感。對國家忠誠，對妻子懷抱無盡溫柔與歉疚。</span>
+                                </div>
+                            </div>
+                
+                            <!-- 阿秀 (含照片欄位) -->
+                            <div class="char-card-flex shrink-0">
+                                <div class="char-img-box w-20 h-20 border-r border-ink/10 skeleton-bg vintage-photo !border-2">
+                                    <img src="images/阿秀.jpg" alt="阿秀" class="w-full h-full object-contain" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg'); this.src='https://placehold.co/150/e5d5b5/7c343d?text=阿秀'">
+                                </div>
+                                <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white">
+                                    <b class="text-sm font-serif text-primary mb-1">阿秀 (軍人妻子)</b>
+                                    <span class="text-xs font-bold leading-[1.6] text-ink/80">外柔內剛、執著而深情。儘管歲月流逝，仍選擇獨自堅守紅磚瓦屋，等待丈夫歸來。</span>
+                                </div>
+                            </div>
+                
+                            <!-- 小助手 (含照片欄位) -->
+                            <div class="char-card-flex shrink-0">
+                                <div class="char-img-box w-20 h-20 border-r border-ink/10 skeleton-bg vintage-photo !border-2">
+                                    <img src="images/小助手.jpg" alt="小助手" class="w-full h-full object-contain" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg'); this.src='https://placehold.co/150/e5d5b5/7c343d?text=小助手'">
+                                </div>
+                                <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white">
+                                    <b class="text-sm font-serif text-primary mb-1">小助手</b>
+                                    <span class="text-xs font-bold leading-[1.6] text-ink/80">身著背後有NTPC的白T小天使，可以在你有困難時會給予協助。</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="showScreen('intro-story')">
+                            下一步：故事前言 <i class="fa-solid fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- SCREEN: INTRO STORY (前導故事前言) -->
+                <div id="screen-intro-story" class="screen-panel hidden p-6 flex flex-col justify-center">
+                    <div class="level-card p-8 flex flex-col justify-center min-h-full">
+                        <div class="flex items-center mb-4 shrink-0">
+                            <button onclick="showScreen('intro-chars')" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-9 h-9 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="flex-1 text-center font-black text-primary text-xl pr-9 font-serif tracking-[0.15em]">故事前言</h2>
+                        </div>
+                        <div class="text-sm leading-[2] font-bold text-ink text-justify font-serif flex-1 overflow-y-auto custom-scrollbar pr-1 space-y-4">
+                            <p>民國三十八年，三重空軍一村迎來了一群年輕的軍人與眷屬。紅磚牆瓦、巷弄交錯，這裡原本只是他們落腳的臨時停靠站，卻在時代的洪流中，成了一生落地生根的家。</p>
+                            <div class="text-center text-ink/30 tracking-[0.5em] text-xs">··· ✦ ···</div>
+                            <p>一場突如其來的緊急警報，打破了三重空軍一村的平靜。砲兵林志遠抓起飛行夾克奔向基地，這一別，便成了永別。</p>
+                            <div class="text-center text-ink/30 tracking-[0.5em] text-xs">··· ✦ ···</div>
+                            <p>幾十年後的今天，當你們再次踏入這座村子，空氣中彷彿還留著當年的期盼與遺憾。今天你們將作為時空的「穿越者與見證者」，協助留在民國60年代、獨自守候家園的妻子阿秀，找回那封遲到了半個世紀的信件，完成一場跨越時空的告別。</p>
+                        </div>
+                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6 shrink-0" onclick="showScreen('story')">
+                            查看信件碎片 <i class="fa-solid fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
                 <!-- SCREEN: STORY -->
                 <div id="screen-story" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 flex flex-col justify-center min-h-full">
@@ -342,8 +417,12 @@
                 
                 <!-- SCREEN: TUTORIAL -->
                 <div id="screen-tutorial" class="screen-panel hidden p-6 flex flex-col justify-center">
-                    <div class="level-card p-8 flex flex-col justify-center min-h-full">
-                        <h2 class="text-2xl font-black text-primary mb-8 text-center font-serif tracking-widest border-b border-dashed border-ink/20 pb-4">頁面操作說明</h2>
+                    <div class="level-card p-8 flex flex-col justify-center min-h-full relative">
+                        <!-- 新增：返回上一頁按鈕 -->
+                        <button onclick="showScreen('story')" class="absolute top-5 left-5 btn-base bg-paper border border-ink/20 shadow-retro-sm px-3 py-1.5 text-xs font-bold text-ink flex items-center gap-1">
+                            <i class="fa-solid fa-chevron-left text-xs"></i><span>上一頁</span>
+                        </button>
+                        <h2 class="text-2xl font-black text-primary mb-8 text-center font-serif tracking-widest border-b border-dashed border-ink/20 pb-4 mt-4">頁面操作說明</h2>
                         <ul class="space-y-6 text-base font-bold text-ink/90 leading-[1.8] font-serif">
                             <li class="flex items-start"><i class="fa-solid fa-stopwatch text-primary mt-1 mr-3 text-lg shrink-0"></i><span><strong>剩餘時間</strong>：委託總時間為 90 分鐘，計時器將顯示於主畫面。</span></li>
                             <li class="flex items-start"><i class="fa-solid fa-envelope-open-text text-primary mt-1 mr-3 text-lg shrink-0"></i><span><strong>信件碎片</strong>：點擊下方「信件碎片」按鈕，可隨時檢視收集進度與內容。</span></li>
@@ -359,8 +438,8 @@
                 <div id="screen-level-select" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 space-y-6">
                         <h2 class="text-2xl font-black text-primary text-center font-serif tracking-widest border-b border-dashed border-ink/20 pb-4">輸入任務代碼</h2>
-                        <p class="text-sm font-bold text-ink/70 text-center">請輸入現場關卡告示牌上的任務代碼</p>
-                        <input type="text" id="input-level-code" maxlength="10" placeholder="例如：3G100301" class="w-full bg-paper border border-ink/20 rounded-md p-4 text-center text-xl font-mono font-black text-primary outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all uppercase shadow-inner tracking-widest">
+                        <p class="text-sm font-bold text-ink/70 text-center">請檢查任務小卡上8碼代碼</p>
+                        <input type="text" id="input-level-code" maxlength="10" placeholder="" class="w-full bg-paper border border-ink/20 rounded-md p-4 text-center text-xl font-mono font-black text-primary outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all uppercase shadow-inner tracking-widest">
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em]" onclick="verifyLevelCode()">
                             驗證並啟動任務
                         </button>
@@ -640,9 +719,27 @@
                             <p>今晚，我們將透過一場「接歌挑戰」，帶領大家走入這段熱鬧又帶點感傷的青春歲月。</p>
                         </div>
                         
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="transitionSubPage(5, 1, 2)">查閱群星</button>
+                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="transitionSubPage(5, 1, 'corridor')">查閱群星</button>
                     </div>
-
+                    
+                    <div id="l5-p-corridor" class="hidden flex flex-col min-h-full">
+                        <div class="flex items-center justify-between mb-4 shrink-0">
+                            <button onclick="transitionSubPage(5, 'corridor', 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">前往群星會</h2>
+                        </div>
+                        <div class="level-card p-6 flex-1 flex flex-col justify-center space-y-5">
+                            <div class="w-full vintage-photo min-h-[220px] max-h-[340px] flex items-center justify-center overflow-hidden">
+                                <img src="images/公園.jpg" alt="公園照片" onerror="this.src='https://placehold.co/600x400/e5d5b5/7c343d?text=96通廊與公園'" class="max-w-full max-h-[320px] object-contain loaded">
+                            </div>
+                            <p class="text-lg font-black text-center text-primary font-serif tracking-widest leading-relaxed">
+                                請穿越96通廊，找尋蘋果前的群星會！
+                            </p>
+                        </div>
+                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="transitionSubPage(5, 'corridor', 2)">
+                            查閱群星 <i class="fa-solid fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                    
                     <div id="l5-p2" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(5, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
@@ -682,7 +779,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6" onclick="transitionSubPage(5, 2, 3)">查看規則</button>
+                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6" onclick="transitionSubPage(5, 2, 'corridor')">查看規則</button>
                     </div>
 
                     <div id="l5-p3" class="hidden flex flex-col min-h-full">
@@ -864,74 +961,19 @@
                     </div>
                 </div>
 
-                <!-- LEVEL 7: 任務 7 (市集攤位 / 原最後一封信) -->
+                <!-- LEVEL 7: 最終地點 -->
                 <div id="screen-level-7" class="screen-panel hidden p-6 flex flex-col">
-                    <div id="l7-p1" class="level-card l7 p-8 flex flex-col justify-center min-h-full text-center relative z-10 w-full h-full">
-                        <h1 class="text-4xl font-black tracking-[0.3em] text-gold mb-6 font-serif" style="text-shadow: 0 4px 20px rgba(0,0,0,0.8);">最後一封信</h1>
-                        <p class="text-sm font-bold text-gold/70 tracking-[0.2em] uppercase">最終關卡 ‧ 沉浸式劇場</p>
-                        <div class="bg-black/40 p-8 border border-gold/20 shadow-inner my-12 rounded-lg backdrop-blur-sm">
-                            <p class="text-lg font-bold text-gold leading-[2] font-serif tracking-wide">
-                                歷史的最後一塊拼圖，<br>藏在回憶的最深處。<br><br>請前往指定場域，<br>感受那段跨越時空的思念。
-                            </p>
-                        </div>
-                        <button class="btn-base w-full py-4 bg-gold text-ink font-black text-lg transition-all tracking-[0.2em]" onclick="transitionSubPage(7, 1, 2)">
-                            已到達 <i class="fa-solid fa-location-dot ml-2"></i>
-                        </button>
-                    </div>
-
-                    <div id="l7-p2" class="hidden flex flex-col min-h-full">
-                        <div class="flex items-center mb-6 shrink-0">
-                            <button onclick="transitionSubPage(7, 2, 1)" class="btn-base bg-transparent border border-gold/30 w-10 h-10 flex items-center justify-center rounded text-gold hover:bg-gold/10 transition-colors"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-gold text-lg pr-10 font-serif tracking-[0.2em]">故事前言</h2>
-                        </div>
-                        <div class="level-card l7 p-8 flex-1 flex flex-col justify-center text-base leading-[2] font-bold text-gold/90 text-justify font-serif bg-black/40 backdrop-blur-sm">
-                            <p>民國三十八年，三重空軍一村迎來了一群年輕的軍人與眷屬。紅磚牆瓦、巷弄交錯，這裡原本只是他們落腳的臨時停靠站，卻在時代的洪流中，成了一生落地生根的家。</p>
-                            <div class="text-center my-8 text-gold/20 tracking-[0.5em] text-sm">··· ✦ ···</div>
-                            <p>一場突如其來的緊急警報，打破了平靜。飛行員林志遠抓起飛行夾克奔向基地，這一別，便成了永別。</p>
-                            <div class="text-center my-8 text-gold/20 tracking-[0.5em] text-sm">··· ✦ ···</div>
-                            <p>幾十年後的今天，當你們再次踏入這座村子，空氣中彷彿還留著當年的期盼與遺憾。在導覽員的帶領下，你們將作為時空的「穿越者與見證者」，協助留在民國50年代、獨自守候家園的妻子阿秀，找回那封遲到了半個世紀的信件，完成一場跨越時空的告別。</p>
-                        </div>
-                        <button class="btn-base w-full py-4 mt-8 bg-gold text-ink font-black text-lg transition-all tracking-[0.2em] shrink-0" onclick="transitionSubPage(7, 2, 3)">檢視圖鑑</button>
-                    </div>
-
-                    <div id="l7-p3" class="hidden flex flex-col min-h-full">
-                        <div class="flex items-center mb-6 shrink-0">
-                            <button onclick="transitionSubPage(7, 3, 2)" class="btn-base bg-transparent border border-gold/30 w-10 h-10 flex items-center justify-center rounded text-gold hover:bg-gold/10 transition-colors"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-gold text-lg pr-10 font-serif tracking-[0.2em]">人物圖鑑</h2>
-                        </div>
-                        <div class="flex-1 flex flex-col space-y-4">
-                            <div class="flex-1 flex bg-black/40 border border-gold/20 p-5 rounded-lg items-center shadow-lg backdrop-blur-sm">
-                                <div class="text-sm"><b class="text-lg text-gold block mb-2 font-serif border-b border-dashed border-gold/20 pb-1.5 tracking-wider">玩家 (見證者)</b><span class="font-normal text-paper leading-[1.8]">劇情的推動者與歷史的見證者。穿梭於現代與五十年代之間，搜集線索、拼湊真相。</span></div>
-                            </div>
-                            <div class="flex-1 flex bg-black/40 border border-gold/20 p-5 rounded-lg items-center shadow-lg backdrop-blur-sm">
-                                <div class="text-sm"><b class="text-lg text-gold block mb-2 font-serif border-b border-dashed border-gold/20 pb-1.5 tracking-wider">林志遠 (軍人)</b><span class="font-normal text-paper leading-[1.8]">深情、堅毅、富有責任感。對國家忠誠，對妻子懷抱無盡溫柔與歉疚。</span></div>
-                            </div>
-                            <div class="flex-1 flex bg-black/40 border border-gold/20 p-5 rounded-lg items-center shadow-lg backdrop-blur-sm">
-                                <div class="text-sm"><b class="text-lg text-gold block mb-2 font-serif border-b border-dashed border-gold/20 pb-1.5 tracking-wider">阿秀 (軍人妻子)</b><span class="font-normal text-paper leading-[1.8]">外柔內剛、執著而深情。儘管歲月流逝，仍選擇獨自堅守紅磚瓦屋，等待丈夫歸來。</span></div>
-                            </div>
-                            <div class="flex-1 flex bg-black/40 border border-gold/20 p-5 rounded-lg items-center shadow-lg backdrop-blur-sm">
-                                <div class="text-sm"><b class="text-lg text-gold block mb-2 font-serif border-b border-dashed border-gold/20 pb-1.5 tracking-wider">導覽員 (引導者)</b><span class="font-normal text-paper leading-[1.8]">帶領大家走入歷史現場、開啟時空序幕的關鍵人物。</span></div>
-                            </div>
-                        </div>
-                        <button class="btn-base w-full py-4 mt-8 bg-gold text-ink font-black text-lg transition-all tracking-[0.2em] shrink-0" onclick="transitionSubPage(7, 3, 4)">準備出發</button>
-                    </div>
-
-                    <div id="l7-p4" class="hidden flex flex-col min-h-full text-center justify-center relative">
-                        <div class="flex items-center mb-8 absolute top-0 left-0 w-full z-20">
-                            <button onclick="transitionSubPage(7, 4, 3)" class="btn-base bg-transparent border border-gold/30 px-4 py-2 flex items-center justify-center rounded text-gold hover:bg-gold/10 transition-colors text-sm font-bold tracking-widest"><i class="fa-solid fa-chevron-left mr-2"></i> 返回</button>
-                        </div>
-                        <div class="bg-black/40 p-10 border border-gold/20 shadow-2xl mt-12 rounded-lg z-10 w-full backdrop-blur-sm">
-                            <i class="fa-solid fa-door-open text-6xl text-gold mb-10 opacity-70 drop-shadow-[0_0_15px_rgba(221,191,146,0.4)]"></i>
-                            <p class="text-lg font-bold text-gold leading-[2] font-serif tracking-wide">
-                                準備好展開這段尋找記憶與承諾的旅程了嗎？<br><br>請保持好奇心，留意巷弄間的蛛絲馬跡，我們即將出發！
-                            </p>
-                        </div>
-                        <button class="btn-base w-full py-5 mt-12 bg-gold text-ink font-black text-lg transition-all tracking-[0.2em] z-10 shrink-0 shadow-[0_0_20px_rgba(221,191,146,0.3)]" onclick="handleLevelSuccess(7)">
-                            已通關 <i class="fa-solid fa-check-circle ml-2"></i>
+                    <div class="level-card l7 p-8 flex-1 flex flex-col justify-center items-center text-center bg-black/40 backdrop-blur-sm relative border border-gold/30">
+                        <i class="fa-solid fa-envelope-open-text text-6xl text-gold mb-6 opacity-80 drop-shadow-[0_0_15px_rgba(221,191,146,0.4)]"></i>
+                        <h2 class="text-3xl font-black text-gold mb-4 font-serif tracking-widest">最終地點抵達</h2>
+                        <p class="text-base font-bold text-gold/90 leading-[2] font-serif mb-8 text-center">
+                            漫長的搜集已抵達終點，<br>請在現場就位後，按下按鈕開啟最後的信件。
+                        </p>
+                        <button class="btn-base w-full py-5 bg-gold text-ink font-black text-xl tracking-[0.2em] shadow-[0_0_25px_rgba(221,191,146,0.3)] transition-transform active:scale-95" onclick="handleLevelSuccess(7)">
+                            <i class="fa-solid fa-feather-pointed mr-2"></i>開啟最終劇情
                         </button>
                     </div>
                 </div>
-
                 <!-- SCREEN: FINAL CERTIFICATE -->
                 <div id="screen-certificate" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 text-center shadow-2xl border-[4px] border-primary rounded-xl">
@@ -2517,7 +2559,7 @@
             GameState.set('teamName', name.substring(0, 15));
             const membersInput = document.getElementById('input-team-members');
             if (membersInput) GameState.set('teamMembers', membersInput.value.trim());
-            showScreen('story');
+            showScreen('intro-chars');
         });
 
         window.verifyLevelCode = function() {
@@ -2572,7 +2614,24 @@
             const now = GameState.get('endTime') ? GameState.get('endTime') : Date.now();
             let elapsed = Math.floor((now - GameState.get('startTime')) / 1000);
             let remain = (90 * 60) - elapsed; 
-            if (remain < 0) remain = 0;
+            
+            // 超時自動處理邏輯
+            if (remain <= 0) {
+                remain = 0;
+                if (!GameState.get('timeExpiredHandled')) {
+                    GameState.set('timeExpiredHandled', true);
+                    if (!GameState.get('endTime')) GameState.set('endTime', Date.now());
+                    if (globalTimerInterval) clearInterval(globalTimerInterval);
+                    
+                    // 彈出通知並鎖定導航，直接帶往最終地點/結案
+                    showAlert("委託時間已達上限", "90 分鐘調查時間結束！\n系統已為您導航至最終地點。\n\n★ 您依然可以前往服務台核銷並領取紀念品！", "fa-clock", "text-primary", () => {
+                        const navBar = document.getElementById('bottom-nav-bar');
+                        if (navBar) navBar.classList.add('hidden'); // 隱藏導覽列防止切換回題目
+                        showScreen('level-7');
+                    }, "前往最終地點");
+                }
+            }
+            
             const h = String(Math.floor(remain / 3600)).padStart(2, '0');
             const m = String(Math.floor((remain % 3600) / 60)).padStart(2, '0');
             const s = String(remain % 60).padStart(2, '0');
