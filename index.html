@@ -1428,7 +1428,6 @@
                             icon.className = "fa-solid fa-volume-xmark text-gold/50 text-lg";
                         }
                     
-                        // 新增：若已超時，強制鎖定在最終地點並隱藏底欄
                         if (GameState.get('timeExpiredHandled')) {
                             const navBar = document.getElementById('bottom-nav-bar');
                             if (navBar) navBar.classList.add('hidden');
