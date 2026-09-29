@@ -140,7 +140,7 @@
             position: relative; z-index: 2; 
             max-width: 100%; max-height: 100%; 
             width: auto; height: auto; 
-            object-fit: contain !important; /* 確保不裁切完整顯示 */
+            object-fit: contain !important;
             opacity: 0; transition: opacity 0.5s ease; 
         }
         .vintage-photo img.loaded { opacity: 1; }
@@ -186,12 +186,12 @@
             position: relative; 
             flex-shrink: 0; 
         }
-        .char-img-box img {
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-            object-fit: contain !important;
+        .char-img-box img { 
+            max-width: 100%; 
+            max-height: 100%; 
+            width: auto; 
+            height: auto; 
+            object-fit: contain !important; 
         }
 
         /* ==========================================
@@ -317,6 +317,7 @@
                         </button>
                     </div>
                 </div>
+                
                 <!-- SCREEN: INTRO CHARACTERS (前導人物介紹) -->
                 <div id="screen-intro-chars" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-6 flex flex-col min-h-full">
@@ -393,6 +394,7 @@
                         </button>
                     </div>
                 </div>
+
                 <!-- SCREEN: STORY -->
                 <div id="screen-story" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 flex flex-col justify-center min-h-full">
@@ -418,7 +420,6 @@
                 <!-- SCREEN: TUTORIAL -->
                 <div id="screen-tutorial" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 flex flex-col justify-center min-h-full relative">
-                        <!-- 新增：返回上一頁按鈕 -->
                         <button onclick="showScreen('story')" class="absolute top-5 left-5 btn-base bg-paper border border-ink/20 shadow-retro-sm px-3 py-1.5 text-xs font-bold text-ink flex items-center gap-1">
                             <i class="fa-solid fa-chevron-left text-xs"></i><span>上一頁</span>
                         </button>
@@ -708,7 +709,6 @@
                             
                             <p class="mb-5">1950至1980年代，三重天台廣場曾是北台灣最繁華的娛樂地標，歌廳、戲院、夜總會林立。第一代外省移民在眷村裡，用歌聲撫平離鄉背井的鄉愁。</p>
                             
-                            <!-- 修復直式照片高度適應，不裁切人物與舞廳畫面 -->
                             <div class="w-full mb-4 vintage-photo min-h-[240px] max-h-[380px] flex items-center justify-center shrink-0 overflow-hidden">
                                 <img src="images/l5-4.jpg" alt="接歌挑戰現場" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=接歌挑戰現場'" class="max-w-full max-h-[370px] w-auto h-auto object-contain loaded">
                             </div>
@@ -742,7 +742,6 @@
                     
                     <div id="l5-p2" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
-                            <!-- 修正：返回 corridor 走廊頁 -->
                             <button onclick="transitionSubPage(5, 2, 'corridor')" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">關主圖鑑</h2>
                         </div>
@@ -820,7 +819,6 @@
                         </div>
                         <div class="level-card p-8 flex-1 flex flex-col justify-center bg-paper/30">
                             <p class="text-base font-bold text-ink/70 mb-6 text-center tracking-widest font-serif">請輸入現場獲取的四位數密碼</p>
-                            <!-- 修正：改為 4 欄以完整容納 4 格密碼 -->
                             <div id="l5-code-container" class="grid grid-cols-4 gap-3 max-w-[280px] mx-auto mt-2">
                                 <div class="code-box h-16 flex items-center justify-center text-4xl font-black font-mono text-primary bg-white shadow-inner"></div>
                                 <div class="code-box h-16 flex items-center justify-center text-4xl font-black font-mono text-primary bg-white shadow-inner"></div>
@@ -975,6 +973,7 @@
                         </button>
                     </div>
                 </div>
+
                 <!-- SCREEN: FINAL CERTIFICATE -->
                 <div id="screen-certificate" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 text-center shadow-2xl border-[4px] border-primary rounded-xl">
@@ -1319,7 +1318,7 @@
                 "images/梔子花.jpg",
                 "images/玫瑰.jpg",
                 "images/玉蘭花.jpg",
-                "images/111.jpg"
+                "images/111.jpg",
                 "images/林志遠.jpg",
                 "images/阿秀.jpg",
                 "images/小助手.jpg",
@@ -1445,7 +1444,7 @@
                 }
             };
         
-            const forceTimeout = setTimeout(finishLoading, 1500);
+            const forceTimeout = setTimeout(finishLoading, 2000);
             if (images.length === 0) {
                 clearTimeout(forceTimeout);
                 finishLoading();
@@ -1634,6 +1633,11 @@
                 if (activeUploadPollTimer) { clearInterval(activeUploadPollTimer); activeUploadPollTimer = null; }
                 if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
             };
+
+            if (!db) {
+                showAlert("連線提示", "資料庫服務目前未就緒，請檢查網路連線或稍後再試。", "fa-triangle-exclamation", "text-primary");
+                return;
+            }
         
             showAlert("檔案加密中", "正在快速傳送現場照片至指揮所...", "fa-satellite-dish fa-spin", "text-primary", null, "取消上傳", 0, true);
             
@@ -1705,7 +1709,13 @@
             return array;
         }
 
-        function initAudio() { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); }
+        function initAudio() { 
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioCtx = new AudioContextClass();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); 
+        }
 
         function stopAllMedia() {
             document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
@@ -1714,9 +1724,10 @@
         }
 
         function playBeep(freq = 600, duration = 0.05, type = 'sine') {
-            if (!GameState.get('soundEnabled') || !audioCtx) return;
+            if (!GameState.get('soundEnabled')) return;
+            initAudio();
+            if (!audioCtx) return;
             try {
-                initAudio(); 
                 const osc = audioCtx.createOscillator(); 
                 const gain = audioCtx.createGain();
                 osc.type = type; 
@@ -1736,7 +1747,7 @@
             const teamEl = document.getElementById('header-team-name');
             const titleEl = document.getElementById('header-level-title');
             teamEl.textContent = GameState.get('teamName') || "未登入";
-           if (screenId === 'entry') titleEl.textContent = "檔案報到";
+            if (screenId === 'entry') titleEl.textContent = "檔案報到";
             else if (screenId === 'intro-chars') titleEl.textContent = "人物圖鑑";
             else if (screenId === 'intro-story') titleEl.textContent = "故事前言";
             else if (screenId === 'story') titleEl.textContent = "信件碎片";
@@ -1846,7 +1857,6 @@
             if (screenId === 'level-4') forceSubPageInit(4, 1, 4);
             if (screenId === 'level-5') { forceSubPageInit(5, 1, 5); renderL5Songs(); updateL5Display(); }
             if (screenId === 'level-6') { forceSubPageInit(6, 1, 4); renderL6Songs(); }
-            if (screenId === 'level-7') forceSubPageInit(7, 1, 4);
 
             updateStampBadgeCount();
         }
@@ -1977,7 +1987,7 @@
         // ==========================================
         // LEVEL 2 邏輯
         // ==========================================
-        document.getElementById('l2-camera-input').addEventListener('change', function(e) {
+        document.getElementById('l2-camera-input').addEventListener('change', function() {
             if (this.files && this.files.length > 0) {
                 const file = this.files[0]; this.value = '';
                 uploadAndListenVerification(file, "任務二：眷舍空間", (isApproved) => {
@@ -2254,7 +2264,7 @@
         // ==========================================
         // LEVEL 3 邏輯
         // ==========================================
-        document.getElementById('l3-camera-input').addEventListener('change', function(e) {
+        document.getElementById('l3-camera-input').addEventListener('change', function() {
             if (this.files && this.files.length > 0) {
                 const file = this.files[0]; this.value = '';
                 uploadAndListenVerification(file, "任務三：村長的家", (isApproved) => {
@@ -2420,7 +2430,6 @@
                 `;
                 btn.onclick = () => {
                     playBeep();
-                    // 修正：移除未定義的 ${song.stars}，避免印出 undefined 字串
                     const html = `
                         <div class="bg-black/90 p-5 rounded-lg border border-gold/40 text-center space-y-4 my-2 shadow-2xl">
                             <div class="text-[11px] text-gold/70 tracking-widest uppercase font-mono flex items-center justify-center gap-1.5">
@@ -2437,7 +2446,6 @@
             });
         }
 
-        // 修正：密碼限制改為 4 位數，避免第 4 位無法鍵入
         document.querySelectorAll('.l5-key').forEach(btn => btn.onclick = () => {
             let input = GameState.get('l5Input') || [];
             if (input.length < 4) { 
@@ -2639,10 +2647,9 @@
                     if (!GameState.get('endTime')) GameState.set('endTime', Date.now());
                     if (globalTimerInterval) clearInterval(globalTimerInterval);
                     
-                    // 彈出通知並鎖定導航，直接帶往最終地點/結案
                     showAlert("委託時間已達上限", "90 分鐘調查時間結束！\n系統已為您導航至最終地點。\n\n★ 您依然可以前往服務台核銷並領取紀念品！", "fa-clock", "text-primary", () => {
                         const navBar = document.getElementById('bottom-nav-bar');
-                        if (navBar) navBar.classList.add('hidden'); // 隱藏導覽列防止切換回題目
+                        if (navBar) navBar.classList.add('hidden');
                         showScreen('level-7');
                     }, "前往最終地點");
                 }
@@ -2699,7 +2706,6 @@
         }
 
         document.getElementById('btn-restart-game').onclick = confirmRestartGame;
-        document.getElementById('btn-nav-hq').onclick = () => { playBeep(); showScreen(GameState.get('teamName') ? 'main' : 'entry'); };
         
         document.getElementById('sound-toggle').onclick = () => {
             let soundOn = !GameState.get('soundEnabled'); 
