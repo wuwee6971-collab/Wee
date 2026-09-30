@@ -17,8 +17,7 @@
                         primary: { DEFAULT: '#832729', dark: '#5E181A' },
                         military: { DEFAULT: '#2A3B2C', light: '#3B523E' },
                         gold: { DEFAULT: '#DDBF92', dark: '#C4A473' },
-                        stamp: { DEFAULT: '#B91C1C' },
-                        l7: { text: '#DDBF92', bg: '#1A1A1A' } // 最終地點專用
+                        stamp: { DEFAULT: '#B91C1C' }
                     },
                     fontFamily: {
                         serif: ['"Noto Serif TC"', 'serif'],
@@ -78,10 +77,6 @@
             background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.12"/></svg>'); 
             box-shadow: inset 0 0 40px rgba(44, 30, 22, 0.15); 
         }
-        .final-screen-bg {
-            background-color: #1A1A1A;
-            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.2"/></svg>');
-        }
 
         /* ==========================================
            3. UI 元件模組 (UI Components)
@@ -109,12 +104,6 @@
             box-shadow: 4px 4px 0 #2C1E16; min-height: 52px; border-radius: 6px;
         }
         .primary-btn:active:not(:disabled) { background: #5E181A; box-shadow: 1px 1px 0 #2C1E16, inset 2px 2px 8px rgba(0,0,0,0.3); }
-
-        .final-btn {
-            background: #DDBF92; border: 2px solid #2C1E16; color: #1A1A1A;
-            box-shadow: 4px 4px 0 #2C1E16; min-height: 48px; border-radius: 6px;
-        }
-        .final-btn:active:not(:disabled) { background: #C4A473; box-shadow: 1px 1px 0 #2C1E16; }
 
         .opt-btn { 
             width: 100%; padding: 16px 20px; background: #F7F3E8; border: 2px solid #C4A473; 
@@ -261,12 +250,6 @@
         #modal-image-lightbox .vintage-photo img {
             opacity: 1 !important;
         }
-
-        /* 歌詞確認頁專用排版 */
-        #screen-l5-arrival .final-screen-bg {
-            display: flex;
-            flex-direction: column;
-        }
     </style>
 </head>
 <body class="min-h-[100dvh] flex items-center justify-center p-0 sm:p-6 overflow-x-hidden">
@@ -315,7 +298,7 @@
         <div id="game-viewport" class="flex-1 overflow-y-auto overflow-x-hidden scroll-smooth z-10 w-full custom-scrollbar relative bg-transparent" style="-webkit-overflow-scrolling: touch;">
             <div class="min-h-full flex flex-col relative w-full pb-28">
 
-                <!-- SCREEN 0: ENTRY (修改隊伍代號為必填) -->
+                <!-- SCREEN 0: ENTRY -->
                 <div id="screen-entry" class="screen-panel screen-active p-6 flex flex-col justify-center">
                     <div class="text-center py-8 mb-6">
                         <h1 class="text-4xl font-black tracking-[0.2em] text-primary mb-4 drop-shadow-sm font-serif">三重空軍一村</h1>
@@ -323,8 +306,7 @@
                     <div class="level-card p-8 space-y-6" id="team-input-screen">
                         <div class="space-y-3">
                             <label class="text-sm font-bold text-ink block tracking-wide">隊伍代號：</label>
-                            <!-- 增加 required 屬性 -->
-                            <input type="text" id="input-team-name" required maxlength="15" placeholder="例：眷村探險小隊 (必填)" class="w-full bg-paper border border-ink/20 rounded-md px-4 py-4 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-ink shadow-inner">
+                            <input type="text" id="input-team-name" required maxlength="15" placeholder="例：眷村探險小隊(必填)" class="w-full bg-paper border border-ink/20 rounded-md px-4 py-4 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-ink shadow-inner">
                         </div>
                         <div class="space-y-3">
                             <label class="text-sm font-bold text-ink block tracking-wide">隊員：</label>
@@ -480,7 +462,7 @@
                     </div>
                 </div>
 
-                <!-- LEVEL 1: 防砲陣地 (修改：陣地巡查任務牆增加提示文字) -->
+                <!-- LEVEL 1: 防砲陣地 -->
                 <div id="screen-level-1" class="screen-panel hidden p-6 flex flex-col">
                     <input type="file" accept="image/*" capture="environment" id="l1-camera-input" class="hidden">
                     <div id="l1-p1" class="level-card p-6 flex flex-col justify-center min-h-full">
@@ -510,10 +492,6 @@
                         </div>
                         <div class="level-card p-6 space-y-6">
                             <p class="text-xs font-bold text-ink/60 text-center tracking-wide">點擊完成定點打卡（可重複查看指示）</p>
-                            <!-- 增加提示文字：請觀看關主後方的地圖 -->
-                            <p class="text-sm font-bold text-primary text-center tracking-wide">請觀看關主後方的地圖</p>
-                            <!-- 增加提示文字：提醒：可以和隊員們分頭尋找再一起拍照喔！ -->
-                            <p class="text-xs font-bold text-ink/70 text-center tracking-wide">提醒：可以和隊員們分頭尋找再一起拍照喔！</p>
                             <div class="grid grid-cols-2 gap-4" id="l1-locations-grid">
                                 <button class="l1-loc-btn btn-base military-btn py-6 text-base font-black flex flex-col tracking-widest" data-idx="0"><i class="fa-solid fa-map-pin mb-3 text-primary text-2xl"></i>甬道1號出口</button>
                                 <button class="l1-loc-btn btn-base military-btn py-6 text-base font-black flex flex-col tracking-widest" data-idx="1"><i class="fa-solid fa-map-pin mb-3 text-primary text-2xl"></i>甬道豎井</button>
@@ -554,7 +532,7 @@
                     </div>
                 </div>
 
-                <!-- LEVEL 2: 眷村空間與建築 (修改：更換地圖、加粗文字、增加選項、填空題說明) -->
+                <!-- LEVEL 2: 眷村眷舍 -->
                 <div id="screen-level-2" class="screen-panel hidden p-6 flex flex-col space-y-6">
                     <div class="level-card l2 p-8 flex-1 flex flex-col relative">
                         <div class="text-center mb-6 shrink-0 relative flex justify-between items-center border-b border-dashed border-military/30 pb-4">
@@ -574,48 +552,28 @@
                             <input type="file" accept="image/*" capture="environment" id="l2-camera-input" class="hidden">
                         </div>
 
-                        <!-- 題目配圖容器 (修改：強制 Flex 排版 order) -->
-                        <div id="l2-question-img-container" class="hidden mb-6 w-full vintage-photo shrink-0 min-h-[160px] max-h-[300px] overflow-hidden" style="order: 1;">
-                            <!-- 此處圖片將由 JS 動態載入，例如 L2 Quiz 2 的 l2_doorplate.jpg -->
-                            <img id="l2-question-img" src="" class="max-w-full max-h-[280px] w-auto h-auto object-contain" onload="this.classList.add('loaded')">
+                        <!-- 題目配圖容器 -->
+                        <div id="l2-question-img-container" class="hidden mb-6 w-full vintage-photo shrink-0 min-h-[160px] max-h-[300px] overflow-hidden">
+                            <img id="l2-question-img" src="images/l2_map.jpg" class="max-w-full max-h-[280px] w-auto h-auto object-contain" onload="this.classList.add('loaded')">
                         </div>
 
-                        <!-- 題目文字 (修改：強制 Flex 排版 order) -->
-                        <div id="l2-question-text" class="text-lg font-bold leading-[1.8] mb-6 whitespace-pre-line text-ink shrink-0 text-justify font-serif tracking-wide w-full flex flex-col" style="order: 2;"></div>
-                        
-                        <!-- 選項容器 (修改：強制 Flex 排版 order) -->
-                        <div id="l2-options-container" class="space-y-4 flex-1 flex flex-col justify-end pb-2" style="order: 3;"></div>
+                        <div id="l2-question-text" class="text-lg font-bold leading-[1.8] mb-6 whitespace-pre-line text-ink shrink-0 text-justify font-serif tracking-wide w-full flex flex-col"></div>
+                        <div id="l2-options-container" class="space-y-4 flex-1 flex flex-col justify-end pb-2"></div>
                     </div>
                 </div>
 
-                <!-- L3 INTRO: 村長的家 前導 (新增加) -->
+                <!-- L3 INTRO: 村長的家 前導 -->
                 <div id="screen-l3-intro" class="screen-panel hidden p-6 flex flex-col justify-center">
-                    <div class="level-card p-8 flex flex-col justify-center min-h-full">
-                        <div class="flex items-center mb-4 shrink-0">
-                            <button onclick="showScreen('main')" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-9 h-9 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="flex-1 text-center font-black text-primary text-xl pr-9 font-serif tracking-[0.15em]">前往村長的家</h2>
-                        </div>
-                        <div class="flex-1 flex flex-col justify-center items-center">
-                            <!-- 上：村長家壁畫照 -->
-                            <div class="w-full vintage-photo aspect-[4/3] mb-6 overflow-hidden rounded-md border border-ink/10 shadow-sm">
-                                <img src="images/l3_mural.jpg" alt="村長家壁畫" onerror="this.src='https://placehold.co/400x300?text=村長家壁畫照'" class="loaded">
-                            </div>
-                            <!-- 中：各種菜集合圖 -->
-                            <div class="w-full vintage-photo aspect-[16/9] mb-6 overflow-hidden rounded-md border border-ink/10 shadow-sm">
-                                <img src="images/l3_vegetables.jpg" alt="各種菜集合" onerror="this.src='https://placehold.co/400x300?text=各種菜集合圖'" class="loaded">
-                            </div>
-                            <!-- 下：解說文字 -->
-                            <p class="text-base font-bold text-ink leading-[1.8] font-serif text-justify px-2 mb-8">這是在村長家的廚房裡...</p>
-                        </div>
-                        <button onclick="startL3Mission()" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] shrink-0">
-                            <i class="fa-solid fa-envelope-open mr-2 text-xl"></i>拆開任務信封
-                        </button>
+                    <div class="level-card p-8 flex flex-col justify-center">
+                        <img src="images/l3_mural.jpg" class="mb-4 rounded-md shadow-sm" onerror="this.src='https://placehold.co/400x300?text=村長家壁畫照'">
+                        <img src="images/l3_vegetables.jpg" class="mb-4 rounded-md shadow-sm" onerror="this.src='https://placehold.co/400x300?text=各種菜集合圖'">
+                        <p class="text-base font-bold text-ink mb-8 font-serif leading-relaxed text-justify">這是在村長家的廚房裡...</p>
+                        <button onclick="startL3Mission()" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em]">開始任務</button>
                     </div>
                 </div>
 
-                <!-- LEVEL 3: 村長的家 QA頁面 (修改：增加確認按鈕) -->
+                <!-- LEVEL 3: 村長的家 -->
                 <div id="screen-level-3" class="screen-panel hidden p-6 flex flex-col space-y-6">
-                    <!-- 拍照驗證解鎖 (保留) -->
                     <div id="l3-photo-section" class="level-card l3 p-10 text-center flex flex-col justify-center flex-1">
                         <div class="vintage-photo w-48 h-48 mx-auto mb-10 flex items-center justify-center shadow-lg transform -rotate-2">
                             <i class="fa-solid fa-house-chimney text-6xl text-ink/30"></i>
@@ -627,7 +585,6 @@
                         <input type="file" accept="image/*" capture="environment" id="l3-camera-input" class="hidden">
                     </div>
 
-                    <!-- 聲音謎題與料理選擇 (重大邏輯修改：增加確認按鈕) -->
                     <div id="l3-qa-section" class="hidden flex-1 flex flex-col">
                         <div class="level-card l3 p-6 flex-1 flex flex-col relative">
                             <div class="text-center mb-4 shrink-0 relative flex justify-between items-center border-b border-dashed border-gold-dark/40 pb-3">
@@ -648,22 +605,13 @@
                             
                             <p id="l3-question-text" class="text-base font-black text-center leading-[1.8] mb-3 text-ink font-serif tracking-widest"></p>
                             
-                            <!-- 四宮格料理圖片按鈕容器 (點擊選定，不立即彈窗) -->
-                            <div id="l3-options-container" class="grid grid-cols-2 gap-3 flex-1 content-end pb-2">
-                                <!-- 由 JS 生成，加上特定 class 以在選定時標示藍框 -->
-                            </div>
-                            
-                            <!-- L3 新增確認按鈕 (修改：品鑑下一道) -->
-                            <div id="l3-confirm-btn-container" class="hidden shrink-0 mt-4 border-t border-dashed border-ink/15 pt-4">
-                                <button id="l3-confirm-btn" class="btn-base w-full py-4 bg-primary text-white font-black text-lg tracking-[0.2em] shadow-retro-sm active:shadow-retro-active">
-                                    確認選定並判定
-                                </button>
-                            </div>
+                            <!-- 四宮格料理圖片按鈕容器（點擊彈出介紹） -->
+                            <div id="l3-options-container" class="grid grid-cols-2 gap-3 flex-1 content-end pb-2"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- LEVEL 4: 榕樹廣場 (保留結構) -->
+                <!-- LEVEL 4: 榕樹廣場 -->
                 <div id="screen-level-4" class="screen-panel hidden p-6 flex flex-col">
                     <div id="l4-p1" class="level-card p-8 flex flex-col justify-center min-h-full">
                         <div class="text-base leading-[2] font-bold text-ink text-justify flex-1 font-serif flex flex-col justify-center">
@@ -758,64 +706,52 @@
                     </div>
                 </div>
 
-                <!-- LEVEL 5: 群星之夜 (新增加：歌詞驗證子頁面l5-arrival) -->
-                <div id="screen-l5-arrival" class="screen-panel hidden p-6 flex flex-col final-screen-bg justify-center">
-                    <div class="level-card l7 p-8 flex flex-col justify-center min-h-full relative border border-gold/30">
-                        <h2 class="text-2xl font-black text-gold mb-8 text-center font-serif tracking-widest border-b border-dashed border-gold/20 pb-4">抵達確認</h2>
-                        <div class="flex flex-col flex-1 text-gold">
-                            <p class="text-base font-bold leading-[2] font-serif mb-6 text-justify" style="order: 1;">請穿越96通廊找到蘋果前的群星會...</p>
-                            <div class="vintage-photo w-full aspect-[16/9] mb-6 overflow-hidden rounded-md border border-gold/20 shadow-lg" style="order: 2;">
-                                <img src="images/l5_park.jpg" alt="L5 公園" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=公園圖'" class="loaded">
-                            </div>
-                            <div class="vintage-photo w-full aspect-[4/3] mb-6 overflow-hidden rounded-md border border-gold/20 shadow-lg" style="order: 3;">
-                                <img src="images/l5_main_visual.jpg" alt="L5 主視覺" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=主視覺圖'" class="loaded">
-                            </div>
-                            <p class="text-base font-bold leading-[2] font-serif mb-8 text-justify" style="order: 4;">主持人為我們帶來...</p>
-                        </div>
-                        <div class="mt-8 shrink-0 flex flex-col" style="order: 5;">
-                            <input type="text" id="l5-check-password" placeholder="輸入「外婆橋」" class="w-full bg-l7-bg border border-gold/20 rounded-md px-4 py-4 text-base font-bold outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 text-l7-text shadow-inner text-center mb-4">
-                            <button id="l5-check-confirm-btn" onclick="checkL5Arrival()" class="btn-base final-btn w-full py-4 font-black text-lg tracking-[0.2em] shadow-retro-sm">
-                                確認
-                            </button>
-                        </div>
+                <!-- L5 ARRIVAL: 群星之夜 抵達頁面 -->
+                <div id="screen-l5-arrival" class="screen-panel hidden p-6 flex flex-col justify-center">
+                    <div class="level-card p-8 flex flex-col justify-center">
+                        <p class="text-base font-bold text-ink mb-4 font-serif leading-relaxed text-justify">請穿越96通廊找到蘋果前的群星會</p>
+                        <img src="images/公園.jpg" class="mb-4 rounded-md shadow-sm" onerror="this.src='https://placehold.co/400x300?text=公園圖'">
+                        <img src="images/主視覺1.jpg" class="mb-4 rounded-md shadow-sm" onerror="this.src='https://placehold.co/400x300?text=主視覺圖'">
+                        <img src="images/主視覺2.jpg" class="mb-4 rounded-md shadow-sm" onerror="this.src='https://placehold.co/400x300?text=主視覺圖'">
+                        <p class="text-base font-bold text-ink mb-8 font-serif leading-relaxed text-justify">主持人為我們帶來</p>
+                        
+                        <!-- 這裡接續 Bug 1 修改的 form 標籤 -->
+                        <form class="space-y-4" onsubmit="event.preventDefault(); checkL5Arrival();">
+                            <input type="text" id="l5-check-password" placeholder="輸入「外婆橋」" class="w-full bg-paper border border-ink/20 rounded-md px-4 py-4 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-ink shadow-inner transition-all text-center">
+                            <!-- 將 button 改為 type="submit"，並移除原來的 onclick -->
+                            <button type="submit" id="l5-check-confirm-btn" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em]">確認</button>
+                        </form>
                     </div>
                 </div>
 
-                <!-- LEVEL 5: 群星之夜 QA測驗 (修改：移除子頁面、增加人物照、修改歌詞) -->
+                <!-- LEVEL 5: 群星之夜 測驗題 -->
                 <div id="screen-level-5" class="screen-panel hidden p-6 flex flex-col space-y-6">
                     <div class="level-card p-6 flex-1 flex flex-col relative">
                         <div class="text-center mb-6 shrink-0 relative flex justify-between items-center border-b border-dashed border-ink/30 pb-4">
-                            <button onclick="prevL5Question()" class="btn-base bg-paper shadow-retro-sm w-9 h-9 flex items-center justify-center rounded text-ink" id="btn-l5-prev"><i class="fa-solid fa-chevron-left"></i></button>
-                            <span class="px-5 py-2 bg-paper-dark border border-ink/10 rounded-md text-sm font-black text-ink mx-auto tracking-widest font-mono" id="l5-q-counter">群星挑戰 1 / 4</span>
+                            <span class="px-5 py-2 bg-ink/5 border border-ink/10 rounded-md text-sm font-black text-ink mx-auto tracking-widest font-mono" id="l5-q-counter">群星挑戰 1 / 4</span>
                         </div>
                         
-                        <!-- 歌詞對話框排版 -->
                         <div class="flex-1 flex flex-col items-center justify-center mt-2 relative">
-                            <!-- 修改：人物照片圓框，重疊在對話框上方 -->
                             <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-paper shadow-[0_8px_16px_rgba(0,0,0,0.2)] z-10 -mb-12 bg-white flex items-center justify-center">
                                 <img id="l5-char-img" src="" class="max-w-full max-h-full object-cover">
                             </div>
-                            <!-- 對話框本體 -->
                             <div class="bg-paper-dark p-6 rounded-lg border border-ink/10 w-full pt-16 shadow-inner text-center">
                                 <p id="l5-question-text" class="text-base font-bold text-ink leading-[1.8] font-serif whitespace-pre-line text-justify"></p>
                             </div>
                         </div>
                         
-                        <!-- 選項容器 -->
-                        <div id="l5-options-container" class="mt-8 space-y-4 shrink-0 flex flex-col pb-2">
-                            <!-- 由 JS 生成 -->
-                        </div>
+                        <div id="l5-options-container" class="mt-8 space-y-4 shrink-0 flex flex-col pb-2"></div>
                     </div>
                 </div>
 
-                <!-- LEVEL 6: 時光膠囊 (保留結構) -->
+                <!-- LEVEL 6: 時光膠囊 -->
                 <div id="screen-level-6" class="screen-panel hidden p-6 flex flex-col">
                     <div id="l6-p1" class="level-card p-8 flex flex-col justify-center min-h-full">
                         <div class="text-base leading-[2] font-bold text-ink text-justify flex-1 font-serif flex flex-col justify-center">
                             <h2 class="text-2xl font-black text-primary mb-8 text-center border-b border-dashed border-ink/20 pb-4 tracking-widest">時光膠囊</h2>
                             <p>這裡曾是充滿人情味與時代記憶的眷村。在物資缺乏的年代裡，空氣中總是飄著淡淡的花香，街頭巷尾也流淌著動人的歌聲。</p>
                             <div class="text-center my-6 text-ink/30 tracking-[0.5em] text-sm">··· ✦ ···</div>
-                            <p>今天，我們將跟著老居民奶奶的腳步，打開珍藏多年的木盒，一起找回三重過去被遺忘的產業與溫暖回回忆。</p>
+                            <p>今天，我們將跟著老居民奶奶的腳步，打開珍藏多年的木盒，一起找回三重過去被遺忘的產業與溫暖回憶。</p>
                         </div>
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(6, 1, 2)">認識角色</button>
                     </div>
@@ -925,53 +861,31 @@
                     </div>
                 </div>
 
-                <!-- LEVEL 7: 最終地點 (市集攤位) (修改：移除全螢幕卡片，改為子頁面模式，增加經緯度) -->
-                <div id="screen-level-7" class="screen-panel hidden p-6 flex flex-col final-screen-bg">
-                    <div class="flex items-center mb-6 shrink-0 text-gold">
-                        <button onclick="showScreen('main')" class="btn-base bg-l7-bg border border-gold/30 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-gold"><i class="fa-solid fa-chevron-left"></i></button>
-                        <h2 class="flex-1 text-center font-black text-gold text-2xl pr-10 font-serif tracking-[0.15em]">最終地點：眷村市集</h2>
-                    </div>
-                    
-                    <div class="level-card l7 p-8 flex-1 flex flex-col justify-between items-center text-center backdrop-blur-sm relative border border-gold/30">
-                        <div class="flex-1 flex flex-col items-center justify-center">
-                            <i class="fa-solid fa-map-location-dot text-6xl text-gold mb-8 opacity-80 drop-shadow-[0_0_15px_rgba(221,191,146,0.4)]"></i>
-                            <p class="text-base font-bold text-gold/90 leading-[2.2] font-serif mb-6 text-justify px-2">
-                                您已成功收集所有碎片！<br>
-                                指揮所偵測到終點座標為：<br>
-                                <span class="font-mono text-xs bg-l7-bg px-3 py-1.5 rounded-md border border-gold/20 tracking-wider">北緯 25.057678, 東經 121.499645</span><br>
-                                請在現場就位後，按下按鈕開啟最後的信件。
-                            </p>
-                            <!-- 新增 Google Map 連結按鈕 -->
-                            <button onclick="window.open('https://www.google.com/maps/search/?api=1&query=25.057678,121.499645')" class="btn-base w-full py-4 bg-l7-bg border border-gold/30 text-gold font-bold text-base tracking-wide mb-8 shadow-inner flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-location-arrow"></i>開啟 Google 地圖導航📍
-                            </button>
-                        </div>
-                        
-                        <div class="mt-auto w-full flex flex-col pt-8 border-t border-dashed border-gold/20">
-                            <!-- 新增 密碼輸入框 -->
-                            <p class="text-sm font-black text-amber-300 tracking-wider mb-3 font-serif">請從 NPC 處獲得最終密碼：</p>
-                            <input type="text" id="final-location-password" placeholder="輸入最終密碼 (例: NTPC...)" class="w-full bg-l7-bg border border-gold/20 rounded-md px-4 py-4 text-base font-bold outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 text-l7-text shadow-inner text-center mb-5">
-                            <button id="btn-final-剧情" class="btn-base w-full py-5 bg-gold text-ink font-black text-xl tracking-[0.2em] shadow-[0_0_25px_rgba(221,191,146,0.3)] transition-transform active:scale-95 disabled:opacity-50">
-                                <i class="fa-solid fa-feather-pointed mr-2"></i>開啟最終劇情
-                            </button>
-                        </div>
+                <!-- LEVEL 7: 最終地點 -->
+                <div id="screen-level-7" class="screen-panel hidden p-6 flex flex-col">
+                    <div class="level-card l7 p-8 flex-1 flex flex-col justify-center items-center text-center bg-black/40 backdrop-blur-sm relative border border-gold/30">
+                        <i class="fa-solid fa-envelope-open-text text-6xl text-gold mb-6 opacity-80 drop-shadow-[0_0_15px_rgba(221,191,146,0.4)]"></i>
+                        <h2 class="text-3xl font-black text-gold mb-4 font-serif tracking-widest">最終地點抵達</h2>
+                        <p class="text-base font-bold text-gold/90 leading-[2] font-serif mb-8 text-center">
+                            漫長的搜集已抵達終點，<br>請在現場就位後，按下按鈕開啟最後的信件。
+                        </p>
+                        <button class="btn-base w-full py-5 bg-gold text-ink font-black text-xl tracking-[0.2em] shadow-[0_0_25px_rgba(221,191,146,0.3)] transition-transform active:scale-95" onclick="handleLevelSuccess(7)">
+                            <i class="fa-solid fa-feather-pointed mr-2"></i>開啟最終劇情
+                        </button>
                     </div>
                 </div>
 
-                <!-- SCREEN: FINAL CERTIFICATE (結案憑證) (修改：標題與日期) -->
+                <!-- SCREEN: FINAL CERTIFICATE -->
                 <div id="screen-certificate" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 text-center shadow-2xl border-[4px] border-primary rounded-xl">
                         <div class="text-6xl text-primary mb-6 drop-shadow-sm transform hover:scale-105 transition-transform"><i class="fa-solid fa-award"></i></div>
-                        <!-- 修改標題：關卡六 結案 -->
-                        <h2 class="text-3xl font-black text-ink tracking-[0.2em] mb-6 border-b border-dashed border-ink/20 pb-4 font-serif">關卡六 結案</h2>
+                        <h2 class="text-3xl font-black text-ink tracking-[0.2em] mb-6 border-b border-dashed border-ink/20 pb-4 font-serif">結案憑證</h2>
 
                         <div class="bg-paper p-5 rounded-lg border border-ink/10 text-sm font-bold space-y-4 mb-8 text-left shadow-sm">
                             <div class="flex justify-between text-ink/70 border-b border-ink/5 pb-2"><span>時空座標：</span><span class="text-primary font-black tracking-widest">三重空軍一村</span></div>
                             <div class="flex justify-between text-ink/70 border-b border-ink/5 pb-2 items-center"><span>任務狀態：</span><span id="cert-status" class="text-emerald-700 font-black text-right"></span></div>
                             <div class="flex justify-between text-ink/70 border-b border-ink/5 pb-2 items-center"><span>總耗費時間：</span><span id="cert-time" class="text-primary font-mono font-black text-right"></span></div>
                             <div class="flex justify-between text-ink/70 items-center pt-2"><span>結案評定：</span><span id="cert-rank" class="text-2xl font-black text-primary text-right font-serif tracking-widest"></span></div>
-                            <!-- 修改日期：1960.01.01 -->
-                            <div class="flex justify-between text-ink/70 items-center pt-2 border-t border-ink/5"><span>認證日期：</span><span class="text-primary font-bold text-right">1960.01.01</span></div>
                         </div>
 
                         <div id="cert-msg" class="text-base font-bold text-ink leading-[1.8] mb-8 text-justify font-serif"></div>
@@ -1068,7 +982,7 @@
             </div>
         </div>
 
-        <!-- MODAL: IMAGE LIGHTBOX (保留) -->
+        <!-- MODAL: IMAGE LIGHTBOX -->
         <div id="modal-image-lightbox" class="fixed inset-0 bg-ink/90 backdrop-blur-md z-[1020] flex items-center justify-center p-4 hidden transition-opacity duration-300" onclick="closeImageLightbox()">
             <div class="relative max-w-full max-h-full flex flex-col items-center" onclick="event.stopPropagation()">
                 <button onclick="closeImageLightbox()" class="absolute -top-12 right-0 text-white/70 hover:text-white text-2xl w-10 h-10 flex items-center justify-center bg-white/10 rounded-full active:scale-95 transition-transform">
@@ -1089,8 +1003,7 @@
         const GAME_DATA = {
             levels: [
                 { id: 1, name: '防砲陣地' }, { id: 2, name: '眷村空間與建築' }, { id: 3, name: '村長的家' },
-                { id: 4, name: '榕樹廣場' }, { id: 5, name: '群星之夜' }, { id: 6, name: '時光膠囊' }, 
-                { id: 7, name: '最終地點：眷村市集' } // 修改 Level 7 名稱
+                { id: 4, name: '榕樹廣場' }, { id: 5, name: '群星之夜' }, { id: 6, name: '時光膠囊' }, { id: 7, name: '市集攤位' }
             ],
             level1: {
                 locations: [
@@ -1102,31 +1015,24 @@
                 passcode: "1945"
             },
             level2: {
-                // 修改：L2 測驗 1 更換圖片、加粗文字、增加選項
                 questions: [
                     { 
-                        image: "images/l2地圖_new.jpg", // 更換為 Image 3 的地圖
+                        image: "images/l2地圖.jpg", 
                         photoImage: null, 
-                        // 修改：加粗「特級眷村」
-                        q: "空軍一村依據軍階與家庭成員分配房舍，這是一村的建築配置圖請對照地圖找到<span><b>特級眷村</b></span>觀察高階軍官的家擁有哪一個最明顯的建築特征?", 
+                        q: "空軍一村依據軍階與家庭成員分配房舍，這是一村的建築配置圖請對照地圖找到<span><b>特級眷舍</b></span>觀察高階軍官的家擁有哪一個最明顯的建築特征?", 
                         isMultiChoice: false,
-                        // 修改：增加「紅磚牆」選項
                         opts: [
                             "整排的連棟小屋", "紅色大門", "洗石子外牆", "紅磚牆"
                         ], 
-                        // 修改：正確答案索引
                         a: 3, 
                         photo: true, 
                         photoText: "請隊員們一起與特級眷舍的任一個特徵並拍照吧！", 
-                        // 修改：說明文字
                         desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門。" 
                     },
                     { 
-                        // 修改：此題使用門牌照片 (images/門牌.jpg) 作為題目配圖，且在 render 時強制排在文字上方
-                        image: "images/l2_doorplate.jpg", // 使用門牌與照片集合圖
-                        q: "", // 文字將在 renderL2 中組合
+                        images: [], 
+                        q: "請找尋這個門牌的所在位置，並觀察旁邊的說明牌\n\n糟了！這張線索遺失了重要資訊，請幫忙填起\n\n(填空題)", 
                         inputType: "text",
-                        // 修改：填空答案和說明
                         answers: ["乙", "中校", "淡水河洪患", "防洪樓"], 
                         opts: [], 
                         a: null,
@@ -1165,7 +1071,6 @@
                 ]
             },
             level3: {
-                // QA retain the structure
                 questions: [
                     {
                         q: "請問語音中提到的料理是哪一道？",
@@ -1177,81 +1082,184 @@
                         ],
                         a: 1
                     },
-                    // ... other 4 questions
+                    {
+                        q: "請問語音中提到的料理是哪一道？",
+                        opts: [
+                            { text: "酸菜魚", img: "images/酸菜魚.jpg", desc: "酸爽開胃，魚片滑嫩，非常下飯。" },
+                            { text: "剁椒魚頭", img: "images/剁椒魚頭.jpg", desc: "剁椒魚頭搭配辛辣剁椒蒸製，展現湘菜鮮、辣、厚重特色。" },
+                            { text: "清蒸鱸魚", img: "images/清蒸鱸魚.jpg", desc: "保留魚肉最原始的鮮甜，清淡卻回味無窮。" },
+                            { text: "糖醋魚", img: "images/糖醋魚.jpg", desc: "外酥內嫩，酸甜可口，老少咸宜。" }
+                        ],
+                        a: 1
+                    },
+                    {
+                        q: "請問語音中提到的料理是哪一道？",
+                        opts: [
+                            { text: "安徽板麵", img: "images/安徽板麵.jpg", desc: "安徽板麵以彈牙麵條搭配香辣醬汁，是充滿鄉土特色的北方風味。" },
+                            { text: "蘭州拉麵", img: "images/蘭州拉麵.jpg", desc: "湯清肉爛麵細，有著濃郁的西北風情。" },
+                            { text: "刀削麵", img: "images/刀削麵.jpg", desc: "麵條外滑內筋，軟而不粘，越嚼越香。" },
+                            { text: "牛肉麵", img: "images/牛肉麵.jpg", desc: "台灣眷村最具代表性的麵食，紅燒湯頭醇厚。" }
+                        ],
+                        a: 0
+                    },
+                    {
+                        q: "請問語音中提到的料理是哪一道？",
+                        opts: [
+                            { text: "打滷麵", img: "images/打滷麵.jpg", desc: "豐富配料勾芡成濃郁滷汁，拌麵極佳。" },
+                            { text: "擔擔麵", img: "images/擔擔麵.jpg", desc: "細滑麵條裹著香濃麻醬與紅油，香氣撲鼻。" },
+                            { text: "炸醬麵", img: "images/炸醬麵.jpg", desc: "炸醬麵濃郁鹹香，以豆瓣醬與肉末慢炒，代表北方家常麵食。" },
+                            { text: "蔥油拌麵", img: "images/蔥油拌麵.jpg", desc: "簡單蔥油帶來極致鮮香，令人食指大動。" }
+                        ],
+                        a: 2
+                    },
+                    {
+                        q: "請問語音中提到的料理是哪一道？",
+                        opts: [
+                            { text: "山東煎餅", img: "images/山東煎餅.jpg", desc: "餅皮薄脆，夾入大蔥與甜麵醬，充滿嚼勁。" },
+                            { text: "韭菜盒子", img: "images/韭菜盒子.jpg", desc: "金黃酥脆的韭菜盒子包入冬粉、雞蛋與蝦米，是鄰里分享的溫暖點心。" },
+                            { text: "蔥油餅", img: "images/蔥油餅.jpg", desc: "層次分明，蔥香濃郁，是眷村常見小吃。" },
+                            { text: "牛肉餡餅", img: "images/牛肉餡餅.jpg", desc: "皮薄餡多，咬下滿滿的鮮甜肉汁。" }
+                        ],
+                        a: 1
+                    }
                 ],
-                // audios retain structure
+                audios: [
+                    "images/images_1_sichuan.mp3", "images/images_2_hunan.mp3", "images/images_3_anhui.mp3", "images/images_4_beijing.mp3", "images/images_5_shandong.mp3"
+                ]
             },
             level4: {
-                // ... same
+                q1: { text: "1. 眷村婦女縫製衣服與裁縫的核心工具：", opts: [{t:"老式黑膠唱片機", c:false}, {t:"勝家腳踏縫紉機", c:true}, {t:"煤油爐", c:false}] },
+                q2: { text: "2. 昔日眷村居民領取生活主食憑證：", opts: [{t:"戰備電影票", c:false}, {t:"米糧油鹽配給證", c:true}, {t:"郵政儲蓄存折", c:false}] }
             },
             level5: {
-                passcode: "1962", // 保留數字密碼作為內部驗證
-                arrivalPassword: "外婆橋", // 修改：L5 到達驗證歌詞
-                // 修改：L5 所有題目增加 characterImg，更正歌詞
+                passcode: "1962",
                 questions: [
                     {
-                        // 新增：人物照路徑
-                        characterImg: "images/char_pan.png", 
-                        q: "晚風輕拂澎湖灣，白浪逐沙灘，沒有椰林綴斜陽，只是一片海藍藍\n坐在＊＊＊＊＊＊\n一遍遍＊＊", // 修改：更正歌詞
+                        characterImg: "images/潘安邦.png",
+                        q: "晚風輕拂澎湖灣，白浪逐沙灘，沒有椰林綴斜陽，只是一片海藍藍\n坐在＊＊＊＊＊＊\n一遍遍＊＊",
                         a: "矮牆"
                     },
                     {
-                        characterImg: "images/char_deng.png", 
+                        characterImg: "images/鄧麗君.png",
                         q: "輕輕的一個吻，已經打動我的心，深深的一段情，教我思念到如今，你問我愛你有多深\n＊＊＊＊＊＊",
                         a: "月亮"
                     },
                     {
-                        characterImg: "images/char_zi.png", 
+                        characterImg: "images/紫薇.png",
                         q: "這綠島像一隻船，在月夜裡搖啊搖情郎呀，你也在我的心海裡飄呀飄\n讓我的＊＊ 隨那＊＊\n吹開了你的＊＊",
                         a: "歌聲"
                     },
                     {
-                        characterImg: "images/char_luo.png", 
-                        q: "黑板上老師的粉筆，還在拚命嘰嘰喳喳寫個不停，\n等待著＊＊\n等待著＊＊\n等待＊＊＊＊＊", // 修改：更正歌詞
+                        characterImg: "images/羅大佑.png",
+                        q: "黑板上老師的粉筆，還在拚命嘰嘰喳喳寫個不停，\n等待著＊＊\n等待著＊＊\n等待＊＊＊＊＊",
                         a: "下課"
                     }
                 ]
             },
             level6: {
-                // ... same
+                songs: [
+                    { title: "《安童哥買菜》", lyric: "蹌蹌行伊都蹌蹌去\n安童哥仔囉 我一時有仔主意 蹌蹌行伊都蹌蹌去\n上街到菜市 彼囉菜籃叮仔噹耳奧\n安童哥仔囉 雙腳行入到菜市 擱開嘴叫一聲(頭家仔) 目睭十十睨\n東平看過來又擱西平看過去 舉一目 哎喲看一見\n彼囉肥豬肉肥志 哎喲瘦的紅記記", audio: "images/劉福助.mp3", desc: "劉福助｜曲風活潑、充滿市井生活感。" },
+                    { title: "《相思河畔》", lyric: "自從相思河畔別了你\n無限的痛苦埋在心窩裡\n我要輕輕的告訴你 不要把我忘記\n秋風無情 為什麼吹落了丹楓\n青春尚在 為什麼毀褪了殘紅\n啊 人生本是夢", audio: "images/相思河畔.mp3", desc: "吳靜嫻｜氣氛浪漫、充滿深情復古情懷。" },
+                    { title: "《鄉間的小路》", lyric: "走在鄉間的小路上 暮歸的老牛是我同伴\n藍天配朵夕陽在胸膛\n繽紛的雲彩是晚霞的衣裳\n荷把鋤頭在肩上 牧童的歌聲在盪漾\n喔～喔～他們唱\n還有一隻短笛隱約在吹響\n笑意寫在臉上 哼一曲鄉居小唱\n任思緒在晚風中飛揚", audio: "images/葉佳修.mp3", desc: "葉佳修｜民歌時代的純樸與清新。" }
+                ]
             },
-            // 修改：Level 7 相關資料移至此處，整合進 GAME_DATA
-            level7: {
-                coordinates: { lat: 25.057678, lng: 121.499645 },
-                finalPassword: "TAG106" // 新增：最終地點確認密碼
-            },
-            // retain certificate background replace
-
+            puzzles: [
+                { id: 1, class: 'piece-1', text: '阿秀，拍勢啦<br>我可能沒辦法遵守回家的約定了。' },
+                { id: 2, class: 'piece-2', text: '每次走到巷口，聞到那個味道，<br>我就知道，我到家了。' },
+                { id: 3, class: 'piece-3', text: '我總想著，等一切結束，<br>要陪你慢慢吃一輩子的飯。' },
+                { id: 4, class: 'piece-4', text: '答應我，你要好好生活，<br>替我多看看我們的家。' },
+                { id: 5, class: 'piece-5', text: '別難過，因為不管我飛得多遠，<br>我從來沒有忘記回家的方向。' },
+                { id: 6, class: 'piece-6', text: '阿秀，我永遠愛你。' },
+                { id: 7, class: 'piece-7', text: '「半世戎馬，一生清風」<br>—— 永遠想回家的志遠' }
+            ],
             preloadImages: [
                 "images/歲月書屋.jpg",
-                "images/l2_doorplate.jpg", // L2 Quiz 2 配圖
-                "images/l2_quiz2_explain.jpg", // L2 Quiz 2 解說牌配圖
-                "images/l2地圖_new.jpg", // L2 測驗 1 更換圖片
-                // images/歲月書屋.jpg (L1 提示)
-                "images/l3_mural.jpg", // L3 Intro Mural
-                "images/l3_vegetables.jpg", // L3 Intro Vegetables
+                "images/l2_map.jpg",
+                "images/l2地圖.jpg",
+                "images/門牌.jpg",
+                "images/說明牌.jpg",
+                "images/一線天.jpg",
+                "images/S__10690579_0.jpg",
+                "images/麻婆豆腐.jpg",
+                "images/回鍋肉.jpg",
+                "images/水煮魚.jpg",
+                "images/宮保雞丁.jpg",
+                "images/酸菜魚.jpg",
+                "images/剁椒魚頭.jpg",
+                "images/清蒸鱸魚.jpg",
+                "images/糖醋魚.jpg",
+                "images/安徽板麵.jpg",
+                "images/蘭州拉麵.jpg",
+                "images/刀削麵.jpg",
+                "images/牛肉麵.jpg",
+                "images/打滷麵.jpg",
+                "images/擔擔麵.jpg",
+                "images/炸醬麵.jpg",
+                "images/蔥油拌麵.jpg",
+                "images/山東煎餅.jpg",
+                "images/韭菜盒子.jpg",
+                "images/蔥油餅.jpg",
+                "images/牛肉餡餅.jpg",
                 "images/人物照_0.png",
                 "images/周昀萱_0.jpg",
-                // L5 character photos
-                "images/char_pan.png", "images/char_deng.png", "images/char_zi.png", "images/char_luo.png",
-                // audios L3 and L6
-                "images/劉福助.mp3", "images/相思河畔.mp3", "images/鄉間的小路.mp3",
-                "images/images_1_sichuan.mp3", "images/images_2_hunan.mp3", "images/images_3_anhui.mp3", "images/images_4_beijing.mp3", "images/images_5_shandong.mp3"
+                "images/l5-1.jpg",
+                "images/l5-2.jpg",
+                "images/l5-3.jpg",
+                "images/l5-4.jpg",
+                "images/l5-5.jpg",
+                "images/紫薇.png",
+                "images/潘安邦.png",
+                "images/鄧麗君.png",
+                "images/羅大佑.png",
+                "images/秀英花.jpg",
+                "images/茉莉.png",
+                "images/桂花.png",
+                "images/梔子花.jpg",
+                "images/玫瑰.jpg",
+                "images/玉蘭花.jpg",
+                "images/111.jpg",
+                "images/林志遠.jpg",
+                "images/阿秀.jpg",
+                "images/小助手.jpg",
+                "images/主視覺1.jpg",
+                "images/主視覺2.jpg",
+                "images/l3_mural.jpg",
+                "images/l3_vegetables.jpg",
+                "images/公園.jpg"
             ]
+        };
+
+        window.openImageLightbox = function(src) {
+            if (!src) return;
+            playBeep(650, 0.05);
+            const modal = document.getElementById('modal-image-lightbox');
+            const imgEl = document.getElementById('image-lightbox-src');
+            if (modal && imgEl) {
+                imgEl.classList.remove('loaded');
+                imgEl.onload = () => imgEl.classList.add('loaded');
+                imgEl.src = src;
+                // 刪除這一行：if (imgEl.complete) imgEl.classList.add('loaded');
+                modal.classList.remove('hidden');
+            }
+        };
+        
+        window.closeImageLightbox = function() {
+            playBeep(400, 0.05);
+            const modal = document.getElementById('modal-image-lightbox');
+            if (modal) modal.classList.add('hidden');
         };
 
         const GameState = (function() {
             const STORAGE_KEY = 'sanchong_game_state_v20_retro';
             let state = {
-                teamName: null, startLevel: 1, customSequence: [1, 2, 3, 4, 5, 6, 7], // 保留預設，可由 code verify 修改
+                teamName: null, startLevel: 6, customSequence: [6, 1, 4, 2, 5, 3, 7],
                 startTime: null, endTime: null, stamps: [false, false, false, false, false, false, false],
                 currentStageIndex: 0, soundEnabled: true,
                 l1Input: [], l1Collected: [false, false, false, false], l1Errors: 0,
                 l2Photos: [false, false, false, false, false], 
-                l2Answered: [false, false, false, false, false], // 新增：L2 題目是否已回答文字
+                l2Answered: [false, false, false, false, false],
                 l2CurrentQ: 0,
-                l3PhotoDone: false, l3CurrentQ: 0, l3IntroSeen: false, // L3 Intro Seen
-                l5ArrivalVerified: false, l5CurrentQ: 0, // L5 Arrival Status
+                l3PhotoDone: false, l3CurrentQ: 0, l5Input: [], l5Errors: 0, l5CurrentQ: 0
             };
             function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
             return {
@@ -1278,7 +1286,12 @@
         }
 
         const firebaseConfig = {
-            // apiKey: "...", projectId: "...", storageBucket: "..." // Firebase Config 保留
+            apiKey: "AIzaSyCxIinbYw3OhJhKksVHsqPaYCv0-fLUR3s",
+            authDomain: "weee-57379.firebaseapp.com",
+            projectId: "weee-57379",
+            storageBucket: "weee-57379.firebasestorage.app",
+            messagingSenderId: "26784647",
+            appId: "1:26784647:web:e3c682e0915fe43ddf5922"
         };
         
         let db = null;
@@ -1315,551 +1328,1279 @@
                         const icon = document.getElementById('sound-icon');
                         if (icon && !GameState.get('soundEnabled')) {
                             icon.className = "fa-solid fa-volume-xmark text-gold/50 text-lg";
-                            }
-                            updatePuzzleTextUI();
-                            showScreen('main');
-                        } else {
-                            showScreen('entry');
                         }
-                    } catch (e) {
-                        showScreen('entry'); // 發生錯誤則回到首頁
+                    
+                        if (GameState.get('timeExpiredHandled')) {
+                            const navBar = document.getElementById('bottom-nav-bar');
+                            if (navBar) navBar.classList.add('hidden');
+                            showScreen('level-7');
+                        } else if (GameState.get('stamps').filter(Boolean).length === 7) {
+                            showScreen('certificate');
+                        } else {
+                            showScreen('main');
+                        }
+                    } else {
+                        showScreen('entry');
                     }
-                };
-            
-                if (images.length === 0) {
-                    finishLoading();
-                    return;
+                } catch (err) {
+                    showScreen('entry');
                 }
-            
-                images.forEach((src) => {
+            };
+        
+            const forceTimeout = setTimeout(finishLoading, 2000);
+            if (images.length === 0) {
+                clearTimeout(forceTimeout);
+                finishLoading();
+            } else {
+                images.forEach(src => {
                     const img = new Image();
-                    const completeOne = () => {
+                    img.onload = img.onerror = () => {
                         loaded++;
-                        if (progressEl) progressEl.innerText = `${Math.floor((loaded / images.length) * 100)}%`;
-                        if (loaded === images.length) finishLoading();
+                        const pct = Math.floor((loaded / images.length) * 100);
+                        if (progressEl) progressEl.textContent = `${pct}%`;
+                        if (loaded >= images.length) {
+                            clearTimeout(forceTimeout);
+                            finishLoading();
+                        }
                     };
-                    img.onload = completeOne;
-                    img.onerror = completeOne; // 即使圖片加載失敗也繼續，避免卡住
                     img.src = src;
                 });
-            
-                // 安全備案：5秒後若未加載完成亦強制進入遊戲
-                setTimeout(finishLoading, 5000);
             }
+        }
+        
+        if (document.readyState === 'complete') startAppLifecycle();
+        else window.addEventListener('DOMContentLoaded', startAppLifecycle);
 
         // ==========================================
-        // UI & Screen 導覽核心
+        // 核心功能 (Utils)
         // ==========================================
-        function showScreen(screenId) {
-            const viewport = document.getElementById('game-viewport');
-            const targetScreen = document.getElementById(`screen-${screenId}`);
-            if (!targetScreen || targetScreen.classList.contains('screen-active')) return;
-
-            // 如果有播放中的音樂 (Level 6)，切換頁面時停止
-            stopL6Audio();
-
-            // 如果需要特定功能的初始化 (原本 L3 是在這裡 call renderL3，現在要拆分)
-            if (screenId === 'l3-intro' && !GameState.get('l3IntroSeen')) {
-                // 如果是 L3 Intro 頁，不需要特別重渲染 QA，只是顯示 Intro
+        window.showAlert = function(title, desc, iconClass = "", colorClass = "text-primary", callback = null, btnText = "確認", autoCloseDelay = 0, showCancel = false) {
+            document.getElementById('alert-title').textContent = title;
+            document.getElementById('alert-desc').innerHTML = desc;
+            const iconEl = document.getElementById('alert-icon');
+            if (iconClass) { 
+                iconEl.innerHTML = `<i class="fa-solid ${iconClass}"></i>`; 
+                iconEl.className = `text-4xl ${colorClass} shrink-0 mb-3 drop-shadow-sm`; 
+                iconEl.style.display = 'block'; 
+            } else { 
+                iconEl.style.display = 'none'; 
             }
 
-            // 特殊頁面處理 (Level 5 歌詞挑戰)
-            if (screenId === 'level-5') {
-                renderL5(GameState.get('l5CurrentQ') || 0);
+            const btn = document.getElementById('alert-btn');
+            const cancelBtn = document.getElementById('alert-cancel-btn');
+            const btnContainer = document.getElementById('alert-btn-container');
+
+            if (btnText === false) {
+                btnContainer.classList.add('hidden');
+            } else {
+                btnContainer.classList.remove('hidden');
+                btn.textContent = btnText;
+                if (showCancel) {
+                    cancelBtn.classList.remove('hidden');
+                    btnContainer.className = "pt-6 shrink-0 grid grid-cols-2 gap-3";
+                } else {
+                    cancelBtn.classList.add('hidden');
+                    btnContainer.className = "pt-6 shrink-0";
+                }
+
+                btn.onclick = () => {
+                    playBeep(400, 0.05); 
+                    closeModalAnim('modal-alert', 'alert-box', callback);
+                };
+                cancelBtn.onclick = () => {
+                    playBeep(300, 0.05);
+                    closeModalAnim('modal-alert', 'alert-box');
+                };
             }
 
-            // 更新頁面標題與 UI
-            updateHeaderUI(screenId);
-
-            // 轉場動畫邏輯
-            const activeScreens = document.querySelectorAll('.screen-panel.screen-active');
-            activeScreens.forEach(s => {
-                s.classList.remove('screen-active');
-                s.classList.add('screen-exit');
-                setTimeout(() => s.classList.add('hidden'), 400); // 配合 CSS transtion 時間
-            });
-
-            targetScreen.classList.remove('hidden', 'screen-enter', 'screen-exit');
+            const modal = document.getElementById('modal-alert');
+            const box = document.getElementById('alert-box');
+            modal.classList.remove('hidden');
             setTimeout(() => {
-                targetScreen.classList.add('screen-active');
-                if (screenId !== 'entry' && screenId !== 'intro-chars' && screenId !== 'intro-story' && screenId !== 'story' && screenId !== 'tutorial' && screenId !== 'level-select') {
-                    // 顯示導覽列 (只在 entry 相關頁面隱藏)
-                    document.getElementById('bottom-nav-bar').style.display = 'flex';
-                } else {
-                    document.getElementById('bottom-nav-bar').style.display = 'none';
+                box.classList.remove('scale-95', 'opacity-0');
+                box.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            if (autoCloseDelay > 0) {
+                setTimeout(() => closeModalAnim('modal-alert', 'alert-box', callback), autoCloseDelay);
+            }
+        };
+
+        function closeModalAnim(modalId, boxId, callback = null) {
+            const modal = document.getElementById(modalId);
+            const box = document.getElementById(boxId);
+            if (box) {
+                if (modalId === 'modal-stamps') box.classList.add('translate-y-full');
+                else {
+                    box.classList.remove('scale-100', 'opacity-100');
+                    box.classList.add('scale-95', 'opacity-0');
                 }
-            }, 50);
-
-            // 頁面特定邏輯 (Level 7 Google Map 按鈕隱藏與否，這部分舊版代碼沒有，若有需要需補上)
-
-            // 自動滾動到頂部
-            if (viewport) viewport.scrollTop = 0;
-        }
-
-        function updateHeaderUI(screenId) {
-            const levelNum = screenId.includes('level-') ? parseInt(screenId.split('-')[2]) : null;
-            const titleEl = document.getElementById('header-level-title');
-            
-            if (levelNum) {
-                const levelData = GAME_DATA.levels.find(l => l.id === levelNum);
-                titleEl.innerText = (levelNum === 7) ? "最終地點" : `第 ${levelNum} 關`;
-                titleEl.classList.add('text-gold');
-            } else if (screenId === 'l3-intro') {
-                 titleEl.innerText = "第 3 關 前導";
-                 titleEl.classList.add('text-gold');
-            } else if (screenId === 'main') {
-                titleEl.innerText = "任務總部";
-                titleEl.classList.remove('text-gold');
-            } else if (screenId === 'entry' || screenId === 'intro-chars' || screenId === 'intro-story' || screenId === 'story' || screenId === 'tutorial' || screenId === 'level-select') {
-                titleEl.innerText = "授權啟動";
-                titleEl.classList.remove('text-gold');
-            } else if (screenId === 'certificate') {
-                titleEl.innerText = "任務結案";
-                titleEl.classList.remove('text-gold');
             }
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                if (callback) callback();
+            }, 300);
         }
 
-        function updatePuzzleTextUI() {
-            const stamps = GameState.get('stamps') || [false, false, false, false, false, false, false];
-            const collectedCount = stamps.filter(Boolean).length;
-            const textEl = document.getElementById('header-puzzle-text');
-            if (textEl) textEl.innerText = `${collectedCount}/7`;
+        window.openStampsDrawer = function() {
+            playBeep();
+            renderPuzzlePieces('puzzle-drawer-board', false);
+            const letterBtnContainer = document.getElementById('full-letter-btn-container');
+            if (GameState.get('stamps')[6]) letterBtnContainer.classList.remove('hidden');
+            else letterBtnContainer.classList.add('hidden');
+        
+            const modal = document.getElementById('modal-stamps');
+            const box = document.getElementById('stamps-box');
+            modal.classList.remove('hidden');
+            box.classList.remove('opacity-0', 'scale-95');
+            setTimeout(() => box.classList.remove('translate-y-full'), 10);
+        };
+
+        if (document.getElementById('close-stamps')) {
+            document.getElementById('close-stamps').onclick = () => {
+                playBeep();
+                closeModalAnim('modal-stamps', 'stamps-box');
+            };
         }
 
-        function transitionSubPage(level, fromPageNum, toPageNum) {
-            const viewport = document.getElementById('game-viewport');
-            const fromPage = document.getElementById(`l${level}-p${fromPageNum}`);
-            const toPage = document.getElementById(`l${level}-p${toPageNum}`);
+        window.openFullLetter = function() {
+            playBeep();
+            closeModalAnim('modal-stamps', 'stamps-box');
+            const modal = document.getElementById('modal-full-letter');
+            const box = document.getElementById('letter-box');
+            modal.classList.remove('hidden');
             
-            if (fromPage) fromPage.classList.add('hidden');
-            if (toPage) {
-                toPage.classList.remove('hidden');
-                // 如果是去 Level 1 的巡查牆，重新載入進度
-                if (level === 1 && toPageNum === 2) renderL1Locations();
+            const board = document.getElementById('full-letter-board');
+            if (board) {
+                board.style.aspectRatio = 'auto';
+                board.innerHTML = `<img src="images/111.jpg" alt="跨越時空的信" class="w-full h-auto object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)] rounded">`;
             }
-            if (viewport) viewport.scrollTop = 0;
+            setTimeout(() => {
+                box.classList.remove('scale-95', 'opacity-0');
+                box.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        };
+
+        window.closeFullLetter = function() {
+            playBeep();
+            closeModalAnim('modal-full-letter', 'letter-box', () => {
+                if (GameState.get('stamps').filter(Boolean).length === 7) showScreen('certificate');
+            });
+        };
+
+        window.openPuzzleLightbox = function(textHtml) {
+            const content = document.getElementById('puzzle-lightbox-content');
+            if (content) content.innerHTML = textHtml;
+            const modal = document.getElementById('modal-puzzle-lightbox');
+            const box = document.getElementById('lightbox-box');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                box.classList.remove('scale-95', 'opacity-0');
+                box.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        };
+
+        window.closePuzzleLightbox = function() {
+            playBeep(400, 0.05);
+            closeModalAnim('modal-puzzle-lightbox', 'lightbox-box');
+        };
+
+        function compressImageFast(file, maxWidth, quality, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const scale = Math.min(1, maxWidth / img.width);
+                    canvas.width = Math.round(img.width * scale);
+                    canvas.height = Math.round(img.height * scale);
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    callback(canvas.toDataURL('image/jpeg', quality));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
 
-        // ==========================================
-        // 核心邏輯: 起始、代碼驗證、計時
-        // ==========================================
-        function initStartGame() {
-            const teamInput = document.getElementById('input-team-name');
-            if (!teamInput.checkValidity()) {
-                showAlert({ title: "隊伍代號必填", desc: "請輸入您的隊伍代號，例：探險小隊" });
+        let activeUploadUnsubscribe = null;
+        let activeUploadPollTimer = null;
+        
+        function uploadAndListenVerification(file, levelName, onSuccess) {
+            if (activeUploadPollTimer) { clearInterval(activeUploadPollTimer); activeUploadPollTimer = null; }
+            if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
+        
+            let isHandled = false;
+            const cleanUp = () => {
+                isHandled = true;
+                if (activeUploadPollTimer) { clearInterval(activeUploadPollTimer); activeUploadPollTimer = null; }
+                if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
+            };
+
+            if (!db) {
+                showAlert("連線提示", "資料庫服務目前未就緒，請檢查網路連線或稍後再試。", "fa-triangle-exclamation", "text-primary");
                 return;
             }
-            const name = teamInput.value.trim();
-            const members = document.getElementById('input-team-members').value.trim();
-            GameState.set('teamName', name);
-            GameState.set('teamMembers', members);
+        
+            showAlert("檔案加密中", "正在快速傳送現場照片至指揮所...", "fa-satellite-dish fa-spin", "text-primary", null, "取消上傳", 0, true);
             
-            // 跳轉至人物介紹
-            showScreen('intro-chars');
-        }
-
-        function verifyLevelCode() {
-            const input = document.getElementById('input-level-code');
-            const code = input.value.trim().toUpperCase();
-            if (!code || code.length < 8) {
-                showAlert({ title: "代碼錯誤", desc: "請輸入任務卡上完整的 8 碼代碼。" });
-                return;
+            const cancelBtn = document.getElementById('alert-cancel-btn');
+            if (cancelBtn) {
+                cancelBtn.onclick = () => {
+                    cleanUp();
+                    closeModalAnim('modal-alert', 'alert-box');
+                };
             }
-            // 由於您只提供了前端代碼，此處簡化驗證 (原本應呼叫雲端或用複雜算法)
-            const matched = (code === "DEMO2024" || code === "TEST2024" || code === "SANCHONG");
-            if (matched) {
-                const startTime = new Date();
-                GameState.set('startTime', startTime.toISOString());
-                // 預設關卡順序
-                GameState.set('customSequence', [1, 2, 3, 4, 5, 6, 7]); 
-                GameState.set('currentStageIndex', 0);
-                globalTimerInterval = setInterval(updateTimerDisplay, 1000);
-                updateTimerDisplay();
-                updateMainScreen();
-                showScreen('main');
-            } else {
-                showAlert({ title: "驗證失敗", desc: "找不到此代碼對應的任務。請檢查後重新輸入。" });
-            }
-        }
-
-        function updateMainScreen() {
-            document.getElementById('header-team-name').innerText = GameState.get('teamName') || "訪客";
-            const currentStageIndex = GameState.get('currentStageIndex') || 0;
-            const sequence = GameState.get('customSequence') || [1, 2, 3, 4, 5, 6, 7];
-            const currentLevelNum = sequence[currentStageIndex];
-            const currentLevel = GAME_DATA.levels.find(l => l.id === currentLevelNum);
-            
-            if (currentLevel) {
-                document.getElementById('main-active-title').innerText = currentLevel.name;
-                const gotoBtn = document.getElementById('btn-goto-current');
-                // 特別處理 L3 和 L5
-                if (currentLevelNum === 3) {
-                    gotoBtn.innerText = "查看指引"; // L3 任務點擊前往 Intro
-                } else if (currentLevelNum === 5) {
-                    gotoBtn.innerText = "前往抵達頁"; // L5 去 arrival
-                } else {
-                    gotoBtn.innerText = "拆開任務信封";
-                }
-            } else if (sequence.filter(lNum => lNum <= 6).every(lNum => GameState.get('stamps')?.[lNum - 1])) {
-                // 已完成全部關卡且都蓋章 (包含 L5)
-                showFinalLocationScreen();
-            } else {
-                // 有關卡未蓋章，但 sequence 已到底 (這是不應該發生的，除非有人手動修改 GameState)
-                // 應顯示全部關卡列表
-                const sequenceDiv = document.getElementById('main-level-sequence');
-                // ... 舊版列表邏輯 ...
-            }
-        }
-
-        // L3 正式任務啟動函式 (修改：跳過 Intro 狀態)
-        function startL3Mission() {
-            GameState.set('l3IntroSeen', true);
-            // 渲染正式 QA 頁面
-            renderL3();
-            // 跳轉至 QA 頁
-            showScreen('level-3');
-        }
-
-        function updateTimerDisplay() {
-            const startTimeStr = GameState.get('startTime');
-            if (!startTimeStr) return;
-            const startTime = new Date(startTimeStr);
-            const now = new Date();
-            const totalDuration = 90 * 60 * 1000; // 90 分鐘
-            const timeElapsed = now - startTime;
-            const timeRemaining = Math.max(0, totalDuration - timeElapsed);
-            
-            if (timeRemaining === 0) {
-                // 處理時間到
-            }
-            
-            const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
-            const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-            
-            const timeStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            const mainTimer = document.getElementById('main-timer');
-            if (mainTimer) mainTimer.innerText = timeStr;
-            const navTimer = document.getElementById('nav-timer-text');
-            if (navTimer) navTimer.innerText = timeStr;
-        }
-
-        // ==========================================
-        // 核心邏輯: 關卡完成判定 & 碎片收集
-        // ==========================================
-        function handleLevelSuccess(levelNum, alertTitle = "碎片取得！") {
-            let msg = "";
-            let btnText = "回主畫面";
-            if (levelNum === 6) { btnText = "結案認證"; }
-            
-            // 對話框內容設定 (原本 L3/L5 邏輯較複雜，現簡化)
-            if (levelNum === 1) { msg = "防砲陣地搜集完成。"; }
-            if (levelNum === 2) { msg = "空間測驗通過。"; }
-            if (levelNum === 3) { msg = "全數菜單鑑賞完成。"; }
-            if (levelNum === 5) { msg = "歌詞與群星密碼回答正確。"; }
-            
-            const currentLevel = GAME_DATA.levels.find(l => l.id === levelNum);
-            
-            // 顯示成功對話框
-            showAlert({
-                title: alertTitle,
-                desc: msg,
-                btnText: btnText,
-                // 原本 L3 L5 這裡有 `successPage: true` 標記，配合舊版 logic，現簡化
-                onConfirm: function() {
-                    // 蓋章
-                    collectPuzzlePiece(levelNum);
-                    if (levelNum === 6) {
-                        showScreen('certificate'); // L6 完成後去證書
-                    } else {
-                        updateMainScreen();
-                        showScreen('main'); // L1, L2, L3, L5 回總部
+        
+            compressImageFast(file, 640, 0.5, async (base64Str) => {
+                if (isHandled) return;
+                const teamName = GameState.get('teamName') || "匿名隊伍";
+                try {
+                    const docRef = await db.collection("submissions").add({
+                        teamName: teamName, levelId: levelName, photoUrl: base64Str,
+                        imageBase64: base64Str, status: "pending",
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+        
+                    if (isHandled) return;
+        
+                    const alertDesc = document.getElementById('alert-desc');
+                    const alertIcon = document.getElementById('alert-icon');
+                    if (alertDesc) alertDesc.textContent = "照片已送達指揮所，審核官查驗中...\n(請保持畫面，審核通過將自動跳轉)";
+                    if (alertIcon) alertIcon.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-5xl text-primary"></i>';
+        
+                    const handleResult = (approved) => {
+                        if (isHandled) return;
+                        cleanUp(); 
+                        closeModalAnim('modal-alert', 'alert-box', () => onSuccess(approved));
+                    };
+        
+                    activeUploadUnsubscribe = docRef.onSnapshot((doc) => {
+                        if (isHandled || !doc.exists) return;
+                        const data = doc.data();
+                        if (data.status === "approved") handleResult(true);
+                        else if (data.status === "rejected") handleResult(false);
+                    }, (err) => { console.warn("Snapshot 斷線，交由輪詢處理", err); });
+        
+                    activeUploadPollTimer = setInterval(async () => {
+                        if (isHandled) return;
+                        try {
+                            const docSnap = await docRef.get();
+                            if (docSnap.exists) {
+                                const data = docSnap.data();
+                                if (data.status === "approved") handleResult(true);
+                                else if (data.status === "rejected") handleResult(false);
+                            }
+                        } catch (e) {}
+                    }, 1000);
+        
+                } catch (error) {
+                    if (!isHandled) {
+                        cleanUp();
+                        showAlert("連線中斷", "無法將影像送達指揮所，請檢查網路後再試。\n" + error.message, "fa-triangle-exclamation", "text-primary");
                     }
                 }
             });
         }
 
-        function collectPuzzlePiece(levelNum) {
-            const stamps = GameState.get('stamps') || [false, false, false, false, false, false, false];
-            if (!stamps[levelNum - 1]) {
-                stamps[levelNum - 1] = true;
-                GameState.set('stamps', stamps);
-                updatePuzzleTextUI();
-                // 如果是去 L5 成功，不需要在這裡處理 L7，由 Main 畫面判定
+        function shuffleArray(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex); currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function initAudio() { 
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioCtx = new AudioContextClass();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); 
+        }
+
+        function stopAllMedia() {
+            document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
+            const l3Icon = document.getElementById('l3-voice-icon'); if (l3Icon) l3Icon.className = "fa-solid fa-radio text-3xl opacity-80";
+            const l3Btn = document.getElementById('l3-btn-voice'); if (l3Btn) l3Btn.disabled = false;
+        }
+
+        function playBeep(freq = 600, duration = 0.05, type = 'sine') {
+            if (!GameState.get('soundEnabled')) return;
+            initAudio();
+            if (!audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator(); 
+                const gain = audioCtx.createGain();
+                osc.type = type; 
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime); 
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain); 
+                gain.connect(audioCtx.destination); 
+                osc.start(); 
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {}
+        }
+        function playSuccessSound() { playBeep(523, 0.08); setTimeout(() => playBeep(659, 0.08), 90); setTimeout(() => playBeep(784, 0.15), 180); }
+        function playErrorSound() { playBeep(220, 0.12, 'sawtooth'); setTimeout(() => playBeep(180, 0.18, 'sawtooth'), 120); }
+
+        function updateHeader(screenId) {
+            const teamEl = document.getElementById('header-team-name');
+            const titleEl = document.getElementById('header-level-title');
+            teamEl.textContent = GameState.get('teamName') || "未登入";
+            if (screenId === 'entry') titleEl.textContent = "檔案報到";
+            else if (screenId === 'intro-chars') titleEl.textContent = "人物圖鑑";
+            else if (screenId === 'intro-story') titleEl.textContent = "故事前言";
+            else if (screenId === 'story') titleEl.textContent = "信件碎片";
+            else if (screenId === 'tutorial') titleEl.textContent = "操作說明";
+            else if (screenId === 'level-select') titleEl.textContent = "任務代碼";
+            else if (screenId === 'main') titleEl.textContent = "任務總部";
+            else if (screenId === 'certificate') titleEl.textContent = "結案報告";
+            else {
+                const lvlNum = parseInt(screenId.replace('level-', ''));
+                const data = GAME_DATA.levels.find(l => l.id === lvlNum);
+                titleEl.textContent = data ? data.name : "調查任務";
+            }
+        
+            const navHqBtn = document.getElementById('btn-nav-hq');
+            if (screenId === 'main') {
+                navHqBtn.innerHTML = `<i class="fa-solid fa-rotate-left text-primary"></i><span class="text-primary">重新開始</span>`;
+                navHqBtn.onclick = confirmRestartGame;
+            } else {
+                navHqBtn.innerHTML = `<i class="fa-solid fa-house"></i><span>回主畫面</span>`;
+                navHqBtn.onclick = () => { playBeep(); showScreen(GameState.get('teamName') ? 'main' : 'entry'); };
             }
         }
 
-        // ==========================================
-        // LEVEL 2 JS (修改：renderL2 的填空題與 Flex 排版)
-        // ==========================================
-        function renderL2() {
-            const qData = GAME_DATA.level2.questions;
-            const currentIndex = GameState.get('l2CurrentQ') || 0;
-            const data = qData[currentIndex];
-            const qText = document.getElementById('l2-question-text');
-            const optsContainer = document.getElementById('l2-options-container');
-            const imgEl = document.getElementById('l2-question-img');
-            const imgContainer = document.getElementById('l2-question-img-container');
-            const photoSection = document.getElementById('l2-photo-section');
-            const nextBtn = document.getElementById('l2-btn-next');
-            const prevBtn = document.getElementById('btn-l2-prev');
-            
-            prevBtn.classList.toggle('hidden', currentIndex === 0);
-            
-            const card = qText.closest('.level-card');
-            if (card) {
-                // 強制加上 Flex 排版，使 order 有效 (原本 UI/UX 檢查的優化點)
-                card.style.display = 'flex';
-                card.style.flexDirection = 'col';
-            }
+        async function transitionSubPage(level, fromPage, toPage) {
+            playBeep();
+            const fromEl = document.getElementById(`l${level}-p${fromPage}`);
+            const toEl = document.getElementById(`l${level}-p${toPage}`);
 
-            if (data.image) {
-                imgEl.src = data.image;
-                imgContainer.classList.remove('hidden');
-                // UX 修正：強制 L2 圖片 `loaded`
-                imgEl.classList.add('loaded');
-                if (imgEl.tagName === 'DIV') imgEl.style.backgroundImage = `url(${data.image})`; // 處理 L2 地圖圖片渲染
-            } else {
-                imgContainer.classList.add('hidden');
+            if (fromEl) {
+                fromEl.classList.remove('screen-active');
+                fromEl.classList.add('screen-exit');
+                fromEl.style.pointerEvents = 'none';
             }
             
-            // 修改：L2 Quiz 2 的題目文字重構 (原本是空白，現在要將解說與題目合併)
-            let questionHTML = ``;
-            if (data.isSequence) {
-                 questionHTML = `<p>${data.q}</p>`; // 排序題文字
-            } else if (data.inputType === 'text' && data.answers && data.answers.length > 0) {
-                // 填空題
-                if (currentIndex === 1) {
-                    // L2 測驗 2 的特定排版 (門牌說明在填空前)
-                    questionHTML = `
-                        <p class="text-xs font-bold text-ink/70 text-center tracking-wide mb-3">請找尋門牌觀察:"門牌上面等級"</p>
-                        <p class="text-xs font-bold text-military mb-4 tracking-wide text-center">找到對應等級門牌並點擊放大檢視</p>
-                        <p class="font-serif leading-[1.9]">特級：洗石子外牆、紅色大門、擁有庭院將級將官住所。<br>
-                           <span class="text-primary font-black">(乙)等：分配給(中校)軍階軍官房舍。</span><br>
-                           丙等：分配給上尉、尉官軍階房舍。</p>
-                        <p class="text-xs font-bold text-primary mb-3 mt-6 tracking-wide">請觀看下方解說圖片或至現場觀察，若無圖片則需前往現場找尋【進入防洪樓】</p>
-                        <p class="text-sm font-bold text-military tracking-wide text-center">閣樓空間，高舉雙手，看看能否碰到閣樓的地板，並拍照紀錄。</p>
-                        <div class="vintage-photo w-full aspect-[4/3] my-6">
-                            <img src="images/l2_quiz2_explain.jpg" alt="L2 解說" onload="this.classList.add('loaded')">
-                        </div>
-                        <p>為躲避當年<span><b>(____)</b></span>而增建。阿秀為了阿遠在屋子裡加蓋躲避水災的小閣樓，居民稱為(防洪樓)</p>
-                        <p class="text-primary font-black mt-6 border-t border-dashed border-ink/15 pt-3">請填寫完整的括號答案:</p>
-                        <div class="space-y-4 mt-4 fill-input-L2">
-                            <div class="flex items-center space-x-2"><span class="font-bold text-base text-ink font-mono">1.</span><input type="text" class="l2-answer-input flex-1 p-2.5 bg-paper rounded" placeholder="門牌等級"></div>
-                            <div class="flex items-center space-x-2"><span class="font-bold text-base text-ink font-mono">2.</span><input type="text" class="l2-answer-input flex-1 p-2.5 bg-paper rounded" placeholder="軍階"></div>
-                            <div class="flex items-center space-x-2"><span class="font-bold text-base text-ink font-mono">3.</span><input type="text" class="l2-answer-input flex-1 p-2.5 bg-paper rounded" placeholder="洪水來源 (例: 淡水河洪患)"></div>
-                            <div class="flex items-center space-x-2"><span class="font-bold text-base text-ink font-mono">4.</span><input type="text" class="l2-answer-input flex-1 p-2.5 bg-paper rounded" placeholder="閣樓名稱"></div>
-                        </div>
-                    `;
-                    optsContainer.style.order = 3; // L2 填空題輸入框強制 order 3 (最下)
-                    
-                    // JS (行1133): L2 填空題比對邏輯，這部分舊版代碼沒有，若有需要需補上
-                } else if (currentIndex === 2) {
-                    // L2 Quiz 3 "一線天"
-                    questionHTML = `<p>${data.q}</p><input type="text" class="l2-answer-input w-full p-2.5 bg-paper rounded mt-3" placeholder="填寫括號內容">`;
+            await new Promise(r => setTimeout(r, 200));
+            
+            if (fromEl) {
+                fromEl.classList.add('hidden');
+                fromEl.classList.remove('screen-exit', 'screen-enter');
+                fromEl.style.pointerEvents = 'auto';
+            }
+            
+            if (toEl) {
+                toEl.classList.remove('hidden', 'screen-exit', 'screen-enter');
+                toEl.style.pointerEvents = 'auto';
+                toEl.classList.add('screen-enter');
+                void toEl.offsetWidth;
+                toEl.classList.remove('screen-enter');
+                toEl.classList.add('screen-active');
+            }
+            document.getElementById('game-viewport').scrollTop = 0;
+        }
+
+        function forceSubPageInit(level, targetPage, totalPages) {
+            for (let i = 1; i <= totalPages; i++) {
+                const el = document.getElementById(`l${level}-p${i}`);
+                if (el) {
+                    el.classList.add('hidden');
+                    el.classList.remove('screen-active', 'screen-enter', 'screen-exit');
+                    el.style.pointerEvents = 'auto';
                 }
+            }
+            const targetEl = document.getElementById(`l${level}-p${targetPage}`);
+            if (targetEl) {
+                targetEl.classList.remove('hidden', 'screen-enter', 'screen-exit');
+                targetEl.classList.add('screen-active');
+            }
+        }
+
+        async function showScreen(screenId) {
+            stopAllMedia();
+            const viewport = document.getElementById('game-viewport');
+            const currentActive = viewport.querySelector('.screen-panel.screen-active, .screen-panel:not(.hidden)');
+            const targetScreen = document.getElementById(`screen-${screenId}`);
+
+            if (currentActive && currentActive !== targetScreen) {
+                currentActive.classList.remove('screen-active');
+                currentActive.classList.add('screen-exit');
+                currentActive.style.pointerEvents = 'none';
+                await new Promise(r => setTimeout(r, 300));
+                currentActive.classList.add('hidden');
+                currentActive.classList.remove('screen-exit');
+                currentActive.style.pointerEvents = 'auto';
             } else {
-                questionHTML = `<p>${data.q}</p>`; // 選擇題文字
+                document.querySelectorAll('[id^="screen-"]').forEach(s => {
+                    if (s !== targetScreen) s.classList.add('hidden');
+                });
             }
-            
-            qText.innerHTML = questionHTML;
-            
-            // 選擇題選項生成與 JS 判定
-            if (!data.inputType && !data.answers) {
-                // 選擇題 (含更換選項的 L2 Quiz 1)
-                // ... 生成選擇題選項按鈕，並在點擊時呼叫 checkL2Answer ...
+
+            if (targetScreen) {
+                targetScreen.classList.remove('hidden');
+                targetScreen.classList.add('screen-enter');
+                void targetScreen.offsetWidth;
+                targetScreen.classList.remove('screen-enter');
+                targetScreen.classList.add('screen-active');
+                viewport.scrollTop = 0;
             }
-            
-            // 行動端拍照區域處理與拍照照片顯示
-            // ... (GameState.get('l2Photos')[currentIndex])? ...
+
+            document.getElementById('modal-stamps').classList.add('hidden');
+            updateHeader(screenId);
+
+            if (screenId === 'certificate') renderCertificate();
+            if (screenId === 'main') renderMain();
+            if (screenId === 'level-1') { forceSubPageInit(1, 1, 2); renderL1(); }
+            if (screenId === 'level-2') renderL2();
+            if (screenId === 'level-3') renderL3();
+            if (screenId === 'level-4') forceSubPageInit(4, 1, 4);
+            if (screenId === 'level-5') { renderL5(GameState.get('l5CurrentQ') || 0); }
+            if (screenId === 'level-6') { forceSubPageInit(6, 1, 4); renderL6Songs(); }
+
+            updateStampBadgeCount();
         }
 
-        // ==========================================
-        // LEVEL 3 JS (聲音與確認按鈕邏輯)
-        // ==========================================
-        function renderL3() {
-            const qaSection = document.getElementById('l3-qa-section');
-            qaSection.classList.remove('hidden');
-            const confirmBtnContainer = document.getElementById('l3-confirm-btn-container');
-            const nextBtn = document.getElementById('l3-btn-next');
-            const prevBtn = document.getElementById('btn-l3-prev');
-            
-            // 聲音邏輯初始化 (播放收音機)
-            initL3AudioHint();
-            
-            // 渲染 QA (原本 renderL3 會遞迴 call)
-            renderL3Question(GameState.get('l3CurrentQ') || 0);
-            
-            // 修改：QA 判定按鈕與下一題按鈕邏輯
-            confirmBtnContainer.classList.remove('hidden'); // L3 显示判定
-            nextBtn.classList.add('hidden'); // L3 隱藏下一題 (原本 1286 邏輯)
+        function updateStampBadgeCount() {
+            const count = GameState.get('stamps').filter(Boolean).length;
+            document.getElementById('header-puzzle-text').textContent = `${count}/7`;
         }
 
-        function renderL3Question(currentIndex) {
-            const data = GAME_DATA.level3.questions[currentIndex];
-            const qText = document.getElementById('l3-question-text');
-            const optsContainer = document.getElementById('l3-options-container');
-            const prevBtn = document.getElementById('btn-l3-prev');
-            
-            qText.innerText = data.q;
-            prevBtn.classList.toggle('hidden', currentIndex === 0);
-            optsContainer.innerHTML = '';
-            
-            // L3 四宮格圖片選項生成，點擊按鈕不立即彈窗，只標示選定
-            // ... 在生成按鈕時，onclick = () => selectL3Option(data.a, i); ...
-        }
+        function handleLevelSuccess(lvlNum) {
+            playSuccessSound();
+            let stamps = GameState.get('stamps');
+            stamps[lvlNum - 1] = true;
+            GameState.set('stamps', stamps);
 
-        function selectL3Option(correctA, selectedIdx) {
-            // L3 點擊圖片不彈窗判定 (原本的邏輯)
-            const optsContainer = document.getElementById('l3-options-container');
-            // ... (標示選定圖片藍框) ...
-            
-            // JS (L3)：原本的 logic，這部分舊版代碼沒有，若有需要需補上
-            // GameState.set('l3CurrentQAnswered', selectedIdx === correctA);
-        }
+            let seq = GameState.get('customSequence');
+            let idx = GameState.get('currentStageIndex');
+            if (idx < 6 && seq[idx] === lvlNum) GameState.set('currentStageIndex', idx + 1);
 
-        function checkL3Answer() {
-            // L3 判定按鈕點擊後的確認彈窗 (原本是選定後立即顯示)
-            const answeredCorrect = GameState.get('l3CurrentQAnswered');
-            // ... (GameState.get('l3Stamps').push(answeredCorrect)) ...
-            
-            // 彈窗說明與下一題/結關邏輯
-            const nextBtn = document.getElementById('l3-btn-next');
-            const confirmBtn = document.getElementById('l3-btn-voice-confirm'); // 修改：判定下一道
-            
-            // JS (行1311)：判斷下一題 (品鑑下一道) 按鈕或結關按鈕 ...
-        }
-
-        // ==========================================
-        // LEVEL 5 JS (歌詞抵達頁與人物照片)
-        // ==========================================
-        function checkL5Arrival() {
-            // 修改：L5 抵達頁 Form 送出邏輯與 Bug 修復
-            const passInput = document.getElementById('l5-check-password');
-            const code = passInput.value.trim();
-            
-            if (code === GAME_DATA.level5.arrivalPassword) {
-                // L5 抵達驗證通過
-                GameState.set('l5ArrivalVerified', true);
-                
-                const arrivalScreen = document.getElementById('screen-l5-arrival');
-                const QAContainer = arrivalScreen.nextElementSibling; // 行1331 `#screen-level-5`
-                
-                // 轉場 L5 QA
-                arrivalScreen.classList.add('hidden');
-                QAContainer.classList.remove('hidden');
-                
-                // L5：初始化第一題與 Flex 順序 (原本代碼 renderL5(0))
-                renderL5(0);
+            if (lvlNum === 7) {
+                if (!GameState.get('endTime')) GameState.set('endTime', Date.now());
+                openFullLetter();
             } else {
-                showAlert({ title: "歌詞錯誤", desc: "請輸入主持人說的正確歌詞名稱 (三個字)。" });
+                let msg = "獲得一塊歷史碎片，\n準備進入下一階段調查。";
+                if (lvlNum === 1) msg = "警報響起，任務成功！\n我們將蒐集到的暗號數字重組成關鍵年份「1945 年」——這是日軍防止美軍大空襲的高峰年代，也是二次世界大戰結束、防砲陣地完成歷史使命的轉折點。";
+                showAlert("調查成功", msg, "", "", () => showScreen('main'), "返回總部");
             }
         }
 
-        function renderL5(currentIndex) {
-            const qData = GAME_DATA.level5.questions;
-            if (currentIndex >= qData.length) {
-                // 歌詞挑戰結束
-                handleLevelSuccess(5); // 行1356：直接結案認證
-                return;
-            }
-            
-            const data = qData[currentIndex];
-            const qText = document.getElementById('l5-question-text');
-            const charImg = document.getElementById('l5-char-img');
-            const optsContainer = document.getElementById('l5-options-container');
-            
-            // 修改：更正歌詞與人物照片 (行1348/1349)
-            qText.innerText = data.q;
-            charImg.src = data.characterImg;
-            charImg.classList.add('loaded'); // 舊版 logic，強制 loaded
-
-            optsContainer.innerHTML = '';
-            
-            // JS：選擇題選項生成 (在 L5 核心數據 `GATA.level5` 中定義 `opts`)
-            if (data.opts && data.opts.length > 0) {
-                 // ... 生成選擇題按鈕，onclick = () => checkL5Answer(data.a, opt); ...
-            } else {
-                // JS：原本的 L5 Quiz 2/3/4 是選擇題在 JS 寫死 (行391/395/399)，現已合併至 `GATA.level5`
-            }
-        }
-
-        function checkL5Answer(correctA, selectedOpt) {
-            if (selectedOpt === correctA) {
-                // 答對下一題
-                const nextQ = (GameState.get('l5CurrentQ') || 0) + 1;
-                GameState.set('l5CurrentQ', nextQ);
-                renderL5(nextQ);
-            } else {
-                showAlert({ title: "錯囉", desc: "歌詞不太對喔，再想一想阿遠和阿秀的情歌！" });
-            }
+        function renderMain() {
+            let seq = GameState.get('customSequence');
+            let idx = GameState.get('currentStageIndex');
+            const currentLvlId = parseInt(seq[idx]) || 1;
+            const lvlData = GAME_DATA.levels.find(l => l.id === currentLvlId) || GAME_DATA.levels[0];
+            document.getElementById('main-active-title').textContent = lvlData.name;
         }
 
         // ==========================================
-        // LEVEL 7 JS (最終地點 Google Map 與密碼)
+        // LEVEL 1 邏輯
         // ==========================================
-        function showFinalLocationScreen() {
-            collectPuzzlePiece(5); // 確保 L5 已蓋章，在 Main 畫面判定 (原本 logic，這部分舊版代碼沒有，若有需要需補上)
-            updateHeaderUI('level-7'); // 修改頁面標題
+        let currentL1TargetIdx = null;
+        document.getElementById('l1-camera-input').addEventListener('change', function() {
+            if (this.files && this.files.length > 0 && currentL1TargetIdx !== null) {
+                const file = this.files[0]; this.value = '';
+                const loc = GAME_DATA.level1.locations[currentL1TargetIdx];
+                const targetNumber = loc.code || ['1', '9', '4', '5'][currentL1TargetIdx];
 
-            const sequenceDiv = document.getElementById('main-level-sequence');
-            if (sequenceDiv) sequenceDiv.innerHTML = ``; // 清空原本列表
-
-            const levelCard = document.getElementById('level-7-final-card');
-            levelCard.classList.remove('hidden'); // L7 final location
-            
-            // 轉場 L7 頁面
-            showScreen('level-7');
-        }
-
-        function openL7FinalStory() {
-            const passInput = document.getElementById('final-location-password');
-            const code = passInput.value.trim().toUpperCase();
-            if (code === GAME_DATA.level7.finalPassword) {
-                // 最終代碼通過
-                stopGlobalTimer(); // 行1451
-                showAlert({
-                    title: "密碼正確",
-                    desc: "恭喜您已抵達最終地點！請尋找 NPC，並唸出阿遠給阿秀的八個字...",
-                    btnText: "開啟最終劇情信件",
-                    onConfirm: () => {
-                        openFullLetter(); // 彈窗閱讀信件
-                        GameState.set('gameCompleted', true); // 行1456
-                        handleLevelSuccess(7, "跨越時空的思念"); // 原本 logic，L7 success call 
+                uploadAndListenVerification(file, `任務一：${loc.title}`, (isApproved) => {
+                    if (isApproved) {
+                        playSuccessSound();
+                        let collected = GameState.get('l1Collected') || [false, false, false, false];
+                        collected[currentL1TargetIdx] = true;
+                        GameState.set('l1Collected', collected);
+                        renderL1();
+                        showAlert("審核通過", `長官已確認【${loc.title}】之構件特徵！\n\n★ 解密通關密碼：【<b class="text-3xl text-primary font-mono">${targetNumber}</b>】`, "fa-circle-check", "text-emerald-700", null, "收到！");
+                    } else {
+                        playErrorSound();
+                        showAlert("審核未通過", `長官回報審核未通過！\n\n請至現場確認【${loc.title}】特徵並重新拍攝！`, "fa-circle-xmark", "text-primary");
                     }
                 });
+            }
+        });
+
+        function renderL1() {
+            const collected = GameState.get('l1Collected') || [false, false, false, false];
+            const passcodeDigits = ['1', '9', '4', '5'];
+            document.querySelectorAll('.l1-loc-btn').forEach((btn) => {
+                const idx = parseInt(btn.dataset.idx);
+                const loc = GAME_DATA.level1.locations[idx];
+                if (collected[idx]) {
+                    btn.classList.add('bg-military/10', 'border-military-light', 'text-military');
+                    btn.innerHTML = `<i class="fa-solid fa-check text-military text-lg mb-1"></i>${loc.title}<span class="text-xs text-primary font-mono font-black mt-1">密碼: ${loc.code || passcodeDigits[idx]}</span>`;
+                    btn.onclick = () => { playBeep(500, 0.05); showAlert(loc.title, `已完成勘查\n\n★ 此處獲得密碼數字：【 ${loc.code || passcodeDigits[idx]} 】`, "fa-info-circle", "text-military"); };
+                } else {
+                    btn.classList.remove('bg-military/10', 'border-military-light', 'text-military');
+                    btn.innerHTML = `<i class="fa-solid fa-camera mb-1.5 text-primary text-2xl"></i>${loc.title}`;
+                    btn.onclick = () => {
+                        playBeep(600, 0.05);
+                        showAlert(loc.title, `【偵察任務】\n${loc.task}`, "fa-camera", "text-primary", () => {
+                            currentL1TargetIdx = idx; document.getElementById('l1-camera-input').click();
+                        }, "啟動相機拍照", 0, true);
+                    };
+                }
+            });
+
+            const cCount = collected.filter(Boolean).length;
+            const overlay = document.getElementById('l1-keypad-overlay');
+            if (cCount === 4) overlay.classList.add('hidden');
+            else {
+                overlay.classList.remove('hidden');
+                overlay.innerHTML = `<div class="bg-ink text-gold text-sm font-bold px-5 py-3 rounded-md shadow-2xl border border-gold/30 text-center tracking-wide">機密鎖定：請完成 4 處構件巡查與拍照<br><span class="text-primary font-mono text-xs">(已解密 ${cCount}/4)</span></div>`;
+            }
+            updateL1Display();
+        }
+
+        document.querySelectorAll('.l1-key').forEach(b => {
+            b.onclick = () => {
+                let input = GameState.get('l1Input') || [];
+                if (input.length < 4) { playBeep(600, 0.05); input.push(b.dataset.val); GameState.set('l1Input', input); updateL1Display(); }
+            };
+        });
+
+        document.getElementById('l1-btn-del').onclick = () => {
+            let input = GameState.get('l1Input') || [];
+            if (input.length > 0) { playBeep(400, 0.05); input.pop(); GameState.set('l1Input', input); updateL1Display(); }
+        };
+
+        document.getElementById('l1-btn-submit').onclick = () => {
+            let input = GameState.get('l1Input') || [];
+            if (input.join('').trim() === GAME_DATA.level1.passcode) { handleLevelSuccess(1); } 
+            else {
+                playErrorSound();
+                let errCount = (GameState.get('l1Errors') || 0) + 1;
+                GameState.set('l1Errors', errCount);
+                GameState.set('l1Input', []);
+                updateL1Display();
+                if (errCount >= 1) showAlert("密碼錯誤", "年份驗證失敗，請確認四處構件解鎖之數字。", "fa-circle-xmark", "text-primary");
+            }
+        };
+
+        function updateL1Display() {
+            let input = GameState.get('l1Input') || [];
+            document.querySelectorAll('#l1-code-container .code-box').forEach((box, i) => { box.textContent = input[i] || ''; });
+        }
+
+        // ==========================================
+        // LEVEL 2 邏輯
+        // ==========================================
+        document.getElementById('l2-camera-input').addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                const file = this.files[0]; this.value = '';
+                uploadAndListenVerification(file, "任務二：眷舍空間", (isApproved) => {
+                    if (isApproved) {
+                        playSuccessSound();
+                        let photos = GameState.get('l2Photos') || [false, false, false, false, false];
+                        let currentQ = GameState.get('l2CurrentQ');
+                        photos[currentQ] = true;
+                        GameState.set('l2Photos', photos);
+        
+                        showAlert("審核通過", "長官已確認線索照片！此題驗證完成。", "fa-circle-check", "text-emerald-700", () => {
+                            let cq = GameState.get('l2CurrentQ');
+                            if (cq < 4) {
+                                l2SequenceIntroSeen = false;
+                                GameState.set('l2CurrentQ', cq + 1);
+                                renderL2();
+                            } else {
+                                handleLevelSuccess(2);
+                            }
+                        }, "進入下一題");
+                    } else {
+                        playErrorSound(); 
+                        showAlert("審核未通過", "長官回報：照片模糊或角度不符，請重新拍攝！", "fa-circle-xmark", "text-primary");
+                    }
+                });
+            }
+        });
+
+        let l2SequenceIntroSeen = false;
+        function renderL2() {
+            let currentQ = GameState.get('l2CurrentQ');
+            const qData = GAME_DATA.level2.questions[currentQ];
+            document.getElementById('l2-q-counter').textContent = `測驗 ${currentQ + 1} / 5`;
+            document.getElementById('btn-l2-prev').style.display = currentQ > 0 ? 'flex' : 'none';
+        
+            const cont = document.getElementById('l2-options-container');
+            const pSect = document.getElementById('l2-photo-section');
+            const qImgContainer = document.getElementById('l2-question-img-container');
+            const qTextEl = document.getElementById('l2-question-text');
+            cont.innerHTML = '';
+            
+            let photos = GameState.get('l2Photos') || [false, false, false, false, false];
+            let answered = GameState.get('l2Answered') || [false, false, false, false, false];
+        
+            if (qData.photo && answered[currentQ] && !photos[currentQ]) {
+                pSect.classList.remove('hidden'); 
+                qImgContainer.classList.add('hidden');
+                qTextEl.innerHTML = '';
+                document.getElementById('l2-photo-img-container').classList.add('hidden');
+                document.getElementById('l2-photo-req-text').textContent = "📸 " + qData.photoText;
+                cont.innerHTML = '';
+                return;
+            }
+            pSect.classList.add('hidden');
+        
+            if (qData.isSequence && !l2SequenceIntroSeen) {
+                qImgContainer.classList.add('hidden'); 
+                qTextEl.textContent = "【建築演變前導知識】";
+                cont.innerHTML = `
+                    <div class="intro-history-card text-left space-y-4 font-serif">
+                        <div class="font-black text-military text-base border-b border-military/30 pb-2">
+                            <i class="fa-solid fa-landmark mr-2"></i>村長家的七次擴建歷程
+                        </div>
+                        <p class="text-sm leading-[1.8] text-ink font-bold text-justify">
+                            民國38年隨軍撤退來台時，村長家最初僅是簡陋的<b>黑瓦竹泥牆平房</b>。
+                            民國50年代因淡水河頻繁氾濫，特別增建了挑高的<b>防洪樓</b>避難；
+                            隨後因家庭人口繁衍生活空間不足，陸續<b>加蓋二樓</b>；
+                            最後才隨著就地生根的決心，逐步擴充<b>改建為三層樓</b>的現代水泥建築。
+                        </p>
+                        <div class="bg-military/10 p-3 rounded-md text-xs text-military font-bold shadow-inner border border-military/10">
+                            💡 請記住這段由「克難避難」走向「成家生根」的時序變化。
+                        </div>
+                    </div>
+                    <button id="btn-start-l2-seq" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.1em] mt-4">
+                        我記住了，開始排序測驗 <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>`;
+                document.getElementById('btn-start-l2-seq').onclick = () => { playBeep(600, 0.05); l2SequenceIntroSeen = true; renderL2(); };
+                return;
+            }
+        
+            qImgContainer.innerHTML = '';
+
+            if (currentQ === 1) {
+                qImgContainer.classList.add('hidden');
+                qTextEl.innerHTML = `
+                    <div class="flex flex-col w-full">
+                        <div class="vintage-photo w-full min-h-[140px] max-h-[260px] overflow-hidden mb-4" style="order: 1;">
+                            <img src="images/門牌.jpg" class="max-w-full max-h-[240px] w-auto h-auto object-contain loaded">
+                        </div>
+                        <h3 class="text-lg font-bold text-ink mb-4 font-serif" style="order: 2;">請找尋這個門牌的所在位置，並觀察旁邊的 <span class="text-primary underline">說明牌</span></h3>
+                        <div class="vintage-photo w-full min-h-[140px] max-h-[260px] overflow-hidden mb-4" style="order: 3;">
+                            <img src="images/說明牌.jpg" class="max-w-full max-h-[240px] w-auto h-auto object-contain loaded">
+                        </div>
+                        <p class="text-base font-bold text-ink mb-2 font-serif" style="order: 4;">糟了！這張線索遺失了重要資訊，請幫忙填起...</p>
+                    </div>
+                `;
             } else {
-                showAlert({ title: "密碼錯誤", desc: "請輸入工作人員提供的最終代碼 (例: NTPC...)" });
+                qTextEl.innerHTML = qData.q;
+                const imgList = qData.images || (qData.image ? [qData.image] : []);
+    
+                if (imgList.length > 0) {
+                    qImgContainer.classList.remove('hidden');
+                    qImgContainer.className = imgList.length > 1 
+                        ? "mb-6 w-full grid grid-cols-2 gap-3 shrink-0" 
+                        : "mb-6 w-full vintage-photo shrink-0 cursor-zoom-in min-h-[160px] max-h-[300px]";
+    
+                    imgList.forEach((src) => {
+                        const wrap = document.createElement('div');
+                        wrap.className = "vintage-photo cursor-zoom-in w-full min-h-[140px] max-h-[260px] overflow-hidden";
+                        wrap.onclick = () => openImageLightbox(src);
+                        wrap.innerHTML = `<img src="${src}" class="max-w-full max-h-[240px] w-auto h-auto object-contain loaded" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=線索圖片'">`;
+                        qImgContainer.appendChild(wrap);
+                    });
+                } else {
+                    qImgContainer.classList.add('hidden');
+                }
+            }
+
+            if (qData.inputType === "text") {
+                const inputWrapper = document.createElement('div');
+                inputWrapper.className = "space-y-4 w-full pt-2";
+                let inputs = [];
+                qData.answers.forEach((ans, i) => {
+                    const input = document.createElement('input');
+                    input.type = "text";
+                    input.className = "w-full bg-paper border border-ink/20 rounded-md px-4 py-3 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-ink shadow-inner transition-all text-center";
+                    input.placeholder = qData.answers.length > 1 ? `請輸入第 ${i + 1} 個空格答案` : "請輸入答案";
+                    inputs.push(input);
+                    inputWrapper.appendChild(input);
+                });
+
+                const submitBtn = document.createElement('button');
+                submitBtn.className = "btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.1em] mt-6";
+                submitBtn.innerHTML = "確認送出 <i class='fa-solid fa-check ml-2'></i>";
+                submitBtn.onclick = () => {
+                    let allCorrect = true;
+                    inputs.forEach((input, i) => {
+                        if (input.value.trim().toLowerCase() !== qData.answers[i].toLowerCase()) allCorrect = false;
+                    });
+
+                    if (allCorrect) {
+                        playSuccessSound();
+                        if (qData.photo) {
+                            let ans = GameState.get('l2Answered') || [false, false, false, false, false];
+                            let p = GameState.get('l2Photos') || [false, false, false, false, false];
+                            ans[currentQ] = true;
+                            p[currentQ] = false;
+                            GameState.set('l2Answered', ans);
+                            GameState.set('l2Photos', p);
+
+                            showAlert("回答正確！", `${qData.desc}\n\n★ 任務解鎖：請前往現場依指示拍照取證！`, "fa-circle-check", "text-emerald-700", () => {
+                                renderL2();
+                            }, "前往拍照取證");
+                        } else {
+                            showAlert("驗證通過", qData.desc, "fa-check-circle", "text-emerald-700", () => {
+                                let cq = GameState.get('l2CurrentQ');
+                                if (cq < 4) { 
+                                    l2SequenceIntroSeen = false; 
+                                    GameState.set('l2CurrentQ', cq + 1); 
+                                    renderL2(); 
+                                } else { 
+                                    handleLevelSuccess(2); 
+                                }
+                            }, "下一題");
+                        }
+                    } else {
+                        playErrorSound();
+                        showAlert("驗證失敗", "文字內容不完全正確，請再仔細比對現場的說明牌！", "fa-circle-xmark", "text-primary", null, "重新作答");
+                    }
+                };
+                inputWrapper.appendChild(submitBtn);
+                cont.appendChild(inputWrapper);
+
+            } else if (qData.isMultiChoice) {
+                let selectedIndices = new Set();
+                const btnContainer = document.createElement('div');
+                btnContainer.className = "space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-1 max-h-[360px]";
+
+                qData.opts.forEach((text, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = "opt-btn font-serif text-base tracking-wide flex items-center justify-between";
+                    btn.innerHTML = `<span>${text}</span><i class="fa-regular fa-square text-lg opacity-40"></i>`;
+                    
+                    btn.onclick = () => {
+                        playBeep(500, 0.04);
+                        if (selectedIndices.has(index)) {
+                            selectedIndices.delete(index);
+                            btn.classList.remove('!border-primary', '!bg-primary/10', 'text-primary');
+                            btn.querySelector('i').className = "fa-regular fa-square text-lg opacity-40";
+                        } else {
+                            selectedIndices.add(index);
+                            btn.classList.add('!border-primary', '!bg-primary/10', 'text-primary');
+                            btn.querySelector('i').className = "fa-solid fa-square-check text-lg text-primary";
+                        }
+                    };
+                    btnContainer.appendChild(btn);
+                });
+                cont.appendChild(btnContainer);
+
+                const submitBtn = document.createElement('button');
+                submitBtn.className = "btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.1em] mt-3 shrink-0";
+                submitBtn.innerHTML = "確認送出答案 <i class='fa-solid fa-check ml-2'></i>";
+                submitBtn.onclick = () => {
+                    const targetSet = new Set(qData.a);
+                    const isAllMatch = selectedIndices.size === targetSet.size && 
+                                       [...selectedIndices].every(idx => targetSet.has(idx));
+
+                    if (isAllMatch) {
+                        playSuccessSound();
+                        if (qData.photo) {
+                            let ans = GameState.get('l2Answered') || [false, false, false, false, false];
+                            let p = GameState.get('l2Photos') || [false, false, false, false, false];
+                            ans[currentQ] = true;
+                            p[currentQ] = false;
+                            GameState.set('l2Answered', ans);
+                            GameState.set('l2Photos', p);
+                            showAlert("回答正確！", `${qData.desc}\n\n★ 任務解鎖：請前往現場依指示拍照取證！`, "fa-check-circle", "text-emerald-700", () => {
+                                renderL2();
+                            }, "前往拍照取證");
+                        } else {
+                            showAlert("驗證通過", qData.desc, "fa-check-circle", "text-emerald-700", () => {
+                                let cq = GameState.get('l2CurrentQ');
+                                if (cq < 4) { 
+                                    l2SequenceIntroSeen = false; 
+                                    GameState.set('l2CurrentQ', cq + 1); 
+                                    renderL2(); 
+                                } else { 
+                                    handleLevelSuccess(2); 
+                                }
+                            }, "下一題");
+                        }
+                    } else {
+                        playErrorSound();
+                        showAlert("驗證失敗", "特徵選擇不完整或包含錯誤項目，高階軍官眷舍共有 3 個關鍵特徵，請重新比對！", "fa-circle-xmark", "text-primary", null, "重新選擇");
+                    }
+                };
+                cont.appendChild(submitBtn);
+
+            } else {
+                let optionsWithIndex = qData.opts.map((opt, index) => ({ 
+                    text: opt, 
+                    isCorrect: index === qData.a 
+                }));
+                let shuffledOptions = shuffleArray([...optionsWithIndex]);
+                
+                shuffledOptions.forEach((o) => {
+                    const btn = document.createElement('button');
+                    btn.className = "opt-btn font-serif text-base tracking-wide"; 
+                    btn.textContent = o.text;
+                    btn.onclick = () => {
+                        if (o.isCorrect) {
+                            playSuccessSound();
+                            if (qData.photo) {
+                                let ans = GameState.get('l2Answered') || [false, false, false, false, false];
+                                let p = GameState.get('l2Photos') || [false, false, false, false, false];
+                                ans[currentQ] = true;
+                                p[currentQ] = false;
+                                GameState.set('l2Answered', ans);
+                                GameState.set('l2Photos', p);
+                                showAlert("回答正確！", `${qData.desc}\n\n★ 任務解鎖：請前往現場依指示拍照取證！`, "fa-check-circle", "text-emerald-700", () => {
+                                    renderL2();
+                                }, "前往拍照取證");
+                            } else {
+                                showAlert("驗證通過", qData.desc, "fa-check-circle", "text-emerald-700", () => {
+                                    let cq = GameState.get('l2CurrentQ');
+                                    if (cq < 4) { 
+                                        l2SequenceIntroSeen = false; 
+                                        GameState.set('l2CurrentQ', cq + 1); 
+                                        renderL2(); 
+                                    } else { 
+                                        handleLevelSuccess(2); 
+                                    }
+                                }, "下一題");
+                            }
+                        } else {
+                            playErrorSound();
+                            showAlert("驗證失敗", "歷史記載與您的答案不符，請重新比對演變脈絡！", "fa-circle-xmark", "text-primary", null, "重新作答");
+                        }
+                    };
+                    cont.appendChild(btn);
+                });
+            }
+        }
+
+        window.prevL2Question = function() { playBeep(); let cq = GameState.get('l2CurrentQ'); if (cq > 0) { GameState.set('l2CurrentQ', cq - 1); renderL2(); } };
+
+        // ==========================================
+        // LEVEL 3 邏輯
+        // ==========================================
+        window.startL3Mission = function() {
+            playBeep();
+            showScreen('level-3');
+        };
+
+        document.getElementById('l3-camera-input').addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                const file = this.files[0]; this.value = '';
+                uploadAndListenVerification(file, "任務三：村長的家", (isApproved) => {
+                    if (isApproved) {
+                        playSuccessSound();
+                        showAlert("審核通過", "已確認到達村長家現場！\n解鎖眷村廣播線索。", "fa-circle-check", "text-gold-dark", () => { 
+                            GameState.set('l3PhotoDone', true); 
+                            renderL3(); 
+                        });
+                    } else {
+                        playErrorSound(); 
+                        showAlert("審核未通過", "長官回報：地標辨認失敗，請確認站在村長家門前重新拍攝！", "fa-circle-xmark", "text-primary");
+                    }
+                });
+            }
+        });
+
+        function renderL3() {
+            if (!GameState.get('l3PhotoDone')) {
+                document.getElementById('l3-photo-section').classList.remove('hidden'); 
+                document.getElementById('l3-qa-section').classList.add('hidden');
+            } else {
+                document.getElementById('l3-photo-section').classList.add('hidden'); 
+                document.getElementById('l3-qa-section').classList.remove('hidden'); 
+                showL3Question();
+            }
+        }
+
+        function showL3Question() {
+            let currentQ = GameState.get('l3CurrentQ');
+            const qData = GAME_DATA.level3.questions[currentQ];
+            if (!qData) return;
+            document.getElementById('l3-q-counter').textContent = `菜單 ${currentQ + 1} / 5`;
+            document.getElementById('btn-l3-prev').style.display = currentQ > 0 ? 'flex' : 'none';
+            document.getElementById('l3-question-text').textContent = qData.q;
+            document.getElementById('l3-audio-hint').classList.remove('hidden');
+            document.getElementById('l3-audio-player').src = GAME_DATA.level3.audios[currentQ];
+
+            const cont = document.getElementById('l3-options-container'); 
+            cont.innerHTML = '';
+            
+            let optionsWithIndex = qData.opts.map((opt, index) => ({ opt: opt, isCorrect: index === qData.a }));
+            let shuffledOptions = shuffleArray([...optionsWithIndex]);
+            
+            shuffledOptions.forEach((o) => {
+                const btn = document.createElement('button');
+                btn.className = "l3-opt-btn flex flex-col items-center justify-center border border-ink/20 rounded-lg overflow-hidden bg-white shadow-sm opacity-50 cursor-not-allowed transition-all active:scale-95";
+                btn.disabled = true;
+                btn.innerHTML = `
+                    <div class="w-full aspect-square bg-paper-dark relative border-b border-ink/10 flex items-center justify-center overflow-hidden">
+                        <img src="${o.opt.img}" alt="${o.opt.text}" class="max-w-full max-h-full w-auto h-auto object-contain" onerror="this.src='https://placehold.co/150/e5d5b5/7c343d?text=${o.opt.text}'">
+                    </div>
+                    <div class="w-full py-2.5 text-sm font-black text-ink tracking-wider bg-white">${o.opt.text}</div>
+                `;
+                
+                btn.onclick = () => {
+                    const feedbackHtml = `
+                        <div class="food-feedback-box aspect-[16/9] mb-3 overflow-hidden rounded-md border border-ink/20">
+                            <img src="${o.opt.img}" class="max-w-full max-h-full object-contain" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=${o.opt.text}'">
+                        </div>
+                        <p class="text-sm font-bold text-ink leading-[1.8] font-serif text-justify">${o.opt.desc}</p>
+                    `;
+                    if (o.isCorrect) {
+                        playSuccessSound();
+                        showAlert(`【${o.opt.text}】`, feedbackHtml, "fa-bowl-rice", "text-gold-dark", () => {
+                            let cq = GameState.get('l3CurrentQ');
+                            if (cq < 4) { 
+                                GameState.set('l3CurrentQ', cq + 1); 
+                                showL3Question(); 
+                            } else { 
+                                showAlert("調查成功", "每一道料理都不只是滋味，更是一段跨越海峽的生活記憶。\n\n眷村廚房匯聚了大江南北的家鄉味，也成為文化交流的場所。", "", "text-gold-dark", () => handleLevelSuccess(3)); 
+                            }
+                        }, "品鑑下一道");
+                    } else {
+                        playErrorSound(); 
+                        const errorHtml = feedbackHtml + `<div class="text-primary mt-3 pt-3 border-t border-dashed border-ink/15 font-black text-xs text-center"><i class="fa-solid fa-circle-xmark mr-1"></i> 收音機裡長輩描述的味道似乎不是這道，請再聽一次！</div>`;
+                        showAlert(`【${o.opt.text}】`, errorHtml, "fa-magnifying-glass", "text-primary", null, "重新選擇");
+                    }
+                };
+                cont.appendChild(btn);
+            });
+        }
+        window.prevL3Question = function() { playBeep(); let cq = GameState.get('l3CurrentQ'); if (cq > 0) { GameState.set('l3CurrentQ', cq - 1); showL3Question(); } };
+
+        document.getElementById('l3-btn-voice').onclick = () => {
+            const btnVoice = document.getElementById('l3-btn-voice'); 
+            const icon = document.getElementById('l3-voice-icon'); 
+            const player = document.getElementById('l3-audio-player');
+            
+            if (btnVoice.disabled || !GameState.get('soundEnabled')) {
+                if (!GameState.get('soundEnabled')) { 
+                    // 修正：主動彈出提示框告知玩家，確認後再解鎖選項
+                    showAlert("語音已靜音", "偵測到您目前關閉了音效，已自動為您解鎖下方選項，請根據文字線索進行推理。", "fa-volume-xmark", "text-military", () => {
+                        document.getElementById('l3-audio-hint').classList.add('hidden'); 
+                        document.querySelectorAll('.l3-opt-btn').forEach(b => { 
+                            b.disabled = false; 
+                            b.classList.remove('opacity-50', 'cursor-not-allowed'); 
+                        }); 
+                    });
+                }
+                return;
+            }
+            initAudio(); playBeep(); icon.className = "fa-solid fa-gear fa-spin text-3xl"; btnVoice.disabled = true;
+            let isPlaying = false;
+            let timeout = setTimeout(() => {
+                if (!isPlaying) {
+                    player.pause(); icon.className = "fa-solid fa-radio text-3xl opacity-80"; btnVoice.disabled = false;
+                    showAlert("收音機訊號不佳", "現場雜訊過多播放失敗，請拍打兩下！\n(已為您強制解鎖選項)", "fa-radio", "text-gold-dark", () => {
+                        document.getElementById('l3-audio-hint').classList.add('hidden'); 
+                        document.querySelectorAll('.l3-opt-btn').forEach(b => { b.disabled = false; b.classList.remove('opacity-50', 'cursor-not-allowed'); });
+                    }, "拍打兩下 (確認)");
+                }
+            }, 5000);
+            player.play().then(() => {
+                isPlaying = true; clearTimeout(timeout); document.getElementById('l3-audio-hint').classList.add('hidden'); 
+                document.querySelectorAll('.l3-opt-btn').forEach(b => { b.disabled = false; b.classList.remove('opacity-50', 'cursor-not-allowed'); });
+                setTimeout(() => { icon.className = "fa-solid fa-radio text-3xl opacity-80"; btnVoice.disabled = false; }, 2000);
+            }).catch(() => {
+                isPlaying = true; clearTimeout(timeout); icon.className = "fa-solid fa-radio text-3xl opacity-80"; btnVoice.disabled = false;
+                showAlert("收音機訊號不佳", "現場雜訊過多播放失敗，請拍打兩下！\n(已為您強制解鎖選項)", "fa-radio", "text-gold-dark", () => {
+                    document.getElementById('l3-audio-hint').classList.add('hidden'); 
+                    document.querySelectorAll('.l3-opt-btn').forEach(b => { b.disabled = false; b.classList.remove('opacity-50', 'cursor-not-allowed'); });
+                }, "拍打兩下 (確認)");
+            });
+        };
+
+        // ==========================================
+        // LEVEL 4 邏輯
+        // ==========================================
+        function renderL4Questions() {
+            const q1Select = document.getElementById('l4-q1'); 
+            const q2Select = document.getElementById('l4-q2');
+            document.getElementById('l4-q1-label').textContent = GAME_DATA.level4.q1.text; 
+            document.getElementById('l4-q2-label').textContent = GAME_DATA.level4.q2.text;
+            let s1 = shuffleArray([...GAME_DATA.level4.q1.opts]); 
+            let s2 = shuffleArray([...GAME_DATA.level4.q2.opts]);
+            q1Select.innerHTML = '<option value="" disabled selected>請選擇...</option>'; 
+            s1.forEach(o => q1Select.innerHTML += `<option value="${o.c ? 'correct' : 'wrong'}">${o.t}</option>`);
+            q2Select.innerHTML = '<option value="" disabled selected>請選擇...</option>'; 
+            s2.forEach(o => q2Select.innerHTML += `<option value="${o.c ? 'correct' : 'wrong'}">${o.t}</option>`);
+        }
+        document.getElementById('l4-btn-verify').onclick = () => {
+            const q1 = document.getElementById('l4-q1').value; 
+            const q2 = document.getElementById('l4-q2').value;
+            if (q1 === 'correct' && q2 === 'correct') handleLevelSuccess(4); 
+            else { 
+                playErrorSound(); 
+                showAlert("檔案不符", "選擇有誤，請再試一次！", "fa-circle-xmark", "text-primary"); 
+            }
+        };
+
+        // ==========================================
+        // LEVEL 5 邏輯
+        // ==========================================
+        window.checkL5Arrival = function() {
+            const val = document.getElementById('l5-check-password').value.trim();
+            if (val === "外婆橋") {
+                playSuccessSound();
+                GameState.set('l5CurrentQ', 0);
+                showScreen('level-5');
+            } else {
+                playErrorSound();
+                showAlert("密碼錯誤", "請輸入正確的通關密語！", "fa-circle-xmark", "text-primary");
+            }
+        };
+
+        window.renderL5 = function(index) {
+            GameState.set('l5CurrentQ', index);
+            const qData = GAME_DATA.level5.questions[index];
+            document.getElementById('l5-q-counter').textContent = `群星挑戰 ${index + 1} / ${GAME_DATA.level5.questions.length}`;
+            
+            document.getElementById('l5-char-img').src = qData.characterImg || '';
+            document.getElementById('l5-question-text').textContent = qData.q;
+            
+            const cont = document.getElementById('l5-options-container');
+            cont.innerHTML = '';
+            
+            const input = document.createElement('input');
+            input.type = "text";
+            input.placeholder = "請輸入缺漏的歌詞";
+            input.className = "w-full bg-paper border border-ink/20 rounded-md px-4 py-4 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-ink shadow-inner transition-all mb-4 text-center";
+            cont.appendChild(input);
+            
+            const submitBtn = document.createElement('button');
+            submitBtn.className = "btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em]";
+            submitBtn.innerHTML = "確認送出 <i class='fa-solid fa-check ml-2'></i>";
+            submitBtn.onclick = () => {
+                if (input.value.trim() !== "") { 
+                    checkL5Answer(index, input.value.trim());
+                } else {
+                    playErrorSound();
+                    showAlert("提示", "請輸入答案！", "fa-triangle-exclamation");
+                }
+            };
+            cont.appendChild(submitBtn);
+        };
+
+        function checkL5Answer(index, val) {
+            const qData = GAME_DATA.level5.questions[index];
+            let isCorrect = true;
+            if (qData.a) {
+                isCorrect = val.includes(qData.a) || qData.a.includes(val);
+            }
+            
+            if (isCorrect) {
+                playSuccessSound();
+                if (index + 1 < GAME_DATA.level5.questions.length) {
+                    showAlert("接唱成功！", "太厲害了，繼續挑戰下一首！", "fa-microphone-lines", "text-emerald-700", () => {
+                        renderL5(index + 1);
+                    });
+                } else {
+                    showAlert("群星之夜挑戰成功", "所有歌曲都接唱完成了！你真棒！", "fa-star", "text-gold-dark", () => {
+                        handleLevelSuccess(5);
+                    });
+                }
+            } else {
+                playErrorSound();
+                showAlert("接唱失敗", "歌詞好像不太對，請再試試看！", "fa-circle-xmark", "text-primary");
             }
         }
 
         // ==========================================
-        // 信件碎片 & Lightbox 核心 (原本 logic)
+        // LEVEL 6 邏輯
         // ==========================================
-        function openStampsDrawer() {
-            // ... 打開收納盒邏輯，render Puzzle Piece (pieceLocked/lockedImg logic) ...
-            // piecesHTML += `src="${pieceLocked ? piece.lockedImg : piece.img}"`;
-        }
-        function openFullLetter() {
-            // ... 打開信件邏輯， piecesHTML piecesHTML ...
-            // piecesHTML += `src="${pieceLocked ? piece.lockedImg : piece.img}"`;
-        }
-        function openImageLightbox(src) {
-             const lightbox = document.getElementById('modal-image-lightbox');
-             const imgEl = document.getElementById('image-lightbox-src');
-             // ... 行1729 UX 修正，直接 callonloadLoaded ...
-             imgEl.onload = () => imgEl.classList.add('loaded'); // 修正 logic
-             // imgEl.complete? ...
-             // setTimeout(() => { if (imgEl.tagName === 'IMG' && !imgEl.complete) imgEl.src = src; }, 50); // 原本的 logic，強制 L2 L3 圖片 loaded ...
-             imgEl.src = src;
-             lightbox.classList.remove('hidden');
+        let l6SelectedFlowers = [];
+        window.toggleFlower = function(el, fName) {
+            playBeep();
+            if (el.classList.contains('ring-4')) { 
+                el.classList.remove('ring-4', 'ring-primary'); 
+                l6SelectedFlowers = l6SelectedFlowers.filter(f => f !== fName); 
+            } else { 
+                el.classList.add('ring-4', 'ring-primary'); 
+                l6SelectedFlowers.push(fName); 
+            }
+        };
+        window.verifyFlowers = function() {
+            if (l6SelectedFlowers.length === 2 && l6SelectedFlowers.includes('玫瑰') && l6SelectedFlowers.includes('茉莉')) { 
+                playSuccessSound(); 
+                showAlert("成分分析正確", "成功找出了隱藏的玫瑰與茉莉花香！\n前往下一階段。", "fa-flask", "text-emerald-700", () => transitionSubPage(6, 3, 4)); 
+            } else { 
+                playErrorSound(); 
+                showAlert("成分錯誤", "請確認是否剛好選擇了正確的【兩種】花卉喔！", "fa-circle-xmark", "text-primary"); 
+            }
+        };
+
+        function renderL6Songs() {
+            const container = document.getElementById('l6-songs-container'); 
+            container.innerHTML = '';
+            const audioEl = document.getElementById('l6-audio-player'); 
+            const prog = document.getElementById('l6-progress');
+            audioEl.ontimeupdate = () => { 
+                if (audioEl.duration) { 
+                    const pct = (audioEl.currentTime / audioEl.duration) * 100; 
+                    prog.style.width = `${pct}%`; 
+                } 
+            };
+            audioEl.onended = () => {
+                prog.style.width = '100%';
+                setTimeout(() => { 
+                    showAlert("點播完畢", "歌曲已完整播放完畢！\n請至背景牆前將您的推薦詞貼上去與大家分享！", "fa-record-vinyl", "text-ink", () => handleLevelSuccess(6)); 
+                }, 300);
+            };
+            GAME_DATA.level6.songs.forEach((song) => {
+                const btn = document.createElement('button'); 
+                btn.className = "flex items-center text-left w-full p-4 bg-white border border-ink/10 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 active:scale-95";
+                btn.innerHTML = `
+                    <div class="flex-1 min-w-0 pr-3">
+                        <div class="font-black text-base text-primary truncate font-serif">${song.title}</div>
+                        <div class="text-[11px] text-ink/60 font-bold truncate mt-1">${song.desc}</div>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-paper border border-ink/20 flex items-center justify-center shrink-0 shadow-inner">
+                        <i class="fa-solid fa-play text-primary text-sm ml-1"></i>
+                    </div>`;
+                btn.onclick = () => {
+                    if (!GameState.get('soundEnabled')) return showAlert("靜音鎖定", "請先點擊右上角開啟音效喇叭。");
+                    initAudio(); playBeep(800, 0.1); audioEl.pause(); audioEl.currentTime = 0; prog.style.width = '0%';
+                    const pUI = document.getElementById('l6-player'); pUI.classList.remove('hidden');
+                    document.getElementById('l6-song-title').textContent = song.title; 
+                    document.getElementById('l6-lyrics').textContent = song.lyric;
+                    audioEl.src = song.audio; 
+                    audioEl.play().catch(e => { console.log("Audio play blocked", e); });
+                };
+                container.appendChild(btn);
+            });
         }
 
         // ==========================================
-        // 工作人員核銷專區 (原本 logic)
+        // 全域按鈕與事件綁定
         // ==========================================
-        // ... staffClaimVerification logic ...
+        function renderPuzzlePieces(containerId, isFullView) {
+            const container = document.getElementById(containerId); 
+            if (!container) return; 
+            container.innerHTML = '';
+            GAME_DATA.puzzles.forEach((p) => {
+                let stamps = GameState.get('stamps'); 
+                const isUnlocked = isFullView ? true : stamps[p.id - 1];
+                const div = document.createElement('div'); 
+                div.className = `puzzle-piece ${p.class}`;
+                if (!isUnlocked) { 
+                    div.classList.add('locked'); 
+                    div.innerHTML = '<i class="fa-solid fa-lock text-white/20 text-3xl opacity-80"></i>'; 
+                } else { 
+                    div.innerHTML = `<span>${p.text}</span>`; 
+                }
+                if (!isFullView) { 
+                    div.onclick = () => { 
+                        if (isUnlocked) { playBeep(700, 0.05); openPuzzleLightbox(p.text); } 
+                    }; 
+                }
+                container.appendChild(div);
+            });
+        }
 
+        document.getElementById('btn-start-game').addEventListener('click', () => {
+            const nameInput = document.getElementById('input-team-name'); 
+            const name = nameInput ? nameInput.value.trim() : "";
+            if (!name) return showAlert("資料缺失", "請輸入隊伍代號！", "fa-triangle-exclamation");
+            
+            initAudio(); playBeep(700, 0.05); 
+            GameState.set('teamName', name.substring(0, 15));
+            const membersInput = document.getElementById('input-team-members');
+            if (membersInput) GameState.set('teamMembers', membersInput.value.trim());
+            showScreen('intro-chars');
+        });
+
+        document.getElementById('btn-goto-current').addEventListener('click', () => {
+            initAudio(); playBeep(600, 0.05);
+            let seq = GameState.get('customSequence'); 
+            let idx = GameState.get('currentStageIndex'); 
+            const targetLvl = seq[idx];
+            if (targetLvl === 4) renderL4Questions(); 
+            if (targetLvl === 3) showScreen('l3-intro');
+            else if (targetLvl === 5) showScreen('l5-arrival');
+            else showScreen(`level-${targetLvl}`);
+        });
+
+        function updateTimerDisplay() {
+            if (!GameState.get('startTime')) return;
+            const now = GameState.get('endTime') ? GameState.get('endTime') : Date.now();
+            let elapsed = Math.floor((now - GameState.get('startTime')) / 1000);
+            let remain = (90 * 60) - elapsed; 
+            
+            // 超時自動處理邏輯
+            if (remain <= 0) {
+                remain = 0;
+                if (!GameState.get('timeExpiredHandled')) {
+                    GameState.set('timeExpiredHandled', true);
+                    if (!GameState.get('endTime')) GameState.set('endTime', Date.now());
+                    if (globalTimerInterval) clearInterval(globalTimerInterval);
+                    
+                    showAlert("委託時間已達上限", "90 分鐘調查時間結束！\n系統已為您導航至最終地點。\n\n★ 您依然可以前往服務台核銷並領取紀念品！", "fa-clock", "text-primary", () => {
+                        const navBar = document.getElementById('bottom-nav-bar');
+                        if (navBar) navBar.classList.add('hidden');
+                        showScreen('level-7');
+                    }, "前往最終地點");
+                }
+            }
+            
+            const h = String(Math.floor(remain / 3600)).padStart(2, '0');
+            const m = String(Math.floor((remain % 3600) / 60)).padStart(2, '0');
+            const s = String(remain % 60).padStart(2, '0');
+            const mainTimerEl = document.getElementById('main-timer'); 
+            if (mainTimerEl) mainTimerEl.textContent = `${h}:${m}:${s}`;
+        }
+
+        function renderCertificate() {
+            const elapsed = Math.floor(((GameState.get('endTime') || Date.now()) - GameState.get('startTime')) / 1000);
+            const h = String(Math.floor(elapsed / 3600)).padStart(2, '0'); 
+            const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0'); 
+            const s = String(elapsed % 60).padStart(2, '0');
+            const timeStr = `${h}:${m}:${s}`; 
+            const isSClass = elapsed <= 5400;
+            document.getElementById('cert-time').textContent = isSClass ? `${timeStr} (時限內)` : timeStr;
+            document.getElementById('cert-status').textContent = isSClass ? '檔案完全解密' : '委託已完成（超時）';
+            document.getElementById('cert-rank').textContent = isSClass ? '【S級結案】' : '【堅毅探尋】';
+            document.getElementById('cert-status').className = isSClass ? 'text-emerald-700 font-black text-right' : 'text-amber-700 font-black text-right';
+            
+            const msgEl = document.getElementById('cert-msg');
+            if (isSClass) msgEl.innerHTML = '恭喜完成所有委託！<br>您成功解開了眷村深埋的記憶，讓跨越時空的思念得以圓滿。';
+            else msgEl.innerHTML = '雖然耗費了較多時間，但真相終究水落石出。<br>這段歲月記憶因你的堅持而完整。';
+            
+            const claimBtn = document.getElementById('btn-claim-gift');
+            if (GameState.get('giftClaimed') === true) {
+                claimBtn.disabled = true; 
+                claimBtn.className = "btn-base w-full py-4 bg-stone-200 border border-stone-300 text-stone-500 font-black text-sm cursor-not-allowed shadow-none";
+                claimBtn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-700 mr-2"></i>已於 ${GameState.get('giftClaimedTime') || ''} 兌換完畢`;
+            } else {
+                claimBtn.disabled = false; 
+                claimBtn.className = "btn-base primary-btn w-full py-4 font-black text-base tracking-[0.15em] flex justify-center space-x-2";
+                claimBtn.innerHTML = `<i class="fa-solid fa-stamp"></i><span>現場人員點擊核銷</span>`;
+            }
+        }
+
+        document.getElementById('btn-claim-gift').onclick = () => {
+            showAlert("服務台兌獎核銷", "⚠【此操作限工作人員點擊】\n\n確認已發放實體紀念品？\n一旦核銷後將永久鎖定，無法重複領取！", "fa-gift", "text-gold-dark", () => {
+                const now = new Date(); 
+                const timeTag = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+                GameState.set('giftClaimed', true); 
+                GameState.set('giftClaimedTime', timeTag); 
+                playSuccessSound(); 
+                renderCertificate();
+            }, "確認已領獎", 0, true);
+        };
+
+        function confirmRestartGame() {
+            showAlert("銷毀檔案", "確定要銷毀目前調閱檔案並重新開始嗎？所有的解密進度、拼圖與兌獎紀錄都將重置。", "fa-triangle-exclamation", "text-primary", () => { GameState.reset(); }, "確認銷毀", 0, true);
+        }
+
+        document.getElementById('btn-restart-game').onclick = confirmRestartGame;
+        
+        document.getElementById('sound-toggle').onclick = () => {
+            let soundOn = !GameState.get('soundEnabled'); 
+            GameState.set('soundEnabled', soundOn);
+            const icon = document.getElementById('sound-icon');
+            if (soundOn) icon.className = "fa-solid fa-volume-high text-gold text-lg";
+            else { icon.className = "fa-solid fa-volume-xmark text-gold/50 text-lg"; stopAllMedia(); }
+        };
     </script>
 </body>
 </html>
