@@ -2488,57 +2488,71 @@
         // 全域按鈕與事件綁定
         // ==========================================
         window.verifyLevelCode = function() {
+            playBeep();
             const codeInput = document.getElementById('input-level-code');
-            const code = codeInput ? codeInput.value.trim().toUpperCase() : '';
+            const code = codeInput ? codeInput.value.trim().toUpperCase() : "";
             
-            if (!code) {
-                playErrorSound();
-                return showAlert("請輸入代碼", "請輸入任務小卡上的 8 碼任務代碼！", "fa-triangle-exclamation");
-            }
+            // 8 碼代碼對應起始關卡
+            const codeMap = {
+                '3G100301': 1, // 起始點：防砲陣地
+                '3G100302': 2, // 起始點：眷村空間與建築
+                '3G100303': 3, // 起始點：村長的家
+                '3G100304': 4, // 起始點：榕樹廣場
+                '3G100305': 5, // 起始點：群星之夜
+                '3G100306': 6, // 起始點：時光膠囊
+                '3G100307': 7  // 最終地點
+            };
         
-            // 格式驗證（至少4碼，可輸入任意小卡代碼或自訂8碼）
-            if (code.length < 4) {
-                playErrorSound();
-                return showAlert("代碼格式不符", "請輸入完整的任務代碼！", "fa-circle-xmark", "text-primary");
-            }
+            if (codeMap[code]) {
+                const startLvl = codeMap[code];
+                GameState.set('startLevel', startLvl);
         
-            playSuccessSound();
+                let newSeq = [];
+                if (startLvl === 7) {
+                    newSeq = [7];
+                } else {
+                    // 保持原本特製的 6-1-4-2-5-3 循環動線
+                    const coreSeq = [6, 1, 4, 2, 5, 3];
+                    const startIdx = coreSeq.indexOf(startLvl);
+                    
+                    // 從輸入的關卡開始，依核心動線依序推入 6 關
+                    for (let i = 0; i < 6; i++) {
+                        newSeq.push(coreSeq[(startIdx + i) % 6]);
+                    }
+                    // 第 7 關永遠是最後的終點
+                    newSeq.push(7);
+                }
         
-            // 正式啟動 90 分鐘倒數計時器
-            if (!GameState.get('startTime')) {
+                // 寫入全新序列並歸零進度
+                GameState.set('customSequence', newSeq);
+                GameState.set('currentStageIndex', 0);
+        
+                // 重設題目與關卡狀態，確保新開局乾淨
+                GameState.set('l1Collected', [false, false, false, false]);
+                GameState.set('l1Input', []);
+                GameState.set('l2CurrentQ', 0);
+                GameState.set('l2Photos', [false, false, false, false, false]);
+                GameState.set('l2Answered', [false, false, false, false, false]);
+                GameState.set('l3CurrentQ', 0);
+                GameState.set('l3PhotoDone', false);
+                GameState.set('l5CurrentQ', 0);
+                GameState.set('l5Input', []);
+        
+                // 啟動時間
                 GameState.set('startTime', Date.now());
-            }
-            if (globalTimerInterval) clearInterval(globalTimerInterval);
-            globalTimerInterval = setInterval(updateTimerDisplay, 1000);
-            updateTimerDisplay();
+                GameState.set('endTime', null);
+                GameState.set('timeExpiredHandled', false);
         
-            showAlert("任務授權通過", "代碼驗證成功！時空檔案已解鎖。\n請隊伍依照總部指引展開實地調查！", "fa-shield-halved", "text-emerald-700", () => {
+                if (globalTimerInterval) clearInterval(globalTimerInterval);
+                globalTimerInterval = setInterval(updateTimerDisplay, 1000);
+                updateTimerDisplay();
+        
                 showScreen('main');
-            }, "進入任務總部");
+            } else {
+                playErrorSound();
+                showAlert("代碼錯誤", "查無此任務代碼，請重新確認現場小卡上的代碼！\n(例：3G100301)", "fa-circle-xmark", "text-primary");
+            }
         };
-        function renderPuzzlePieces(containerId, isFullView) {
-            const container = document.getElementById(containerId); 
-            if (!container) return; 
-            container.innerHTML = '';
-            GAME_DATA.puzzles.forEach((p) => {
-                let stamps = GameState.get('stamps'); 
-                const isUnlocked = isFullView ? true : stamps[p.id - 1];
-                const div = document.createElement('div'); 
-                div.className = `puzzle-piece ${p.class}`;
-                if (!isUnlocked) { 
-                    div.classList.add('locked'); 
-                    div.innerHTML = '<i class="fa-solid fa-lock text-white/20 text-3xl opacity-80"></i>'; 
-                } else { 
-                    div.innerHTML = `<span>${p.text}</span>`; 
-                }
-                if (!isFullView) { 
-                    div.onclick = () => { 
-                        if (isUnlocked) { playBeep(700, 0.05); openPuzzleLightbox(p.text); } 
-                    }; 
-                }
-                container.appendChild(div);
-            });
-        }
 
         document.getElementById('btn-start-game').addEventListener('click', () => {
             const nameInput = document.getElementById('input-team-name'); 
