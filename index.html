@@ -473,15 +473,23 @@
                         <div class="text-sm leading-[1.8] font-bold text-ink text-justify font-serif space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-1">
                             <p style="font-size: 1.3rem;">園區中央的地下甬道是二戰時期是日軍台灣軍司令部選定的「高射砲陣地」，負責防守台北橋與總督府。</p>
                         </div>
+                        <div class="w-full min-h-[190px] max-h-[260px] vintage-photo flex items-center justify-center mb-5 shrink-0 overflow-hidden">
+                            <img src="images/歲月書屋.jpg" alt="歲月書屋" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=歲月書屋'" class="max-w-full max-h-[250px] w-auto h-auto object-contain loaded">
+                        </div>
                         <div class="text-sm leading-[1.8] font-bold text-ink text-justify font-serif space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-1">
                             <p style="font-size: 1.3rem;">為了因應戰爭與空襲威脅，日軍在這一帶設置防空相關設施，除了地面上的防空砲台之外，也建造了地下甬道與相關空間。</p>
                         </div>
+                        <div class="w-full min-h-[190px] max-h-[260px] vintage-photo flex items-center justify-center mb-5 shrink-0 overflow-hidden">
+                            <img src="images/歲月書屋.jpg" alt="歲月書屋" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=歲月書屋'" class="max-w-full max-h-[250px] w-auto h-auto object-contain loaded">
+                        </div>
                         <div class="text-sm leading-[1.8] font-bold text-ink text-justify font-serif space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-1">
                             <p style="font-size: 1.3rem;">這些地下設施讓人員能夠在不同的防空位置之間移動，也具有躲避空襲及存放物資等用途。甬道出口就是這套地下防空系統留下來的歷史痕跡之一。</p>
-                            <p class="text-primary font-black border-t border-dashed border-ink/15 pt-3">找到白T關主後：</p>
                         </div>
                         <div class="w-full min-h-[190px] max-h-[260px] vintage-photo flex items-center justify-center mb-5 shrink-0 overflow-hidden">
                             <img src="images/歲月書屋.jpg" alt="歲月書屋" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=歲月書屋'" class="max-w-full max-h-[250px] w-auto h-auto object-contain loaded">
+                        </div>
+                        <div class="text-sm leading-[1.8] font-bold text-ink text-justify font-serif space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-1">
+                            <p class="text-primary font-black border-t border-dashed border-ink/15 pt-3">找到白T關主後：</p>
                         </div>
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-5 shrink-0" onclick="transitionSubPage(1, 1, 2)">進入任務牆</button>
                     </div>
@@ -1008,11 +1016,31 @@
             ],
             level1: {
                 locations: [
-                    { title: "甬道1號出口", code: "1", task: "作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，通常設計隱蔽。\n一村中的甬道有10個出口，請觀察關主後方的<b>地圖</b>找尋【1號出口】，並拍照回傳總部。", desc: "" },
-                    { title: "豎井", code: "9", task: "地下甬道容易積聚廢氣或悶熱。豎井利用煙囪效應帶來新鮮空氣，亦是火災排煙通道。\n請找尋疑似【豎井】的<b>通氣</b>構造，其中一個可透過<b>高台上凸起的玻璃罩觀察地下甬道上方的風扇</b>，找到後拍照回傳確認。", desc: "" },
-                    { title: "甬道4號出入口", code: "4", task: "人員物資快速撤離出入口。\n請觀察甬道地圖找尋<b>院落</b>中的【4號出口】，並拍攝完整的構造回傳總部確認。", desc: "" },
-                    { title: "5號砲台遺跡", code: "5", task: "日治時期高射砲陣地留下了環形的防空砲台座。\n戰後眷舍便圍繞這6座防空砲台興建。請找尋<b>4號出口前</b>地板疑似【高射砲砲座】構建並拍照確認。", desc: "" }
-                ],
+                    { 
+                        title: "甬道1號出口", 
+                        code: "1", 
+                        task: "作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，通常設計隱蔽。\n一村中的甬道有10個出口，請觀察關主後方的<b style='color:#832729; text-decoration: underline;'>地圖</b>找尋【1號出口】，並拍照回傳總部。", 
+                        desc: "" 
+                    },
+                    { 
+                        title: "豎井", 
+                        code: "9", 
+                        task: "地下甬道容易積聚廢氣或悶熱。豎井利用煙囪效應帶來新鮮空氣，亦是火災排煙通道。\n請找尋疑似【豎井】的<b style='color:#832729; text-decoration: underline;'>通氣</b>構造，其中一個可透過<b style='color:#832729; text-decoration: underline;'>高台上凸起的玻璃罩觀察地下甬道上方的風扇</b>，找到後拍照回傳確認。", 
+                        desc: "" 
+                    },
+                    { 
+                        title: "甬道4號出入口", 
+                        code: "4", 
+                        task: "人員物資快速撤離出入口。\n請觀察甬道地圖找尋<b style='color:#832729; text-decoration: underline;'>院落</b>中的【4號出口】，並拍攝完整的構造回傳總部確認。", 
+                        desc: "" 
+                    },
+                    { 
+                        title: "5號砲台遺跡", 
+                        code: "5", 
+                        task: "日治時期高射砲陣地留下了環形的防空砲台座。\n戰後眷舍便圍繞這6座防空砲台興建。請找尋<b style='color:#832729; text-decoration: underline;'>4號出口前</b>地板疑似【高射砲砲座】構建並拍照確認。", 
+                        desc: "" 
+                    }
+                ]
                 passcode: "1945"
             },
             level2: {
