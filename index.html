@@ -1253,7 +1253,7 @@
         const GameState = (function() {
             const STORAGE_KEY = 'sanchong_game_state_v20_retro';
             let state = {
-                teamName: null, startLevel: 6, customSequence: [6, 1, 4, 2, 5, 3, 7],
+                teamName: null,currentScreen: 'entry', startLevel: 6, customSequence: [6, 1, 4, 2, 5, 3, 7],
                 startTime: null, endTime: null, stamps: [false, false, false, false, false, false, false],
                 currentStageIndex: 0, soundEnabled: true,
                 l1Input: [], l1Collected: [false, false, false, false], l1Errors: 0,
@@ -1322,23 +1322,32 @@
                 }
                 try {
                     if (GameState.init() && GameState.get('teamName')) {
-                        if (globalTimerInterval) clearInterval(globalTimerInterval);
-                        globalTimerInterval = setInterval(updateTimerDisplay, 1000);
-                        updateTimerDisplay();
-                    
                         const icon = document.getElementById('sound-icon');
                         if (icon && !GameState.get('soundEnabled')) {
                             icon.className = "fa-solid fa-volume-xmark text-gold/50 text-lg";
                         }
-                    
-                        if (GameState.get('timeExpiredHandled')) {
-                            const navBar = document.getElementById('bottom-nav-bar');
-                            if (navBar) navBar.classList.add('hidden');
-                            showScreen('level-7');
-                        } else if (GameState.get('stamps').filter(Boolean).length === 7) {
-                            showScreen('certificate');
+            
+                        // 判斷遊戲是否已正式開始（以 startTime 為準）
+                        if (GameState.get('startTime')) {
+                            if (globalTimerInterval) clearInterval(globalTimerInterval);
+                            globalTimerInterval = setInterval(updateTimerDisplay, 1000);
+                            updateTimerDisplay();
+            
+                            if (GameState.get('timeExpiredHandled')) {
+                                const navBar = document.getElementById('bottom-nav-bar');
+                                if (navBar) navBar.classList.add('hidden');
+                                showScreen('level-7');
+                            } else if (GameState.get('stamps').filter(Boolean).length === 7) {
+                                showScreen('certificate');
+                            } else {
+                                // 已開局：回到總部或原本在的關卡
+                                const savedScreen = GameState.get('currentScreen') || 'main';
+                                showScreen(savedScreen);
+                            }
                         } else {
-                            showScreen('main');
+                            // 尚未輸入任務代碼開局：回到刷新前的前導頁（例如 intro-chars）
+                            const savedScreen = GameState.get('currentScreen') || 'intro-chars';
+                            showScreen(savedScreen);
                         }
                     } else {
                         showScreen('entry');
@@ -1725,6 +1734,7 @@
 
         async function showScreen(screenId) {
             stopAllMedia();
+            GameState.set('currentScreen', screenId);
             const viewport = document.getElementById('game-viewport');
             const currentActive = viewport.querySelector('.screen-panel.screen-active, .screen-panel:not(.hidden)');
             const targetScreen = document.getElementById(`screen-${screenId}`);
