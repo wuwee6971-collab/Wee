@@ -77,6 +77,12 @@
             background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.12"/></svg>'); 
             box-shadow: inset 0 0 40px rgba(44, 30, 22, 0.15); 
         }
+        #alert-desc b, #l2-question-text b {
+            color: #832729;
+            background-color: rgba(131, 39, 41, 0.1);
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
 
         /* ==========================================
            3. UI 元件模組 (UI Components)
@@ -689,8 +695,8 @@
                         <div class="level-card p-8 flex-1 flex flex-col justify-center">
                             <p class="mb-8 text-lg font-bold text-ink font-serif leading-[1.8]">歡迎來到榕樹廣場！在接下來的活動中，你們將扮演眷村裡的鄰家小孩。</p>
                             <ul class="list-disc pl-5 space-y-6 text-base font-bold text-ink/90 text-justify leading-[1.8]">
-                                <li><b style='color:#832729; text-decoration: underline;'>活動體驗：</b>現場將準備瓜子與水果讓大家邊吃邊聊，並有編繩子、跳繩、猜字謎等復古互動。</li>
-                                <li><b style='color:#832729; text-decoration: underline;'>注意事項：</b>請放輕鬆，跟著 NPC 的引導融入情境。一起幫忙照顧身邊的「鄰居」們！</li>
+                                <li><b>活動體驗：</b>現場將準備瓜子與水果讓大家邊吃邊聊，並有編繩子、跳繩、猜字謎等復古互動。</li>
+                                <li><b>注意事項：</b>請放輕鬆，跟著 NPC 的引導融入情境。一起幫忙照顧身邊的「鄰居」們！</li>
                             </ul>
                         </div>
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="transitionSubPage(4, 3, 4)">進入測驗</button>
@@ -1048,19 +1054,19 @@
                     { 
                         image: "images/l2地圖.jpg", 
                         photoImage: null, 
-                        q: "空軍一村依據軍階與家庭成員分配房舍，這是一村的建築配置圖請對照地圖找到<span><b style='color:#832729; text-decoration: underline;'>特級眷舍</b></span>觀察高階軍官的家擁有哪一個最明顯的建築特征?", 
-                        isMultiChoice: false,
+                        q: "空軍一村依據軍階與家庭成員分配房舍，這是一村的建築配置圖請對照地圖找到<span><b>特級眷舍</b></span>觀察高階軍官的家擁有哪一個最明顯的建築特征?", 
+                        isMultiChoice: true, // 👈 這裡一定要是 true
                         opts: [
                             " 整排的連棟小屋", " 紅色大門", " 綠色大門", " 獨立庭院", 
                             " 美麗的斜屋頂", " 迷你游泳池", " 洗石子外牆", " 馬賽克外牆", 
                             " 紅磚牆", " 竹籬笆"
                         ], 
-                        a: [1, 3, 6, 8], 
+                        a: [1, 3, 6, 8], // 4 個答案：紅色大門(1)、獨立庭院(3)、洗石子外牆(6)、紅磚牆(8)
                         photo: true, 
-
                         photoText: "請隊員們一起與特級眷舍的任一個特徵並拍照吧！", 
-                        desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆與紅色大門。" 
+                        desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆、紅色大門與紅磚牆。" 
                     },
+                    // ...其餘題目保持不變
                     { 
                         images: [], 
                         q: "請找尋這個門牌的所在位置，並觀察旁邊的說明牌\n\n糟了！這張線索遺失了重要資訊，請幫忙填起\n\n(填空題)", 
@@ -1998,10 +2004,10 @@
                             <i class="fa-solid fa-landmark mr-2"></i>村長家的七次擴建歷程
                         </div>
                         <p class="text-sm leading-[1.8] text-ink font-bold text-justify">
-                            民國38年隨軍撤退來台時，村長家最初僅是簡陋的<b style='color:#832729; text-decoration: underline;'>黑瓦竹泥牆平房</b>。
-                            民國50年代因淡水河頻繁氾濫，特別增建了挑高的<b style='color:#832729; text-decoration: underline;'>防洪樓</b>避難；
-                            隨後因家庭人口繁衍生活空間不足，陸續<b style='color:#832729; text-decoration: underline;'>加蓋二樓</b>；
-                            最後才隨著就地生根的決心，逐步擴充<b style='color:#832729; text-decoration: underline;'>改建為三層樓</b>的現代水泥建築。
+                            民國38年隨軍撤退來台時，村長家最初僅是簡陋的<b>黑瓦竹泥牆平房</b>。
+                            民國50年代因淡水河頻繁氾濫，特別增建了挑高的<b>防洪樓</b>避難；
+                            隨後因家庭人口繁衍生活空間不足，陸續<b>加蓋二樓</b>；
+                            最後才隨著就地生根的決心，逐步擴充<b>改建為三層樓</b>的現代水泥建築。
                         </p>
                         <div class="bg-military/10 p-3 rounded-md text-xs text-military font-bold shadow-inner border border-military/10">
                             💡 請記住這段由「克難避難」走向「成家生根」的時序變化。
@@ -2167,7 +2173,7 @@
                         }
                     } else {
                         playErrorSound();
-                        showAlert("驗證失敗", "特徵選擇不完整或包含錯誤項目，高階軍官眷舍共有 3 個關鍵特徵，請重新比對！", "fa-circle-xmark", "text-primary", null, "重新選擇");
+                        showAlert("驗證失敗", "特徵選擇不完整或包含錯誤項目，高階軍官眷舍共有 4 個關鍵特徵，請重新比對！", "fa-circle-xmark", "text-primary", null, "重新選擇");
                     }
                 };
                 cont.appendChild(submitBtn);
