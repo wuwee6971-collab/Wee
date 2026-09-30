@@ -132,7 +132,7 @@
 
         .code-box { background: #F7F3E8; border: 2px solid #2C1E16; border-radius: 6px; box-shadow: inset 2px 2px 6px rgba(0,0,0,0.08); }
 
-        /* 照片與圖像渲染優化 (修復不裁切問題) */
+        /* 照片與圖像渲染優化 */
         .vintage-photo { 
             border: 6px solid #F7F3E8; border-bottom-width: 18px; 
             box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
@@ -342,7 +342,7 @@
                                 </div>
                             </div>
                 
-                            <!-- 林志遠 (含照片欄位) -->
+                            <!-- 林志遠 -->
                             <div class="char-card-flex shrink-0">
                                 <div class="char-img-box w-20 h-20 border-r border-ink/10 skeleton-bg vintage-photo !border-2">
                                     <img src="images/林志遠.jpg" alt="林志遠" class="w-full h-full object-contain" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg'); this.src='https://placehold.co/150/e5d5b5/7c343d?text=志遠'">
@@ -353,7 +353,7 @@
                                 </div>
                             </div>
                 
-                            <!-- 阿秀 (含照片欄位) -->
+                            <!-- 阿秀 -->
                             <div class="char-card-flex shrink-0">
                                 <div class="char-img-box w-20 h-20 border-r border-ink/10 skeleton-bg vintage-photo !border-2">
                                     <img src="images/阿秀.jpg" alt="阿秀" class="w-full h-full object-contain" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg'); this.src='https://placehold.co/150/e5d5b5/7c343d?text=阿秀'">
@@ -364,7 +364,7 @@
                                 </div>
                             </div>
                 
-                            <!-- 小助手 (含照片欄位) -->
+                            <!-- 小助手 -->
                             <div class="char-card-flex shrink-0">
                                 <div class="char-img-box w-20 h-20 border-r border-ink/10 skeleton-bg vintage-photo !border-2">
                                     <img src="images/小助手.jpg" alt="小助手" class="w-full h-full object-contain" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg'); this.src='https://placehold.co/150/e5d5b5/7c343d?text=小助手'">
@@ -620,7 +620,6 @@
                             
                             <p id="l3-question-text" class="text-base font-black text-center leading-[1.8] mb-3 text-ink font-serif tracking-widest"></p>
                             
-                            <!-- 四宮格料理圖片按鈕容器（點擊彈出介紹） -->
                             <div id="l3-options-container" class="grid grid-cols-2 gap-3 flex-1 content-end pb-2"></div>
                         </div>
                     </div>
@@ -730,10 +729,8 @@
                         <img src="images/主視覺2.jpg" class="mb-4 rounded-md shadow-sm" onerror="this.src='https://placehold.co/400x300?text=主視覺圖'">
                         <p class="text-base font-bold text-ink mb-8 font-serif leading-relaxed text-justify">主持人為我們帶來</p>
                         
-                        <!-- 這裡接續 Bug 1 修改的 form 標籤 -->
                         <form class="space-y-4" onsubmit="event.preventDefault(); checkL5Arrival();">
                             <input type="text" id="l5-check-password" placeholder="輸入「外婆橋」" class="w-full bg-paper border border-ink/20 rounded-md px-4 py-4 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-ink shadow-inner transition-all text-center">
-                            <!-- 將 button 改為 type="submit"，並移除原來的 onclick -->
                             <button type="submit" id="l5-check-confirm-btn" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em]">確認</button>
                         </form>
                     </div>
@@ -876,17 +873,47 @@
                     </div>
                 </div>
 
-                <!-- LEVEL 7: 最終地點 -->
-                <div id="screen-level-7" class="screen-panel hidden p-6 flex flex-col">
-                    <div class="level-card l7 p-8 flex-1 flex flex-col justify-center items-center text-center bg-black/40 backdrop-blur-sm relative border border-gold/30">
-                        <i class="fa-solid fa-envelope-open-text text-6xl text-gold mb-6 opacity-80 drop-shadow-[0_0_15px_rgba(221,191,146,0.4)]"></i>
-                        <h2 class="text-3xl font-black text-gold mb-4 font-serif tracking-widest">最終地點抵達</h2>
-                        <p class="text-base font-bold text-gold/90 leading-[2] font-serif mb-8 text-center">
-                            漫長的搜集已抵達終點，<br>請在現場就位後，按下按鈕開啟最後的信件。
-                        </p>
-                        <button class="btn-base w-full py-5 bg-gold text-ink font-black text-xl tracking-[0.2em] shadow-[0_0_25px_rgba(221,191,146,0.3)] transition-transform active:scale-95" onclick="handleLevelSuccess(7)">
-                            <i class="fa-solid fa-feather-pointed mr-2"></i>開啟最終劇情
-                        </button>
+                <!-- LEVEL 7: 最終地點 (市集攤位) -->
+                <div id="screen-level-7" class="screen-panel hidden p-6 flex flex-col justify-center">
+                    <div class="level-card l7 p-6 sm:p-8 flex flex-col justify-center items-center text-center bg-[#1A1A1A] backdrop-blur-md relative border border-gold/30 rounded-xl space-y-5">
+                        <i class="fa-solid fa-envelope-open-text text-5xl text-gold opacity-90 drop-shadow-[0_0_15px_rgba(221,191,146,0.4)]"></i>
+                        
+                        <!-- 標題與副標題 -->
+                        <div>
+                            <h2 class="text-3xl font-black text-gold mb-2 font-serif tracking-widest">最後一封信</h2>
+                            <div class="text-xs font-mono font-bold text-gold/70 tracking-widest flex items-center justify-center space-x-2">
+                                <span>最終密碼</span>
+                                <span>•</span>
+                                <span>通往最深的思念</span>
+                            </div>
+                        </div>
+
+                        <!-- 描述文字與經緯度 -->
+                        <div class="space-y-3 text-paper/90 font-serif text-sm sm:text-base leading-relaxed">
+                            <p class="text-gold/90 font-bold">
+                                歷史的最後一塊拼圖，<br>藏在回憶的最深處。
+                            </p>
+                            <div class="text-center text-gold/30 tracking-[0.4em] text-xs">··· ✦ ···</div>
+                            <p class="font-bold text-sm leading-relaxed">
+                                志遠最後的身影被紀錄在經緯度：<br>
+                                <span class="font-mono text-gold font-black text-base select-all tracking-wider">25.057678, 121.499645</span><br>
+                                在這裡：
+                            </p>
+                        </div>
+
+                        <!-- 導航至 Google Map 按鈕 -->
+                        <a href="https://www.google.com/maps/search/?api=1&query=25.057678,121.499645" target="_blank" rel="noopener noreferrer" class="btn-base w-full py-4 bg-paper-dark border-2 border-gold text-ink font-black text-base tracking-[0.15em] shadow-[4px_4px_0_#C4A473] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none hover:bg-paper transition-all flex items-center justify-center gap-2">
+                            <span>已到達</span>
+                            <span class="text-stamp">📍</span>
+                        </a>
+
+                        <!-- 最終密碼輸入框與驗證 -->
+                        <form class="w-full space-y-3 pt-2" onsubmit="event.preventDefault(); verifyL7Passcode();">
+                            <input type="text" id="l7-input-code" placeholder="輸入最終密碼" class="w-full bg-paper border border-ink/20 rounded-md px-4 py-3.5 text-center text-lg font-mono font-black text-primary placeholder:text-ink/40 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 uppercase shadow-inner tracking-widest">
+                            <button type="submit" id="l7-btn-submit" class="btn-base primary-btn w-full py-4 font-black text-base tracking-[0.2em]">
+                                <i class="fa-solid fa-key mr-2 text-gold"></i>確認密碼並開啟劇情
+                            </button>
+                        </form>
                     </div>
                 </div>
 
@@ -1055,18 +1082,17 @@
                         image: "images/l2地圖.jpg", 
                         photoImage: null, 
                         q: "空軍一村依據軍階與家庭成員分配房舍，這是一村的建築配置圖請對照地圖找到<span><b>特級眷舍</b></span>觀察高階軍官的家擁有哪一個最明顯的建築特征?", 
-                        isMultiChoice: true, // 👈 這裡一定要是 true
+                        isMultiChoice: true,
                         opts: [
                             " 整排的連棟小屋", " 紅色大門", " 綠色大門", " 獨立庭院", 
                             " 美麗的斜屋頂", " 迷你游泳池", " 洗石子外牆", " 馬賽克外牆", 
                             " 紅磚牆", " 竹籬笆"
                         ], 
-                        a: [1, 3, 6, 8], // 4 個答案：紅色大門(1)、獨立庭院(3)、洗石子外牆(6)、紅磚牆(8)
+                        a: [1, 3, 6, 8],
                         photo: true, 
                         photoText: "請隊員們一起與特級眷舍的任一個特徵並拍照吧！", 
                         desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆、紅色大門與紅磚牆。" 
                     },
-                    // ...其餘題目保持不變
                     { 
                         images: [], 
                         q: "請找尋這個門牌的所在位置，並觀察旁邊的說明牌\n\n糟了！這張線索遺失了重要資訊，請幫忙填起\n\n(填空題)", 
@@ -1276,7 +1302,6 @@
                 imgEl.classList.remove('loaded');
                 imgEl.onload = () => imgEl.classList.add('loaded');
                 imgEl.src = src;
-                // 刪除這一行：if (imgEl.complete) imgEl.classList.add('loaded');
                 modal.classList.remove('hidden');
             }
         };
@@ -1290,14 +1315,15 @@
         const GameState = (function() {
             const STORAGE_KEY = 'sanchong_game_state_v20_retro';
             let state = {
-                teamName: null,currentScreen: 'entry', startLevel: 6, customSequence: [6, 1, 4, 2, 5, 3, 7],
+                teamName: null, currentScreen: 'entry', startLevel: 6, customSequence: [6, 1, 4, 2, 5, 3, 7],
                 startTime: null, endTime: null, stamps: [false, false, false, false, false, false, false],
                 currentStageIndex: 0, soundEnabled: true,
                 l1Input: [], l1Collected: [false, false, false, false], l1Errors: 0,
                 l2Photos: [false, false, false, false, false], 
                 l2Answered: [false, false, false, false, false],
                 l2CurrentQ: 0,
-                l3PhotoDone: false, l3CurrentQ: 0, l5Input: [], l5Errors: 0, l5CurrentQ: 0
+                l3PhotoDone: false, l3CurrentQ: 0, l5Input: [], l5Errors: 0, l5CurrentQ: 0,
+                timeExpiredHandled: false
             };
             function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
             return {
@@ -1364,25 +1390,20 @@
                             icon.className = "fa-solid fa-volume-xmark text-gold/50 text-lg";
                         }
             
-                        // 判斷遊戲是否已正式開始（以 startTime 為準）
                         if (GameState.get('startTime')) {
                             if (globalTimerInterval) clearInterval(globalTimerInterval);
                             globalTimerInterval = setInterval(updateTimerDisplay, 1000);
                             updateTimerDisplay();
             
                             if (GameState.get('timeExpiredHandled')) {
-                                const navBar = document.getElementById('bottom-nav-bar');
-                                if (navBar) navBar.classList.add('hidden');
                                 showScreen('level-7');
                             } else if (GameState.get('stamps').filter(Boolean).length === 7) {
                                 showScreen('certificate');
                             } else {
-                                // 已開局：回到總部或原本在的關卡
                                 const savedScreen = GameState.get('currentScreen') || 'main';
                                 showScreen(savedScreen);
                             }
                         } else {
-                            // 尚未輸入任務代碼開局：回到刷新前的前導頁（例如 intro-chars）
                             const savedScreen = GameState.get('currentScreen') || 'intro-chars';
                             showScreen(savedScreen);
                         }
@@ -1487,6 +1508,30 @@
                 modal.classList.add('hidden');
                 if (callback) callback();
             }, 300);
+        }
+
+        function renderPuzzlePieces(containerId, isFullView = false) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+            const stamps = GameState.get('stamps') || [false, false, false, false, false, false, false];
+
+            GAME_DATA.puzzles.forEach((puzzle, i) => {
+                const el = document.createElement('div');
+                const isUnlocked = stamps[i];
+                el.className = `puzzle-piece ${puzzle.class} ${isUnlocked ? '' : 'locked'}`;
+                
+                if (isUnlocked) {
+                    el.innerHTML = `<span>${puzzle.text}</span>`;
+                    el.onclick = () => {
+                        playBeep(600, 0.05);
+                        openPuzzleLightbox(puzzle.text);
+                    };
+                } else {
+                    el.innerHTML = `<i class="fa-solid fa-lock text-ink/30 text-lg"></i>`;
+                }
+                container.appendChild(el);
+            });
         }
 
         window.openStampsDrawer = function() {
@@ -1808,7 +1853,7 @@
             if (screenId === 'level-1') { forceSubPageInit(1, 1, 2); renderL1(); }
             if (screenId === 'level-2') renderL2();
             if (screenId === 'level-3') renderL3();
-            if (screenId === 'level-4') { forceSubPageInit(4, 1, 4); renderL4Questions(); } // 修正：確保題目選項被渲染
+            if (screenId === 'level-4') { forceSubPageInit(4, 1, 4); renderL4Questions(); }
             if (screenId === 'level-5') { renderL5(GameState.get('l5CurrentQ') || 0); }
             if (screenId === 'level-6') { forceSubPageInit(6, 1, 4); renderL6Songs(); }
         
@@ -2039,13 +2084,13 @@
             } else {
                 qTextEl.innerHTML = qData.q;
                 const imgList = qData.images || (qData.image ? [qData.image] : []);
-    
+        
                 if (imgList.length > 0) {
                     qImgContainer.classList.remove('hidden');
                     qImgContainer.className = imgList.length > 1 
                         ? "mb-6 w-full grid grid-cols-2 gap-3 shrink-0" 
                         : "mb-6 w-full vintage-photo shrink-0 cursor-zoom-in min-h-[160px] max-h-[300px]";
-    
+        
                     imgList.forEach((src) => {
                         const wrap = document.createElement('div');
                         wrap.className = "vintage-photo cursor-zoom-in w-full min-h-[140px] max-h-[260px] overflow-hidden";
@@ -2326,7 +2371,6 @@
             
             if (btnVoice.disabled || !GameState.get('soundEnabled')) {
                 if (!GameState.get('soundEnabled')) { 
-                    // 修正：主動彈出提示框告知玩家，確認後再解鎖選項
                     showAlert("語音已靜音", "偵測到您目前關閉了音效，已自動為您解鎖下方選項，請根據文字線索進行推理。", "fa-volume-xmark", "text-military", () => {
                         document.getElementById('l3-audio-hint').classList.add('hidden'); 
                         document.querySelectorAll('.l3-opt-btn').forEach(b => { 
@@ -2522,6 +2566,21 @@
         }
 
         // ==========================================
+        // LEVEL 7 邏輯
+        // ==========================================
+        window.verifyL7Passcode = function() {
+            const input = document.getElementById('l7-input-code');
+            const val = input ? input.value.trim().toUpperCase() : "";
+            if (val === "TAG106") {
+                playSuccessSound();
+                handleLevelSuccess(7);
+            } else {
+                playErrorSound();
+                showAlert("密碼錯誤", "最終密碼不正確！\n請抵達現場後向工作人員（NPC）索取最終密碼。", "fa-circle-xmark", "text-primary");
+            }
+        };
+
+        // ==========================================
         // 全域按鈕與事件綁定
         // ==========================================
         window.verifyLevelCode = function() {
@@ -2529,17 +2588,16 @@
             const codeInput = document.getElementById('input-level-code');
             const code = codeInput ? codeInput.value.trim().toUpperCase() : "";
             
-            // 8 碼代碼對應起始關卡
             const codeMap = {
-                '3G100301': 1, // 起始點：防砲陣地
-                '3G100302': 2, // 起始點：眷村空間與建築
-                '3G100303': 3, // 起始點：村長的家
-                '3G100304': 4, // 起始點：榕樹廣場
-                '3G100305': 5, // 起始點：群星之夜
-                '3G100306': 6, // 起始點：時光膠囊
-                '3G100307': 7  // 最終地點
+                '3G100301': 1,
+                '3G100302': 2,
+                '3G100303': 3,
+                '3G100304': 4,
+                '3G100305': 5,
+                '3G100306': 6,
+                '3G100307': 7
             };
-        
+            
             if (codeMap[code]) {
                 const startLvl = codeMap[code];
                 GameState.set('startLevel', startLvl);
@@ -2548,23 +2606,17 @@
                 if (startLvl === 7) {
                     newSeq = [7];
                 } else {
-                    // 保持原本特製的 6-1-4-2-5-3 循環動線
                     const coreSeq = [6, 1, 4, 2, 5, 3];
                     const startIdx = coreSeq.indexOf(startLvl);
-                    
-                    // 從輸入的關卡開始，依核心動線依序推入 6 關
                     for (let i = 0; i < 6; i++) {
                         newSeq.push(coreSeq[(startIdx + i) % 6]);
                     }
-                    // 第 7 關永遠是最後的終點
                     newSeq.push(7);
                 }
         
-                // 寫入全新序列並歸零進度
                 GameState.set('customSequence', newSeq);
                 GameState.set('currentStageIndex', 0);
         
-                // 重設題目與關卡狀態，確保新開局乾淨
                 GameState.set('l1Collected', [false, false, false, false]);
                 GameState.set('l1Input', []);
                 GameState.set('l2CurrentQ', 0);
@@ -2575,7 +2627,6 @@
                 GameState.set('l5CurrentQ', 0);
                 GameState.set('l5Input', []);
         
-                // 啟動時間
                 GameState.set('startTime', Date.now());
                 GameState.set('endTime', null);
                 GameState.set('timeExpiredHandled', false);
@@ -2620,7 +2671,7 @@
             let elapsed = Math.floor((now - GameState.get('startTime')) / 1000);
             let remain = (90 * 60) - elapsed; 
             
-            // 超時自動處理邏輯
+            // 超時自動處理邏輯：時間結束自動跳轉至集合地點 (Level 7)
             if (remain <= 0) {
                 remain = 0;
                 if (!GameState.get('timeExpiredHandled')) {
@@ -2628,11 +2679,8 @@
                     if (!GameState.get('endTime')) GameState.set('endTime', Date.now());
                     if (globalTimerInterval) clearInterval(globalTimerInterval);
                     
-                    showAlert("委託時間已達上限", "90 分鐘調查時間結束！\n系統已為您導航至最終地點。\n\n★ 您依然可以前往服務台核銷並領取紀念品！", "fa-clock", "text-primary", () => {
-                        const navBar = document.getElementById('bottom-nav-bar');
-                        if (navBar) navBar.classList.add('hidden');
-                        showScreen('level-7');
-                    }, "前往最終地點");
+                    showScreen('level-7');
+                    showAlert("委託時間已達上限", "90 分鐘調查時間已結束！\n系統已自動為您切換至集合地點（市集攤位）。\n\n★ 請依據經緯度座標前往集合，並尋找 NPC 取得最終密碼！", "fa-clock", "text-primary");
                 }
             }
             
