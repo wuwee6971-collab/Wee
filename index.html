@@ -497,7 +497,7 @@
                                 <div class="bg-ink text-gold text-sm font-bold px-6 py-4 rounded-md shadow-2xl border border-gold/30 tracking-widest text-center">機密鎖定：請先完成巡查</div>
                             </div>
                             
-                            <h2 class="text-xl text-primary font-black text-center border-b border-ink/10 pb-4 relative z-10 font-serif tracking-widest">任務二：終戰年份密碼</h2>
+                            <h2 class="text-xl text-primary font-black text-center border-b border-ink/10 pb-4 relative z-10 font-serif tracking-widest">任務二：終戰密碼</h2>
                             
                             <div id="l1-code-container" class="grid grid-cols-4 gap-4 max-w-[280px] mx-auto relative z-10">
                                 <div class="code-box h-16 flex items-center justify-center text-3xl font-black font-mono text-primary shadow-inner bg-paper"></div>
@@ -1107,16 +1107,12 @@
             ],
             level1: {
                 locations: [
-                    { title: "甬道1號出口", code: "1", task: "1.甬道出口：作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，通常設計隱蔽。\n一村中的甬道有10個出口，請觀察關主後方的地圖找尋【1號出口】，並拍照回傳總部。", desc: "" },
-                    { title: "豎井", code: "9", task: "2.甬道豎井：地下甬道容易積聚廢氣或悶熱。豎井利用煙囪效應帶來新鮮空氣，亦是火災排煙通道。\n請找尋疑似【豎井】的通氣構造，其中一個可透過玻璃罩觀察地下甬道，找到後拍照回傳確認。", desc: "" },
-                    { title: "甬道4號出入口", code: "4", task: "4號出入口：人員物資快速撤離出入口。\n請觀察甬道地圖找尋院落中的【4號出口】，並拍照回傳總部確認。", desc: "" },
-                    { title: "5號砲台遺跡", code: "5", task: "5號砲台遺跡：日治時期高射砲陣地留下的防空砲台。\n戰後眷舍便圍繞這6座防空砲台興建。請找尋4號出口前地板疑似【高射砲砲座】構建並拍照確認。", desc: "" }
+                    { title: "甬道1號出口", code: "1", task: "作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，通常設計隱蔽。\n一村中的甬道有10個出口，請觀察關主後方的<b>地圖</b>找尋【1號出口】，並拍照回傳總部。", desc: "" },
+                    { title: "豎井", code: "9", task: "地下甬道容易積聚廢氣或悶熱。豎井利用煙囪效應帶來新鮮空氣，亦是火災排煙通道。\n請找尋疑似【豎井】的<b>通氣</b>構造，其中一個可透過<b>高台上凸起的玻璃罩觀察地下甬道上方的風扇</b>，找到後拍照回傳確認。", desc: "" },
+                    { title: "甬道4號出入口", code: "4", task: "人員物資快速撤離出入口。\n請觀察甬道地圖找尋<b>院落</b>中的【4號出口】，並拍攝完整的構造回傳總部確認。", desc: "" },
+                    { title: "5號砲台遺跡", code: "5", task: "日治時期高射砲陣地留下了環形的防空砲台座。\n戰後眷舍便圍繞這6座防空砲台興建。請找尋<b>4號出口前</b>地板疑似【高射砲砲座】構建並拍照確認。", desc: "" }
                 ],
-                passcode: "1945",
-                hints: [
-                    "提示一：防砲陣地是在二戰結束那一年終止任務的。",
-                    "提示二：第二次世界大戰結束於西元 1945 年。"
-                ]
+                passcode: "1945"
             },
             level2: {
                 questions: [
@@ -1154,7 +1150,7 @@
                         opts: [],
                         a: null,
                         photo: true, 
-                        photoText: "請在眷村中找到「一線天」張開雙手觸碰二側牆壁拍一張照\n\n玩家必須入鏡並雙手碰牆", 
+                        photoText: "請在眷村中找到「一線天」張開雙手觸碰二側牆壁拍一張照\n隊員必須入鏡並雙手碰牆", 
                         desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成緊鄰樣貌。" 
                     },
                     { 
@@ -1171,7 +1167,7 @@
                         opts: ["居民開始重視與鄰居保持距離", "居民確定無法短期返回大陸，長久生活", "政府規定必須將生活空間封閉", "為了防止敵人進入眷村"], 
                         a: 1, 
                         photo: true, 
-                        photoText: "請尋找建築上的鐵窗拍照上傳審核\n(各種鐵窗都可以)", 
+                        photoText: "請尋找建築上的鐵窗，由隊員\n以手做出和鐵窗上圖案相似的形狀\n回傳總部", 
                         desc: "隨著定居長久與人口增加，生活機能全面移入屋內並加裝鐵窗，從開放聚落走向獨立住宅。" 
                     }
                 ]
@@ -1898,7 +1894,7 @@
                 openFullLetter();
             } else {
                 let msg = "獲得一塊歷史碎片，\n準備進入下一階段調查。";
-                if (lvlNum === 1) msg = "警報響起，任務成功！我們將蒐集到的暗號數字重組成關鍵年份「1945 年」——這是日軍防止美軍大空襲的高峰年代，也是二次世界大戰結束、防砲陣地完成歷史使命的轉折點。";
+                if (lvlNum === 1) msg = "警報響起，任務成功！\n我們將蒐集到的暗號數字重組成關鍵年份「1945 年」——這是日軍防止美軍大空襲的高峰年代，也是二次世界大戰結束、防砲陣地完成歷史使命的轉折點。";
                 showAlert("調查成功", msg, "", "", () => showScreen('main'), "返回總部");
             }
         }
@@ -1990,9 +1986,7 @@
                 GameState.set('l1Errors', errCount);
                 GameState.set('l1Input', []);
                 updateL1Display();
-                if (errCount >= 4) showAlert("機密檔案調閱", GAME_DATA.level1.hints[1], "fa-lightbulb", "text-gold-dark");
-                else if (errCount >= 2) showAlert("調查線索", GAME_DATA.level1.hints[0], "fa-magnifying-glass", "text-ink");
-                else showAlert("密碼錯誤", "年份驗證失敗，請確認四處構件解鎖之數字（1945）。", "fa-circle-xmark", "text-primary");
+                if (errCount >= 1) showAlert("密碼錯誤", "年份驗證失敗，請確認四處構件解鎖之數字。", "fa-circle-xmark", "text-primary");
             }
         };
 
