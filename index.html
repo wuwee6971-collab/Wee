@@ -475,6 +475,7 @@
                         </div>
                         <div class="text-sm leading-[1.8] font-bold text-ink text-justify font-serif space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-1">
                             <p style="font-size: 1.3rem;">為了因應戰爭與空襲威脅，日軍在這一帶設置防空相關設施，除了地面上的防空砲台之外，也建造了地下甬道與相關空間。</p>
+                        </div>
                         <div class="text-sm leading-[1.8] font-bold text-ink text-justify font-serif space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-1">
                             <p style="font-size: 1.3rem;">這些地下設施讓人員能夠在不同的防空位置之間移動，也具有躲避空襲及存放物資等用途。甬道出口就是這套地下防空系統留下來的歷史痕跡之一。</p>
                             <p class="text-primary font-black border-t border-dashed border-ink/15 pt-3">找到白T關主後：</p>
@@ -1657,6 +1658,8 @@
             else if (screenId === 'tutorial') titleEl.textContent = "操作說明";
             else if (screenId === 'level-select') titleEl.textContent = "任務代碼";
             else if (screenId === 'main') titleEl.textContent = "任務總部";
+            else if (screenId === 'l3-intro') titleEl.textContent = "村長的家";
+            else if (screenId === 'l5-arrival') titleEl.textContent = "群星之夜";
             else if (screenId === 'certificate') titleEl.textContent = "結案報告";
             else {
                 const lvlNum = parseInt(screenId.replace('level-', ''));
@@ -1725,7 +1728,7 @@
             const viewport = document.getElementById('game-viewport');
             const currentActive = viewport.querySelector('.screen-panel.screen-active, .screen-panel:not(.hidden)');
             const targetScreen = document.getElementById(`screen-${screenId}`);
-
+        
             if (currentActive && currentActive !== targetScreen) {
                 currentActive.classList.remove('screen-active');
                 currentActive.classList.add('screen-exit');
@@ -1739,7 +1742,7 @@
                     if (s !== targetScreen) s.classList.add('hidden');
                 });
             }
-
+        
             if (targetScreen) {
                 targetScreen.classList.remove('hidden');
                 targetScreen.classList.add('screen-enter');
@@ -1748,19 +1751,20 @@
                 targetScreen.classList.add('screen-active');
                 viewport.scrollTop = 0;
             }
-
+        
             document.getElementById('modal-stamps').classList.add('hidden');
             updateHeader(screenId);
-
+        
+            // 各畫面專屬初使化
             if (screenId === 'certificate') renderCertificate();
             if (screenId === 'main') renderMain();
             if (screenId === 'level-1') { forceSubPageInit(1, 1, 2); renderL1(); }
             if (screenId === 'level-2') renderL2();
             if (screenId === 'level-3') renderL3();
-            if (screenId === 'level-4') forceSubPageInit(4, 1, 4);
+            if (screenId === 'level-4') { forceSubPageInit(4, 1, 4); renderL4Questions(); } // 修正：確保題目選項被渲染
             if (screenId === 'level-5') { renderL5(GameState.get('l5CurrentQ') || 0); }
             if (screenId === 'level-6') { forceSubPageInit(6, 1, 4); renderL6Songs(); }
-
+        
             updateStampBadgeCount();
         }
 
@@ -2473,6 +2477,35 @@
         // ==========================================
         // 全域按鈕與事件綁定
         // ==========================================
+        window.verifyLevelCode = function() {
+            const codeInput = document.getElementById('input-level-code');
+            const code = codeInput ? codeInput.value.trim().toUpperCase() : '';
+            
+            if (!code) {
+                playErrorSound();
+                return showAlert("請輸入代碼", "請輸入任務小卡上的 8 碼任務代碼！", "fa-triangle-exclamation");
+            }
+        
+            // 格式驗證（至少4碼，可輸入任意小卡代碼或自訂8碼）
+            if (code.length < 4) {
+                playErrorSound();
+                return showAlert("代碼格式不符", "請輸入完整的任務代碼！", "fa-circle-xmark", "text-primary");
+            }
+        
+            playSuccessSound();
+        
+            // 正式啟動 90 分鐘倒數計時器
+            if (!GameState.get('startTime')) {
+                GameState.set('startTime', Date.now());
+            }
+            if (globalTimerInterval) clearInterval(globalTimerInterval);
+            globalTimerInterval = setInterval(updateTimerDisplay, 1000);
+            updateTimerDisplay();
+        
+            showAlert("任務授權通過", "代碼驗證成功！時空檔案已解鎖。\n請隊伍依照總部指引展開實地調查！", "fa-shield-halved", "text-emerald-700", () => {
+                showScreen('main');
+            }, "進入任務總部");
+        };
         function renderPuzzlePieces(containerId, isFullView) {
             const container = document.getElementById(containerId); 
             if (!container) return; 
