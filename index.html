@@ -1623,6 +1623,24 @@
         };
 
         function compressImageFast(file, maxWidth, quality, callback) {
+            // 優先使用硬體加速的 createImageBitmap
+            if (window.createImageBitmap) {
+                createImageBitmap(file).then(imgBitmap => {
+                    const canvas = document.createElement('canvas');
+                    const scale = Math.min(1, maxWidth / imgBitmap.width);
+                    canvas.width = Math.round(imgBitmap.width * scale);
+                    canvas.height = Math.round(imgBitmap.height * scale);
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(imgBitmap, 0, 0, canvas.width, canvas.height);
+                    callback(canvas.toDataURL('image/jpeg', quality));
+                }).catch(() => fallbackCompress(file, maxWidth, quality, callback));
+            } else {
+                fallbackCompress(file, maxWidth, quality, callback);
+            }
+        }
+
+        // 傳統相容性備用壓縮
+        function fallbackCompress(file, maxWidth, quality, callback) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
@@ -1669,6 +1687,7 @@
                 };
             }
         
+            // 壓縮並上傳
             compressImageFast(file, 640, 0.5, async (base64Str) => {
                 if (isHandled) return;
                 const teamName = GameState.get('teamName') || "匿名隊伍";
@@ -1683,22 +1702,31 @@
         
                     const alertDesc = document.getElementById('alert-desc');
                     const alertIcon = document.getElementById('alert-icon');
-                    if (alertDesc) alertDesc.textContent = "照片已送達指揮所，審核官查驗中...\n(請保持畫面，審核通過將自動跳轉)";
+                    if (alertDesc) alertDesc.textContent = "照片已送達指揮所，審核官查驗中...\n(請保持畫面，審核通過將立即通知)";
                     if (alertIcon) alertIcon.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-5xl text-primary"></i>';
         
+                    // 🚀 關鍵優化：收到審核結果時，立即停止監聽並就地回傳，零等待
                     const handleResult = (approved) => {
                         if (isHandled) return;
-                        cleanUp(); 
-                        closeModalAnim('modal-alert', 'alert-box', () => onSuccess(approved));
+                        cleanUp(); // 立刻中斷 Snapshot 與 setInterval，釋放線程
+                        
+                        // 不進行 closeModalAnim 的 300ms 延遲，直接切換下一步邏輯
+                        const modal = document.getElementById('modal-alert');
+                        if (modal) modal.classList.add('hidden'); // 瞬間關閉上傳提示
+                        onSuccess(approved); // 馬上執行成功回呼（例如播放成功音效、彈出成功訊息）
                     };
         
-                    activeUploadUnsubscribe = docRef.onSnapshot((doc) => {
+                    // 1. WebSocket 即時監聽（通常在 100~200ms 內收到通知）
+                    activeUploadUnsubscribe = docRef.onSnapshot({ includeMetadataChanges: false }, (doc) => {
                         if (isHandled || !doc.exists) return;
                         const data = doc.data();
                         if (data.status === "approved") handleResult(true);
                         else if (data.status === "rejected") handleResult(false);
-                    }, (err) => { console.warn("Snapshot 斷線，交由輪詢處理", err); });
+                    }, (err) => { 
+                        console.warn("Snapshot 斷線，交由輪詢處理", err); 
+                    });
         
+                    // 2. 備用輪詢（改為 600ms 檢查一次，加速備用觸發）
                     activeUploadPollTimer = setInterval(async () => {
                         if (isHandled) return;
                         try {
@@ -1709,7 +1737,7 @@
                                 else if (data.status === "rejected") handleResult(false);
                             }
                         } catch (e) {}
-                    }, 1000);
+                    }, 600);
         
                 } catch (error) {
                     if (!isHandled) {
