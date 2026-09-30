@@ -1536,17 +1536,42 @@
 
         window.openStampsDrawer = function() {
             playBeep();
-            renderPuzzlePieces('puzzle-drawer-board', false);
+            try {
+                renderPuzzlePieces('puzzle-drawer-board', false);
+            } catch (e) {
+                console.warn("拼圖渲染警告：", e);
+            }
+            
+            // 檢查第七片是否已獲得（取得最終密碼）
+            const stamps = GameState.get('stamps') || [];
             const letterBtnContainer = document.getElementById('full-letter-btn-container');
-            if (GameState.get('stamps')[6]) letterBtnContainer.classList.remove('hidden');
-            else letterBtnContainer.classList.add('hidden');
+            if (letterBtnContainer) {
+                // 只要第 7 關（索引 6）有通過，就允許點開信件
+                if (stamps[6]) {
+                    letterBtnContainer.classList.remove('hidden');
+                } else {
+                    letterBtnContainer.classList.add('hidden');
+                }
+            }
         
             const modal = document.getElementById('modal-stamps');
             const box = document.getElementById('stamps-box');
-            modal.classList.remove('hidden');
-            box.classList.remove('opacity-0', 'scale-95');
-            setTimeout(() => box.classList.remove('translate-y-full'), 10);
+            if (modal && box) {
+                modal.classList.remove('hidden');
+                box.classList.remove('opacity-0', 'scale-95');
+                setTimeout(() => box.classList.remove('translate-y-full'), 10);
+            }
         };
+        
+        // 確保導覽列拼圖數量更新正確，不破壞按鈕點擊
+        function updateStampBadgeCount() {
+            const stamps = GameState.get('stamps') || [];
+            const count = stamps.filter(Boolean).length;
+            const puzzleTextEl = document.getElementById('header-puzzle-text');
+            if (puzzleTextEl) {
+                puzzleTextEl.textContent = `${count}/7`;
+            }
+        }
 
         if (document.getElementById('close-stamps')) {
             document.getElementById('close-stamps').onclick = () => {
@@ -1576,7 +1601,7 @@
         window.closeFullLetter = function() {
             playBeep();
             closeModalAnim('modal-full-letter', 'letter-box', () => {
-                if (GameState.get('stamps').filter(Boolean).length === 7) showScreen('certificate');
+                showScreen('certificate');
             });
         };
 
@@ -1860,23 +1885,18 @@
             updateStampBadgeCount();
         }
 
-        function updateStampBadgeCount() {
-            const count = GameState.get('stamps').filter(Boolean).length;
-            document.getElementById('header-puzzle-text').textContent = `${count}/7`;
-        }
-
         function handleLevelSuccess(lvlNum) {
             playSuccessSound();
             let stamps = GameState.get('stamps');
             stamps[lvlNum - 1] = true;
             GameState.set('stamps', stamps);
-
+        
             let seq = GameState.get('customSequence');
             let idx = GameState.get('currentStageIndex');
             if (idx < 6 && seq[idx] === lvlNum) GameState.set('currentStageIndex', idx + 1);
-
+        
             if (lvlNum === 7) {
-                if (!GameState.get('endTime')) GameState.set('endTime', Date.now());
+                GameState.set('endTime', Date.now()); // 記錄最終取得密碼的結案時間
                 openFullLetter();
             } else {
                 let msg = "獲得一塊歷史碎片，\n準備進入下一階段調查。";
@@ -2692,20 +2712,39 @@
         }
 
         function renderCertificate() {
-            const elapsed = Math.floor(((GameState.get('endTime') || Date.now()) - GameState.get('startTime')) / 1000);
+            const startTime = GameState.get('startTime') || Date.now();
+            const endTime = GameState.get('endTime') || Date.now();
+            const elapsed = Math.floor((endTime - startTime) / 1000);
+            
             const h = String(Math.floor(elapsed / 3600)).padStart(2, '0'); 
             const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0'); 
             const s = String(elapsed % 60).padStart(2, '0');
             const timeStr = `${h}:${m}:${s}`; 
-            const isSClass = elapsed <= 5400;
-            document.getElementById('cert-time').textContent = isSClass ? `${timeStr} (時限內)` : timeStr;
-            document.getElementById('cert-status').textContent = isSClass ? '檔案完全解密' : '委託已完成（超時）';
-            document.getElementById('cert-rank').textContent = isSClass ? '【S級結案】' : '【堅毅探尋】';
-            document.getElementById('cert-status').className = isSClass ? 'text-emerald-700 font-black text-right' : 'text-amber-700 font-black text-right';
             
+            const isTimeout = Boolean(GameState.get('timeExpiredHandled')) || elapsed > 5400;
+            const stamps = GameState.get('stamps') || [];
+            const collectedCount = stamps.filter(Boolean).length;
+        
+            const certTimeEl = document.getElementById('cert-time');
+            const certStatusEl = document.getElementById('cert-status');
+            const certRankEl = document.getElementById('cert-rank');
             const msgEl = document.getElementById('cert-msg');
-            if (isSClass) msgEl.innerHTML = '恭喜完成所有委託！<br>您成功解開了眷村深埋的記憶，讓跨越時空的思念得以圓滿。';
-            else msgEl.innerHTML = '雖然耗費了較多時間，但真相終究水落石出。<br>這段歲月記憶因你的堅持而完整。';
+        
+            if (!isTimeout) {
+                // 時限內全破 (S級)
+                certTimeEl.textContent = `${timeStr} (時限內)`;
+                certStatusEl.textContent = '檔案完全解密';
+                certStatusEl.className = 'text-emerald-700 font-black text-right';
+                certRankEl.textContent = '【S級結案】';
+                msgEl.innerHTML = '恭喜在時限內完成所有委託！<br>7 塊歷史碎片全數尋回，跨越時空的思念得以完整圓滿。';
+            } else {
+                // 超時：直接前往終點取得最終密碼結案
+                certTimeEl.textContent = `${timeStr} (時間截止)`;
+                certStatusEl.textContent = `委託截止 (收集 ${collectedCount}/7 碎片)`;
+                certStatusEl.className = 'text-amber-700 font-black text-right';
+                certRankEl.textContent = '【堅持見證】';
+                msgEl.innerHTML = `雖然委託時間已截止，未能找齊所有的歷史碎片（已收集 ${collectedCount}/7 片），但你們依然堅持抵達現場，向志遠與阿秀致上最後的敬意。<br>縱使時光留有遺憾，這份跨越半世紀的記憶也因你們的見證而不再孤單。`;
+            }
             
             const claimBtn = document.getElementById('btn-claim-gift');
             if (GameState.get('giftClaimed') === true) {
