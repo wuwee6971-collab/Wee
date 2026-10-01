@@ -1184,12 +1184,18 @@
                     },
                     { 
                         isSequence: true,
-                        q: "請依照村長家的演變順序排列下列事件：\n① 興建防洪樓，增加避難空間\n② 黑瓦竹泥牆平房\n③ 全面改建為三層樓\n④ 加蓋二樓增加空間", 
+                        q: "請依照村長家的演變順序排列下列圖片事件：", 
+                        sequenceItems: [
+                            { label: "①", img: "images/L2演變2.jpg" },
+                            { label: "②", img: "images/L2演變1.jpg" },
+                            { label: "③", img: "images/L2演變4.jpg" },
+                            { label: "④", img: "images/L2演變3.jpg" }
+                        ],
                         opts: ["① → ② → ③ → ④", "② → ① → ④ → ③", "② → ④ → ① → ③", "① → ③ → ② → ④"], 
                         a: 1, 
                         photo: false, 
                         desc: "村長家歷經7次改建，從黑瓦平房、防洪樓、二樓加蓋到全面三層樓，完整體現居住演進。" 
-                    },
+                    }
                     { 
                         photoImage: null, 
                         q: "為什麼隨著時間過去，眷村的房屋開始出現更多門窗、鐵窗，生活空間逐漸移回屋內？", 
@@ -1385,7 +1391,7 @@
             "images/歲月書屋.jpg", "images/圖1.jpg", "images/圖2.jpg", "images/圖3.jpg",
             
             // Level 2: 眷舍空間
-            "images/l2地圖.jpg", "images/l2_map.jpg", "images/門牌.jpg", "images/說明牌.jpg", "images/一線天.jpg",
+            "images/l2地圖.jpg", "images/l2_map.jpg", "images/門牌.jpg", "images/說明牌.jpg", "images/一線天.jpg","images/L2演變1.jpg","images/L2演變2.jpg","images/L2演變3.jpg","images/L2演變4.jpg",
             
             // Level 3: 村長家美食 (菜色全清單)
             "images/l3_mural.jpg", "images/l3_vegetables.jpg",
@@ -2158,7 +2164,27 @@
             }
 
             qImgContainer.innerHTML = '';
-            if (currentQ === 1) {
+
+            // 判斷是否為「帶有圖片卡片的排序題」
+            if (qData.isSequence && qData.sequenceItems) {
+                qImgContainer.classList.remove('hidden');
+                qImgContainer.className = "mb-4 w-full grid grid-cols-2 gap-2.5 shrink-0";
+                qData.sequenceItems.forEach(item => {
+                    const itemCard = document.createElement('div');
+                    itemCard.className = "border-2 border-ink/20 rounded-md overflow-hidden bg-paper-dark shadow-sm cursor-zoom-in relative";
+                    itemCard.onclick = () => openImageLightbox(item.img);
+                    itemCard.innerHTML = `
+                        <span class="absolute top-1.5 left-1.5 bg-ink/80 text-gold text-xs font-mono font-black px-2 py-0.5 rounded z-10 shadow">
+                            ${item.label}
+                        </span>
+                        <div class="w-full aspect-[4/3] flex items-center justify-center overflow-hidden">
+                            <img src="${item.img}" alt="${item.label}" class="w-full h-full object-cover loaded" onerror="this.src='https://placehold.co/200x150/e5d5b5/7c343d?text=${item.label}'">
+                        </div>
+                    `;
+                    qImgContainer.appendChild(itemCard);
+                });
+                qTextEl.innerHTML = `<span class="text-sm font-bold text-ink/80">${qData.q}</span>`;
+            } else if (currentQ === 1) {
                 qImgContainer.classList.add('hidden');
                 qTextEl.innerHTML = `
                     <div class="flex flex-col w-full">
