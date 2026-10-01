@@ -561,7 +561,7 @@
                         </div>
 
                         <!-- 題目配圖容器 -->
-                        <div id="l2-question-img-container" class="hidden mb-6 w-full vintage-photo shrink-0 min-h-[160px] max-h-[300px] overflow-hidden">
+                        <div id="l2-question-img-container" class="hidden mb-6 w-full shrink-0 min-h-[160px] max-h-[300px] overflow-hidden">
                             <img id="l2-question-img" src="images/l2_map.jpg" class="max-w-full max-h-[280px] w-auto h-auto object-contain" onload="this.classList.add('loaded')">
                         </div>
 
@@ -900,6 +900,9 @@
                                 <div class="w-full bg-paper-dark h-1.5 mt-4 overflow-hidden rounded-full">
                                     <div id="l6-progress" class="h-full w-0 bg-primary transition-all duration-100 ease-linear rounded-full"></div>
                                 </div>
+                                <button onclick="triggerSongFeedback()" class="btn-base primary-btn w-full py-3 mt-4 text-sm font-black tracking-widest shadow-retro-sm">
+                                    <i class="fa-solid fa-pen-fancy mr-2"></i>聽完了，寫下音樂回憶
+                                </button>
                                 <audio id="l6-audio-player" class="hidden"></audio>
                             </div>
                         </div>
@@ -1107,7 +1110,7 @@
 
     <script>
         // ==========================================
-        // 核心設定與資料 (完整保留，絕無省略)
+        // 核心設定與資料 (已修復語法錯誤與補齊逗號)
         // ==========================================
         const GAME_DATA = {
             levels: [
@@ -1175,7 +1178,7 @@
                         image: "images/一線天.jpg", 
                         q: "請找尋這個說明牌，並閱讀:\n居民居住因為空間不足向前後院擴建，形成眷村特殊的狹窄巷道景觀，我們稱為(____)", 
                         inputType: "text",
-                        answers: ["一線天"],
+                        answers: ["一線天"], 
                         opts: [],
                         a: null,
                         photo: true, 
@@ -1195,7 +1198,7 @@
                         a: 1, 
                         photo: false, 
                         desc: "村長家歷經7次改建，從黑瓦平房、防洪樓、二樓加蓋到全面三層樓，完整體現居住演進。" 
-                    }
+                    }, // 修復：此處補上遺漏的逗號
                     { 
                         photoImage: null, 
                         q: "為什麼隨著時間過去，眷村的房屋開始出現更多門窗、鐵窗，生活空間逐漸移回屋內？", 
@@ -1336,9 +1339,9 @@
                 l2Photos: [false, false, false, false, false], 
                 l2Answered: [false, false, false, false, false], l2CurrentQ: 0,
                 l3PhotoDone: false, l3CurrentQ: 0,
-                l4Tasks: [false, false, false], // L4 3個任務狀態
+                l4Tasks: [false, false, false],
                 l5Input: [], l5Errors: 0, l5CurrentQ: 0,
-                l7MarketDone: false,           // L7 市集二選一任務狀態
+                l7MarketDone: false,
                 timeExpiredHandled: false
             };
             function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
@@ -1384,37 +1387,22 @@
         // 完整圖片預載與生命週期管理
         // ==========================================
         const PRELOAD_IMAGE_LIST = [
-            // 人物與故事引導
             "images/林志遠.jpg", "images/阿秀.jpg", "images/小助手.jpg", "images/人物照_0.png",
-            
-            // Level 1: 防砲陣地
             "images/歲月書屋.jpg", "images/圖1.jpg", "images/圖2.jpg", "images/圖3.jpg",
-            
-            // Level 2: 眷舍空間
             "images/l2地圖.jpg", "images/l2_map.jpg", "images/門牌.jpg", "images/說明牌.jpg", "images/一線天.jpg","images/L2演變1.jpg","images/L2演變2.jpg","images/L2演變3.jpg","images/L2演變4.jpg",
-            
-            // Level 3: 村長家美食 (菜色全清單)
             "images/l3_mural.jpg", "images/l3_vegetables.jpg",
             "images/麻婆豆腐.jpg", "images/回鍋肉.jpg", "images/水煮魚.jpg", "images/宮保雞丁.jpg",
             "images/酸菜魚.jpg", "images/剁椒魚頭.jpg", "images/清蒸鱸魚.jpg", "images/糖醋魚.jpg",
             "images/安徽板麵.jpg", "images/蘭州拉麵.jpg", "images/刀削麵.jpg", "images/牛肉麵.jpg",
             "images/打滷麵.jpg", "images/擔擔麵.jpg", "images/炸醬麵.jpg", "images/蔥油拌麵.jpg",
             "images/山東煎餅.jpg", "images/韭菜盒子.jpg", "images/蔥油餅.jpg", "images/牛肉餡餅.jpg",
-            
-            // Level 4: 榕樹廣場
             "images/榕樹廣場1.jpg",
-            
-            // Level 5: 群星之夜
             "images/公園.jpg", "images/主視覺1.jpg", "images/主視覺2.jpg",
             "images/潘安邦.png", "images/鄧麗君.png", "images/紫薇.png", "images/羅大佑.png",
-            
-            // Level 6: 時光膠囊與花香
             "images/時光膠囊1.jpg", "images/時光膠囊2.jpg", "images/l6_map.jpg", "images/l6_perfume.jpg",
             "images/秀英花1.jpg", "images/秀英花.jpg", "images/茉莉.png", "images/桂花.png", 
             "images/梔子花.jpg", "images/玫瑰.jpg", "images/玉蘭花.jpg",
             "images/明星花露水1.jpg", "images/明星花露水2.jpg",
-            
-            // Level 7: 市集任務與最後一封信
             "images/7-1.jpg", "images/7-2.jpg", "images/7-3.jpg", "images/7-4.jpg", "images/111.jpg"
         ];
 
@@ -1423,7 +1411,6 @@
             const progressEl = document.getElementById('loader-progress');
             let isFinished = false;
 
-            // 自動合併 HTML 頁面內所有已存在的 img src 與手動清單 (過濾重複與 base64)
             const domImages = Array.from(document.querySelectorAll('img'))
                 .map(img => img.getAttribute('src'))
                 .filter(src => src && !src.startsWith('data:'));
@@ -1475,7 +1462,6 @@
                 }
             };
 
-            // 防呆保險機制：超過 6 秒即使有少數圖掛掉或網路延遲，仍強制進遊戲不卡死
             const forceTimeout = setTimeout(finishLoading, 6000);
 
             if (totalImages === 0) {
@@ -1484,7 +1470,6 @@
                 return;
             }
 
-            // 逐一加載並更新載入進度 %
             allImages.forEach(src => {
                 const img = new Image();
                 img.onload = img.onerror = () => {
@@ -1494,7 +1479,7 @@
 
                     if (loadedCount >= totalImages) {
                         clearTimeout(forceTimeout);
-                        setTimeout(finishLoading, 300); // 滿 100% 後平滑淡出
+                        setTimeout(finishLoading, 300);
                     }
                 };
                 img.src = src;
@@ -1523,7 +1508,7 @@
             const inputEl = document.getElementById('alert-input-textarea');
             if (withInput) {
                 inputEl.classList.remove('hidden');
-                inputEl.value = ""; // 防呆：每次彈出均重置
+                inputEl.value = "";
                 inputEl.placeholder = typeof withInput === 'string' ? withInput : "請輸入內容...";
             } else {
                 inputEl.classList.add('hidden');
@@ -1533,7 +1518,6 @@
             const cancelBtn = document.getElementById('alert-cancel-btn');
             const btnContainer = document.getElementById('alert-btn-container');
 
-            // 防呆重置 cancel 按鈕字樣
             cancelBtn.textContent = "返回";
 
             if (btnText === false) {
@@ -1556,7 +1540,7 @@
                         if (!val) {
                             inputEl.classList.add('ring-2', 'ring-primary');
                             setTimeout(() => inputEl.classList.remove('ring-2', 'ring-primary'), 500);
-                            return; // 阻止空白提交
+                            return;
                         }
                         closeModalAnim('modal-alert', 'alert-box', () => { if (callback) callback(val); });
                     } else {
@@ -1699,7 +1683,7 @@
         };
 
         // ==========================================
-        // 雙軌後台審核機制 (照片上傳 / 直接送審)
+        // 雙軌後台審核機制 (優化輪詢與監聽)
         // ==========================================
         let activeUploadUnsubscribe = null;
         let activeUploadPollTimer = null;
@@ -1723,7 +1707,6 @@
                 if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
             };
 
-            // 無資料庫環境模擬連線（方便本機測試）
             if (!db) {
                 showAlert("資料傳送中", "正模擬傳送至後台進行審核...", "fa-satellite-dish fa-spin", "text-primary", null, "取消等待", 0, true);
                 setTimeout(() => {
@@ -1777,8 +1760,9 @@
                         const data = doc.data();
                         if (data.status === "approved") handleResult(true);
                         else if (data.status === "rejected") handleResult(false);
-                    }, (err) => console.warn("Snapshot 斷線，交由輪詢處理", err));
+                    }, (err) => console.warn("Snapshot 斷線，交由備援輪詢處理", err));
         
+                    // 調校為 2500ms 節省讀取額度
                     activeUploadPollTimer = setInterval(async () => {
                         if (isHandled) return;
                         try {
@@ -1789,7 +1773,7 @@
                                 else if (data.status === "rejected") handleResult(false);
                             }
                         } catch (e) {}
-                    }, 600);
+                    }, 2500);
         
                 }).catch(error => {
                     if (!isHandled) {
@@ -1905,6 +1889,13 @@
 
         async function transitionSubPage(level, fromPage, toPage) {
             playBeep();
+            
+            // 進入香氛鑑定時，重置選取狀態
+            if (level === 6 && toPage === 4) {
+                l6SelectedFlowers = [];
+                document.querySelectorAll('#flower-grid .flower-card').forEach(c => c.classList.remove('ring-4', 'ring-primary'));
+            }
+
             const fromEl = document.getElementById(`l${level}-p${fromPage}`);
             const toEl = document.getElementById(`l${level}-p${toPage}`);
 
@@ -1979,7 +1970,6 @@
             document.getElementById('modal-stamps').classList.add('hidden');
             updateHeader(screenId);
         
-            // 各畫面專屬初始化
             if (screenId === 'certificate') renderCertificate();
             if (screenId === 'main') renderMain();
             if (screenId === 'level-1') { forceSubPageInit(1, 1, 2); renderL1(); }
@@ -2004,6 +1994,7 @@
         
             if (lvlNum === 7) {
                 GameState.set('endTime', Date.now()); 
+                if (globalTimerInterval) { clearInterval(globalTimerInterval); globalTimerInterval = null; }
                 openFullLetter();
             } else {
                 let msg = "獲得一塊歷史碎片，\n準備進入下一階段調查。";
@@ -2097,7 +2088,7 @@
         function updateL1Display() { let input = GameState.get('l1Input') || []; document.querySelectorAll('#l1-code-container .code-box').forEach((box, i) => { box.textContent = input[i] || ''; }); }
 
         // ==========================================
-        // LEVEL 2 完整邏輯
+        // LEVEL 2 完整邏輯 (修復重複拍照與巢狀樣式)
         // ==========================================
         document.getElementById('l2-camera-input').addEventListener('change', function() {
             if (this.files && this.files.length > 0) {
@@ -2165,7 +2156,6 @@
 
             qImgContainer.innerHTML = '';
 
-            // 判斷是否為「帶有圖片卡片的排序題」
             if (qData.isSequence && qData.sequenceItems) {
                 qImgContainer.classList.remove('hidden');
                 qImgContainer.className = "mb-4 w-full grid grid-cols-2 gap-2.5 shrink-0";
@@ -2198,7 +2188,8 @@
                 const imgList = qData.images || (qData.image ? [qData.image] : []);
                 if (imgList.length > 0) {
                     qImgContainer.classList.remove('hidden');
-                    qImgContainer.className = imgList.length > 1 ? "mb-6 w-full grid grid-cols-2 gap-3 shrink-0" : "mb-6 w-full vintage-photo shrink-0 cursor-zoom-in min-h-[160px] max-h-[300px]";
+                    // 修復：單張時外層不用加重複相框 class，避免雙層邊框
+                    qImgContainer.className = imgList.length > 1 ? "mb-6 w-full grid grid-cols-2 gap-3 shrink-0" : "mb-6 w-full shrink-0 min-h-[160px] max-h-[300px]";
                     imgList.forEach((src) => {
                         const wrap = document.createElement('div');
                         wrap.className = "vintage-photo cursor-zoom-in w-full min-h-[140px] max-h-[260px] overflow-hidden";
@@ -2225,11 +2216,12 @@
                     let allCorrect = inputs.every((input, i) => input.value.trim().toLowerCase() === qData.answers[i].toLowerCase());
                     if (allCorrect) {
                         playSuccessSound();
-                        if (qData.photo) {
-                            let ans = GameState.get('l2Answered') || [false, false, false, false, false];
-                            let p = GameState.get('l2Photos') || [false, false, false, false, false];
-                            ans[currentQ] = true; p[currentQ] = false;
-                            GameState.set('l2Answered', ans); GameState.set('l2Photos', p);
+                        let ans = GameState.get('l2Answered') || [false, false, false, false, false];
+                        let p = GameState.get('l2Photos') || [false, false, false, false, false];
+                        ans[currentQ] = true;
+                        GameState.set('l2Answered', ans);
+
+                        if (qData.photo && !p[currentQ]) {
                             showAlert("回答正確！", `${qData.desc}\n\n★ 任務解鎖：請前往現場依指示拍照取證！`, "fa-circle-check", "text-emerald-700", () => renderL2(), "前往拍照取證");
                         } else {
                             showAlert("驗證通過", qData.desc, "fa-check-circle", "text-emerald-700", () => {
@@ -2271,11 +2263,12 @@
                     const isAllMatch = selectedIndices.size === targetSet.size && [...selectedIndices].every(idx => targetSet.has(idx));
                     if (isAllMatch) {
                         playSuccessSound();
-                        if (qData.photo) {
-                            let ans = GameState.get('l2Answered') || [false, false, false, false, false];
-                            let p = GameState.get('l2Photos') || [false, false, false, false, false];
-                            ans[currentQ] = true; p[currentQ] = false;
-                            GameState.set('l2Answered', ans); GameState.set('l2Photos', p);
+                        let ans = GameState.get('l2Answered') || [false, false, false, false, false];
+                        let p = GameState.get('l2Photos') || [false, false, false, false, false];
+                        ans[currentQ] = true;
+                        GameState.set('l2Answered', ans);
+
+                        if (qData.photo && !p[currentQ]) {
                             showAlert("回答正確！", `${qData.desc}\n\n★ 任務解鎖：請前往現場依指示拍照取證！`, "fa-check-circle", "text-emerald-700", () => renderL2(), "前往拍照取證");
                         } else {
                             showAlert("驗證通過", qData.desc, "fa-check-circle", "text-emerald-700", () => {
@@ -2298,11 +2291,12 @@
                     btn.onclick = () => {
                         if (o.isCorrect) {
                             playSuccessSound();
-                            if (qData.photo) {
-                                let ans = GameState.get('l2Answered') || [false, false, false, false, false];
-                                let p = GameState.get('l2Photos') || [false, false, false, false, false];
-                                ans[currentQ] = true; p[currentQ] = false;
-                                GameState.set('l2Answered', ans); GameState.set('l2Photos', p);
+                            let ans = GameState.get('l2Answered') || [false, false, false, false, false];
+                            let p = GameState.get('l2Photos') || [false, false, false, false, false];
+                            ans[currentQ] = true;
+                            GameState.set('l2Answered', ans);
+
+                            if (qData.photo && !p[currentQ]) {
                                 showAlert("回答正確！", `${qData.desc}\n\n★ 任務解鎖：請前往現場依指示拍照取證！`, "fa-check-circle", "text-emerald-700", () => renderL2(), "前往拍照取證");
                             } else {
                                 showAlert("驗證通過", qData.desc, "fa-check-circle", "text-emerald-700", () => {
@@ -2440,7 +2434,7 @@
         };
 
         // ==========================================
-        // LEVEL 4 完整邏輯 (修復重複通關Bug)
+        // LEVEL 4 完整邏輯
         // ==========================================
         function renderL4Tasks() {
             const tasksState = GameState.get('l4Tasks') || [false, false, false];
@@ -2459,7 +2453,6 @@
                 }
             }
 
-            // 防呆：唯有尚未領取 L4 碎片時，3 任務全通才觸發過關
             const stamps = GameState.get('stamps') || [];
             if (tasksState.every(t => t) && !stamps[3]) {
                 setTimeout(() => {
@@ -2537,7 +2530,7 @@
         }
 
         // ==========================================
-        // LEVEL 6 完整邏輯 (小天使審核 + 香氛 + 金曲心得)
+        // LEVEL 6 完整邏輯 (修復播放中斷卡關、音訊錯誤處理)
         // ==========================================
         window.verifyL6Angel = function() {
             playBeep();
@@ -2576,6 +2569,26 @@
             }
         };
 
+        window.triggerSongFeedback = function() {
+            const audioEl = document.getElementById('l6-audio-player');
+            if (audioEl) audioEl.pause();
+            
+            showAlert("這首歌給你什麼感覺？", "三重不僅有花香，更有動人的歌聲。<br>請分享這首歌帶給你的回憶或感受吧！", "fa-pen-to-square", "text-primary", (feedbackText) => {
+                submitDirectVerification("L6-金曲心得", { note: feedbackText }, (isApproved) => {
+                    if (isApproved) {
+                        playSuccessSound();
+                        handleLevelSuccess(6);
+                    } else {
+                        playErrorSound();
+                        showAlert("退回", "心得發送失敗，請重試！", "fa-xmark");
+                    }
+                });
+            }, "送出感受", 0, true, "寫下你聽完這首歌的感受...");
+            
+            const cancelBtn = document.getElementById('alert-cancel-btn');
+            if (cancelBtn) cancelBtn.textContent = "換一首";
+        };
+
         function renderL6Songs() {
             const container = document.getElementById('l6-songs-container'); container.innerHTML = '';
             const audioEl = document.getElementById('l6-audio-player'); 
@@ -2590,22 +2603,12 @@
             
             audioEl.onended = () => {
                 prog.style.width = '100%';
-                setTimeout(() => { 
-                    // 歌曲播放完畢，呼叫心得輸入彈窗
-                    showAlert("這首歌給你什麼感覺？", "三重不僅有花香，更有動人的歌聲。<br>請分享這首歌帶給你的回憶或感受吧！", "fa-pen-to-square", "text-primary", (feedbackText) => {
-                        submitDirectVerification("L6-金曲心得", { note: feedbackText }, (isApproved) => {
-                            if (isApproved) {
-                                playSuccessSound();
-                                handleLevelSuccess(6);
-                            } else {
-                                playErrorSound();
-                                showAlert("退回", "心得發送失敗，請重試！", "fa-xmark");
-                            }
-                        });
-                    }, "送出感受", 0, true, "寫下你聽完這首歌的感受...");
-                    
-                    document.getElementById('alert-cancel-btn').textContent = "換一首";
-                }, 300);
+                setTimeout(triggerSongFeedback, 300);
+            };
+
+            audioEl.onerror = () => {
+                console.warn("音訊載入失敗，提供直接回饋選項");
+                showAlert("音訊載入提醒", "若現場網路不佳無法播放，您可以直接填寫心得完成任務！", "fa-circle-exclamation", "text-primary", triggerSongFeedback, "直接填寫心得");
             };
             
             GAME_DATA.level6.songs.forEach((song) => {
@@ -2633,7 +2636,7 @@
         }
 
         // ==========================================
-        // LEVEL 7 完整邏輯 (市集二選一任務攔截 + 最終密碼)
+        // LEVEL 7 完整邏輯
         // ==========================================
         document.getElementById('btn-goto-current').addEventListener('click', () => {
             initAudio(); playBeep(600, 0.05);
@@ -2645,9 +2648,9 @@
             else if (targetLvl === 5) showScreen('l5-arrival');
             else if (targetLvl === 7) {
                 if (GameState.get('l7MarketDone')) {
-                    showScreen('level-7'); // 原最終經緯度頁
+                    showScreen('level-7');
                 } else {
-                    showScreen('l7-market-task'); // 新增市集二選一頁
+                    showScreen('l7-market-task');
                 }
             } else {
                 showScreen(`level-${targetLvl}`);
@@ -2755,7 +2758,7 @@
                 if (!GameState.get('timeExpiredHandled')) {
                     GameState.set('timeExpiredHandled', true);
                     if (!GameState.get('endTime')) GameState.set('endTime', Date.now());
-                    if (globalTimerInterval) clearInterval(globalTimerInterval);
+                    if (globalTimerInterval) { clearInterval(globalTimerInterval); globalTimerInterval = null; }
                     
                     showScreen('level-7');
                     showAlert("委託時間已達上限", "90 分鐘調查時間已結束！\n系統已自動為您切換至集合地點（市集攤位）。\n\n★ 請依據經緯度座標前往集合，並尋找 NPC 取得最終密碼！", "fa-clock", "text-primary");
@@ -2770,6 +2773,8 @@
         }
 
         function renderCertificate() {
+            if (globalTimerInterval) { clearInterval(globalTimerInterval); globalTimerInterval = null; }
+            
             const startTime = GameState.get('startTime') || Date.now();
             const endTime = GameState.get('endTime') || Date.now();
             const elapsed = Math.floor((endTime - startTime) / 1000);
