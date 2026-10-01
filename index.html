@@ -1373,30 +1373,81 @@
             }
         } catch (e) { console.warn("Firebase 初始化失敗：", e); }
 
+        // ==========================================
+        // 完整圖片預載與生命週期管理
+        // ==========================================
+        const PRELOAD_IMAGE_LIST = [
+            // 人物與故事引導
+            "images/林志遠.jpg", "images/阿秀.jpg", "images/小助手.jpg", "images/人物照_0.png",
+            
+            // Level 1: 防砲陣地
+            "images/歲月書屋.jpg", "images/圖1.jpg", "images/圖2.jpg", "images/圖3.jpg",
+            
+            // Level 2: 眷舍空間
+            "images/l2地圖.jpg", "images/l2_map.jpg", "images/門牌.jpg", "images/說明牌.jpg", "images/一線天.jpg",
+            
+            // Level 3: 村長家美食 (菜色全清單)
+            "images/l3_mural.jpg", "images/l3_vegetables.jpg",
+            "images/麻婆豆腐.jpg", "images/回鍋肉.jpg", "images/水煮魚.jpg", "images/宮保雞丁.jpg",
+            "images/酸菜魚.jpg", "images/剁椒魚頭.jpg", "images/清蒸鱸魚.jpg", "images/糖醋魚.jpg",
+            "images/安徽板麵.jpg", "images/蘭州拉麵.jpg", "images/刀削麵.jpg", "images/牛肉麵.jpg",
+            "images/打滷麵.jpg", "images/擔擔麵.jpg", "images/炸醬麵.jpg", "images/蔥油拌麵.jpg",
+            "images/山東煎餅.jpg", "images/韭菜盒子.jpg", "images/蔥油餅.jpg", "images/牛肉餡餅.jpg",
+            
+            // Level 4: 榕樹廣場
+            "images/榕樹廣場1.jpg",
+            
+            // Level 5: 群星之夜
+            "images/公園.jpg", "images/主視覺1.jpg", "images/主視覺2.jpg",
+            "images/潘安邦.png", "images/鄧麗君.png", "images/紫薇.png", "images/羅大佑.png",
+            
+            // Level 6: 時光膠囊與花香
+            "images/時光膠囊1.jpg", "images/時光膠囊2.jpg", "images/l6_map.jpg", "images/l6_perfume.jpg",
+            "images/秀英花1.jpg", "images/秀英花.jpg", "images/茉莉.png", "images/桂花.png", 
+            "images/梔子花.jpg", "images/玫瑰.jpg", "images/玉蘭花.jpg",
+            "images/明星花露水1.jpg", "images/明星花露水2.jpg",
+            
+            // Level 7: 市集任務與最後一封信
+            "images/7-1.jpg", "images/7-2.jpg", "images/7-3.jpg", "images/7-4.jpg", "images/111.jpg"
+        ];
+
         function startAppLifecycle() {
             const loader = document.getElementById('app-loader');
             const progressEl = document.getElementById('loader-progress');
             let isFinished = false;
-        
+
+            // 自動合併 HTML 頁面內所有已存在的 img src 與手動清單 (過濾重複與 base64)
+            const domImages = Array.from(document.querySelectorAll('img'))
+                .map(img => img.getAttribute('src'))
+                .filter(src => src && !src.startsWith('data:'));
+            
+            const allImages = Array.from(new Set([...PRELOAD_IMAGE_LIST, ...domImages]));
+            let loadedCount = 0;
+            const totalImages = allImages.length;
+
             const finishLoading = () => {
                 if (isFinished) return;
                 isFinished = true;
+                if (progressEl) progressEl.textContent = '100%';
+                
                 if (loader) {
-                    loader.style.pointerEvents = 'none'; loader.style.opacity = '0';
+                    loader.style.pointerEvents = 'none';
+                    loader.style.opacity = '0';
                     setTimeout(() => { if (loader.parentNode) loader.remove(); }, 800);
                 }
+
                 try {
                     if (GameState.init() && GameState.get('teamName')) {
                         const icon = document.getElementById('sound-icon');
                         if (icon && !GameState.get('soundEnabled')) {
                             icon.className = "fa-solid fa-volume-xmark text-gold/50 text-lg";
                         }
-            
+
                         if (GameState.get('startTime')) {
                             if (globalTimerInterval) clearInterval(globalTimerInterval);
                             globalTimerInterval = setInterval(updateTimerDisplay, 1000);
                             updateTimerDisplay();
-            
+
                             if (GameState.get('timeExpiredHandled')) {
                                 showScreen('level-7');
                             } else if (GameState.get('stamps').filter(Boolean).length === 7) {
@@ -1412,10 +1463,35 @@
                     } else {
                         showScreen('entry');
                     }
-                } catch (err) { showScreen('entry'); }
+                } catch (err) {
+                    showScreen('entry');
+                }
             };
-        
-            setTimeout(finishLoading, 1200);
+
+            // 防呆保險機制：超過 6 秒即使有少數圖掛掉或網路延遲，仍強制進遊戲不卡死
+            const forceTimeout = setTimeout(finishLoading, 6000);
+
+            if (totalImages === 0) {
+                clearTimeout(forceTimeout);
+                finishLoading();
+                return;
+            }
+
+            // 逐一加載並更新載入進度 %
+            allImages.forEach(src => {
+                const img = new Image();
+                img.onload = img.onerror = () => {
+                    loadedCount++;
+                    const percent = Math.floor((loadedCount / totalImages) * 100);
+                    if (progressEl) progressEl.textContent = `${percent}%`;
+
+                    if (loadedCount >= totalImages) {
+                        clearTimeout(forceTimeout);
+                        setTimeout(finishLoading, 300); // 滿 100% 後平滑淡出
+                    }
+                };
+                img.src = src;
+            });
         }
         
         if (document.readyState === 'complete') startAppLifecycle();
