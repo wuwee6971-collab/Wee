@@ -725,7 +725,7 @@
                         <p class="text-base font-bold text-ink mb-8 font-serif leading-relaxed text-justify">主持人為我們帶來</p>
                         
                         <form class="space-y-4" onsubmit="event.preventDefault(); checkL5Arrival();">
-                            <input type="text" id="l5-check-password" placeholder="輸入「外婆橋」" class="w-full bg-paper border border-ink/20 rounded-md px-4 py-4 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-ink shadow-inner transition-all text-center">
+                            <input type="text" id="l5-check-password" placeholder="輸入" class="w-full bg-paper border border-ink/20 rounded-md px-4 py-4 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-ink shadow-inner transition-all text-center">
                             <button type="submit" id="l5-check-confirm-btn" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em]">確認</button>
                         </form>
                     </div>
@@ -2081,7 +2081,7 @@
             else {
                 playErrorSound(); let errCount = (GameState.get('l1Errors') || 0) + 1;
                 GameState.set('l1Errors', errCount); GameState.set('l1Input', []); updateL1Display();
-                if (errCount >= 1) showAlert("密碼錯誤", "年份驗證失敗，請確認四處構件解鎖之數字。", "fa-circle-xmark", "text-primary");
+                if (errCount >= 1) showAlert("密碼錯誤", "請向上找尋總部回傳的提示。", "fa-circle-xmark", "text-primary");
             }
         };
 
