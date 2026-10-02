@@ -1123,25 +1123,29 @@
                         title: "甬道1號出口", 
                         code: "1", 
                         task: "作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，通常設計隱蔽。\n一村中的甬道有10個出口，請觀察關主後方的<b style='color:#832729; text-decoration: underline;'>地圖</b>找尋【1號出口】，並拍照回傳總部。", 
-                        desc: "" 
+                        desc: "作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，通常設計隱蔽。一村中的甬道共有10個出口，各出入口分散於不同房舍與空地之間。",
+                        failHint: "・請觀察地圖，確認鄰近甬道1號出口\n・請拍攝完整出口"
                     },
                     { 
                         title: "豎井", 
                         code: "9", 
                         task: "地下甬道容易積聚廢氣或悶熱。豎井利用煙囪效應帶來新鮮空氣，亦是火災排煙通道。\n請找尋疑似【豎井】的<b style='color:#832729; text-decoration: underline;'>通氣</b>構造，其中一個可透過<b style='color:#832729; text-decoration: underline;'>高台上凸起的玻璃罩觀察地下甬道上方的風扇</b>，找到後拍照回傳確認。", 
-                        desc: "" 
+                        desc: "地下甬道容易積聚廢氣或悶熱。豎井利用煙囪效應帶來新鮮空氣，亦是火災排煙通道。透過高台上凸起的玻璃罩，可直接俯瞰觀察地下甬道上方的通風風扇。",
+                        failHint: "・再觀察看看是否是通氣口\n・有凸起的玻璃罩，而且可以向下看"
                     },
                     { 
                         title: "甬道4號出入口", 
                         code: "4", 
                         task: "人員物資快速撤離出入口。\n請觀察甬道地圖找尋<b style='color:#832729; text-decoration: underline;'>院落</b>中的【4號出口】，並拍攝完整的構造回傳總部確認。", 
-                        desc: "" 
+                        desc: "隱身於院落之中的4號出口，是供眷村居民與駐軍在緊急狀況時快速疏散撤離的重要出入口，具備高度隱蔽性與戰術防護功能。",
+                        failHint: "・請確認是否在4號出口\n・請確認拍攝完整的構造物\n・一直無法通過可向關主小天使求救喔"
                     },
                     { 
                         title: "5號砲台遺跡", 
                         code: "5", 
                         task: "日治時期高射砲陣地留下了環形的防空砲台座。\n戰後眷舍便圍繞這6座防空砲台興建。請找尋<b style='color:#832729; text-decoration: underline;'>4號出口前</b>地板疑似【高射砲砲座】構建並拍照確認。", 
-                        desc: "" 
+                        desc: "日治時期高射砲陣地留下了環形的防空砲台座。二戰後，空軍眷舍便圍繞這6座防空砲台而興建，形成一村特有的同心圓聚落紋理。",
+                        failHint: "・砲台座只剩地板上的遺構\n・觀察看看4號出口前的地板有沒有哪裡特別不一樣"
                     }
                 ],
                 passcode: "1945"
@@ -2014,6 +2018,9 @@
         // ==========================================
         // LEVEL 1 完整邏輯
         // ==========================================
+        // ==========================================
+        // LEVEL 1 完整邏輯
+        // ==========================================
         let currentL1TargetIdx = null;
         document.getElementById('l1-camera-input').addEventListener('change', function() {
             if (this.files && this.files.length > 0 && currentL1TargetIdx !== null) {
@@ -2027,9 +2034,11 @@
                         let collected = GameState.get('l1Collected') || [false, false, false, false];
                         collected[currentL1TargetIdx] = true; GameState.set('l1Collected', collected);
                         renderL1();
-                        showAlert("審核通過", `長官已確認【${loc.title}】之構件特徵！\n\n★ 解密通關密碼：【<b class="text-3xl text-primary font-mono">${targetNumber}</b>】`, "fa-circle-check", "text-emerald-700", null, "收到！");
+                        showAlert("審核通過", `長官已確認【${loc.title}】之構件特徵！\n\n${loc.desc}\n\n★ 解密通關密碼：【<b class="text-3xl text-primary font-mono">${targetNumber}</b>】`, "fa-circle-check", "text-emerald-700", null, "收到！");
                     } else {
-                        playErrorSound(); showAlert("審核未通過", `長官回報審核未通過！\n\n請至現場確認【${loc.title}】特徵並重新拍攝！`, "fa-circle-xmark", "text-primary");
+                        playErrorSound();
+                        const errorMsg = loc.failHint ? `長官回報審核未通過！\n\n${loc.failHint}` : `長官回報審核未通過！\n\n請至現場確認【${loc.title}】特徵並重新拍攝！`;
+                        showAlert("審核未通過", errorMsg, "fa-circle-xmark", "text-primary");
                     }
                 });
             }
@@ -2043,7 +2052,10 @@
                 if (collected[idx]) {
                     btn.classList.add('bg-military/10', 'border-military-light', 'text-military');
                     btn.innerHTML = `<i class="fa-solid fa-check text-military text-lg mb-1"></i>${loc.title}<span class="text-xs text-primary font-mono font-black mt-1">密碼: ${loc.code || passcodeDigits[idx]}</span>`;
-                    btn.onclick = () => { playBeep(500, 0.05); showAlert(loc.title, `已完成勘查\n\n★ 此處獲得密碼數字：【 ${loc.code || passcodeDigits[idx]} 】`, "fa-info-circle", "text-military"); };
+                    btn.onclick = () => { 
+                        playBeep(500, 0.05); 
+                        showAlert(loc.title, `已完成勘查\n\n${loc.desc}\n\n★ 此處獲得密碼數字：【 ${loc.code || passcodeDigits[idx]} 】`, "fa-info-circle", "text-military"); 
+                    };
                 } else {
                     btn.classList.remove('bg-military/10', 'border-military-light', 'text-military');
                     btn.innerHTML = `<i class="fa-solid fa-camera mb-1.5 text-primary text-2xl"></i>${loc.title}`;
@@ -2056,6 +2068,12 @@
                 }
             });
 
+            const cCount = collected.filter(Boolean).length;
+            const overlay = document.getElementById('l1-keypad-overlay');
+            if (cCount === 4) overlay.classList.add('hidden');
+            else { overlay.classList.remove('hidden'); overlay.innerHTML = `<div class="bg-ink text-gold text-sm font-bold px-5 py-3 rounded-md shadow-2xl border border-gold/30 text-center tracking-wide">機密鎖定：請完成 4 處構件巡查與拍照<br><span class="text-primary font-mono text-xs">(已解密 ${cCount}/4)</span></div>`; }
+            updateL1Display();
+        }
             const cCount = collected.filter(Boolean).length;
             const overlay = document.getElementById('l1-keypad-overlay');
             if (cCount === 4) overlay.classList.add('hidden');
