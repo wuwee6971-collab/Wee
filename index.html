@@ -1157,19 +1157,19 @@
                 locations: [
                     { 
                         title: "甬道1號出口", code: "1", 
-                        task: "作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，通常設計隱蔽。\n一村中的甬道有10個出口，請觀察關主後方的<b style='color:#832729; text-decoration: underline;'>地圖</b>找尋【1號出口】，並拍照回傳總部。", 
-                        desc: "作為在遭受敵軍轟炸或襲擊時，人員、物資快速撤離至安全地下空間的出入口，通常設計隱蔽。一村中的甬道共有10個出口，各出入口分散於不同房舍與空地之間。",
+                        task: "作為在遭受敵軍轟炸或襲擊時，\n人員、物資快速撤離至安全地下空間的出入口，\n通常設計隱蔽。\n一村中的甬道有10個出口，\n請觀察關主後方的<b style='color:#832729; text-decoration: underline;'>地圖</b>找尋【1號出口】，\n並拍照回傳總部。", 
+                        desc: "作為在遭受敵軍轟炸或襲擊時，\n人員、物資快速撤離至安全地下空間的出入口，\n通常設計隱蔽。\n一村中的甬道共有10個出口，\n各出入口分散於不同房舍與空地之間。",
                         failHint: "・請觀察地圖，確認鄰近甬道1號出口\n・請拍攝完整出口"
                     },
                     { 
                         title: "豎井", code: "9", 
-                        task: "地下甬道容易積聚廢氣或悶熱。豎井利用煙囪效應帶來新鮮空氣，亦是火災排煙通道。\n請找尋疑似【豎井】的<b style='color:#832729; text-decoration: underline;'>通氣</b>構造，其中一個可透過<b style='color:#832729; text-decoration: underline;'>高台上凸起的玻璃罩觀察地下甬道上方的風扇</b>，找到後拍照回傳確認。", 
-                        desc: "地下甬道容易積聚廢氣或悶熱。豎井利用煙囪效應帶來新鮮空氣，亦是火災排煙通道。透過高台上凸起的玻璃罩，可直接俯瞰觀察地下甬道上方的通風風扇。",
-                        failHint: "・再觀察看看是否是通氣口\n・有凸起的玻璃罩，而且可以向下看"
+                        task: "地下甬道容易積聚廢氣或悶熱。\n豎井利用煙囪效應帶來新鮮空氣，亦是火災排煙通道。\n請找尋疑似【豎井】的<b style='color:#832729; text-decoration: underline;'>通氣</b>構造，\n其中一個可透過<b style='color:#832729; text-decoration: underline;'>高台上凸起的玻璃罩觀察地下甬道上方的風扇</b>，\n找到後拍照回傳確認。", 
+                        desc: "地下甬道容易積聚廢氣或悶熱。\n豎井利用煙囪效應帶來新鮮空氣，亦是火災排煙通道。\n透過高台上凸起的玻璃罩，\n可直接俯瞰觀察地下甬道上方的通風風扇。",
+                        failHint: "・再觀察看看是否是凸通氣口\n・有玻璃罩，而且可以向下看"
                     },
                     { 
                         title: "甬道4號出入口", code: "4", 
-                        task: "人員物資快速撤離出入口。\n請觀察甬道地圖找尋<b style='color:#832729; text-decoration: underline;'>院落</b>中的【4號出口】，並拍攝完整的構造回傳總部確認。", 
+                        task: "人員物資快速撤離出入口。\n請觀察甬道地圖找尋<b style='color:#832729; text-decoration: underline;'>院落</b>中的\n【4號出口】，\n並拍攝完整的構造回傳總部確認。", 
                         desc: "隱身於院落之中的4號出口，是供眷村居民與駐軍在緊急狀況時快速疏散撤離的重要出入口，具備高度隱蔽性與戰術防護功能。",
                         failHint: "・請確認是否在4號出口\n・請確認拍攝完整的構造物\n・一直無法通過可向關主小天使求救喔"
                     },
@@ -1690,12 +1690,21 @@
 
         window.openFullLetter = function() {
             const stamps = GameState.get('stamps') || [];
-            // 問題 4 核心阻擋：未滿 7 片碎片嚴格禁止打開完整信件
-            if (stamps.filter(Boolean).length < 7) {
-                showAlert("碎片尚未齊全", "您尚未找齊所有的 7 塊歷史碎片，無法拼湊出完整的信件。", "fa-lock", "text-primary");
+            const count = stamps.filter(Boolean).length;
+        
+            // 碎片未集齊或超時中斷時，點擊確認直接召回至結案報告
+            if (count < 7) {
+                showAlert(
+                    "調查強制中止",
+                    `委託時限已截止，未能找齊所有的歷史碎片（目前僅調閱 ${count}/7 片）。\n\n時空錨點已關閉，無法拼湊出完整的信件，請全體隊員立即返回集合點完成結案手續。`,
+                    "fa-hourglass-end",
+                    "text-primary",
+                    () => { showScreen('certificate'); },
+                    "返回總部結案"
+                );
                 return;
             }
-
+        
             playBeep();
             closeModalAnim('modal-stamps', 'stamps-box');
             const modal = document.getElementById('modal-full-letter');
@@ -1705,10 +1714,7 @@
             const board = document.getElementById('full-letter-board');
             if (board) {
                 board.style.aspectRatio = 'auto';
-                board.innerHTML = `
-                    <div class="w-full max-h-[70vh] overflow-y-auto custom-scrollbar rounded-lg shadow-2xl border-2 border-gold/40">
-                        <img src="images/111.jpg" alt="跨越時空的信" class="w-full h-auto block" onerror="this.src='https://placehold.co/400x600/e5d5b5/7c343d?text=信件全覽圖'">
-                    </div>`;
+                board.innerHTML = `<img src="images/111.jpg" alt="跨越時空的信" class="w-full h-auto object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)] rounded" onerror="this.src='https://placehold.co/400x600/e5d5b5/7c343d?text=信件全覽圖'">`;
             }
             setTimeout(() => {
                 box.classList.remove('scale-95', 'opacity-0');
@@ -3092,58 +3098,53 @@
         // 補丁 3（對齊版）：雙情境結案憑證與 Firestore 雲端核銷
         // ==========================================
         function renderCertificate() {
-            if (globalTimerInterval) { clearInterval(globalTimerInterval); globalTimerInterval = null; }
-        
-            const startTime = GameState.get('startTime') || Date.now();
-            const endTime = GameState.get('endTime') || Date.now();
-            const elapsed = Math.floor((endTime - startTime) / 1000);
-        
-            const h = String(Math.floor(elapsed / 3600)).padStart(2, '0');
-            const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
-            const s = String(elapsed % 60).padStart(2, '0');
-            const timeStr = `${h}:${m}:${s}`;
-        
-            const isTimeout = Boolean(GameState.get('timeExpiredHandled')) || elapsed > 5400;
-            const stamps = GameState.get('stamps') || [];
-            const collectedCount = stamps.filter(Boolean).length;
-        
-            const certTimeEl = document.getElementById('cert-time');
-            const certStatusEl = document.getElementById('cert-status');
-            const certRankEl = document.getElementById('cert-rank');
-            const msgEl = document.getElementById('cert-msg');
-        
-            if (!isTimeout) {
-                if (certTimeEl) certTimeEl.textContent = `${timeStr} (時限內)`;
-                if (certStatusEl) {
-                    certStatusEl.textContent = '檔案完全解密';
-                    certStatusEl.className = 'text-emerald-700 font-black text-right';
-                }
-                if (certRankEl) certRankEl.textContent = '【S級結案】';
-                if (msgEl) msgEl.innerHTML = '恭喜在時限內完成所有委託！<br>7 塊歷史碎片全數尋回，跨越時空的思念得以完整圓滿。';
-            } else {
-                if (certTimeEl) certTimeEl.textContent = `${timeStr} (時間截止)`;
-                if (certStatusEl) {
-                    certStatusEl.textContent = `委託截止 (收集 ${collectedCount}/7 碎片)`;
-                    certStatusEl.className = 'text-amber-700 font-black text-right';
-                }
-                if (certRankEl) certRankEl.textContent = '【堅持見證】';
-                if (msgEl) msgEl.innerHTML = `雖然委託時間已截止，未能找齊所有的歷史碎片（已收集 ${collectedCount}/7 片），但你們依然堅持抵達現場，向志遠與阿秀致上最後的敬意。<br>縱使時光留有遺憾，這份跨越半世紀的記憶也因你們的見證而不再孤單。`;
-            }
-        
-            // 核銷狀態鎖定檢驗
-            const claimBtn = document.getElementById('btn-claim-gift');
-            if (claimBtn) {
-                if (GameState.get('giftClaimed') === true) {
-                    claimBtn.disabled = true;
-                    claimBtn.className = "btn-base w-full py-4 bg-stone-200 border border-stone-300 text-stone-500 font-black text-sm cursor-not-allowed shadow-none";
-                    claimBtn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-700 mr-2"></i>已於 ${GameState.get('giftClaimedTime') || ''} 兌換完畢`;
-                } else {
-                    claimBtn.disabled = false;
-                    claimBtn.className = "btn-base primary-btn w-full py-4 font-black text-base tracking-[0.15em] flex justify-center space-x-2";
-                    claimBtn.innerHTML = `<i class="fa-solid fa-stamp"></i><span>現場人員點擊核銷</span>`;
-                }
-            }
-        }
+    if (globalTimerInterval) { clearInterval(globalTimerInterval); globalTimerInterval = null; }
+    
+    const startTime = GameState.get('startTime') || Date.now();
+    const endTime = GameState.get('endTime') || Date.now();
+    const elapsed = Math.floor((endTime - startTime) / 1000);
+    
+    const h = String(Math.floor(elapsed / 3600)).padStart(2, '0'); 
+    const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0'); 
+    const s = String(elapsed % 60).padStart(2, '0');
+    const timeStr = `${h}:${m}:${s}`; 
+    
+    const isTimeout = Boolean(GameState.get('timeExpiredHandled')) || elapsed > 5400;
+    const stamps = GameState.get('stamps') || [];
+    const collectedCount = stamps.filter(Boolean).length;
+
+    const certTimeEl = document.getElementById('cert-time');
+    const certStatusEl = document.getElementById('cert-status');
+    const certRankEl = document.getElementById('cert-rank');
+    const msgEl = document.getElementById('cert-msg');
+
+    if (!isTimeout && collectedCount === 7) {
+        // 時限內全數完成
+        certTimeEl.textContent = `${timeStr} (時限內)`;
+        certStatusEl.textContent = '檔案完全解密';
+        certStatusEl.className = 'text-emerald-700 font-black text-right';
+        certRankEl.textContent = '【S級結案】';
+        msgEl.innerHTML = '恭喜在時限內完成所有委託！<br>7 塊歷史碎片全數尋回，跨越時空的思念得以完整圓滿。';
+    } else {
+        // 超過時間，強制作業終止
+        certTimeEl.textContent = `${timeStr} (逾時終止)`;
+        certStatusEl.textContent = `調查未完成 (僅尋獲 ${collectedCount}/7 碎片)`;
+        certStatusEl.className = 'text-amber-700 font-black text-right';
+        certRankEl.textContent = '【時限中斷】';
+        msgEl.innerHTML = `調查時間已達上限，系統已強制終止搜索行動。<br>遺憾未能替阿秀找齊全部的歷史碎片（尋獲進度 ${collectedCount}/7），半世紀前的思念仍有殘缺留存於巷弄中。<br>感謝你們的參與，請向現場人員報到完成撤收紀錄。`;
+    }
+    
+    const claimBtn = document.getElementById('btn-claim-gift');
+    if (GameState.get('giftClaimed') === true) {
+        claimBtn.disabled = true; 
+        claimBtn.className = "btn-base w-full py-4 bg-stone-200 border border-stone-300 text-stone-500 font-black text-sm cursor-not-allowed shadow-none";
+        claimBtn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-700 mr-2"></i>已於 ${GameState.get('giftClaimedTime') || ''} 兌換完畢`;
+    } else {
+        claimBtn.disabled = false; 
+        claimBtn.className = "btn-base primary-btn w-full py-4 font-black text-base tracking-[0.15em] flex justify-center space-x-2";
+        claimBtn.innerHTML = `<i class="fa-solid fa-stamp"></i><span>現場人員點擊核銷</span>`;
+    }
+}
         
         // 現場人員核銷監聽（對齊 Firestore 雲端批次標記）
         document.getElementById('btn-claim-gift')?.addEventListener('click', () => {
