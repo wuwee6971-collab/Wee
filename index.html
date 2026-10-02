@@ -2034,9 +2034,6 @@
         // ==========================================
         // LEVEL 1 完整邏輯
         // ==========================================
-        // ==========================================
-        // LEVEL 1 完整邏輯
-        // ==========================================
         let currentL1TargetIdx = null;
         document.getElementById('l1-camera-input').addEventListener('change', function() {
             if (this.files && this.files.length > 0 && currentL1TargetIdx !== null) {
@@ -2044,7 +2041,8 @@
                 const loc = GAME_DATA.level1.locations[currentL1TargetIdx];
                 const targetNumber = loc.code || ['1', '9', '4', '5'][currentL1TargetIdx];
 
-                uploadAndListenVerification(file, `任務一：${loc.title}`, (isApproved) => {
+                // 修改：參數增加 (isApproved, rejectReason)
+                uploadAndListenVerification(file, `任務一：${loc.title}`, (isApproved, rejectReason) => {
                     if (isApproved) {
                         playSuccessSound();
                         let collected = GameState.get('l1Collected') || [false, false, false, false];
@@ -2053,8 +2051,14 @@
                         showAlert("審核通過", `長官已確認【${loc.title}】之構件特徵！\n\n${loc.desc}\n\n★ 解密通關密碼：【<b class="text-3xl text-primary font-mono">${targetNumber}</b>】`, "fa-circle-check", "text-emerald-700", null, "收到！");
                     } else {
                         playErrorSound();
-                        const errorMsg = loc.failHint ? `長官回報審核未通過！\n\n${loc.failHint}` : `長官回報審核未通過！\n\n請至現場確認【${loc.title}】特徵並重新拍攝！`;
-                        showAlert("審核未通過", errorMsg, "fa-circle-xmark", "text-primary");
+                        // 融合關主回報原因與關卡提示
+                        let errorMsg = `【長官批退原因】\n<b class="text-primary text-base">「${rejectReason || '構件特徵辨識未通過'}」</b>\n\n`;
+                        if (loc.failHint) {
+                            errorMsg += `【現場偵察提示】\n${loc.failHint}`;
+                        } else {
+                            errorMsg += `請至現場再次確認【${loc.title}】特徵後重新拍攝！`;
+                        }
+                        showAlert("任務退回重審", errorMsg, "fa-circle-xmark", "text-primary");
                     }
                 });
             }
@@ -2121,7 +2125,8 @@
         document.getElementById('l2-camera-input').addEventListener('change', function() {
             if (this.files && this.files.length > 0) {
                 const file = this.files[0]; this.value = '';
-                uploadAndListenVerification(file, "任務二：眷舍空間", (isApproved) => {
+                // 修改：參數增加 (isApproved, rejectReason)
+                uploadAndListenVerification(file, "任務二：眷舍空間", (isApproved, rejectReason) => {
                     let currentQ = GameState.get('l2CurrentQ');
                     const qData = GAME_DATA.level2.questions[currentQ];
 
@@ -2141,10 +2146,14 @@
                         }, "進入下一題");
                     } else {
                         playErrorSound();
-                        const errorMsg = qData && qData.failHint 
-                            ? `長官回報審核未通過！\n\n${qData.failHint}` 
-                            : "長官回報：照片模糊或角度不符，請重新拍攝！";
-                        showAlert("審核未通過", errorMsg, "fa-circle-xmark", "text-primary");
+                        // 優先顯示關主退回理由
+                        let errorMsg = `【長官查驗未通過】\n<b class="text-primary text-base">「${rejectReason || '照片取證角度或動作不符'}」</b>\n\n`;
+                        if (qData && qData.failHint) {
+                            errorMsg += `【取證備忘】\n${qData.failHint}`;
+                        } else {
+                            errorMsg += `請確認隊員動作與建築特徵完整入鏡後重拍！`;
+                        }
+                        showAlert("照片審核退回", errorMsg, "fa-circle-xmark", "text-primary");
                     }
                 });
             }
@@ -2355,14 +2364,17 @@
         document.getElementById('l3-camera-input').addEventListener('change', function() {
             if (this.files && this.files.length > 0) {
                 const file = this.files[0]; this.value = '';
-                uploadAndListenVerification(file, "任務三：村長的家", (isApproved) => {
+                // 修改：參數增加 (isApproved, rejectReason)
+                uploadAndListenVerification(file, "任務三：村長的家", (isApproved, rejectReason) => {
                     if (isApproved) {
                         playSuccessSound();
                         showAlert("審核通過", "已確認到達村長家現場！\n解鎖眷村廣播線索。", "fa-circle-check", "text-gold-dark", () => { 
                             GameState.set('l3PhotoDone', true); renderL3(); 
                         });
                     } else {
-                        playErrorSound(); showAlert("審核未通過", "長官回報：地標辨認失敗，請站在村長家門前重新拍攝！", "fa-circle-xmark", "text-primary");
+                        playErrorSound();
+                        const reason = rejectReason || "長官回報：地標辨認失敗，請站在村長家門前重新拍攝！";
+                        showAlert("審核未通過", `【長官通報】\n<b class="text-primary text-base">「${reason}」</b>\n\n請重新確認村長家門面特徵後回傳！`, "fa-circle-xmark", "text-primary");
                     }
                 });
             }
@@ -2498,7 +2510,8 @@
 
         window.submitL4Task = function(taskIdx, levelIdStr, btnEl) {
             playBeep();
-            submitDirectVerification(levelIdStr, {}, (isApproved) => {
+            // 修改：參數增加 (isApproved, rejectReason)
+            submitDirectVerification(levelIdStr, {}, (isApproved, rejectReason) => {
                 if (isApproved) {
                     playSuccessSound();
                     let tasks = GameState.get('l4Tasks') || [false, false, false];
@@ -2507,7 +2520,8 @@
                     renderL4Tasks();
                 } else {
                     playErrorSound();
-                    showAlert("審核退回", "長官回報：尚未確認到任務動作，請確實完成後再行回報！", "fa-circle-xmark", "text-primary");
+                    const reason = rejectReason || "長官回報：尚未確認到任務動作，請確實完成後再行回報！";
+                    showAlert("任務審核退回", `【關主指示】\n<b class="text-primary text-base">「${reason}」</b>\n\n請配合眷村鄰居完成互動後再次回報！`, "fa-circle-xmark", "text-primary");
                 }
             });
         };
@@ -2523,10 +2537,6 @@
                 playErrorSound(); showAlert("密碼錯誤", "請輸入正確的通關密語！", "fa-circle-xmark", "text-primary");
             }
         };
-
-        // ==========================================
-        // LEVEL 5 完整邏輯（純展示與回報，接唱改現場實體互動）
-        // ==========================================
         window.renderL5 = function(index) {
             GameState.set('l5CurrentQ', index);
             const qData = GAME_DATA.level5.questions[index];
@@ -2557,11 +2567,11 @@
             const qData = GAME_DATA.level5.questions[index];
             const qTitle = `L5-群星接唱第${index + 1}題 (${qData.singer || ''})`;
 
-            // 純回傳關卡與歌手資訊供關主審核
+            // 修改：參數增加 (isApproved, rejectReason)
             submitDirectVerification(qTitle, {
                 singer: qData.singer || '',
                 questionText: qData.q
-            }, (isApproved) => {
+            }, (isApproved, rejectReason) => {
                 if (isApproved) {
                     playSuccessSound();
                     if (index + 1 < GAME_DATA.level5.questions.length) {
@@ -2575,27 +2585,14 @@
                     }
                 } else {
                     playErrorSound();
-                    showAlert("審核未通過", "關主回報：歌詞接唱未完成或不正確，請再次與關主確認後重試！", "fa-circle-xmark", "text-primary");
+                    const reason = rejectReason || "歌詞接唱未完成或不正確，請再次與關主確認後重試！";
+                    showAlert("接唱審核退回", `【關主評定】\n<b class="text-primary text-base">「${reason}」</b>\n\n請再次向關主開口唱出正確缺空歌詞！`, "fa-microphone-slash", "text-primary");
                 }
             });
         };
         // ==========================================
         // LEVEL 6 完整邏輯 (修復播放中斷卡關、音訊錯誤處理)
         // ==========================================
-        window.verifyL6Angel = function() {
-            playBeep();
-            submitDirectVerification("L6-尋找關主小天使", {}, (isApproved) => {
-                if (isApproved) {
-                    playSuccessSound();
-                    showAlert("驗證成功", "白T小天使已為你開啟時光膠囊的下一段歷史！", "fa-user-check", "text-emerald-700", () => {
-                        transitionSubPage(6, 2, 3);
-                    });
-                } else {
-                    playErrorSound();
-                    showAlert("驗證失敗", "請確定你已經找到關主並回報囉！", "fa-circle-xmark", "text-primary");
-                }
-            });
-        };
 
         let l6SelectedFlowers = [];
         window.toggleFlower = function(el, fName) {
@@ -2619,18 +2616,39 @@
             }
         };
 
+        // 尋找白T小天使
+        window.verifyL6Angel = function() {
+            playBeep();
+            // 修改：參數增加 (isApproved, rejectReason)
+            submitDirectVerification("L6-尋找關主小天使", {}, (isApproved, rejectReason) => {
+                if (isApproved) {
+                    playSuccessSound();
+                    showAlert("驗證成功", "白T小天使已為你開啟時光膠囊的下一段歷史！", "fa-user-check", "text-emerald-700", () => {
+                        transitionSubPage(6, 2, 3);
+                    });
+                } else {
+                    playErrorSound();
+                    const reason = rejectReason || "請確定你已經找到穿著白T的小天使關主並完成報到！";
+                    showAlert("報到未通過", `【小天使回覆】\n<b class="text-primary text-base">「${reason}」</b>`, "fa-circle-xmark", "text-primary");
+                }
+            });
+        };
+
+        // 時代金曲心得回傳
         window.triggerSongFeedback = function() {
             const audioEl = document.getElementById('l6-audio-player');
             if (audioEl) audioEl.pause();
             
             showAlert("這首歌給你什麼感覺？", "三重不僅有花香，更有動人的歌聲。<br>請分享這首歌帶給你的回憶或感受吧！", "fa-pen-to-square", "text-primary", (feedbackText) => {
-                submitDirectVerification("L6-金曲心得", { note: feedbackText }, (isApproved) => {
+                // 修改：參數增加 (isApproved, rejectReason)
+                submitDirectVerification("L6-金曲心得", { note: feedbackText }, (isApproved, rejectReason) => {
                     if (isApproved) {
                         playSuccessSound();
                         handleLevelSuccess(6);
                     } else {
                         playErrorSound();
-                        showAlert("退回", "心得發送失敗，請重試！", "fa-xmark");
+                        const reason = rejectReason || "心得內容未達標或未符合提問，請再多寫一點真實感受！";
+                        showAlert("心得退回", `【指揮所回覆】\n<b class="text-primary text-base">「${reason}」</b>`, "fa-pen-clip", "text-primary");
                     }
                 });
             }, "送出感受", 0, true, "寫下你聽完這首歌的感受...");
@@ -2638,7 +2656,7 @@
             const cancelBtn = document.getElementById('alert-cancel-btn');
             if (cancelBtn) cancelBtn.textContent = "換一首";
         };
-
+        
         function renderL6Songs() {
             const container = document.getElementById('l6-songs-container'); 
             container.innerHTML = '';
@@ -2741,7 +2759,8 @@
 
         window.submitL7MarketTask = function() {
             playBeep();
-            submitDirectVerification("L7-市集任務二選一", {}, (isApproved) => {
+            // 修改：參數增加 (isApproved, rejectReason)
+            submitDirectVerification("L7-市集任務二選一", {}, (isApproved, rejectReason) => {
                 if (isApproved) {
                     playSuccessSound();
                     GameState.set('l7MarketDone', true);
@@ -2750,11 +2769,11 @@
                     });
                 } else {
                     playErrorSound();
-                    showAlert("審核未通過", "長官回報尚未確認完成！請確認通關後再次送出。", "fa-circle-xmark", "text-primary");
+                    const reason = rejectReason || "長官回報尚未確認通關！請完成市集遊戲 A 或 B 後再次送出。";
+                    showAlert("市集審核退回", `【攤位關主回報】\n<b class="text-primary text-base">「${reason}」</b>`, "fa-circle-xmark", "text-primary");
                 }
             });
         };
-
         window.verifyL7Passcode = function() {
             const input = document.getElementById('l7-input-code');
             const val = input ? input.value.trim().toUpperCase() : "";
