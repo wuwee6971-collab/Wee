@@ -1701,8 +1701,86 @@
             _executeFirebaseSubmission({ levelId: levelName, type: 'photo' }, onSuccess, file);
         }
 
+        // ==========================================
+        // 極速非圖片審核引擎 (同步 ID + 零延遲直通)
+        // ==========================================
         function submitDirectVerification(levelName, extraData = {}, onSuccess) {
-            _executeFirebaseSubmission({ levelId: levelName, type: 'direct', ...extraData }, onSuccess, null);
+            if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
+
+            let isHandled = false;
+            let timeoutId = null;
+
+            const cleanUp = () => {
+                isHandled = true;
+                if (timeoutId) { clearTimeout(timeoutId); timeoutId = null; }
+                if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
+            };
+
+            // 1. 同步在本地生成 Document Reference (0 毫秒，不需等伺服器往返)
+            const docRef = db ? db.collection("submissions").doc() : null;
+
+            // 2. 顯示輕量化等待提示 (非圖片任務不擋住視線)
+            showAlert("現場查驗中", "已送出回報，請向現場關主出示任務！\n(審核通過將自動切換畫面)", "fa-tower-broadcast fa-fade", "text-primary", null, "取消等待", 0, true);
+
+            const cancelBtn = document.getElementById('alert-cancel-btn');
+            if (cancelBtn) {
+                cancelBtn.onclick = () => {
+                    cleanUp(); closeModalAnim('modal-alert', 'alert-box');
+                };
+            }
+
+            if (!db) {
+                setTimeout(() => {
+                    cleanUp();
+                    const modal = document.getElementById('modal-alert');
+                    if (modal) modal.classList.add('hidden');
+                    onSuccess(true, null);
+                }, 800);
+                return;
+            }
+
+            const handleResult = (approved, rejectReason = null) => {
+                if (isHandled) return;
+                cleanUp();
+                // 立即關閉等待彈窗，不浪費動畫時間
+                const modal = document.getElementById('modal-alert');
+                if (modal) modal.classList.add('hidden');
+                onSuccess(approved, rejectReason);
+            };
+
+            // 3. 立即掛上監聽 (比原本快 200~300ms)
+            activeUploadUnsubscribe = docRef.onSnapshot({ includeMetadataChanges: false }, (doc) => {
+                if (isHandled || !doc.exists) return;
+                const data = doc.data();
+                if (data.status === "approved") handleResult(true);
+                else if (data.status === "rejected") handleResult(false, data.rejectReason);
+            }, (err) => console.warn("直通監聽警告:", err));
+
+            // 4. 背景非同步寫入 Firestore
+            const payload = {
+                teamName: GameState.get('teamName') || "匿名隊伍",
+                teamMembers: GameState.get('teamMembers') || "",
+                levelId: levelName,
+                type: 'direct',
+                status: "pending",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                ...extraData
+            };
+
+            docRef.set(payload).catch(err => {
+                if (!isHandled) {
+                    cleanUp();
+                    showAlert("連線中斷", "無法傳送至指揮所，請檢查網路。\n" + err.message, "fa-triangle-exclamation", "text-primary");
+                }
+            });
+
+            // 45 秒防呆超時
+            timeoutId = setTimeout(() => {
+                if (!isHandled) {
+                    cleanUp();
+                    showAlert("請洽現場關主", "指揮所尚未即時審核，若您已完成挑戰，請直接向現場工作人員出示！", "fa-user-clock", "text-primary");
+                }
+            }, 45000);
         }
 
         function _executeFirebaseSubmission(docData, onSuccess, file = null) {
@@ -2524,18 +2602,18 @@
 
         window.submitL4Task = function(taskIdx, levelIdStr, btnEl) {
             playBeep();
-            // 修改：參數增加 (isApproved, rejectReason)
             submitDirectVerification(levelIdStr, {}, (isApproved, rejectReason) => {
                 if (isApproved) {
                     playSuccessSound();
                     let tasks = GameState.get('l4Tasks') || [false, false, false];
                     tasks[taskIdx] = true;
                     GameState.set('l4Tasks', tasks);
+                    // 局部更新卡片狀態，不彈窗阻擋
                     renderL4Tasks();
                 } else {
                     playErrorSound();
                     const reason = rejectReason || "長官回報：尚未確認到任務動作，請確實完成後再行回報！";
-                    showAlert("任務審核退回", `【關主指示】\n<b class="text-primary text-base">「${reason}」</b>\n\n請配合眷村鄰居完成互動後再次回報！`, "fa-circle-xmark", "text-primary");
+                    showAlert("任務審核退回", `【關主指示】\n<b class="text-primary text-base">「${reason}」</b>\n\n請配合眷村鄰居完成挑戰後再次回報！`, "fa-circle-xmark", "text-primary");
                 }
             });
         };
@@ -2581,21 +2659,19 @@
             const qData = GAME_DATA.level5.questions[index];
             const qTitle = `L5-群星接唱第${index + 1}題 (${qData.singer || ''})`;
 
-            // 修改：參數增加 (isApproved, rejectReason)
             submitDirectVerification(qTitle, {
                 singer: qData.singer || '',
                 questionText: qData.q
             }, (isApproved, rejectReason) => {
                 if (isApproved) {
                     playSuccessSound();
+                    // 通過時不再跳「確認」彈窗，直接切換到下一位歌手或結案
                     if (index + 1 < GAME_DATA.level5.questions.length) {
-                        showAlert("審核通過！", "關主已確認接唱無誤！前往下一位歌手。", "fa-microphone-lines", "text-emerald-700", () => {
-                            renderL5(index + 1);
-                        });
+                        renderL5(index + 1); // 秒切下一題！
                     } else {
                         showAlert("群星之夜挑戰成功", "恭喜通過所有歌手的實體接唱考驗！", "fa-star", "text-gold-dark", () => {
                             handleLevelSuccess(5);
-                        });
+                        }, "領取碎片");
                     }
                 } else {
                     playErrorSound();
@@ -2630,16 +2706,14 @@
             }
         };
 
-        // 尋找白T小天使
+        // 尋找白T小天使：通過直接切換到故事頁，省去 1 次點擊
         window.verifyL6Angel = function() {
             playBeep();
-            // 修改：參數增加 (isApproved, rejectReason)
             submitDirectVerification("L6-尋找關主小天使", {}, (isApproved, rejectReason) => {
                 if (isApproved) {
                     playSuccessSound();
-                    showAlert("驗證成功", "白T小天使已為你開啟時光膠囊的下一段歷史！", "fa-user-check", "text-emerald-700", () => {
-                        transitionSubPage(6, 2, 3);
-                    });
+                    // 直通切換，不彈出確認按鈕
+                    transitionSubPage(6, 2, 3);
                 } else {
                     playErrorSound();
                     const reason = rejectReason || "請確定你已經找到穿著白T的小天使關主並完成報到！";
@@ -2648,17 +2722,16 @@
             });
         };
 
-        // 時代金曲心得回傳
+        // 時代金曲心得：通過直接通關
         window.triggerSongFeedback = function() {
             const audioEl = document.getElementById('l6-audio-player');
             if (audioEl) audioEl.pause();
             
             showAlert("這首歌給你什麼感覺？", "三重不僅有花香，更有動人的歌聲。<br>請分享這首歌帶給你的回憶或感受吧！", "fa-pen-to-square", "text-primary", (feedbackText) => {
-                // 修改：參數增加 (isApproved, rejectReason)
                 submitDirectVerification("L6-金曲心得", { note: feedbackText }, (isApproved, rejectReason) => {
                     if (isApproved) {
                         playSuccessSound();
-                        handleLevelSuccess(6);
+                        handleLevelSuccess(6); // 直通結算本關！
                     } else {
                         playErrorSound();
                         const reason = rejectReason || "心得內容未達標或未符合提問，請再多寫一點真實感受！";
@@ -2773,14 +2846,12 @@
 
         window.submitL7MarketTask = function() {
             playBeep();
-            // 修改：參數增加 (isApproved, rejectReason)
             submitDirectVerification("L7-市集任務二選一", {}, (isApproved, rejectReason) => {
                 if (isApproved) {
                     playSuccessSound();
                     GameState.set('l7MarketDone', true);
-                    showAlert("挑戰成功", "市集任務完成！已解鎖最終集結座標。", "fa-map-location-dot", "text-emerald-700", () => {
-                        showScreen('level-7');
-                    });
+                    // 直通跳轉至最終地點
+                    showScreen('level-7');
                 } else {
                     playErrorSound();
                     const reason = rejectReason || "長官回報尚未確認通關！請完成市集遊戲 A 或 B 後再次送出。";
