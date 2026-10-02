@@ -73,7 +73,6 @@
             border-radius: 3px;
         }
 
-        /* 滿版圖片專用工具類別 */
         .bleed-p6 {
             margin-left: -1.5rem !important;
             margin-right: -1.5rem !important;
@@ -120,6 +119,7 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
+            outline: none;
         }
         .btn-base:active:not(:disabled) { transform: translate(2px, 2px) scale(0.98); }
         .btn-base:disabled { opacity: 0.5; filter: grayscale(80%); cursor: not-allowed; box-shadow: none !important; transform: none !important; }
@@ -139,7 +139,7 @@
         .opt-btn { 
             width: 100%; padding: 16px 20px; background: #F7F3E8; border: 2px solid #C4A473; 
             border-radius: 6px; font-weight: 700; text-align: left; color: #2C1E16; 
-            box-shadow: 4px 4px 0 #C4A473; transition: all 0.2s ease; 
+            box-shadow: 4px 4px 0 #C4A473; transition: all 0.2s ease; outline: none;
         }
         .opt-btn:active:not(:disabled) { background: #E8DFCC; transform: translate(2px, 2px) scale(0.98); box-shadow: 1px 1px 0 #C4A473; }
 
@@ -289,7 +289,7 @@
                 任務總部
             </div>
             <div class="flex items-center justify-end space-x-4 w-1/3">
-                <button id="sound-toggle" class="p-1 hover:text-gold transition-colors min-w-[32px] min-h-[32px] flex justify-center items-center" title="聲音開關">
+                <button type="button" id="sound-toggle" class="p-1 hover:text-gold transition-colors min-w-[32px] min-h-[32px] flex justify-center items-center" title="聲音開關">
                     <i id="sound-icon" class="fa-solid fa-volume-high text-gold text-lg"></i>
                 </button>
                 <div class="font-mono text-xs font-black flex items-center bg-primary-dark px-2.5 py-1.5 rounded border border-ink/30 shadow-inner cursor-pointer hover:bg-ink/50 transition-colors active:scale-95" onclick="openStampsDrawer()">
@@ -316,7 +316,7 @@
                             <label class="text-sm font-bold text-ink block tracking-wide">隊員：</label>
                             <textarea id="input-team-members" rows="2" placeholder="例：小明、小華、小美" class="w-full bg-paper border border-ink/20 rounded-md px-4 py-3 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-ink shadow-inner"></textarea>
                         </div>
-                        <button id="btn-start-game" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em] mt-6">
+                        <button type="button" id="btn-start-game" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em] mt-6">
                             <i class="fa-solid fa-stamp mr-2 text-xl"></i>授權調查啟動
                         </button>
                     </div>
@@ -326,7 +326,7 @@
                 <div id="screen-intro-chars" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-6 flex flex-col min-h-full">
                         <div class="flex items-center mb-4 shrink-0">
-                            <button onclick="showScreen('entry')" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-9 h-9 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button type="button" onclick="showScreen('entry')" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-9 h-9 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="flex-1 text-center font-black text-primary text-xl pr-9 font-serif tracking-[0.15em]">人物圖鑑</h2>
                         </div>
                         <div class="flex-1 flex flex-col space-y-3 overflow-y-auto custom-scrollbar pr-1">
@@ -367,7 +367,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="showScreen('intro-story')">
+                        <button type="button" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="showScreen('intro-story')">
                             下一步：故事前言 <i class="fa-solid fa-arrow-right ml-2"></i>
                         </button>
                     </div>
@@ -377,7 +377,7 @@
                 <div id="screen-intro-story" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 flex flex-col justify-center min-h-full">
                         <div class="flex items-center mb-4 shrink-0">
-                            <button onclick="showScreen('intro-chars')" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-9 h-9 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button type="button" onclick="showScreen('intro-chars')" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-9 h-9 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="flex-1 text-center font-black text-primary text-xl pr-9 font-serif tracking-[0.15em]">故事前言</h2>
                         </div>
                         <div class="text-sm leading-[2] font-bold text-ink text-justify font-serif flex-1 overflow-y-auto custom-scrollbar pr-1 space-y-4">
@@ -387,7 +387,7 @@
                             <div class="text-center text-ink/30 tracking-[0.5em] text-xs">··· ✦ ···</div>
                             <p>幾十年後的今天，當你們再次踏入這座村子，空氣中彷彿還留著當年的期盼與遺憾。今天你們將作為時空的「穿越者與見證者」，協助留在民國60年代、獨自守候家園的妻子阿秀，找回那封遲到了半個世紀的信件，完成一場跨越時空的告別。</p>
                         </div>
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6 shrink-0" onclick="showScreen('story')">
+                        <button type="button" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6 shrink-0" onclick="showScreen('story')">
                             查看信件碎片 <i class="fa-solid fa-arrow-right ml-2"></i>
                         </button>
                     </div>
@@ -409,7 +409,7 @@
                         <p class="text-base font-bold text-ink text-justify leading-[1.9] font-serif">
                             請幫助阿秀找尋散落在空軍三重一村中的信件碎片。信上有志遠和阿秀才知道的情話，請幫助阿秀找回志遠留給她的話。
                         </p>
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="showScreen('tutorial')">
+                        <button type="button" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="showScreen('tutorial')">
                             閱讀操作說明 <i class="fa-solid fa-arrow-right ml-2"></i>
                         </button>
                     </div>
@@ -418,7 +418,7 @@
                 <!-- SCREEN: TUTORIAL -->
                 <div id="screen-tutorial" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 flex flex-col justify-center min-h-full relative">
-                        <button onclick="showScreen('story')" class="absolute top-5 left-5 btn-base bg-paper border border-ink/20 shadow-retro-sm px-3 py-1.5 text-xs font-bold text-ink flex items-center gap-1">
+                        <button type="button" onclick="showScreen('story')" class="absolute top-5 left-5 btn-base bg-paper border border-ink/20 shadow-retro-sm px-3 py-1.5 text-xs font-bold text-ink flex items-center gap-1">
                             <i class="fa-solid fa-chevron-left text-xs"></i><span>上一頁</span>
                         </button>
                         <h2 class="text-2xl font-black text-primary mb-8 text-center font-serif tracking-widest border-b border-dashed border-ink/20 pb-4 mt-4">頁面操作說明</h2>
@@ -427,7 +427,7 @@
                             <li class="flex items-start"><i class="fa-solid fa-envelope-open-text text-primary mt-1 mr-3 text-lg shrink-0"></i><span><strong>信件碎片</strong>：點擊下方「信件碎片」按鈕，可隨時檢視收集進度與內容。</span></li>
                             <li class="flex items-start"><i class="fa-solid fa-house text-primary mt-1 mr-3 text-lg shrink-0"></i><span><strong>返回總部</strong>：點擊下方「回主畫面」，可隨時返回總部確認下一個任務地點。</span></li>
                         </ul>
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="showScreen('level-select')">
+                        <button type="button" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8" onclick="showScreen('level-select')">
                             輸入任務代碼 <i class="fa-solid fa-arrow-right ml-2"></i>
                         </button>
                     </div>
@@ -439,7 +439,7 @@
                         <h2 class="text-2xl font-black text-primary text-center font-serif tracking-widest border-b border-dashed border-ink/20 pb-4">輸入任務代碼</h2>
                         <p class="text-sm font-bold text-ink/70 text-center">請檢查任務小卡上8碼代碼</p>
                         <input type="text" id="input-level-code" maxlength="10" placeholder="" class="w-full bg-paper border border-ink/20 rounded-md p-4 text-center text-xl font-mono font-black text-primary outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all uppercase shadow-inner tracking-widest">
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em]" onclick="verifyLevelCode()">
+                        <button type="button" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em]" onclick="verifyLevelCode()">
                             驗證並啟動任務
                         </button>
                     </div>
@@ -454,7 +454,7 @@
                     <div class="level-card p-8 text-center bg-paper/50">
                         <div class="text-xs font-bold text-ink/60 mb-3 tracking-widest">下一步，請前往</div>
                         <div class="text-2xl font-black text-primary mb-8 tracking-[0.1em] font-serif">《 <span id="main-active-title"></span> 》</div>
-                        <button id="btn-goto-current" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em]">
+                        <button type="button" id="btn-goto-current" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em]">
                             拆開任務信封
                         </button>
                     </div>
@@ -493,21 +493,21 @@
                         <div class="text-sm leading-[1.8] font-bold text-ink text-justify font-serif space-y-2 flex-1 overflow-y-auto custom-scrollbar pr-1">
                             <p class="text-primary font-black border-t border-dashed border-ink/15 pt-3">找到白T關主後：</p>
                         </div>
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-5 shrink-0" onclick="transitionSubPage(1, 1, 2)">進入任務牆</button>
+                        <button type="button" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-5 shrink-0" onclick="transitionSubPage(1, 1, 2)">進入任務牆</button>
                     </div>
 
                     <div id="l1-p2" class="hidden flex flex-col space-y-6">
                         <div class="flex items-center mb-2 shrink-0">
-                            <button onclick="transitionSubPage(1, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button type="button" onclick="transitionSubPage(1, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-xl font-serif tracking-[0.15em] text-center flex-1 pr-10">陣地巡查任務牆</h2>
                         </div>
                         <div class="level-card p-6 space-y-6">
                             <p class="text-xs font-bold text-ink/60 text-center tracking-wide">點擊完成定點打卡（可重複查看指示）</p>
                             <div class="grid grid-cols-2 gap-4" id="l1-locations-grid">
-                                <button class="l1-loc-btn btn-base military-btn py-6 text-base font-black flex flex-col tracking-widest" data-idx="0"><i class="fa-solid fa-map-pin mb-3 text-primary text-2xl"></i>甬道1號出口</button>
-                                <button class="l1-loc-btn btn-base military-btn py-6 text-base font-black flex flex-col tracking-widest" data-idx="1"><i class="fa-solid fa-map-pin mb-3 text-primary text-2xl"></i>甬道豎井</button>
-                                <button class="l1-loc-btn btn-base military-btn py-6 text-base font-black flex flex-col tracking-widest" data-idx="2"><i class="fa-solid fa-map-pin mb-3 text-primary text-2xl"></i>4號出入口</button>
-                                <button class="l1-loc-btn btn-base military-btn py-6 text-base font-black flex flex-col tracking-widest" data-idx="3"><i class="fa-solid fa-map-pin mb-3 text-primary text-2xl"></i>5號砲台遺跡</button>
+                                <button type="button" class="l1-loc-btn btn-base military-btn py-6 text-base font-black flex flex-col tracking-widest" data-idx="0"><i class="fa-solid fa-map-pin mb-3 text-primary text-2xl"></i>甬道1號出口</button>
+                                <button type="button" class="l1-loc-btn btn-base military-btn py-6 text-base font-black flex flex-col tracking-widest" data-idx="1"><i class="fa-solid fa-map-pin mb-3 text-primary text-2xl"></i>甬道豎井</button>
+                                <button type="button" class="l1-loc-btn btn-base military-btn py-6 text-base font-black flex flex-col tracking-widest" data-idx="2"><i class="fa-solid fa-map-pin mb-3 text-primary text-2xl"></i>4號出入口</button>
+                                <button type="button" class="l1-loc-btn btn-base military-btn py-6 text-base font-black flex flex-col tracking-widest" data-idx="3"><i class="fa-solid fa-map-pin mb-3 text-primary text-2xl"></i>5號砲台遺跡</button>
                             </div>
                         </div>
                         
@@ -526,18 +526,18 @@
                             </div>
                             
                             <div class="grid grid-cols-3 gap-4 pt-4 max-w-[300px] mx-auto relative z-10">
-                                <button class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="1">1</button>
-                                <button class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="2">2</button>
-                                <button class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="3">3</button>
-                                <button class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="4">4</button>
-                                <button class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="5">5</button>
-                                <button class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="6">6</button>
-                                <button class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="7">7</button>
-                                <button class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="8">8</button>
-                                <button class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="9">9</button>
-                                <button id="l1-btn-del" class="btn-base military-btn py-4 text-2xl font-black text-primary"><i class="fa-solid fa-delete-left"></i></button>
-                                <button class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="0">0</button>
-                                <button id="l1-btn-submit" class="btn-base military-btn py-4 text-2xl font-black text-emerald-700"><i class="fa-solid fa-check"></i></button>
+                                <button type="button" class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="1">1</button>
+                                <button type="button" class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="2">2</button>
+                                <button type="button" class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="3">3</button>
+                                <button type="button" class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="4">4</button>
+                                <button type="button" class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="5">5</button>
+                                <button type="button" class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="6">6</button>
+                                <button type="button" class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="7">7</button>
+                                <button type="button" class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="8">8</button>
+                                <button type="button" class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="9">9</button>
+                                <button type="button" id="l1-btn-del" class="btn-base military-btn py-4 text-2xl font-black text-primary"><i class="fa-solid fa-delete-left"></i></button>
+                                <button type="button" class="l1-key btn-base military-btn py-4 text-2xl font-mono font-black" data-val="0">0</button>
+                                <button type="button" id="l1-btn-submit" class="btn-base military-btn py-4 text-2xl font-black text-emerald-700"><i class="fa-solid fa-check"></i></button>
                             </div>
                         </div>
                     </div>
@@ -547,7 +547,7 @@
                 <div id="screen-level-2" class="screen-panel hidden p-6 flex flex-col space-y-6">
                     <div class="level-card l2 p-8 flex-1 flex flex-col relative">
                         <div class="text-center mb-6 shrink-0 relative flex justify-between items-center border-b border-dashed border-military/30 pb-4">
-                            <button onclick="prevL2Question()" class="btn-base bg-military/10 text-military px-4 py-2 hidden shadow-retro-sm rounded-md border border-military/20" id="btn-l2-prev"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button type="button" onclick="prevL2Question()" class="btn-base bg-military/10 text-military px-4 py-2 hidden shadow-retro-sm rounded-md border border-military/20" id="btn-l2-prev"><i class="fa-solid fa-chevron-left"></i></button>
                             <span class="px-5 py-2 bg-military/10 border border-military/20 rounded-md text-sm font-black text-military shadow-retro-sm mx-auto tracking-widest font-mono" id="l2-q-counter">測驗 1 / 5</span>
                         </div>
                         
@@ -583,7 +583,7 @@
                         <div class="w-full mb-6 rounded-md overflow-hidden bg-paper-dark border-2 border-ink/10 shadow-sm">
                             <img src="images/l3_vegetables.jpg" class="w-full h-auto object-contain block loaded" alt="各種菜集合圖" onerror="this.src='https://placehold.co/400x300?text=各種菜集合圖'">
                         </div>
-                        <button onclick="startL3Mission()" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em]">開始任務</button>
+                        <button type="button" onclick="startL3Mission()" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em]">開始任務</button>
                     </div>
                 </div>
 
@@ -603,7 +603,7 @@
                     <div id="l3-qa-section" class="hidden flex-1 flex flex-col">
                         <div class="level-card l3 p-6 flex-1 flex flex-col relative">
                             <div class="text-center mb-4 shrink-0 relative flex justify-between items-center border-b border-dashed border-gold-dark/40 pb-3">
-                                <button onclick="prevL3Question()" class="btn-base bg-gold/10 text-gold-dark px-4 py-2 hidden shadow-retro-sm rounded-md border border-gold/30" id="btn-l3-prev"><i class="fa-solid fa-chevron-left"></i></button>
+                                <button type="button" onclick="prevL3Question()" class="btn-base bg-gold/10 text-gold-dark px-4 py-2 hidden shadow-retro-sm rounded-md border border-gold/30" id="btn-l3-prev"><i class="fa-solid fa-chevron-left"></i></button>
                                 <span class="px-5 py-2 bg-gold/10 border border-gold/30 rounded-md text-sm font-black text-gold-dark shadow-retro-sm mx-auto tracking-widest font-mono" id="l3-q-counter">菜單 1 / 5</span>
                             </div>
 
@@ -612,7 +612,7 @@
                             </div>
                             
                             <div class="mt-2 flex flex-col items-center justify-center shrink-0 mb-3 relative">
-                                <button id="l3-btn-voice" class="btn-base w-20 h-20 bg-vintage-paper border-[3px] border-ink rounded-full text-ink flex items-center justify-center shadow-[0_6px_0_theme(colors.ink)] transition-transform active:translate-y-2 active:shadow-[0_0px_0_theme(colors.ink)]">
+                                <button type="button" id="l3-btn-voice" class="btn-base w-20 h-20 bg-vintage-paper border-[3px] border-ink rounded-full text-ink flex items-center justify-center shadow-[0_6px_0_theme(colors.ink)] transition-transform active:translate-y-2 active:shadow-[0_0px_0_theme(colors.ink)]">
                                     <i id="l3-voice-icon" class="fa-solid fa-radio text-3xl opacity-80"></i>
                                 </button>
                                 <audio id="l3-audio-player" class="hidden"></audio>
@@ -638,12 +638,12 @@
                             <p>對我們而言，這棵老榕樹下的廣場不只是公共客廳，更是凝聚所有人情感、度過童年時光的避風港。</p>
                             <p>今天，請跟著我們一起走入這座充滿人情味的榕樹廣場，回到那段克難卻溫暖的歲月。</p>
                         </div>
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8 shrink-0" onclick="transitionSubPage(4, 1, 2)">展開圖鑑</button>
+                        <button type="button" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8 shrink-0" onclick="transitionSubPage(4, 1, 2)">展開圖鑑</button>
                     </div>
                     
                     <div id="l4-p2" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
-                            <button onclick="transitionSubPage(4, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button type="button" onclick="transitionSubPage(4, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">【尋人啟事】目標特徵</h2>
                         </div>
                         <div class="level-card p-6 flex-1 flex flex-col items-center justify-center bg-paper/50">
@@ -662,13 +662,13 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6 shrink-0" onclick="transitionSubPage(4, 2, 3)">前往任務牆</button>
+                        <button type="button" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6 shrink-0" onclick="transitionSubPage(4, 2, 3)">前往任務牆</button>
                     </div>
 
                     <!-- L4-P3: 3個任務卡片列表 -->
                     <div id="l4-p3" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-4 shrink-0">
-                            <button onclick="transitionSubPage(4, 3, 2)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink">
+                            <button type="button" onclick="transitionSubPage(4, 3, 2)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink">
                                 <i class="fa-solid fa-chevron-left"></i>
                             </button>
                             <h2 class="font-black text-primary text-xl font-serif tracking-[0.15em] text-center flex-1 pr-10">3個任務</h2>
@@ -725,14 +725,13 @@
                                     <p class="text-xs font-bold text-ink/70">主動前往攀談，聽取奶奶歷史解說並答題</p>
                                 </div>
                             </div>
-                            
                         </div>
                     </div>
 
                     <!-- L4-P4: 知識測驗頁面 (老奶奶) -->
                     <div id="l4-p4" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
-                            <button onclick="transitionSubPage(4, 4, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink">
+                            <button type="button" onclick="transitionSubPage(4, 4, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink">
                                 <i class="fa-solid fa-chevron-left"></i>
                             </button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">知識測驗</h2>
@@ -746,7 +745,7 @@
                                 <label class="text-sm font-bold text-ink block font-serif leading-relaxed" id="l4-q2-label"></label>
                                 <select id="l4-q2" class="w-full bg-white border border-ink/20 rounded p-3 text-base font-bold text-primary shadow-inner outline-none cursor-pointer"></select>
                             </div>
-                            <button id="l4-btn-verify" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em] mt-4" onclick="verifyL4Questions()">
+                            <button type="button" id="l4-btn-verify" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em] mt-4" onclick="verifyL4Questions()">
                                 <i class="fa-solid fa-stamp mr-2"></i>提交檔案
                             </button>
                         </div>
@@ -755,7 +754,7 @@
                     <!-- L4-P5: 任務詳情獨立新畫面 (點擊任務一、二出現) -->
                     <div id="l4-p5" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-4 shrink-0">
-                            <button onclick="transitionSubPage(4, 5, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink">
+                            <button type="button" onclick="transitionSubPage(4, 5, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink">
                                 <i class="fa-solid fa-chevron-left"></i>
                             </button>
                             <h2 id="l4-detail-title" class="font-black text-primary text-xl font-serif tracking-[0.15em] text-center flex-1 pr-10">任務一</h2>
@@ -770,7 +769,7 @@
                             </div>
                             
                             <div class="w-full pt-4 mt-auto">
-                                <button id="l4-detail-submit-btn" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em]" onclick="submitCurrentL4Task()">
+                                <button type="button" id="l4-detail-submit-btn" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em]" onclick="submitCurrentL4Task()">
                                     完成
                                 </button>
                                 <p class="text-[11px] font-bold text-ink/40 text-center mt-2 tracking-wider font-mono">※ 按下後將由現場關主後台查驗確認</p>
@@ -779,10 +778,8 @@
                     </div>
                 </div>
 
-                <!-- LEVEL 5: 群星之夜 (4階段整合流程) -->
+                <!-- LEVEL 5: 群星之夜 -->
                 <div id="screen-level-5" class="screen-panel hidden p-6 flex flex-col">
-                    
-                    <!-- L5-P1: 前言故事與天台廣場歷史 -->
                     <div id="l5-p1" class="level-card p-6 flex flex-col min-h-full">
                         <h2 class="text-center text-primary text-2xl mb-4 font-black border-b border-dashed border-ink/20 pb-4 tracking-widest shrink-0 font-serif">黃金娛樂時光</h2>
                         
@@ -812,15 +809,14 @@
                             <p>今晚，我們將透過一場「接歌挑戰」，帶領大家走入這段熱鬧又帶點感傷的青春歲月。</p>
                         </div>
                         
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="transitionSubPage(5, 1, 2)">
+                        <button type="button" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="transitionSubPage(5, 1, 2)">
                             下一步：穿越通廊 <i class="fa-solid fa-arrow-right ml-2"></i>
                         </button>
                     </div>
 
-                    <!-- L5-P2: 抵達現場與輸入密碼驗證 -->
                     <div id="l5-p2" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-4 shrink-0">
-                            <button onclick="transitionSubPage(5, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink">
+                            <button type="button" onclick="transitionSubPage(5, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink">
                                 <i class="fa-solid fa-chevron-left"></i>
                             </button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">抵達現場</h2>
@@ -846,10 +842,9 @@
                         </div>
                     </div>
 
-                    <!-- L5-P3: 遊戲規則說明 -->
                     <div id="l5-p3" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-4 shrink-0">
-                            <button onclick="transitionSubPage(5, 3, 2)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button type="button" onclick="transitionSubPage(5, 3, 2)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">遊戲規則</h2>
                         </div>
                         <div class="level-card p-8 flex-1 flex flex-col justify-center">
@@ -859,11 +854,10 @@
                                 <li><b>求助機制：</b>不會唱也沒關係！可以向現場其他玩家「求助」，互相幫助。</li>
                                 <li><b>通關條件：</b>全體合力完成 3 首歌，即可獲得密碼！</li>
                             </ol>
-                            <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8 shrink-0" onclick="transitionSubPage(5, 3, 4)">前往接歌挑戰</button>
+                            <button type="button" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8 shrink-0" onclick="transitionSubPage(5, 3, 4)">前往接歌挑戰</button>
                         </div>
                     </div>
 
-                    <!-- L5-P4: 實際接唱題目卡 -->
                     <div id="l5-p4" class="hidden flex flex-col min-h-full">
                         <div class="level-card p-6 flex-1 flex flex-col relative justify-between">
                             <div class="text-center mb-4 shrink-0 relative flex justify-between items-center border-b border-dashed border-ink/30 pb-3">
@@ -882,7 +876,6 @@
                             <div id="l5-options-container" class="mt-6 space-y-3 shrink-0 flex flex-col pb-2"></div>
                         </div>
                     </div>
-
                 </div>
 
                 <!-- LEVEL 6: 時光膠囊 -->
@@ -892,7 +885,6 @@
                             <h2 class="text-2xl font-black text-primary mb-6 text-center border-b border-dashed border-ink/20 pb-4 tracking-widest">時光膠囊</h2>
                             <p>三重空軍一村曾是充滿人情味與時代記憶的。在物資缺乏的年代裡，空氣中總是飄著淡淡的花香，街頭巷尾也流淌著動人的歌聲。</p>
                             
-                            <!-- 修改後 -->
                             <div class="flex flex-col gap-4 my-6">
                                 <div class="vintage-photo w-full min-h-[160px] max-h-[220px] border-[3px] border-b-8 shadow-sm overflow-hidden">
                                     <img src="images/時光膠囊1.jpg" class="w-full h-full object-contain loaded" onerror="this.src='https://placehold.co/400x200/e5d5b5/7c343d?text=三重老照片1'">
@@ -904,12 +896,12 @@
                             
                             <p>今天，我們將跟著<b class="text-primary">穿著白T小天使</b>的腳步，打開珍藏多年的木盒，一起找回三重過去被遺忘的產業與溫暖回憶。</p>
                         </div>
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8 shrink-0" onclick="transitionSubPage(6, 1, 2)">認識角色</button>
+                        <button type="button" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8 shrink-0" onclick="transitionSubPage(6, 1, 2)">認識角色</button>
                     </div>
 
                     <div id="l6-p2" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
-                            <button onclick="transitionSubPage(6, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button type="button" onclick="transitionSubPage(6, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">尋人啟事</h2>
                         </div>
                         <div class="level-card p-6 flex-1 flex flex-col items-center justify-center bg-paper/50">
@@ -928,7 +920,7 @@
                                 請找尋穿著白T的關主小天使，向他回報並取得進一步的指示。
                             </p>
                         </div>
-                        <button class="btn-base military-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6 shrink-0" onclick="verifyL6Angel()">找到了！！</button>
+                        <button type="button" class="btn-base military-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6 shrink-0" onclick="verifyL6Angel()">找到了！！</button>
                     </div>
 
                     <div id="l6-p3" class="hidden flex flex-col min-h-full">
@@ -964,12 +956,12 @@
                                 秀英花除了在冬、春製茶季時加工成花茶香片，也是重要的香水原料之一。曾經的大眾香水「明星花露水」在1951年從上海跟著政府遷臺之後，就曾以秀英花作為主要成分。現在讓我們跟著關卡小天使，一起聞聞重製版的「明星花露水」吧！
                             </p>
                         </div>
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-5 shrink-0" onclick="transitionSubPage(6, 3, 4)">進入香氛鑑定</button>
+                        <button type="button" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-5 shrink-0" onclick="transitionSubPage(6, 3, 4)">進入香氛鑑定</button>
                     </div>
 
                     <div id="l6-p4" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
-                            <button onclick="transitionSubPage(6, 4, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button type="button" onclick="transitionSubPage(6, 4, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">尋找香氛記憶</h2>
                         </div>
                         <div class="level-card p-5 flex-1 flex flex-col overflow-hidden bg-paper/30">
@@ -1003,7 +995,7 @@
                                 </div>
                             </div>
                             <div class="mt-4 shrink-0 pt-4 border-t border-ink/10">
-                                <button class="btn-base primary-btn w-full py-4 text-lg font-black tracking-[0.1em]" onclick="verifyFlowers()">
+                                <button type="button" class="btn-base primary-btn w-full py-4 text-lg font-black tracking-[0.1em]" onclick="verifyFlowers()">
                                     <i class="fa-solid fa-flask mr-2"></i>提交香氛鑑定
                                 </button>
                             </div>
@@ -1012,7 +1004,7 @@
 
                     <div id="l6-p5" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
-                            <button onclick="transitionSubPage(6, 5, 4)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button type="button" onclick="transitionSubPage(6, 5, 4)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">點播時代金曲</h2>
                         </div>
                         <div class="level-card p-6 flex-1 flex flex-col justify-between overflow-hidden bg-paper/30 relative">
@@ -1031,7 +1023,7 @@
                                 <div class="w-full bg-paper-dark h-1.5 mt-4 overflow-hidden rounded-full">
                                     <div id="l6-progress" class="h-full w-0 bg-primary transition-all duration-100 ease-linear rounded-full"></div>
                                 </div>
-                                <button onclick="triggerSongFeedback()" class="btn-base primary-btn w-full py-3 mt-4 text-sm font-black tracking-widest shadow-retro-sm">
+                                <button type="button" onclick="triggerSongFeedback()" class="btn-base primary-btn w-full py-3 mt-4 text-sm font-black tracking-widest shadow-retro-sm">
                                     <i class="fa-solid fa-pen-fancy mr-2"></i>聽完了，寫下音樂回憶
                                 </button>
                                 <audio id="l6-audio-player" class="hidden"></audio>
@@ -1056,7 +1048,7 @@
                                 <div class="bleed-p6 -mt-3 mb-3 border-b-2 border-primary/20 aspect-[16/9] overflow-hidden bg-stone-900 cursor-zoom-in" onclick="openImageLightbox('images/7-1.jpg')">
                                     <img src="images/7-1.jpg" class="w-full h-full object-cover loaded" alt="沙包大戰圖片" onerror="this.src='https://placehold.co/400x200/e5d5b5/7c343d?text=沙包大戰圖片'">
                                 </div>
-                                <button class="btn-base bg-paper border border-primary/30 text-primary py-2.5 font-bold tracking-widest rounded text-sm hover:bg-primary/10" onclick="openImageLightbox('images/7-3.jpg')">查看詳細說明</button>
+                                <button type="button" class="btn-base bg-paper border border-primary/30 text-primary py-2.5 font-bold tracking-widest rounded text-sm hover:bg-primary/10" onclick="openImageLightbox('images/7-3.jpg')">查看詳細說明</button>
                             </div>
 
                             <div class="task-card flex flex-col border-[3px] border-military/20 bg-paper/20">
@@ -1066,11 +1058,11 @@
                                 <div class="bleed-p6 -mt-3 mb-3 border-b-2 border-military/20 aspect-[16/9] overflow-hidden bg-stone-900 cursor-zoom-in" onclick="openImageLightbox('images/7-2.jpg')">
                                     <img src="images/7-2.jpg" class="w-full h-full object-cover loaded" alt="復古彈珠台圖片" onerror="this.src='https://placehold.co/400x200/e5d5b5/7c343d?text=復古彈珠台圖片'">
                                 </div>
-                                <button class="btn-base bg-paper border border-primary/30 text-primary py-2.5 font-bold tracking-widest rounded text-sm hover:bg-primary/10" onclick="openImageLightbox('images/7-4.jpg')">查看詳細說明</button>
+                                <button type="button" class="btn-base bg-paper border border-primary/30 text-primary py-2.5 font-bold tracking-widest rounded text-sm hover:bg-primary/10" onclick="openImageLightbox('images/7-4.jpg')">查看詳細說明</button>
                             </div>
                         </div>
 
-                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em] mt-auto shrink-0" onclick="submitL7MarketTask()">
+                        <button type="button" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em] mt-auto shrink-0" onclick="submitL7MarketTask()">
                             已完成挑戰，送出確認 <i class="fa-solid fa-check ml-2"></i>
                         </button>
                     </div>
@@ -1158,11 +1150,11 @@
                             <div class="text-[11px] font-bold text-ink/60 mb-3 tracking-widest flex items-center justify-center uppercase">
                                 <i class="fa-solid fa-user-shield text-primary mr-1.5"></i>工作人員核銷專區
                             </div>
-                            <button id="btn-claim-gift" class="btn-base primary-btn w-full py-4 font-black text-base tracking-[0.15em] flex justify-center space-x-2">
+                            <button type="button" id="btn-claim-gift" class="btn-base primary-btn w-full py-4 font-black text-base tracking-[0.15em] flex justify-center space-x-2">
                                 <i class="fa-solid fa-stamp"></i><span>現場人員點擊核銷</span>
                             </button>
                         </div>
-                        <button id="btn-restart-game" class="btn-base military-btn w-full py-4 font-black text-sm tracking-widest opacity-80 hover:opacity-100"><i class="fa-solid fa-rotate-left mr-2"></i>清除檔案並重新開始</button>
+                        <button type="button" id="btn-restart-game" class="btn-base military-btn w-full py-4 font-black text-sm tracking-widest opacity-80 hover:opacity-100"><i class="fa-solid fa-rotate-left mr-2"></i>清除檔案並重新開始</button>
                     </div>
                 </div>
 
@@ -1171,9 +1163,9 @@
 
         <!-- 底部導覽列 -->
         <div id="bottom-nav-bar" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] border-t border-ink/10 p-3 text-sm font-bold flex items-center justify-around text-ink bg-white/90 backdrop-blur-md z-40 pb-[calc(16px+env(safe-area-inset-bottom,12px))] shadow-[0_-10px_20px_rgba(0,0,0,0.05)] sm:rounded-b-[2rem]">
-            <button id="btn-nav-hq" class="hover:text-primary transition-all flex items-center space-x-2 py-2 px-4 rounded-full active:scale-95 active:bg-paper tracking-wider"><i class="fa-solid fa-house"></i><span>回主畫面</span></button>
+            <button type="button" id="btn-nav-hq" class="hover:text-primary transition-all flex items-center space-x-2 py-2 px-4 rounded-full active:scale-95 active:bg-paper tracking-wider"><i class="fa-solid fa-house"></i><span>回主畫面</span></button>
             <span class="text-ink/20 font-light">|</span>
-            <button id="btn-nav-stamps" class="hover:text-primary transition-all flex items-center space-x-2 py-2 px-4 rounded-full text-primary active:scale-95 active:bg-paper tracking-wider" onclick="openStampsDrawer()"><i class="fa-solid fa-puzzle-piece"></i><span>信件碎片</span></button>
+            <button type="button" id="btn-nav-stamps" class="hover:text-primary transition-all flex items-center space-x-2 py-2 px-4 rounded-full text-primary active:scale-95 active:bg-paper tracking-wider" onclick="openStampsDrawer()"><i class="fa-solid fa-puzzle-piece"></i><span>信件碎片</span></button>
         </div>
 
         <!-- MODAL: ALERT -->
@@ -1190,8 +1182,8 @@
                     <textarea id="alert-input-textarea" class="hidden w-full mt-4 p-3 border border-ink/20 rounded bg-white shadow-inner text-sm font-bold text-ink placeholder:text-ink/40 outline-none focus:ring-2 focus:ring-primary/30" rows="3" placeholder=""></textarea>
                 </div>
                 <div class="pt-4 shrink-0 grid grid-cols-2 gap-3" id="alert-btn-container">
-                    <button id="alert-cancel-btn" class="btn-base py-3.5 military-btn font-black text-sm tracking-widest">返回</button>
-                    <button id="alert-btn" class="btn-base py-3.5 primary-btn font-black text-sm tracking-widest">確認</button>
+                    <button type="button" id="alert-cancel-btn" class="btn-base py-3.5 military-btn font-black text-sm tracking-widest">返回</button>
+                    <button type="button" id="alert-btn" class="btn-base py-3.5 primary-btn font-black text-sm tracking-widest">確認</button>
                 </div>
             </div>
         </div>
@@ -1201,12 +1193,12 @@
             <div class="w-full max-w-[430px] bg-[#221711] border-t border-gold/30 rounded-t-2xl p-6 space-y-4 h-[85%] flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.5)] relative pb-[env(safe-area-inset-bottom,20px)] transform translate-y-full transition-transform duration-400 ease-out" id="stamps-box">
                 <div class="flex justify-between items-center border-b border-white/10 pb-4 shrink-0">
                     <h3 class="font-black text-gold text-lg flex items-center space-x-2 font-serif tracking-widest"><i class="fa-solid fa-puzzle-piece"></i><span>歷史碎片收納盒</span></h3>
-                    <button id="close-stamps" class="text-white/50 hover:text-white p-2 active:scale-90 transition-transform rounded-full bg-white/5 w-10 h-10 flex items-center justify-center"><i class="fa-solid fa-xmark text-lg"></i></button>
+                    <button type="button" id="close-stamps" class="text-white/50 hover:text-white p-2 active:scale-90 transition-transform rounded-full bg-white/5 w-10 h-10 flex items-center justify-center"><i class="fa-solid fa-xmark text-lg"></i></button>
                 </div>
                 <div class="flex-1 overflow-y-auto pt-2 flex flex-col items-center custom-scrollbar" style="-webkit-overflow-scrolling: touch;">
                     <div id="puzzle-drawer-board" class="bg-black/60 rounded-lg overflow-hidden mt-2 shadow-inner border border-white/5 w-full"></div>
                     <div id="full-letter-btn-container" class="hidden mt-8 text-center pb-8 border-t border-dashed border-white/10 pt-8 w-full">
-                        <button onclick="openFullLetter()" class="btn-base w-full py-4 bg-gold text-ink font-black text-base transition-all tracking-[0.15em] shadow-[0_0_15px_rgba(221,191,146,0.2)]">
+                        <button type="button" onclick="openFullLetter()" class="btn-base w-full py-4 bg-gold text-ink font-black text-base transition-all tracking-[0.15em] shadow-[0_0_15px_rgba(221,191,146,0.2)]">
                             <i class="fa-solid fa-scroll mr-2"></i>閱讀《跨越時空的信》
                         </button>
                     </div>
@@ -1217,7 +1209,7 @@
         <!-- MODAL: FULL LETTER (滿版展示) -->
         <div id="modal-full-letter" class="fixed inset-0 bg-ink/95 backdrop-blur-xl z-[1000] flex items-center justify-center p-2 sm:p-4 hidden transition-opacity duration-500">
             <div class="w-full max-w-[430px] flex flex-col items-center relative opacity-0 transform scale-95 transition-all duration-500" id="letter-box">
-                <button class="absolute -top-12 right-0 text-white/50 hover:text-white text-3xl active:scale-90 transition-transform w-10 h-10 flex items-center justify-center bg-white/5 rounded-full" onclick="closeFullLetter()"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" class="absolute -top-12 right-0 text-white/50 hover:text-white text-3xl active:scale-90 transition-transform w-10 h-10 flex items-center justify-center bg-white/5 rounded-full" onclick="closeFullLetter()"><i class="fa-solid fa-xmark"></i></button>
                 <h3 class="text-center font-black text-xl mb-4 text-gold tracking-[0.2em] border-b border-dashed border-gold/30 pb-2 shrink-0 font-serif" style="text-shadow: 0 4px 10px rgba(0,0,0,0.5);">跨越時空的信</h3>
                 <div id="full-letter-board" class="w-full"></div>
                 <div class="mt-4 text-gold text-xs font-bold flex items-center space-x-2 bg-black/40 px-4 py-2.5 rounded-full border border-gold/20 backdrop-blur-md shadow-lg">
@@ -1234,7 +1226,7 @@
             <div class="vintage-paper p-8 rounded-xl max-w-[340px] w-full text-center space-y-6 shadow-glass border border-gold/40 relative transform transition-all scale-95 opacity-0" id="lightbox-box" onclick="event.stopPropagation()" style="transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
                 <div class="flex justify-between items-center border-b border-dashed border-ink/20 pb-3">
                     <span class="text-[11px] font-mono font-black text-primary tracking-widest uppercase"><i class="fa-solid fa-puzzle-piece mr-1.5"></i>碎片檢視</span>
-                    <button onclick="closePuzzleLightbox()" class="text-ink/50 hover:text-ink transition-colors w-8 h-8 flex items-center justify-center rounded-full bg-ink/5"><i class="fa-solid fa-xmark"></i></button>
+                    <button type="button" onclick="closePuzzleLightbox()" class="text-ink/50 hover:text-ink transition-colors w-8 h-8 flex items-center justify-center rounded-full bg-ink/5"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div id="puzzle-lightbox-content" class="py-8 px-6 bg-paper border border-ink/10 rounded-md text-sm font-serif font-black text-ink leading-[2] shadow-inner tracking-wide"></div>
                 <p class="text-[10px] font-sans font-bold text-ink/40 tracking-widest">點擊任意處關閉</p>
@@ -1244,7 +1236,7 @@
         <!-- MODAL: IMAGE LIGHTBOX -->
         <div id="modal-image-lightbox" class="fixed inset-0 bg-ink/90 backdrop-blur-md z-[1020] flex items-center justify-center p-4 hidden transition-opacity duration-300" onclick="closeImageLightbox()">
             <div class="relative max-w-full max-h-full flex flex-col items-center" onclick="event.stopPropagation()">
-                <button onclick="closeImageLightbox()" class="absolute -top-12 right-0 text-white/70 hover:text-white text-2xl w-10 h-10 flex items-center justify-center bg-white/10 rounded-full active:scale-95 transition-transform">
+                <button type="button" onclick="closeImageLightbox()" class="absolute -top-12 right-0 text-white/70 hover:text-white text-2xl w-10 h-10 flex items-center justify-center bg-white/10 rounded-full active:scale-95 transition-transform">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
                 <div class="vintage-photo p-1 bg-paper rounded shadow-2xl max-w-[92vw] max-h-[80vh] overflow-hidden flex items-center justify-center">
@@ -1256,6 +1248,25 @@
     </div>
 
     <script>
+        // 全域攔截：防止空白鍵或 Enter 鍵意外觸發焦點元素
+        document.addEventListener('keydown', function(event) {
+            const activeEl = document.activeElement;
+            if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+                return; 
+            }
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+            }
+        });
+
+        // 點擊按鈕後主動解除焦點，杜絕後續按鍵誤觸
+        document.addEventListener('click', function(event) {
+            const btn = event.target.closest('button');
+            if (btn && btn.type !== 'submit') {
+                btn.blur();
+            }
+        });
+
         // 核心設定與資料
         const GAME_DATA = {
             levels: [
@@ -1496,6 +1507,7 @@
                 l4Tasks: [false, false, false],
                 l5Input: [], l5Errors: 0, l5CurrentQ: 0,
                 l7MarketDone: false,
+                l6SelectedFlowers: [],
                 timeExpiredHandled: false
             };
             function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
@@ -1729,7 +1741,6 @@
             }, 150); 
         }
 
-        // 渲染碎片板（統一支援彈窗與 L7 頁面嵌入）
         function renderPuzzlePieces(containerId, isFullView = false) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -1763,7 +1774,6 @@
             const letterBtnContainer = document.getElementById('full-letter-btn-container');
             
             if (letterBtnContainer) {
-                // 修正：必須集齊全部 7 片才解鎖，防止跳關或單一關卡誤解鎖
                 if (count === 7) {
                     letterBtnContainer.classList.remove('hidden');
                 } else {
@@ -1801,7 +1811,6 @@
             const stamps = GameState.get('stamps') || [];
             const count = stamps.filter(Boolean).length;
         
-            // 碎片未集齊或超時中斷時，點擊確認直接召回至結案報告
             if (count < 7) {
                 showAlert(
                     "調查強制中止",
@@ -1855,7 +1864,6 @@
             closeModalAnim('modal-puzzle-lightbox', 'lightbox-box');
         };
 
-        // 後台審核通訊（Base64直通）
         let activeUploadUnsubscribe = null;
 
         function uploadAndListenVerification(file, levelName, onSuccess) {
@@ -2081,6 +2089,9 @@
             document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
             const l3Icon = document.getElementById('l3-voice-icon'); if (l3Icon) l3Icon.className = "fa-solid fa-radio text-3xl opacity-80";
             const l3Btn = document.getElementById('l3-btn-voice'); if (l3Btn) l3Btn.disabled = false;
+            if (audioCtx && audioCtx.state === 'running') {
+                audioCtx.suspend();
+            }
         }
 
         function playBeep(freq = 600, duration = 0.05, type = 'sine') {
@@ -2098,9 +2109,6 @@
         function playSuccessSound() { playBeep(523, 0.08); setTimeout(() => playBeep(659, 0.08), 90); setTimeout(() => playBeep(784, 0.15), 180); }
         function playErrorSound() { playBeep(220, 0.12, 'sawtooth'); setTimeout(() => playBeep(180, 0.18, 'sawtooth'), 120); }
 
-        // ==========================================
-        // 補丁 3：頂部導覽列標題顯示優化
-        // ==========================================
         function updateHeader(screenId) {
             const teamEl = document.getElementById('header-team-name');
             const titleEl = document.getElementById('header-level-title');
@@ -2116,7 +2124,7 @@
             else if (screenId === 'l3-intro') titleEl.textContent = "村長的家";
             else if (screenId === 'l5-arrival') titleEl.textContent = "群星之夜";
             else if (screenId === 'l7-market-task') titleEl.textContent = "市集攤位";
-            else if (screenId === 'level-7') titleEl.textContent = "最後集合地點"; // 新增：修正最終坐標頁 Header
+            else if (screenId === 'level-7') titleEl.textContent = "最後集合地點"; 
             else if (screenId === 'certificate') titleEl.textContent = "結案報告";
             else {
                 const lvlNum = parseInt(screenId.replace('level-', ''));
@@ -2133,10 +2141,11 @@
                 navHqBtn.onclick = () => { playBeep(); showScreen(GameState.get('teamName') ? 'main' : 'entry'); };
             }
         }
+
         async function transitionSubPage(level, fromPage, toPage) {
             playBeep();
             if (level === 6 && toPage === 4) {
-                l6SelectedFlowers = [];
+                GameState.set('l6SelectedFlowers', []);
                 document.querySelectorAll('#flower-grid .flower-card').forEach(c => c.classList.remove('ring-4', 'ring-primary'));
             }
 
@@ -2226,14 +2235,12 @@
             }
             if (screenId === 'level-6') { forceSubPageInit(6, 1, 5); renderL6Songs(); }
             if (screenId === 'level-7') {
-                // 問題 2 修復：切換至最後密碼頁面時即時渲染碎片拼圖板
                 renderPuzzlePieces('l7-inline-puzzle-board', false);
             }
         
             updateStampBadgeCount();
         }
 
-        // 7 關循環判定與通關處理 (問題 1 修復)
         function handleLevelSuccess(lvlNum) {
             playSuccessSound();
             let stamps = GameState.get('stamps') || [false, false, false, false, false, false, false];
@@ -2244,17 +2251,15 @@
             let seq = GameState.get('customSequence') || [7, 6, 1, 4, 2, 5, 3];
             let idx = GameState.get('currentStageIndex') || 0;
             
-            // 如果完成的關卡符合當前索引的關卡，指引索引前進
             if (seq[idx] === lvlNum) {
                 GameState.set('currentStageIndex', idx + 1);
             }
 
             const totalCompleted = stamps.filter(Boolean).length;
         
-            // 唯有真正完成全部 7 個關卡，才觸發最後集合頁面！
             if (totalCompleted === 7) {
                 showAlert("所有歷史碎片已集齊！", "恭喜你們找齊了全部 7 塊歷史碎片！\n阿秀的記憶與信件已拼湊完整。\n\n請前往最後的時空座標與長官會合，索取最終密碼以解鎖《跨越時空的信》！", "fa-envelope-open-text", "text-gold-dark", () => {
-                    showScreen('level-7'); // 前往最後輸入密碼與座標頁面
+                    showScreen('level-7'); 
                 }, "前往最後集合地點");
             } else {
                 let msg = "獲得一塊歷史碎片，\n準備前往下一個任務地點。";
@@ -2370,7 +2375,7 @@
         function updateL1Display() { let input = GameState.get('l1Input') || []; document.querySelectorAll('#l1-code-container .code-box').forEach((box, i) => { box.textContent = input[i] || ''; }); }
 
         // ==========================================
-        // LEVEL 2 (滿版優化)
+        // LEVEL 2
         // ==========================================
         document.getElementById('l2-camera-input').addEventListener('change', function() {
             if (this.files && this.files.length > 0) {
@@ -2437,7 +2442,7 @@
                             民國38年隨軍撤退來台時，村長家最初僅是簡陋的<b>黑瓦竹泥牆平房</b>。民國50年代因淡水河頻繁氾濫，特別增建了挑高的<b>防洪樓</b>避難；隨後因家庭人口繁衍生活空間不足，陸續<b>加蓋二樓</b>；最後才逐步擴充<b>改建為三層樓</b>的現代水泥建築。
                         </p>
                     </div>
-                    <button id="btn-start-l2-seq" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.1em] mt-4">我記住了，開始排序測驗 <i class="fa-solid fa-arrow-right ml-2"></i></button>`;
+                    <button type="button" id="btn-start-l2-seq" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.1em] mt-4">我記住了，開始排序測驗 <i class="fa-solid fa-arrow-right ml-2"></i></button>`;
                 document.getElementById('btn-start-l2-seq').onclick = () => { playBeep(600, 0.05); l2SequenceIntroSeen = true; renderL2(); };
                 return;
             }
@@ -2505,6 +2510,7 @@
                     inputs.push(input); inputWrapper.appendChild(input);
                 });
                 const submitBtn = document.createElement('button');
+                submitBtn.type = "button";
                 submitBtn.className = "btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.1em] mt-6";
                 submitBtn.innerHTML = "確認送出 <i class='fa-solid fa-check ml-2'></i>";
                 submitBtn.onclick = () => {
@@ -2535,6 +2541,7 @@
                 const btnContainer = document.createElement('div'); btnContainer.className = "space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-1 max-h-[360px]";
                 qData.opts.forEach((text, index) => {
                     const btn = document.createElement('button');
+                    btn.type = "button";
                     btn.className = "opt-btn font-serif text-base tracking-wide flex items-center justify-between";
                     btn.innerHTML = `<span>${text}</span><i class="fa-regular fa-square text-lg opacity-40"></i>`;
                     btn.onclick = () => {
@@ -2551,6 +2558,7 @@
                 });
                 cont.appendChild(btnContainer);
                 const submitBtn = document.createElement('button');
+                submitBtn.type = "button";
                 submitBtn.className = "btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.1em] mt-3 shrink-0";
                 submitBtn.innerHTML = "確認送出答案 <i class='fa-solid fa-check ml-2'></i>";
                 submitBtn.onclick = () => {
@@ -2582,6 +2590,7 @@
                 let shuffledOptions = shuffleArray([...optionsWithIndex]);
                 shuffledOptions.forEach((o) => {
                     const btn = document.createElement('button');
+                    btn.type = "button";
                     btn.className = "opt-btn font-serif text-base tracking-wide"; btn.textContent = o.text;
                     btn.onclick = () => {
                         if (o.isCorrect) {
@@ -2659,6 +2668,7 @@
             
             shuffledOptions.forEach((o) => {
                 const btn = document.createElement('button');
+                btn.type = "button";
                 btn.className = "l3-opt-btn flex flex-col items-center justify-center border border-ink/20 rounded-lg overflow-hidden bg-white shadow-sm opacity-50 cursor-not-allowed transition-all active:scale-95";
                 btn.disabled = true;
                 btn.innerHTML = `
@@ -2881,7 +2891,7 @@
             if (val === "外婆橋") {
                 playSuccessSound();
                 GameState.set('l5CurrentQ', 0);
-                transitionSubPage(5, 2, 3); // 密碼通過，前往 P3 規則說明
+                transitionSubPage(5, 2, 3);
             } else {
                 playErrorSound();
                 showAlert("密碼錯誤", "請輸入正確的通關密語！", "fa-circle-xmark", "text-primary");
@@ -2906,7 +2916,7 @@
                 <div class="text-xs font-bold text-ink/60 text-center mb-2 tracking-wide font-serif">
                     ★ 請面對現場關主，開口唱出缺空的歌詞
                 </div>
-                <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em]" onclick="submitL5Singing(${index})">
+                <button type="button" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em]" onclick="submitL5Singing(${index})">
                     <i class="fa-solid fa-microphone mr-2"></i>現場接唱完畢，回報審核
                 </button>
             `;
@@ -2941,20 +2951,22 @@
         // ==========================================
         // LEVEL 6
         // ==========================================
-        let l6SelectedFlowers = [];
         window.toggleFlower = function(el, fName) {
             playBeep();
+            let selectedFlowers = GameState.get('l6SelectedFlowers') || [];
             if (el.classList.contains('ring-4')) { 
                 el.classList.remove('ring-4', 'ring-primary'); 
-                l6SelectedFlowers = l6SelectedFlowers.filter(f => f !== fName); 
+                selectedFlowers = selectedFlowers.filter(f => f !== fName); 
             } else { 
                 el.classList.add('ring-4', 'ring-primary'); 
-                l6SelectedFlowers.push(fName); 
+                selectedFlowers.push(fName); 
             }
+            GameState.set('l6SelectedFlowers', selectedFlowers);
         };
 
         window.verifyFlowers = function() {
-            if (l6SelectedFlowers.length === 2 && l6SelectedFlowers.includes('玫瑰') && l6SelectedFlowers.includes('茉莉')) { 
+            let selectedFlowers = GameState.get('l6SelectedFlowers') || [];
+            if (selectedFlowers.length === 2 && selectedFlowers.includes('玫瑰') && selectedFlowers.includes('茉莉')) { 
                 playSuccessSound(); 
                 showAlert("成分分析正確", "成功找出了隱藏的玫瑰與茉莉花香！\n前往下一階段。", "fa-flask", "text-emerald-700", () => transitionSubPage(6, 4, 5)); 
             } else { 
@@ -3037,6 +3049,7 @@
             
             GAME_DATA.level6.songs.forEach((song) => {
                 const btn = document.createElement('button'); 
+                btn.type = "button";
                 btn.className = "flex items-center text-left w-full p-4 bg-white border border-ink/10 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 active:scale-95";
                 btn.innerHTML = `
                     <div class="flex-1 min-w-0 pr-3">
@@ -3074,15 +3087,14 @@
         }
 
         // ==========================================
-        // LEVEL 7 (市集攤位 & 最終集合解鎖)
+        // LEVEL 7
         // ==========================================
-        document.getElementById('btn-goto-current').addEventListener('click', () => {
+        document.getElementById('btn-goto-current')?.addEventListener('click', () => {
             initAudio(); playBeep(600, 0.05);
             let seq = GameState.get('customSequence') || [7, 6, 1, 4, 2, 5, 3]; 
             let idx = GameState.get('currentStageIndex') || 0; 
             let stamps = GameState.get('stamps') || [];
             
-            // 7 關全過才允許跳往最終密碼頁
             if (stamps.filter(Boolean).length === 7 || idx >= 7) {
                 showScreen('level-7');
                 return;
@@ -3095,14 +3107,13 @@
             else showScreen(`level-${targetLvl}`);
         });
 
-        // 市集完成後正常給印章並推動關卡
         window.submitL7MarketTask = function() {
             playBeep();
             submitDirectVerification("L7-市集任務二選一", {}, (isApproved, rejectReason) => {
                 if (isApproved) {
                     playSuccessSound();
                     GameState.set('l7MarketDone', true);
-                    handleLevelSuccess(7); // 正常結算市集關卡，指引前往時光膠囊
+                    handleLevelSuccess(7);
                 } else {
                     playErrorSound();
                     const reason = rejectReason || "長官回報尚未確認通關！請完成市集遊戲 A 或 B 後再次送出。";
@@ -3119,7 +3130,6 @@
                 GameState.set('endTime', Date.now()); 
                 if (globalTimerInterval) { clearInterval(globalTimerInterval); globalTimerInterval = null; }
                 
-                // 完賽自動上傳最終紀錄供後台統計
                 if (db) {
                     const teamName = GameState.get('teamName') || "匿名隊伍";
                     db.collection("submissions").add({
@@ -3137,9 +3147,7 @@
                 showAlert("密碼錯誤", "最終密碼不正確！\n請抵達現場後向工作人員（NPC）索取最終密碼。", "fa-circle-xmark", "text-primary");
             }
         };
-        // ==========================================
-        // 補丁 1（對齊版）：首頁啟動與 8 碼小隊動態路線分流
-        // ==========================================
+
         document.getElementById('btn-start-game')?.addEventListener('click', () => {
             const teamNameInput = document.getElementById('input-team-name');
             const teamMembersInput = document.getElementById('input-team-members');
@@ -3159,7 +3167,6 @@
             showScreen('intro-chars');
         });
         
-        // 依據任務小卡 8 碼代碼，決定起始關卡並動態排列小隊順序（防人潮擁擠）
         window.verifyLevelCode = function() {
             playBeep();
             const codeInput = document.getElementById('input-level-code');
@@ -3175,7 +3182,6 @@
                 const startLvl = codeMap[code];
                 GameState.set('startLevel', startLvl);
         
-                // 輪替關卡順序：若從第 7 關起跑則直接市集，否則以 6->1->4->2->5->3 循環並在最後接第 7 關
                 let newSeq = [];
                 if (startLvl === 7) {
                     newSeq = [7];
@@ -3204,10 +3210,7 @@
                 showAlert("代碼錯誤", "查無此任務代碼，請重新確認現場任務小卡上的 8 碼代碼！\n(例：3G100301)", "fa-circle-xmark", "text-primary");
             }
         };
-        
-        // ==========================================
-        // 補丁 2（對齊版）：委託計時器與檔案銷毀重置
-        // ==========================================
+
         function updateTimerDisplay() {
             if (!GameState.get('startTime')) return;
             const now = GameState.get('endTime') ? GameState.get('endTime') : Date.now();
@@ -3250,60 +3253,54 @@
                 true
             );
         }
-        
-        // ==========================================
-        // 補丁 3（對齊版）：雙情境結案憑證與 Firestore 雲端核銷
-        // ==========================================
+
         function renderCertificate() {
-                if (globalTimerInterval) { clearInterval(globalTimerInterval); globalTimerInterval = null; }
-                
-                const startTime = GameState.get('startTime') || Date.now();
-                const endTime = GameState.get('endTime') || Date.now();
-                const elapsed = Math.floor((endTime - startTime) / 1000);
-                
-                const h = String(Math.floor(elapsed / 3600)).padStart(2, '0'); 
-                const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0'); 
-                const s = String(elapsed % 60).padStart(2, '0');
-                const timeStr = `${h}:${m}:${s}`; 
-                
-                const isTimeout = Boolean(GameState.get('timeExpiredHandled')) || elapsed > 5400;
-                const stamps = GameState.get('stamps') || [];
-                const collectedCount = stamps.filter(Boolean).length;
+            if (globalTimerInterval) { clearInterval(globalTimerInterval); globalTimerInterval = null; }
             
-                const certTimeEl = document.getElementById('cert-time');
-                const certStatusEl = document.getElementById('cert-status');
-                const certRankEl = document.getElementById('cert-rank');
-                const msgEl = document.getElementById('cert-msg');
+            const startTime = GameState.get('startTime') || Date.now();
+            const endTime = GameState.get('endTime') || Date.now();
+            const elapsed = Math.floor((endTime - startTime) / 1000);
             
-                if (!isTimeout && collectedCount === 7) {
-                    // 時限內全數完成
-                    certTimeEl.textContent = `${timeStr} (時限內)`;
-                    certStatusEl.textContent = '檔案完全解密';
-                    certStatusEl.className = 'text-emerald-700 font-black text-right';
-                    certRankEl.textContent = '【S級結案】';
-                    msgEl.innerHTML = '恭喜在時限內完成所有委託！<br>7 塊歷史碎片全數尋回，跨越時空的思念得以完整圓滿。';
-                } else {
-                    // 超過時間，強制作業終止
-                    certTimeEl.textContent = `${timeStr} (逾時終止)`;
-                    certStatusEl.textContent = `調查未完成 (僅尋獲 ${collectedCount}/7 碎片)`;
-                    certStatusEl.className = 'text-amber-700 font-black text-right';
-                    certRankEl.textContent = '【時限中斷】';
-                    msgEl.innerHTML = `調查時間已達上限，系統已強制終止搜索行動。<br>遺憾未能替阿秀找齊全部的歷史碎片（尋獲進度 ${collectedCount}/7），半世紀前的思念仍有殘缺留存於巷弄中。<br>感謝你們的參與，請向現場人員報到完成撤收紀錄。`;
-                }
-                
-                const claimBtn = document.getElementById('btn-claim-gift');
-                if (GameState.get('giftClaimed') === true) {
-                    claimBtn.disabled = true; 
-                    claimBtn.className = "btn-base w-full py-4 bg-stone-200 border border-stone-300 text-stone-500 font-black text-sm cursor-not-allowed shadow-none";
-                    claimBtn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-700 mr-2"></i>已於 ${GameState.get('giftClaimedTime') || ''} 兌換完畢`;
-                } else {
-                    claimBtn.disabled = false; 
-                    claimBtn.className = "btn-base primary-btn w-full py-4 font-black text-base tracking-[0.15em] flex justify-center space-x-2";
-                    claimBtn.innerHTML = `<i class="fa-solid fa-stamp"></i><span>現場人員點擊核銷</span>`;
-                }
-            }
+            const h = String(Math.floor(elapsed / 3600)).padStart(2, '0'); 
+            const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0'); 
+            const s = String(elapsed % 60).padStart(2, '0');
+            const timeStr = `${h}:${m}:${s}`; 
+            
+            const isTimeout = Boolean(GameState.get('timeExpiredHandled')) || elapsed > 5400;
+            const stamps = GameState.get('stamps') || [];
+            const collectedCount = stamps.filter(Boolean).length;
         
-        // 現場人員核銷監聽（對齊 Firestore 雲端批次標記）
+            const certTimeEl = document.getElementById('cert-time');
+            const certStatusEl = document.getElementById('cert-status');
+            const certRankEl = document.getElementById('cert-rank');
+            const msgEl = document.getElementById('cert-msg');
+        
+            if (!isTimeout && collectedCount === 7) {
+                certTimeEl.textContent = `${timeStr} (時限內)`;
+                certStatusEl.textContent = '檔案完全解密';
+                certStatusEl.className = 'text-emerald-700 font-black text-right';
+                certRankEl.textContent = '【S級結案】';
+                msgEl.innerHTML = '恭喜在時限內完成所有委託！<br>7 塊歷史碎片全數尋回，跨越時空的思念得以完整圓滿。';
+            } else {
+                certTimeEl.textContent = `${timeStr} (逾時終止)`;
+                certStatusEl.textContent = `調查未完成 (僅尋獲 ${collectedCount}/7 碎片)`;
+                certStatusEl.className = 'text-amber-700 font-black text-right';
+                certRankEl.textContent = '【時限中斷】';
+                msgEl.innerHTML = `調查時間已達上限，系統已強制終止搜索行動。<br>遺憾未能替阿秀找齊全部的歷史碎片（尋獲進度 ${collectedCount}/7），半世紀前的思念仍有殘缺留存於巷弄中。<br>感謝你們的參與，請向現場人員報到完成撤收紀錄。`;
+            }
+            
+            const claimBtn = document.getElementById('btn-claim-gift');
+            if (GameState.get('giftClaimed') === true) {
+                claimBtn.disabled = true; 
+                claimBtn.className = "btn-base w-full py-4 bg-stone-200 border border-stone-300 text-stone-500 font-black text-sm cursor-not-allowed shadow-none";
+                claimBtn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-700 mr-2"></i>已於 ${GameState.get('giftClaimedTime') || ''} 兌換完畢`;
+            } else {
+                claimBtn.disabled = false; 
+                claimBtn.className = "btn-base primary-btn w-full py-4 font-black text-base tracking-[0.15em] flex justify-center space-x-2";
+                claimBtn.innerHTML = `<i class="fa-solid fa-stamp"></i><span>現場人員點擊核銷</span>`;
+            }
+        }
+
         document.getElementById('btn-claim-gift')?.addEventListener('click', () => {
             showAlert(
                 "服務台兌獎核銷",
@@ -3315,8 +3312,7 @@
                     const timeTag = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
                     GameState.set('giftClaimed', true);
                     GameState.set('giftClaimedTime', timeTag);
-        
-                    // 同步寫入後台資料庫
+    
                     if (db) {
                         const teamName = GameState.get('teamName') || "匿名隊伍";
                         db.collection("submissions").where("teamName", "==", teamName).get().then(snapshot => {
@@ -3327,7 +3323,7 @@
                             batch.commit();
                         }).catch(e => console.warn("領獎核銷雲端同步失敗:", e));
                     }
-        
+    
                     playSuccessSound();
                     renderCertificate();
                 },
@@ -3336,25 +3332,23 @@
                 true
             );
         });
-        
+
         document.getElementById('btn-restart-game')?.addEventListener('click', confirmRestartGame);
-        document.getElementById('btn-goto-current').addEventListener('click', () => {
-            initAudio(); playBeep(600, 0.05);
-            let seq = GameState.get('customSequence') || [7, 6, 1, 4, 2, 5, 3]; 
-            let idx = GameState.get('currentStageIndex') || 0; 
-            let stamps = GameState.get('stamps') || [];
-            
-            // 7 關全過才允許跳往最終密碼頁
-            if (stamps.filter(Boolean).length === 7 || idx >= 7) {
-                showScreen('level-7');
-                return;
+
+        document.getElementById('sound-toggle')?.addEventListener('click', () => {
+            const enabled = !GameState.get('soundEnabled');
+            GameState.set('soundEnabled', enabled);
+            const icon = document.getElementById('sound-icon');
+            if (icon) {
+                icon.className = enabled ? "fa-solid fa-volume-high text-gold text-lg" : "fa-solid fa-volume-xmark text-gold/50 text-lg";
             }
-        
-            const targetLvl = seq[idx];
-            if (targetLvl === 3) showScreen('l3-intro');
-            else if (targetLvl === 7) showScreen('l7-market-task');
-            else showScreen(`level-${targetLvl}`);
+            if (!enabled) {
+                stopAllMedia();
+            } else {
+                initAudio();
+                playBeep(600, 0.05);
+            }
         });
-        </script>
+    </script>
 </body>
 </html>
