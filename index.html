@@ -618,24 +618,21 @@
                     </div>
                 </div>
 
-                <!-- LEVEL 4: 榕樹廣場 (更新版：媽媽翠芳單頁 + 3個無拍照後台審核任務) -->
+                <!-- LEVEL 4: 榕樹廣場 -->
                 <div id="screen-level-4" class="screen-panel hidden p-6 flex flex-col">
-                    
-                    <!-- L4-P1: 故事前言 (插圖) -->
+                    <!-- L4-P1: 故事前言 -->
                     <div id="l4-p1" class="level-card p-8 flex flex-col justify-center min-h-full">
                         <div class="text-base leading-[2] font-bold text-ink text-justify flex-1 font-serif flex flex-col justify-center">
                             <p>大時代的動盪，讓無數家庭在戰亂中遷徙來台。窄小的屋舍、悶熱的夏日，讓鄰居們習慣搬著竹椅聚在村子裡的巨大榕樹下乘涼、聊家常。</p>
-                            
                             <div class="vintage-photo w-full min-h-[140px] max-h-[260px] overflow-hidden my-6 shadow-sm border-[4px] border-paper">
                                 <img src="images/榕樹廣場1.jpg" class="max-w-full max-h-[240px] w-auto h-auto object-contain loaded" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=榕樹廣場前言照'">
                             </div>
-                            
                             <p>對我們而言，這棵老榕樹下的廣場不只是公共客廳，更是凝聚所有人情感、度過童年時光的避風港。今天，請跟著我們一起走入這座充滿人情味的榕樹廣場，回到那段克難卻溫暖的歲月。</p>
                         </div>
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8 shrink-0" onclick="transitionSubPage(4, 1, 2)">展開圖鑑</button>
                     </div>
                     
-                    <!-- L4-P2: 尋找媽媽・翠芳 獨立頁面 -->
+                    <!-- L4-P2: 尋找媽媽・翠芳 -->
                     <div id="l4-p2" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(4, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
@@ -661,7 +658,7 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6 shrink-0" onclick="transitionSubPage(4, 2, 3)">前往任務牆</button>
                     </div>
 
-                    <!-- L4-P3: 3個任務牆 (取代原先選擇題) -->
+                    <!-- L4-P3: 3個任務牆 -->
                     <div id="l4-p3" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-4 shrink-0">
                             <button onclick="transitionSubPage(4, 3, 2)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
@@ -699,7 +696,7 @@
                                 <button class="btn-base military-btn w-full py-3 text-sm font-black tracking-widest mt-auto" onclick="submitL4Task(1, 'L4-任務二中學生', this)">點擊回報完成</button>
                             </div>
 
-                            <!-- 任務三 (保留老奶奶卡片) -->
+                            <!-- 任務三 -->
                             <div class="task-card flex flex-col" id="l4-task-card-3">
                                 <div class="flex items-center border-b border-ink/10 pb-3 mb-3">
                                     <div class="w-12 h-12 rounded bg-gold/20 flex items-center justify-center text-gold-dark text-xl shrink-0 mr-3 border border-gold/30 font-mono font-black">3</div>
@@ -751,9 +748,8 @@
                     </div>
                 </div>
 
-                <!-- LEVEL 6: 時光膠囊 (重構版：老照片+白T小天使審核+明星花露水前導+金曲心得Modal) -->
+                <!-- LEVEL 6: 時光膠囊 -->
                 <div id="screen-level-6" class="screen-panel hidden p-6 flex flex-col">
-                    
                     <!-- L6-P1: 前言頁 -->
                     <div id="l6-p1" class="level-card p-8 flex flex-col justify-center min-h-full">
                         <div class="text-base leading-[2] font-bold text-ink text-justify flex-1 font-serif flex flex-col justify-center">
@@ -815,18 +811,15 @@
                             <div class="vintage-photo w-full min-h-[160px] max-h-[240px] overflow-hidden mb-5 shadow-sm border-[3px]">
                                 <img src="images/時光膠囊1.jpg" class="max-w-full h-auto loaded object-cover" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=三重老地圖'">
                             </div>
-                            
                             <p class="text-sm font-bold text-ink/90 leading-[1.9] text-justify font-serif mb-6">
                                 為什麼在三重種植呢？因為當時製茶場集中在台北大稻埕，又有大片土地可以種植，可以在採收後直接水路輸運，送到大稻埕碼頭。當時除了秀英花，也種植茉莉花、黃梔花。
                             </p>
-                            
                             <div class="vintage-photo w-full min-h-[180px] max-h-[260px] overflow-hidden mb-5 shadow-sm border-[3px]">
                                 <img src="images/明星花露水1.jpg" class="max-w-full h-auto loaded object-contain" onerror="this.src='https://placehold.co/300x400/e5d5b5/7c343d?text=明星花露水'">
                             </div>
                             <div class="vintage-photo w-full min-h-[180px] max-h-[260px] overflow-hidden mb-5 shadow-sm border-[3px]">
                                 <img src="images/明星花露水2.jpg" class="max-w-full h-auto loaded object-contain" onerror="this.src='https://placehold.co/300x400/e5d5b5/7c343d?text=明星花露水'">
                             </div>
-                            
                             <p class="text-sm font-bold text-ink/90 leading-[1.9] text-justify font-serif mb-2">
                                 秀英花除了在冬、春製茶季時加工成花茶香片，也是重要的香水原料之一。曾經的大眾香水「明星花露水」在1951年從上海跟著政府遷臺之後，就曾以秀英花作為主要成分。現在讓我們跟著關卡小天使，一起聞聞重製版的「明星花露水」吧！
                             </p>
@@ -1110,7 +1103,7 @@
 
     <script>
         // ==========================================
-        // 核心設定與資料 (已修復語法錯誤與補齊逗號)
+        // 核心設定與資料
         // ==========================================
         const GAME_DATA = {
             levels: [
@@ -1584,7 +1577,7 @@
                     box.classList.add('scale-95', 'opacity-0');
                 }
             }
-            // 將原本的 300 縮短為 150，加速關閉流暢度
+            // 縮短為 150ms 提升流暢度
             setTimeout(() => {
                 modal.classList.add('hidden');
                 if (callback) callback();
@@ -1692,10 +1685,9 @@
         };
 
         // ==========================================
-        // 雙軌後台審核機制 (優化輪詢與監聽)
+        // 雙軌後台審核機制 (優化直通監聽)
         // ==========================================
         let activeUploadUnsubscribe = null;
-        let activeUploadPollTimer = null;
 
         function uploadAndListenVerification(file, levelName, onSuccess) {
             _executeFirebaseSubmission({ levelId: levelName, type: 'photo' }, onSuccess, file);
@@ -1716,10 +1708,8 @@
                 if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
             };
 
-            // 1. 同步在本地生成 Document Reference (0 毫秒，不需等伺服器往返)
             const docRef = db ? db.collection("submissions").doc() : null;
 
-            // 2. 顯示輕量化等待提示 (非圖片任務不擋住視線)
             showAlert("現場查驗中", "已送出回報，請向現場關主出示任務！\n(審核通過將自動切換畫面)", "fa-tower-broadcast fa-fade", "text-primary", null, "取消等待", 0, true);
 
             const cancelBtn = document.getElementById('alert-cancel-btn');
@@ -1742,13 +1732,11 @@
             const handleResult = (approved, rejectReason = null) => {
                 if (isHandled) return;
                 cleanUp();
-                // 立即關閉等待彈窗，不浪費動畫時間
                 const modal = document.getElementById('modal-alert');
                 if (modal) modal.classList.add('hidden');
                 onSuccess(approved, rejectReason);
             };
 
-            // 3. 立即掛上監聽 (比原本快 200~300ms)
             activeUploadUnsubscribe = docRef.onSnapshot({ includeMetadataChanges: false }, (doc) => {
                 if (isHandled || !doc.exists) return;
                 const data = doc.data();
@@ -1756,7 +1744,6 @@
                 else if (data.status === "rejected") handleResult(false, data.rejectReason);
             }, (err) => console.warn("直通監聽警告:", err));
 
-            // 4. 背景非同步寫入 Firestore
             const payload = {
                 teamName: GameState.get('teamName') || "匿名隊伍",
                 teamMembers: GameState.get('teamMembers') || "",
@@ -1774,7 +1761,6 @@
                 }
             });
 
-            // 45 秒防呆超時
             timeoutId = setTimeout(() => {
                 if (!isHandled) {
                     cleanUp();
@@ -1783,11 +1769,14 @@
             }, 45000);
         }
 
+        // ==========================================
+        // 圖片上傳與審核引擎 (修復語法閉合與上傳排程)
+        // ==========================================
         function _executeFirebaseSubmission(docData, onSuccess, file = null) {
             if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
         
             let isHandled = false;
-            let timeoutId = null; // 新增逾時機制
+            let timeoutId = null;
             
             const cleanUp = () => {
                 isHandled = true;
@@ -1796,7 +1785,13 @@
             };
 
             if (!db) {
-                // 離線模擬器邏輯不變...
+                showAlert("資料傳送中", "正模擬傳送至後台進行審核...", "fa-satellite-dish fa-spin", "text-primary", null, "取消等待", 0, true);
+                setTimeout(() => {
+                    cleanUp();
+                    const modal = document.getElementById('modal-alert');
+                    if (modal) modal.classList.add('hidden');
+                    onSuccess(true, null);
+                }, 1200);
                 return;
             }
         
@@ -1809,7 +1804,7 @@
                 };
             }
 
-            const sendPayload = (base64Str = null) => {
+            const sendPayload = (photoUrlVal = null) => {
                 const teamName = GameState.get('teamName') || "匿名隊伍";
                 const payload = {
                     teamName: teamName,
@@ -1818,9 +1813,9 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     ...docData
                 };
-                if (base64Str) {
-                    payload.photoUrl = base64Str;
-                    payload.imageBase64 = base64Str;
+                if (photoUrlVal) {
+                    payload.photoUrl = photoUrlVal;
+                    payload.imageBase64 = photoUrlVal;
                 }
 
                 db.collection("submissions").add(payload).then(docRef => {
@@ -1839,7 +1834,6 @@
                         onSuccess(approved, rejectReason); 
                     };
         
-                    // 單一的高效 WebSocket 監聽，捨棄多餘的 setInterval
                     activeUploadUnsubscribe = docRef.onSnapshot({ includeMetadataChanges: false }, (doc) => {
                         if (isHandled || !doc.exists) return;
                         const data = doc.data();
@@ -1849,7 +1843,6 @@
                         console.warn("連線不穩：", err);
                     });
 
-                    // 新增：60 秒關主未回應防呆處理
                     timeoutId = setTimeout(() => {
                         if (!isHandled) {
                             cleanUp();
@@ -1864,7 +1857,8 @@
                     }
                 });
             };
-            // 將 Canvas 轉換為 Blob 並上傳至 Storage
+
+            // 照片上傳處理 (優先使用 Storage，若無則降級壓縮為 Base64)
             if (file) {
                 if (window.createImageBitmap) {
                     createImageBitmap(file).then(imgBitmap => {
@@ -1875,33 +1869,36 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(imgBitmap, 0, 0, canvas.width, canvas.height);
                         
-                        // 【優化】轉為 Blob 上傳，而非 Base64
-                        canvas.toBlob(blob => {
-                            const fileName = `submissions/${Date.now()}_${Math.random().toString(36).substring(2,7)}.jpg`;
-                            const storageRef = firebase.storage().ref().child(fileName);
-                            
-                            // 上傳至 Storage
-                            storageRef.put(blob).then(snapshot => {
-                                return snapshot.ref.getDownloadURL();
-                            }).then(downloadURL => {
-                                // 取得真正網址後，再存入 Firestore
-                                const teamName = GameState.get('teamName') || "匿名隊伍";
-                                db.collection("submissions").add({
-                                    teamName: teamName,
-                                    teamMembers: GameState.get('teamMembers') || "",
-                                    status: "pending",
-                                    photoUrl: downloadURL, // 改存真實網址
-                                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                                    ...docData
-                                }).then(/* 接續原本的 onSnapshot 邏輯 */)
-                            }).catch(err => {
-                                cleanUp();
-                                showAlert("上傳失敗", "照片傳輸失敗，請確認網路！", "fa-wifi", "text-primary");
-                            });
-                        }, 'image/jpeg', 0.6); // 提高一點品質，因為 Storage 不怕大
-                    });
+                        // 嘗試使用 Storage 上傳 Blob
+                        if (firebase.storage) {
+                            canvas.toBlob(blob => {
+                                if (!blob) {
+                                    sendPayload(canvas.toDataURL('image/jpeg', 0.5));
+                                    return;
+                                }
+                                const fileName = `submissions/${Date.now()}_${Math.random().toString(36).substring(2,7)}.jpg`;
+                                const storageRef = firebase.storage().ref().child(fileName);
+                                storageRef.put(blob).then(snapshot => {
+                                    return snapshot.ref.getDownloadURL();
+                                }).then(downloadURL => {
+                                    sendPayload(downloadURL);
+                                }).catch(() => {
+                                    // Storage 失敗降級為 Base64
+                                    sendPayload(canvas.toDataURL('image/jpeg', 0.5));
+                                });
+                            }, 'image/jpeg', 0.6);
+                        } else {
+                            sendPayload(canvas.toDataURL('image/jpeg', 0.5));
+                        }
+                    }).catch(() => fallbackCompress(file, 640, 0.5, sendPayload));
+                } else {
+                    fallbackCompress(file, 640, 0.5, sendPayload);
                 }
+            } else {
+                sendPayload();
             }
+        }
+
         function fallbackCompress(file, maxWidth, quality, callback) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -1909,8 +1906,10 @@
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
                     const scale = Math.min(1, maxWidth / img.width);
-                    canvas.width = Math.round(img.width * scale); canvas.height = Math.round(img.height * scale);
-                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    canvas.width = Math.round(img.width * scale); 
+                    canvas.height = Math.round(img.height * scale);
+                    const ctx = canvas.getContext('2d'); 
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     callback(canvas.toDataURL('image/jpeg', quality));
                 };
                 img.src = e.target.result;
@@ -2096,7 +2095,6 @@
                 GameState.set('endTime', Date.now()); 
                 if (globalTimerInterval) { clearInterval(globalTimerInterval); globalTimerInterval = null; }
 
-                // 同步完賽紀錄至資料庫供後台統計
                 if (db) {
                     const teamName = GameState.get('teamName') || "匿名隊伍";
                     db.collection("submissions").add({
@@ -2133,7 +2131,6 @@
                 const loc = GAME_DATA.level1.locations[currentL1TargetIdx];
                 const targetNumber = loc.code || ['1', '9', '4', '5'][currentL1TargetIdx];
 
-                // 修改：參數增加 (isApproved, rejectReason)
                 uploadAndListenVerification(file, `任務一：${loc.title}`, (isApproved, rejectReason) => {
                     if (isApproved) {
                         playSuccessSound();
@@ -2143,7 +2140,6 @@
                         showAlert("審核通過", `長官已確認【${loc.title}】之構件特徵！\n\n${loc.desc}\n\n★ 解密通關密碼：【<b class="text-3xl text-primary font-mono">${targetNumber}</b>】`, "fa-circle-check", "text-emerald-700", null, "收到！");
                     } else {
                         playErrorSound();
-                        // 融合關主回報原因與關卡提示
                         let errorMsg = `【長官批退原因】\n<b class="text-primary text-base">「${rejectReason || '構件特徵辨識未通過'}」</b>\n\n`;
                         if (loc.failHint) {
                             errorMsg += `【現場偵察提示】\n${loc.failHint}`;
@@ -2212,12 +2208,11 @@
         function updateL1Display() { let input = GameState.get('l1Input') || []; document.querySelectorAll('#l1-code-container .code-box').forEach((box, i) => { box.textContent = input[i] || ''; }); }
 
         // ==========================================
-        // LEVEL 2 完整邏輯 (修復重複拍照與巢狀樣式)
+        // LEVEL 2 完整邏輯
         // ==========================================
         document.getElementById('l2-camera-input').addEventListener('change', function() {
             if (this.files && this.files.length > 0) {
                 const file = this.files[0]; this.value = '';
-                // 修改：參數增加 (isApproved, rejectReason)
                 uploadAndListenVerification(file, "任務二：眷舍空間", (isApproved, rejectReason) => {
                     let currentQ = GameState.get('l2CurrentQ');
                     const qData = GAME_DATA.level2.questions[currentQ];
@@ -2238,7 +2233,6 @@
                         }, "進入下一題");
                     } else {
                         playErrorSound();
-                        // 優先顯示關主退回理由
                         let errorMsg = `【長官查驗未通過】\n<b class="text-primary text-base">「${rejectReason || '照片取證角度或動作不符'}」</b>\n\n`;
                         if (qData && qData.failHint) {
                             errorMsg += `【取證備忘】\n${qData.failHint}`;
@@ -2322,7 +2316,6 @@
                 const imgList = qData.images || (qData.image ? [qData.image] : []);
                 if (imgList.length > 0) {
                     qImgContainer.classList.remove('hidden');
-                    // 修復：單張時外層不用加重複相框 class，避免雙層邊框
                     qImgContainer.className = imgList.length > 1 ? "mb-6 w-full grid grid-cols-2 gap-3 shrink-0" : "mb-6 w-full shrink-0 min-h-[160px] max-h-[300px]";
                     imgList.forEach((src) => {
                         const wrap = document.createElement('div');
@@ -2456,7 +2449,6 @@
         document.getElementById('l3-camera-input').addEventListener('change', function() {
             if (this.files && this.files.length > 0) {
                 const file = this.files[0]; this.value = '';
-                // 修改：參數增加 (isApproved, rejectReason)
                 uploadAndListenVerification(file, "任務三：村長的家", (isApproved, rejectReason) => {
                     if (isApproved) {
                         playSuccessSound();
@@ -2608,7 +2600,6 @@
                     let tasks = GameState.get('l4Tasks') || [false, false, false];
                     tasks[taskIdx] = true;
                     GameState.set('l4Tasks', tasks);
-                    // 局部更新卡片狀態，不彈窗阻擋
                     renderL4Tasks();
                 } else {
                     playErrorSound();
@@ -2629,12 +2620,12 @@
                 playErrorSound(); showAlert("密碼錯誤", "請輸入正確的通關密語！", "fa-circle-xmark", "text-primary");
             }
         };
+
         window.renderL5 = function(index) {
             GameState.set('l5CurrentQ', index);
             const qData = GAME_DATA.level5.questions[index];
             document.getElementById('l5-q-counter').textContent = `群星挑戰 ${index + 1} / ${GAME_DATA.level5.questions.length}`;
 
-            // 修復照片切換殘影：先隱藏再淡入
             const charImg = document.getElementById('l5-char-img');
             charImg.style.transition = 'opacity 0.25s ease';
             charImg.style.opacity = '0';
@@ -2665,9 +2656,8 @@
             }, (isApproved, rejectReason) => {
                 if (isApproved) {
                     playSuccessSound();
-                    // 通過時不再跳「確認」彈窗，直接切換到下一位歌手或結案
                     if (index + 1 < GAME_DATA.level5.questions.length) {
-                        renderL5(index + 1); // 秒切下一題！
+                        renderL5(index + 1);
                     } else {
                         showAlert("群星之夜挑戰成功", "恭喜通過所有歌手的實體接唱考驗！", "fa-star", "text-gold-dark", () => {
                             handleLevelSuccess(5);
@@ -2680,10 +2670,10 @@
                 }
             });
         };
-        // ==========================================
-        // LEVEL 6 完整邏輯 (修復播放中斷卡關、音訊錯誤處理)
-        // ==========================================
 
+        // ==========================================
+        // LEVEL 6 完整邏輯
+        // ==========================================
         let l6SelectedFlowers = [];
         window.toggleFlower = function(el, fName) {
             playBeep();
@@ -2706,13 +2696,11 @@
             }
         };
 
-        // 尋找白T小天使：通過直接切換到故事頁，省去 1 次點擊
         window.verifyL6Angel = function() {
             playBeep();
             submitDirectVerification("L6-尋找關主小天使", {}, (isApproved, rejectReason) => {
                 if (isApproved) {
                     playSuccessSound();
-                    // 直通切換，不彈出確認按鈕
                     transitionSubPage(6, 2, 3);
                 } else {
                     playErrorSound();
@@ -2722,7 +2710,6 @@
             });
         };
 
-        // 時代金曲心得：通過直接通關
         window.triggerSongFeedback = function() {
             const audioEl = document.getElementById('l6-audio-player');
             if (audioEl) audioEl.pause();
@@ -2731,7 +2718,7 @@
                 submitDirectVerification("L6-金曲心得", { note: feedbackText }, (isApproved, rejectReason) => {
                     if (isApproved) {
                         playSuccessSound();
-                        handleLevelSuccess(6); // 直通結算本關！
+                        handleLevelSuccess(6);
                     } else {
                         playErrorSound();
                         const reason = rejectReason || "心得內容未達標或未符合提問，請再多寫一點真實感受！";
@@ -2750,7 +2737,6 @@
             const audioEl = document.getElementById('l6-audio-player'); 
             const prog = document.getElementById('l6-progress');
             
-            // 抓取回饋按鈕元素
             const getFeedbackBtn = () => document.querySelector('#l6-player button');
             
             audioEl.ontimeupdate = () => { 
@@ -2760,7 +2746,6 @@
                 } 
             };
             
-            // 播放結束才解鎖心得按鈕並自動彈出輸入框
             audioEl.onended = () => {
                 prog.style.width = '100%';
                 const fBtn = getFeedbackBtn();
@@ -2807,7 +2792,6 @@
                     document.getElementById('l6-song-title').textContent = song.title; 
                     document.getElementById('l6-lyrics').textContent = song.lyric;
 
-                    // 歌曲開始播放時鎖定按鈕，防止未聽完即送出
                     const fBtn = getFeedbackBtn();
                     if (fBtn) {
                         fBtn.disabled = true;
@@ -2850,7 +2834,6 @@
                 if (isApproved) {
                     playSuccessSound();
                     GameState.set('l7MarketDone', true);
-                    // 直通跳轉至最終地點
                     showScreen('level-7');
                 } else {
                     playErrorSound();
@@ -2859,6 +2842,7 @@
                 }
             });
         };
+
         window.verifyL7Passcode = function() {
             const input = document.getElementById('l7-input-code');
             const val = input ? input.value.trim().toUpperCase() : "";
@@ -3012,7 +2996,6 @@
                 GameState.set('giftClaimed', true); 
                 GameState.set('giftClaimedTime', timeTag); 
                 
-                // 即時將領獎紀錄同步至後台資料庫
                 if (db) {
                     const teamName = GameState.get('teamName') || "匿名隊伍";
                     db.collection("submissions").where("teamName", "==", teamName).get().then(snapshot => {
