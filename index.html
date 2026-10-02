@@ -1720,7 +1720,7 @@
                 setTimeout(() => {
                     const modal = document.getElementById('modal-alert');
                     if (modal) modal.classList.add('hidden');
-                    onSuccess(true);
+                    onSuccess(true, null);
                 }, 1200);
                 return;
             }
@@ -1738,6 +1738,7 @@
                 const teamName = GameState.get('teamName') || "匿名隊伍";
                 const payload = {
                     teamName: teamName,
+                    teamMembers: GameState.get('teamMembers') || "", // 傳送隊員名單供後台核對
                     status: "pending",
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     ...docData
@@ -1755,22 +1756,21 @@
                     if (alertDesc) alertDesc.textContent = "已送達指揮所，審核官查驗中...\n(請保持畫面，審核通過將立即通知)";
                     if (alertIcon) alertIcon.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-5xl text-primary"></i>';
         
-                    const handleResult = (approved) => {
+                    const handleResult = (approved, rejectReason = null) => {
                         if (isHandled) return;
                         cleanUp(); 
                         const modal = document.getElementById('modal-alert');
                         if (modal) modal.classList.add('hidden');
-                        onSuccess(approved); 
+                        onSuccess(approved, rejectReason); 
                     };
         
                     activeUploadUnsubscribe = docRef.onSnapshot({ includeMetadataChanges: false }, (doc) => {
                         if (isHandled || !doc.exists) return;
                         const data = doc.data();
                         if (data.status === "approved") handleResult(true);
-                        else if (data.status === "rejected") handleResult(false);
+                        else if (data.status === "rejected") handleResult(false, data.rejectReason);
                     }, (err) => console.warn("Snapshot 斷線，交由備援輪詢處理", err));
         
-                    // 調校為 2500ms 節省讀取額度
                     activeUploadPollTimer = setInterval(async () => {
                         if (isHandled) return;
                         try {
@@ -1778,7 +1778,7 @@
                             if (docSnap.exists) {
                                 const data = docSnap.data();
                                 if (data.status === "approved") handleResult(true);
-                                else if (data.status === "rejected") handleResult(false);
+                                else if (data.status === "rejected") handleResult(false, data.rejectReason);
                             }
                         } catch (e) {}
                     }, 2500);
@@ -2003,6 +2003,19 @@
             if (lvlNum === 7) {
                 GameState.set('endTime', Date.now()); 
                 if (globalTimerInterval) { clearInterval(globalTimerInterval); globalTimerInterval = null; }
+
+                // 同步完賽紀錄至資料庫供後台統計
+                if (db) {
+                    const teamName = GameState.get('teamName') || "匿名隊伍";
+                    db.collection("submissions").add({
+                        teamName: teamName,
+                        teamMembers: GameState.get('teamMembers') || "",
+                        levelId: "L7-最終通關結案",
+                        status: "approved",
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }).catch(e => console.warn("完賽同步失敗:", e));
+                }
+
                 openFullLetter();
             } else {
                 let msg = "獲得一塊歷史碎片，\n準備進入下一階段調查。";
@@ -2010,7 +2023,6 @@
                 showAlert("調查成功", msg, "", "", () => showScreen('main'), "返回總部");
             }
         }
-
         function renderMain() {
             let seq = GameState.get('customSequence');
             let idx = GameState.get('currentStageIndex');
@@ -2893,8 +2905,23 @@
             showAlert("服務台兌獎核銷", "⚠【此操作限工作人員點擊】\n\n確認已發放實體紀念品？\n一旦核銷後將永久鎖定，無法重複領取！", "fa-gift", "text-gold-dark", () => {
                 const now = new Date(); 
                 const timeTag = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-                GameState.set('giftClaimed', true); GameState.set('giftClaimedTime', timeTag); 
-                playSuccessSound(); renderCertificate();
+                GameState.set('giftClaimed', true); 
+                GameState.set('giftClaimedTime', timeTag); 
+                
+                // 即時將領獎紀錄同步至後台資料庫
+                if (db) {
+                    const teamName = GameState.get('teamName') || "匿名隊伍";
+                    db.collection("submissions").where("teamName", "==", teamName).get().then(snapshot => {
+                        const batch = db.batch();
+                        snapshot.forEach(doc => {
+                            batch.update(doc.ref, { giftClaimed: true, giftClaimedTime: timeTag });
+                        });
+                        batch.commit();
+                    }).catch(e => console.warn("領獎核銷同步失敗:", e));
+                }
+
+                playSuccessSound(); 
+                renderCertificate();
             }, "確認已領獎", 0, true);
         };
 
