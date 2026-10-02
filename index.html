@@ -2078,6 +2078,13 @@
             else { overlay.classList.remove('hidden'); overlay.innerHTML = `<div class="bg-ink text-gold text-sm font-bold px-5 py-3 rounded-md shadow-2xl border border-gold/30 text-center tracking-wide">機密鎖定：請完成 4 處構件巡查與拍照<br><span class="text-primary font-mono text-xs">(已解密 ${cCount}/4)</span></div>`; }
             updateL1Display();
         }
+
+            const cCount = collected.filter(Boolean).length;
+            const overlay = document.getElementById('l1-keypad-overlay');
+            if (cCount === 4) overlay.classList.add('hidden');
+            else { overlay.classList.remove('hidden'); overlay.innerHTML = `<div class="bg-ink text-gold text-sm font-bold px-5 py-3 rounded-md shadow-2xl border border-gold/30 text-center tracking-wide">機密鎖定：請完成 4 處構件巡查與拍照<br><span class="text-primary font-mono text-xs">(已解密 ${cCount}/4)</span></div>`; }
+            updateL1Display();
+        }
             const cCount = collected.filter(Boolean).length;
             const overlay = document.getElementById('l1-keypad-overlay');
             if (cCount === 4) overlay.classList.add('hidden');
