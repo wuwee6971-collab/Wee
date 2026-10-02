@@ -698,16 +698,41 @@
                             </div>
 
                             <div class="task-card flex flex-col" id="l4-task-card-3">
-                                <div class="flex items-center border-b border-ink/10 pb-3 mb-3">
-                                    <div class="w-12 h-12 rounded bg-gold/20 flex items-center justify-center text-gold-dark text-xl shrink-0 mr-3 border border-gold/30 font-mono font-black">3</div>
-                                    <div>
-                                        <h3 class="font-black text-ink text-base tracking-widest mb-1">任務三：老奶奶</h3>
-                                        <div class="text-xs font-mono font-bold text-primary bg-primary/5 px-2 py-0.5 rounded inline-block border border-primary/10">特徵：碎花上衣 / 蒲扇</div>
+                                <!-- 任務三 -->
+                                <div class="task-card flex flex-col" id="l4-task-card-3">
+                                    <div class="flex items-center border-b border-ink/10 pb-3 mb-3">
+                                        <div class="w-12 h-12 rounded bg-gold/20 flex items-center justify-center text-gold-dark text-xl shrink-0 mr-3 border border-gold/30 font-mono font-black">3</div>
+                                        <div>
+                                            <h3 class="font-black text-ink text-base tracking-widest mb-1">任務三：老奶奶</h3>
+                                            <div class="text-xs font-mono font-bold text-primary bg-primary/5 px-2 py-0.5 rounded inline-block border border-primary/10">特徵：碎花上衣 / 蒲扇</div>
+                                        </div>
                                     </div>
+                                    <p class="text-sm font-bold text-ink/80 leading-relaxed mb-4">主動前往攀談，聽取奶奶的歷史解說並完成知識測驗。</p>
+                                    <button class="btn-base military-btn w-full py-3 text-sm font-black tracking-widest mt-auto" onclick="openL4Quiz()">前往回答測驗</button>
                                 </div>
-                                <p class="text-sm font-bold text-ink/80 leading-relaxed mb-4">主動前往攀談，聽取奶奶的歷史解說啟動互動。</p>
-                                <button class="btn-base military-btn w-full py-3 text-sm font-black tracking-widest mt-auto" onclick="submitL4Task(2, 'L4-任務三奶奶', this)">點擊回報完成</button>
                             </div>
+                        </div>
+                    </div>
+                    <!-- L4-P4: 知識測驗頁面 -->
+                    <div id="l4-p4" class="hidden flex flex-col min-h-full">
+                        <div class="flex items-center justify-between mb-6 shrink-0">
+                            <button onclick="transitionSubPage(4, 4, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">知識測驗</h2>
+                        </div>
+                        <div class="level-card p-8 space-y-8 flex-1 flex flex-col justify-center bg-paper/50">
+                            <div class="space-y-3">
+                                <label class="text-sm font-bold text-ink block font-serif leading-relaxed" id="l4-q1-label"></label>
+                                <select id="l4-q1" class="w-full bg-white border border-ink/20 rounded p-3 text-base font-bold text-primary shadow-inner outline-none cursor-pointer"></select>
+                            </div>
+                            <div class="space-y-3">
+                                <label class="text-sm font-bold text-ink block font-serif leading-relaxed" id="l4-q2-label"></label>
+                                <select id="l4-q2" class="w-full bg-white border border-ink/20 rounded p-3 text-base font-bold text-primary shadow-inner outline-none cursor-pointer"></select>
+                            </div>
+                            <button id="l4-btn-verify" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em] mt-4" onclick="verifyL4Questions()">
+                                <i class="fa-solid fa-stamp mr-2"></i>提交檔案
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1271,6 +1296,24 @@
                 audios: [
                     "images/images_1_sichuan.mp3", "images/images_2_hunan.mp3", "images/images_3_anhui.mp3", "images/images_4_beijing.mp3", "images/images_5_shandong.mp3"
                 ]
+            },
+            level4: {
+                q1: { 
+                    text: "1. 眷村婦女縫製衣服與裁縫的核心工具：", 
+                    opts: [
+                        { t: "老式黑膠唱片機", c: false }, 
+                        { t: "勝家腳踏縫紉機", c: true }, 
+                        { t: "煤油爐", c: false }
+                    ] 
+                },
+                q2: { 
+                    text: "2. 昔日眷村居民領取生活主食憑證：", 
+                    opts: [
+                        { t: "戰備電影票", c: false }, 
+                        { t: "米糧油鹽配給證", c: true }, 
+                        { t: "郵政儲蓄存折", c: false }
+                    ] 
+                }
             },
             level5: {
                 passcode: "1962",
@@ -2053,7 +2096,7 @@
             if (screenId === 'level-1') { forceSubPageInit(1, 1, 2); renderL1(); }
             if (screenId === 'level-2') renderL2();
             if (screenId === 'level-3') renderL3();
-            if (screenId === 'level-4') { forceSubPageInit(4, 1, 3); renderL4Tasks(); }
+            if (screenId === 'level-4') { forceSubPageInit(4, 1, 4); renderL4Tasks(); }
             if (screenId === 'level-5') renderL5(GameState.get('l5CurrentQ') || 0);
             if (screenId === 'level-6') { forceSubPageInit(6, 1, 5); renderL6Songs(); }
             if (screenId === 'level-7') {
@@ -2576,11 +2619,16 @@
                     btn.className = "btn-base bg-emerald-700 text-white w-full py-3 text-sm font-black tracking-widest mt-auto pointer-events-none";
                 } else {
                     card.classList.remove('completed');
-                    btn.innerHTML = `點擊回報完成`;
+                    if (i === 2) {
+                        btn.innerHTML = `前往回答測驗`;
+                        btn.onclick = () => openL4Quiz();
+                    } else {
+                        btn.innerHTML = `點擊回報完成`;
+                    }
                     btn.className = "btn-base military-btn w-full py-3 text-sm font-black tracking-widest mt-auto";
                 }
             }
-
+        
             const stamps = GameState.get('stamps') || [];
             if (tasksState.every(t => t) && !stamps[3]) {
                 setTimeout(() => {
@@ -2606,6 +2654,53 @@
                     showAlert("任務審核退回", `【關主指示】\n<b class="text-primary text-base">「${reason}」</b>\n\n請配合眷村鄰居完成挑戰後再次回報！`, "fa-circle-xmark", "text-primary");
                 }
             });
+        };
+        window.openL4Quiz = function() {
+            playBeep();
+            renderL4Questions();
+            transitionSubPage(4, 3, 4);
+        };
+        
+        function renderL4Questions() {
+            const q1Select = document.getElementById('l4-q1'); 
+            const q2Select = document.getElementById('l4-q2');
+            document.getElementById('l4-q1-label').textContent = GAME_DATA.level4.q1.text; 
+            document.getElementById('l4-q2-label').textContent = GAME_DATA.level4.q2.text;
+        
+            let s1 = shuffleArray([...GAME_DATA.level4.q1.opts]); 
+            let s2 = shuffleArray([...GAME_DATA.level4.q2.opts]);
+        
+            q1Select.innerHTML = '<option value="" disabled selected>請選擇...</option>'; 
+            s1.forEach(o => q1Select.innerHTML += `<option value="${o.c ? 'correct' : 'wrong'}">${o.t}</option>`);
+        
+            q2Select.innerHTML = '<option value="" disabled selected>請選擇...</option>'; 
+            s2.forEach(o => q2Select.innerHTML += `<option value="${o.c ? 'correct' : 'wrong'}">${o.t}</option>`);
+        }
+        
+        window.verifyL4Questions = function() {
+            playBeep();
+            const q1Val = document.getElementById('l4-q1').value;
+            const q2Val = document.getElementById('l4-q2').value;
+        
+            if (!q1Val || !q2Val) {
+                showAlert("請填寫完整", "還有題目尚未選擇答案，請選好後再提交！", "fa-circle-exclamation", "text-primary");
+                return;
+            }
+        
+            if (q1Val === 'correct' && q2Val === 'correct') {
+                playSuccessSound();
+                let tasks = GameState.get('l4Tasks') || [false, false, false];
+                tasks[2] = true;
+                GameState.set('l4Tasks', tasks);
+        
+                showAlert("回答正確！", "恭喜答對奶奶提出的歷史問題，任務三已核准通過！", "fa-circle-check", "text-emerald-700", () => {
+                    transitionSubPage(4, 4, 3);
+                    renderL4Tasks();
+                }, "返回任務牆");
+            } else {
+                playErrorSound();
+                showAlert("答案有誤", "有題目的選項選錯囉，請回想老奶奶講的歷史故事再試一次！", "fa-circle-xmark", "text-primary");
+            }
         };
 
         // ==========================================
