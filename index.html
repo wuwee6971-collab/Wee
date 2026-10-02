@@ -665,54 +665,70 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6 shrink-0" onclick="transitionSubPage(4, 2, 3)">前往任務牆</button>
                     </div>
 
+                    <!-- L4-P3: 3個任務卡片列表 -->
                     <div id="l4-p3" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-4 shrink-0">
-                            <button onclick="transitionSubPage(4, 3, 2)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button onclick="transitionSubPage(4, 3, 2)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
                             <h2 class="font-black text-primary text-xl font-serif tracking-[0.15em] text-center flex-1 pr-10">3個任務</h2>
                         </div>
-                        <p class="text-sm font-bold text-ink/80 text-center mb-5 tracking-wide px-2 shrink-0 border-b border-dashed border-ink/20 pb-3 leading-relaxed">
-                            歡迎來到榕樹廣場！在接下來你們將扮演眷村裡的鄰家小孩，請協助完成以下挑戰。
+                        <p class="text-sm font-bold text-ink/80 text-center mb-4 tracking-wide px-2 shrink-0 border-b border-dashed border-ink/20 pb-3 leading-relaxed font-serif">
+                            歡迎來到榕樹廣場！在接下來的活動中，<br>你們將扮演眷村裡的鄰家小孩，請協助完成以下挑戰。
                         </p>
+                        
                         <div class="flex-1 flex flex-col space-y-4 overflow-y-auto custom-scrollbar pb-6 pr-1">
-                            <div class="task-card flex flex-col" id="l4-task-card-1">
-                                <div class="flex items-center border-b border-ink/10 pb-3 mb-3">
-                                    <div class="w-12 h-12 rounded bg-gold/20 flex items-center justify-center text-gold-dark text-xl shrink-0 mr-3 border border-gold/30 font-mono font-black">1</div>
-                                    <div>
-                                        <h3 class="font-black text-ink text-base tracking-widest mb-1">任務一：在地兒童</h3>
-                                        <div class="text-xs font-mono font-bold text-primary bg-primary/5 px-2 py-0.5 rounded inline-block border border-primary/10">特徵：小黃帽 / 直笛</div>
-                                    </div>
+                            <!-- 任務一 卡片 (在地兒童) -->
+                            <div id="l4-card-1" class="task-card flex flex-col cursor-pointer hover:border-primary/50 transition-all active:scale-[0.98]" onclick="openL4TaskDetail(0)">
+                                <div class="flex justify-between items-center border-b border-ink/10 pb-2 mb-3">
+                                    <span class="text-xs font-mono font-black text-primary bg-primary/10 px-2.5 py-1 rounded">任務一</span>
+                                    <span class="l4-status-badge text-xs font-bold text-ink/40">點擊查看詳情 <i class="fa-solid fa-chevron-right ml-1"></i></span>
                                 </div>
-                                <p class="text-sm font-bold text-ink/80 leading-relaxed mb-4">加入跳橡皮筋跳繩遊戲，和隊員們一起完成 5 下跳繩。</p>
-                                <button class="btn-base military-btn w-full py-3 text-sm font-black tracking-widest mt-auto" onclick="submitL4Task(0, 'L4-任務一兒童', this)">點擊回報完成</button>
-                            </div>
-                            
-                            <div class="task-card flex flex-col" id="l4-task-card-2">
-                                <div class="flex items-center border-b border-ink/10 pb-3 mb-3">
-                                    <div class="w-12 h-12 rounded bg-gold/20 flex items-center justify-center text-gold-dark text-xl shrink-0 mr-3 border border-gold/30 font-mono font-black">2</div>
-                                    <div>
-                                        <h3 class="font-black text-ink text-base tracking-widest mb-1">任務二：中學生</h3>
-                                        <div class="text-xs font-mono font-bold text-primary bg-primary/5 px-2 py-0.5 rounded inline-block border border-primary/10">特徵：學生制服 / 軍綠包</div>
-                                    </div>
+                                <div class="vintage-photo w-full aspect-[16/10] max-h-[140px] mb-3 overflow-hidden rounded bg-paper-dark">
+                                    <img src="images/在地兒童.jpg" alt="在地兒童" class="w-full h-full object-contain loaded" onerror="this.src='https://placehold.co/300x160/e5d5b5/7c343d?text=Kid+在地兒童'">
                                 </div>
-                                <p class="text-sm font-bold text-ink/80 leading-relaxed mb-4">請找到他，一起完成編繩子與猜字謎任務。</p>
-                                <button class="btn-base military-btn w-full py-3 text-sm font-black tracking-widest mt-auto" onclick="submitL4Task(1, 'L4-任務二中學生', this)">點擊回報完成</button>
+                                <div class="text-center">
+                                    <b class="text-base font-serif text-ink block mb-1">在地兒童</b>
+                                    <div class="text-xs font-mono font-bold text-primary bg-primary/5 px-2 py-0.5 rounded inline-block border border-primary/10 mb-2">特徵：小黃帽 / 直笛</div>
+                                    <p class="text-xs font-bold text-ink/70">主動靠近，加入跳橡皮筋跳繩遊戲</p>
+                                </div>
                             </div>
 
-                            <div class="task-card flex flex-col" id="l4-task-card-3">
-                                <!-- 任務三 -->
-                                    <div class="flex items-center border-b border-ink/10 pb-3 mb-3">
-                                        <div class="w-12 h-12 rounded bg-gold/20 flex items-center justify-center text-gold-dark text-xl shrink-0 mr-3 border border-gold/30 font-mono font-black">3</div>
-                                        <div>
-                                            <h3 class="font-black text-ink text-base tracking-widest mb-1">任務三：老奶奶</h3>
-                                            <div class="text-xs font-mono font-bold text-primary bg-primary/5 px-2 py-0.5 rounded inline-block border border-primary/10">特徵：碎花上衣 / 蒲扇</div>
-                                        </div>
-                                    </div>
-                                    <p class="text-sm font-bold text-ink/80 leading-relaxed mb-4">主動前往攀談，聽取奶奶的歷史解說並完成知識測驗。</p>
-                                    <button class="btn-base military-btn w-full py-3 text-sm font-black tracking-widest mt-auto" onclick="openL4Quiz()">前往回答測驗</button>
+                            <!-- 任務二 卡片 (中學生) -->
+                            <div id="l4-card-2" class="task-card flex flex-col cursor-pointer hover:border-primary/50 transition-all active:scale-[0.98]" onclick="openL4TaskDetail(1)">
+                                <div class="flex justify-between items-center border-b border-ink/10 pb-2 mb-3">
+                                    <span class="text-xs font-mono font-black text-primary bg-primary/10 px-2.5 py-1 rounded">任務二</span>
+                                    <span class="l4-status-badge text-xs font-bold text-ink/40">點擊查看詳情 <i class="fa-solid fa-chevron-right ml-1"></i></span>
+                                </div>
+                                <div class="vintage-photo w-full aspect-[16/10] max-h-[140px] mb-3 overflow-hidden rounded bg-paper-dark">
+                                    <img src="images/中學生.jpg" alt="中學生" class="w-full h-full object-contain loaded" onerror="this.src='https://placehold.co/300x160/e5d5b5/7c343d?text=中學生'">
+                                </div>
+                                <div class="text-center">
+                                    <b class="text-base font-serif text-ink block mb-1">中學生</b>
+                                    <div class="text-xs font-mono font-bold text-primary bg-primary/5 px-2 py-0.5 rounded inline-block border border-primary/10 mb-2">特徵：學生制服 / 軍綠包</div>
+                                    <p class="text-xs font-bold text-ink/70">請找到他，一起完成猜字謎任務</p>
+                                </div>
+                            </div>
+
+                            <!-- 任務三 卡片 (老奶奶) -> 點擊跳下一頁知識測驗 -->
+                            <div id="l4-card-3" class="task-card flex flex-col cursor-pointer hover:border-primary/50 transition-all active:scale-[0.98]" onclick="openL4Quiz()">
+                                <div class="flex justify-between items-center border-b border-ink/10 pb-2 mb-3">
+                                    <span class="text-xs font-mono font-black text-primary bg-primary/10 px-2.5 py-1 rounded">任務三</span>
+                                    <span class="l4-status-badge text-xs font-bold text-ink/40">前往測驗 <i class="fa-solid fa-arrow-right ml-1"></i></span>
+                                </div>
+                                <div class="vintage-photo w-full aspect-[16/10] max-h-[140px] mb-3 overflow-hidden rounded bg-paper-dark">
+                                    <img src="images/老奶奶.jpg" alt="老奶奶" class="w-full h-full object-contain loaded" onerror="this.src='https://placehold.co/300x160/e5d5b5/7c343d?text=老奶奶'">
+                                </div>
+                                <div class="text-center">
+                                    <b class="text-base font-serif text-ink block mb-1">老奶奶</b>
+                                    <div class="text-xs font-mono font-bold text-primary bg-primary/5 px-2 py-0.5 rounded inline-block border border-primary/10 mb-2">特徵：碎花上衣 / 蒲扇</div>
+                                    <p class="text-xs font-bold text-ink/70">主動前往攀談，聽取奶奶歷史解說並答題</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <!-- L4-P4: 知識測驗頁面 -->
+
+                    <!-- L4-P4: 知識測驗頁面 (老奶奶) -->
                     <div id="l4-p4" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(4, 4, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink">
@@ -732,6 +748,32 @@
                             <button id="l4-btn-verify" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em] mt-4" onclick="verifyL4Questions()">
                                 <i class="fa-solid fa-stamp mr-2"></i>提交檔案
                             </button>
+                        </div>
+                    </div>
+
+                    <!-- L4-P5: 任務詳情獨立新畫面 (點擊任務一、二出現) -->
+                    <div id="l4-p5" class="hidden flex flex-col min-h-full">
+                        <div class="flex items-center justify-between mb-4 shrink-0">
+                            <button onclick="transitionSubPage(4, 5, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <h2 id="l4-detail-title" class="font-black text-primary text-xl font-serif tracking-[0.15em] text-center flex-1 pr-10">任務一</h2>
+                        </div>
+                        
+                        <div class="level-card p-6 flex-1 flex flex-col justify-between items-center bg-white shadow-lg">
+                            <div class="w-full flex flex-col items-center">
+                                <div class="vintage-photo w-full aspect-[4/3] max-h-[260px] overflow-hidden rounded-lg mb-6 shadow-md border-2 border-ink/20 bg-paper-dark">
+                                    <img id="l4-detail-img" src="" alt="任務圖示" class="w-full h-full object-contain loaded">
+                                </div>
+                                <p id="l4-detail-desc" class="text-base font-bold text-ink leading-[1.9] text-center font-serif px-2 whitespace-pre-line"></p>
+                            </div>
+                            
+                            <div class="w-full pt-4 mt-auto">
+                                <button id="l4-detail-submit-btn" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em]" onclick="submitCurrentL4Task()">
+                                    完成
+                                </button>
+                                <p class="text-[11px] font-bold text-ink/40 text-center mt-2 tracking-wider font-mono">※ 按下後將由現場關主後台查驗確認</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2109,7 +2151,7 @@
             if (screenId === 'level-1') { forceSubPageInit(1, 1, 2); renderL1(); }
             if (screenId === 'level-2') renderL2();
             if (screenId === 'level-3') renderL3();
-            if (screenId === 'level-4') { forceSubPageInit(4, 1, 4); renderL4Tasks(); }
+            if (screenId === 'level-4') { forceSubPageInit(4, 1, 5); renderL4Tasks(); }
             if (screenId === 'level-5') renderL5(GameState.get('l5CurrentQ') || 0);
             if (screenId === 'level-6') { forceSubPageInit(6, 1, 5); renderL6Songs(); }
             if (screenId === 'level-7') {
@@ -2620,31 +2662,84 @@
         // ==========================================
         // LEVEL 4
         // ==========================================
+        let currentL4TaskIdx = 0;
+        const L4_TASKS_CONFIG = [
+            {
+                title: "任務一",
+                img: "images/在地兒童.jpg",
+                fallbackText: "Kid 在地兒童",
+                desc: "加入跳橡皮筋跳繩遊戲，\n和隊員們一起完成 5 下跳繩。",
+                tag: "L4-任務一兒童"
+            },
+            {
+                title: "任務二",
+                img: "images/中學生.jpg",
+                fallbackText: "中學生",
+                desc: "請找到他，一起完成猜字謎任務。",
+                tag: "L4-任務二中學生"
+            }
+        ];
+
+        window.openL4TaskDetail = function(idx) {
+            playBeep();
+            currentL4TaskIdx = idx;
+            const config = L4_TASKS_CONFIG[idx];
+            
+            document.getElementById('l4-detail-title').textContent = config.title;
+            const imgEl = document.getElementById('l4-detail-img');
+            imgEl.src = config.img;
+            imgEl.onerror = () => { imgEl.src = `https://placehold.co/300/e5d5b5/7c343d?text=${encodeURIComponent(config.fallbackText)}`; };
+            document.getElementById('l4-detail-desc').textContent = config.desc;
+
+            const tasksState = GameState.get('l4Tasks') || [false, false, false];
+            const btn = document.getElementById('l4-detail-submit-btn');
+            if (tasksState[idx]) {
+                btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i>已完成審核`;
+                btn.className = "btn-base bg-emerald-700 text-white w-full py-4 text-base font-black tracking-widest pointer-events-none";
+            } else {
+                btn.innerHTML = `完成`;
+                btn.className = "btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em]";
+            }
+
+            transitionSubPage(4, 3, 5);
+        };
+
+        window.submitCurrentL4Task = function() {
+            playBeep();
+            const config = L4_TASKS_CONFIG[currentL4TaskIdx];
+            submitDirectVerification(config.tag, {}, (isApproved, rejectReason) => {
+                if (isApproved) {
+                    playSuccessSound();
+                    let tasks = GameState.get('l4Tasks') || [false, false, false];
+                    tasks[currentL4TaskIdx] = true;
+                    GameState.set('l4Tasks', tasks);
+                    transitionSubPage(4, 5, 3);
+                    renderL4Tasks();
+                } else {
+                    playErrorSound();
+                    const reason = rejectReason || "長官回報：尚未確認到任務動作，請確實完成後再行回報！";
+                    showAlert("任務審核退回", `【關主指示】\n<b class="text-primary text-base">「${reason}」</b>\n\n請配合眷村鄰居完成挑戰後再次回報！`, "fa-circle-xmark", "text-primary");
+                }
+            });
+        };
+
         function renderL4Tasks() {
             const tasksState = GameState.get('l4Tasks') || [false, false, false];
-            const taskNames = ['L4-任務一兒童', 'L4-任務二中學生', 'L4-任務三奶奶'];
 
             for (let i = 0; i < 3; i++) {
-                const card = document.getElementById(`l4-task-card-${i + 1}`);
+                const card = document.getElementById(`l4-card-${i + 1}`);
                 if (!card) continue;
-                const btn = card.querySelector('button');
+                const badge = card.querySelector('.l4-status-badge');
 
                 if (tasksState[i]) {
                     card.classList.add('completed');
-                    btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i>已完成審核`;
-                    btn.className = "btn-base bg-emerald-700 text-white w-full py-3 text-sm font-black tracking-widest mt-auto pointer-events-none";
+                    if (badge) badge.innerHTML = `<span class="text-emerald-700 font-black"><i class="fa-solid fa-circle-check mr-1"></i>已完成</span>`;
                 } else {
                     card.classList.remove('completed');
-                    btn.className = "btn-base military-btn w-full py-3 text-sm font-black tracking-widest mt-auto";
-
-                    if (i === 2) {
-                        btn.innerHTML = `前往回答測驗`;
-                        btn.onclick = () => openL4Quiz();
-                    } else {
-                        btn.innerHTML = `點擊回報完成`;
-                        btn.onclick = function() {
-                            submitL4Task(i, taskNames[i], this);
-                        };
+                    if (badge) {
+                        badge.innerHTML = i === 2 
+                            ? `前往測驗 <i class="fa-solid fa-arrow-right ml-1"></i>` 
+                            : `點擊查看詳情 <i class="fa-solid fa-chevron-right ml-1"></i>`;
                     }
                 }
             }
@@ -2659,60 +2754,44 @@
             }
         }
 
-        window.submitL4Task = function(taskIdx, levelIdStr, btnEl) {
-            playBeep();
-            submitDirectVerification(levelIdStr, {}, (isApproved, rejectReason) => {
-                if (isApproved) {
-                    playSuccessSound();
-                    let tasks = GameState.get('l4Tasks') || [false, false, false];
-                    tasks[taskIdx] = true;
-                    GameState.set('l4Tasks', tasks);
-                    renderL4Tasks();
-                } else {
-                    playErrorSound();
-                    const reason = rejectReason || "長官回報：尚未確認到任務動作，請確實完成後再行回報！";
-                    showAlert("任務審核退回", `【關主指示】\n<b class="text-primary text-base">「${reason}」</b>\n\n請配合眷村鄰居完成挑戰後再次回報！`, "fa-circle-xmark", "text-primary");
-                }
-            });
-        };
         window.openL4Quiz = function() {
             playBeep();
             renderL4Questions();
             transitionSubPage(4, 3, 4);
         };
-        
+
         function renderL4Questions() {
             const q1Select = document.getElementById('l4-q1'); 
             const q2Select = document.getElementById('l4-q2');
             document.getElementById('l4-q1-label').textContent = GAME_DATA.level4.q1.text; 
             document.getElementById('l4-q2-label').textContent = GAME_DATA.level4.q2.text;
-        
+
             let s1 = shuffleArray([...GAME_DATA.level4.q1.opts]); 
             let s2 = shuffleArray([...GAME_DATA.level4.q2.opts]);
-        
+
             q1Select.innerHTML = '<option value="" disabled selected>請選擇...</option>'; 
             s1.forEach(o => q1Select.innerHTML += `<option value="${o.c ? 'correct' : 'wrong'}">${o.t}</option>`);
-        
+
             q2Select.innerHTML = '<option value="" disabled selected>請選擇...</option>'; 
             s2.forEach(o => q2Select.innerHTML += `<option value="${o.c ? 'correct' : 'wrong'}">${o.t}</option>`);
         }
-        
+
         window.verifyL4Questions = function() {
             playBeep();
             const q1Val = document.getElementById('l4-q1').value;
             const q2Val = document.getElementById('l4-q2').value;
-        
+
             if (!q1Val || !q2Val) {
                 showAlert("請填寫完整", "還有題目尚未選擇答案，請選好後再提交！", "fa-circle-exclamation", "text-primary");
                 return;
             }
-        
+
             if (q1Val === 'correct' && q2Val === 'correct') {
                 playSuccessSound();
                 let tasks = GameState.get('l4Tasks') || [false, false, false];
                 tasks[2] = true;
                 GameState.set('l4Tasks', tasks);
-        
+
                 showAlert("回答正確！", "恭喜答對奶奶提出的歷史問題，任務三已核准通過！", "fa-circle-check", "text-emerald-700", () => {
                     transitionSubPage(4, 4, 3);
                     renderL4Tasks();
