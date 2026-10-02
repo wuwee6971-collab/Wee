@@ -2639,7 +2639,6 @@
                     card.classList.remove('completed');
                     btn.className = "btn-base military-btn w-full py-3 text-sm font-black tracking-widest mt-auto";
                     
-                    // 任務一、二走後台審核；任務三走知識測驗頁面
                     if (i === 2) {
                         btn.innerHTML = `前往回答測驗`;
                         btn.onclick = () => openL4Quiz();
@@ -2651,6 +2650,16 @@
                     }
                 }
             }
+        
+            const stamps = GameState.get('stamps') || [];
+            if (tasksState.every(t => t) && !stamps[3]) {
+                setTimeout(() => {
+                    showAlert("榕樹廣場挑戰成功", "您已成功協助鄰居們完成所有任務，重溫了當年的純真回憶！", "fa-people-roof", "text-emerald-700", () => {
+                        handleLevelSuccess(4);
+                    });
+                }, 600);
+            }
+        }
         
             const stamps = GameState.get('stamps') || [];
             if (tasksState.every(t => t) && !stamps[3]) {
