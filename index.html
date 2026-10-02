@@ -2274,7 +2274,7 @@
                         const wrap = document.createElement('div');
                         wrap.className = "vintage-photo cursor-zoom-in w-full min-h-[140px] max-h-[260px] overflow-hidden";
                         wrap.onclick = () => openImageLightbox(src);
-                        wrap.innerHTML = `<img src="${src}" class="w-full h-full object-cover loaded" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=線索圖片'">`;
+                        wrap.innerHTML = `<img src="${src}" class="max-w-full max-h-[240px] object-contain loaded" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=線索圖片'">`;
                         qImgContainer.appendChild(wrap);
                     });
                 } else qImgContainer.classList.add('hidden');
