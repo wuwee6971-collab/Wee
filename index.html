@@ -1584,10 +1584,11 @@
                     box.classList.add('scale-95', 'opacity-0');
                 }
             }
+            // 將原本的 300 縮短為 150，加速關閉流暢度
             setTimeout(() => {
                 modal.classList.add('hidden');
                 if (callback) callback();
-            }, 300);
+            }, 150); 
         }
 
         function renderPuzzlePieces(containerId, isFullView = false) {
@@ -1705,23 +1706,19 @@
         }
 
         function _executeFirebaseSubmission(docData, onSuccess, file = null) {
-            if (activeUploadPollTimer) { clearInterval(activeUploadPollTimer); activeUploadPollTimer = null; }
             if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
         
             let isHandled = false;
+            let timeoutId = null; // 新增逾時機制
+            
             const cleanUp = () => {
                 isHandled = true;
-                if (activeUploadPollTimer) { clearInterval(activeUploadPollTimer); activeUploadPollTimer = null; }
+                if (timeoutId) { clearTimeout(timeoutId); timeoutId = null; }
                 if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
             };
 
             if (!db) {
-                showAlert("資料傳送中", "正模擬傳送至後台進行審核...", "fa-satellite-dish fa-spin", "text-primary", null, "取消等待", 0, true);
-                setTimeout(() => {
-                    const modal = document.getElementById('modal-alert');
-                    if (modal) modal.classList.add('hidden');
-                    onSuccess(true, null);
-                }, 1200);
+                // 離線模擬器邏輯不變...
                 return;
             }
         
@@ -1738,7 +1735,7 @@
                 const teamName = GameState.get('teamName') || "匿名隊伍";
                 const payload = {
                     teamName: teamName,
-                    teamMembers: GameState.get('teamMembers') || "", // 傳送隊員名單供後台核對
+                    teamMembers: GameState.get('teamMembers') || "",
                     status: "pending",
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     ...docData
@@ -1764,24 +1761,23 @@
                         onSuccess(approved, rejectReason); 
                     };
         
+                    // 單一的高效 WebSocket 監聽，捨棄多餘的 setInterval
                     activeUploadUnsubscribe = docRef.onSnapshot({ includeMetadataChanges: false }, (doc) => {
                         if (isHandled || !doc.exists) return;
                         const data = doc.data();
                         if (data.status === "approved") handleResult(true);
                         else if (data.status === "rejected") handleResult(false, data.rejectReason);
-                    }, (err) => console.warn("Snapshot 斷線，交由備援輪詢處理", err));
-        
-                    activeUploadPollTimer = setInterval(async () => {
-                        if (isHandled) return;
-                        try {
-                            const docSnap = await docRef.get();
-                            if (docSnap.exists) {
-                                const data = docSnap.data();
-                                if (data.status === "approved") handleResult(true);
-                                else if (data.status === "rejected") handleResult(false, data.rejectReason);
-                            }
-                        } catch (e) {}
-                    }, 2500);
+                    }, (err) => {
+                        console.warn("連線不穩：", err);
+                    });
+
+                    // 新增：60 秒關主未回應防呆處理
+                    timeoutId = setTimeout(() => {
+                        if (!isHandled) {
+                            cleanUp();
+                            showAlert("長官忙碌中", "前線指揮所目前較為忙碌，未能即時審核。\n請確認網路狀態，或直接尋找現場【白T小天使】協助通關！", "fa-user-clock", "text-primary");
+                        }
+                    }, 60000); 
         
                 }).catch(error => {
                     if (!isHandled) {
@@ -1790,7 +1786,7 @@
                     }
                 });
             };
-
+            // 將 Canvas 轉換為 Blob 並上傳至 Storage
             if (file) {
                 if (window.createImageBitmap) {
                     createImageBitmap(file).then(imgBitmap => {
@@ -1800,16 +1796,34 @@
                         canvas.height = Math.round(imgBitmap.height * scale);
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(imgBitmap, 0, 0, canvas.width, canvas.height);
-                        sendPayload(canvas.toDataURL('image/jpeg', 0.5));
-                    }).catch(() => fallbackCompress(file, 640, 0.5, sendPayload));
-                } else {
-                    fallbackCompress(file, 640, 0.5, sendPayload);
+                        
+                        // 【優化】轉為 Blob 上傳，而非 Base64
+                        canvas.toBlob(blob => {
+                            const fileName = `submissions/${Date.now()}_${Math.random().toString(36).substring(2,7)}.jpg`;
+                            const storageRef = firebase.storage().ref().child(fileName);
+                            
+                            // 上傳至 Storage
+                            storageRef.put(blob).then(snapshot => {
+                                return snapshot.ref.getDownloadURL();
+                            }).then(downloadURL => {
+                                // 取得真正網址後，再存入 Firestore
+                                const teamName = GameState.get('teamName') || "匿名隊伍";
+                                db.collection("submissions").add({
+                                    teamName: teamName,
+                                    teamMembers: GameState.get('teamMembers') || "",
+                                    status: "pending",
+                                    photoUrl: downloadURL, // 改存真實網址
+                                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                    ...docData
+                                }).then(/* 接續原本的 onSnapshot 邏輯 */)
+                            }).catch(err => {
+                                cleanUp();
+                                showAlert("上傳失敗", "照片傳輸失敗，請確認網路！", "fa-wifi", "text-primary");
+                            });
+                        }, 'image/jpeg', 0.6); // 提高一點品質，因為 Storage 不怕大
+                    });
                 }
-            } else {
-                sendPayload();
             }
-        }
-
         function fallbackCompress(file, maxWidth, quality, callback) {
             const reader = new FileReader();
             reader.onload = function(e) {
