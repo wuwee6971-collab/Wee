@@ -1651,10 +1651,14 @@
             const stamps = GameState.get('stamps') || [];
             const count = stamps.filter(Boolean).length;
             const letterBtnContainer = document.getElementById('full-letter-btn-container');
+            
             if (letterBtnContainer) {
-                // 問題 4 修復：未集齊 7 塊碎片絕不可解鎖完整信閱讀按鈕
-                if (count === 7) letterBtnContainer.classList.remove('hidden');
-                else letterBtnContainer.classList.add('hidden');
+                // 修正：必須集齊全部 7 片才解鎖，防止跳關或單一關卡誤解鎖
+                if (count === 7) {
+                    letterBtnContainer.classList.remove('hidden');
+                } else {
+                    letterBtnContainer.classList.add('hidden');
+                }
             }
         
             const modal = document.getElementById('modal-stamps');
@@ -1978,10 +1982,14 @@
         function playSuccessSound() { playBeep(523, 0.08); setTimeout(() => playBeep(659, 0.08), 90); setTimeout(() => playBeep(784, 0.15), 180); }
         function playErrorSound() { playBeep(220, 0.12, 'sawtooth'); setTimeout(() => playBeep(180, 0.18, 'sawtooth'), 120); }
 
+        // ==========================================
+        // 補丁 3：頂部導覽列標題顯示優化
+        // ==========================================
         function updateHeader(screenId) {
             const teamEl = document.getElementById('header-team-name');
             const titleEl = document.getElementById('header-level-title');
             teamEl.textContent = GameState.get('teamName') || "未登入";
+            
             if (screenId === 'entry') titleEl.textContent = "檔案報到";
             else if (screenId === 'intro-chars') titleEl.textContent = "人物圖鑑";
             else if (screenId === 'intro-story') titleEl.textContent = "故事前言";
@@ -1992,7 +2000,7 @@
             else if (screenId === 'l3-intro') titleEl.textContent = "村長的家";
             else if (screenId === 'l5-arrival') titleEl.textContent = "群星之夜";
             else if (screenId === 'l7-market-task') titleEl.textContent = "市集攤位";
-            else if (screenId === 'level-7') titleEl.textContent = "最後集合地點";
+            else if (screenId === 'level-7') titleEl.textContent = "最後集合地點"; // 新增：修正最終坐標頁 Header
             else if (screenId === 'certificate') titleEl.textContent = "結案報告";
             else {
                 const lvlNum = parseInt(screenId.replace('level-', ''));
@@ -2009,7 +2017,6 @@
                 navHqBtn.onclick = () => { playBeep(); showScreen(GameState.get('teamName') ? 'main' : 'entry'); };
             }
         }
-
         async function transitionSubPage(level, fromPage, toPage) {
             playBeep();
             if (level === 6 && toPage === 4) {
@@ -2609,23 +2616,25 @@
         // ==========================================
         function renderL4Tasks() {
             const tasksState = GameState.get('l4Tasks') || [false, false, false];
+            const taskNames = ['L4-任務一兒童', 'L4-任務二中學生', 'L4-任務三奶奶'];
+        
             for (let i = 0; i < 3; i++) {
-                const card = document.getElementById(`l4-task-card-${i+1}`);
+                const card = document.getElementById(`l4-task-card-${i + 1}`);
                 if (!card) continue;
                 const btn = card.querySelector('button');
+        
                 if (tasksState[i]) {
                     card.classList.add('completed');
                     btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i>已完成審核`;
                     btn.className = "btn-base bg-emerald-700 text-white w-full py-3 text-sm font-black tracking-widest mt-auto pointer-events-none";
                 } else {
                     card.classList.remove('completed');
-                    if (i === 2) {
-                        btn.innerHTML = `前往回答測驗`;
-                        btn.onclick = () => openL4Quiz();
-                    } else {
-                        btn.innerHTML = `點擊回報完成`;
-                    }
+                    btn.innerHTML = `點擊回報完成`;
                     btn.className = "btn-base military-btn w-full py-3 text-sm font-black tracking-widest mt-auto";
+                    // 統一綁定直通審核回報，避免呼叫不存在的 openL4Quiz
+                    btn.onclick = function() {
+                        submitL4Task(i, taskNames[i], this);
+                    };
                 }
             }
         
