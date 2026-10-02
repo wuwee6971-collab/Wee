@@ -417,8 +417,7 @@
                     </div>` : '';
 
                 return `
-                <div class="military-card p-4 space-y-3">
-                    <div class="flex items-start justify-between border-b border-[#332c25] pb-2">
+                    <div id="card-${item.id}" class="military-card p-4 space-y-3 transition-all duration-200">
                         <div>
                             <div class="flex items-center space-x-2">
                                 <i class="fa-solid fa-users text-[#a1824a] text-sm"></i>
@@ -787,55 +786,77 @@
 
         async function confirmReject() {
             if (!pendingRejectDocId) return;
+            const docId = pendingRejectDocId;
             const customVal = document.getElementById('custom-reject-reason').value.trim();
             const reason = customVal || "長官回報：未達通關要求，請重新確認後送出！";
             
+            // 1. 0ms 立即關閉 Modal 並讓卡片滑出
+            closeRejectModal();
+            playChime();
+
+            const targetCard = document.getElementById(`card-${docId}`);
+            if (targetCard && currentTab === 'pending') {
+                targetCard.style.transform = 'scale(0.96)';
+                targetCard.style.opacity = '0';
+                targetCard.style.pointerEvents = 'none';
+                setTimeout(() => targetCard.remove(), 200);
+
+                const counter = document.getElementById('pending-counter');
+                if (counter) {
+                    const cur = parseInt(counter.textContent) || 1;
+                    counter.textContent = Math.max(0, cur - 1);
+                }
+            }
+
+            // 2. 背景非同步寫入 Firestore
             try {
-                await db.collection("submissions").doc(pendingRejectDocId).update({
+                await db.collection("submissions").doc(docId).update({
                     status: 'rejected',
                     rejectReason: reason,
                     reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                const target = currentSubmissions.find(s => s.id === pendingRejectDocId);
+                const target = currentSubmissions.find(s => s.id === docId);
                 if (target) {
                     target.status = 'rejected';
                     target.rejectReason = reason;
                 }
-                closeRejectModal();
-                renderList();
             } catch (err) {
-                alert("退回失敗：" + err.message);
+                alert("退回同步失敗：" + err.message);
+                renderList();
             }
         }
 
         // 優化後台更新狀態：點擊瞬間局部更新畫面，極大化順暢度
         async function updateStatus(docId, newStatus) {
-            try {
-                // 1. 樂觀 UI 更新 (Optimistic UI)：立刻在畫面上改變狀態，不等待 DB 返回
-                const targetCard = document.getElementById(`card-${docId}`);
-                if (targetCard) {
-                    // 加上淡出或狀態改變的視覺效果
-                    targetCard.style.opacity = '0.5';
-                    targetCard.style.pointerEvents = 'none';
-                }
+            playChime();
+            const targetCard = document.getElementById(`card-${docId}`);
+            
+            // 1. 樂觀 UI (0ms 反應)：若在「待審任務」分籤點擊核准，卡片立刻綠框並縮小滑出
+            if (targetCard && currentTab === 'pending' && newStatus === 'approved') {
+                targetCard.style.transform = 'scale(0.96)';
+                targetCard.style.opacity = '0';
+                targetCard.style.pointerEvents = 'none';
+                setTimeout(() => targetCard.remove(), 200);
 
-                // 2. 背景非同步寫入資料庫
+                // 同步扣減待審計數
+                const counter = document.getElementById('pending-counter');
+                if (counter) {
+                    const cur = parseInt(counter.textContent) || 1;
+                    counter.textContent = Math.max(0, cur - 1);
+                }
+            }
+
+            // 2. 背景非同步送出資料庫更新
+            try {
                 await db.collection("submissions").doc(docId).update({
                     status: newStatus,
                     reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                
-                // (註：因為有 onSnapshot 監聽，資料庫更新後 startListening 會自動觸發最新的狀態，
-                // 但如果搭配稍後的進階優化，這裡的體驗已經非常流暢了)
-                
+                const target = currentSubmissions.find(s => s.id === docId);
+                if (target) target.status = newStatus;
             } catch (err) {
-                alert("狀態變更失敗：" + err.message);
-                // 失敗時恢復 UI
-                const targetCard = document.getElementById(`card-${docId}`);
-                if (targetCard) {
-                    targetCard.style.opacity = '1';
-                    targetCard.style.pointerEvents = 'auto';
-                }
+                alert("審核狀態同步失敗，請檢查網路：" + err.message);
+                renderList(); // 失敗才強制回滾重繪
             }
         }
 
