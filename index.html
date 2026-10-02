@@ -1165,7 +1165,8 @@
                         a: [1, 3, 6, 8],
                         photo: true, 
                         photoText: "請隊員們一起與特級眷舍的任一個特徵並拍照吧！", 
-                        desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆、紅色大門與紅磚牆。" 
+                        desc: "特級眷舍分配給高階將官，擁有獨立庭院、洗石子外牆、紅色大門與紅磚牆。",
+                        failHint: "・照片需拍到特級眷舍的某一特徵\n・畫面中需有小隊隊員入鏡"
                     },
                     { 
                         images: [], 
@@ -1176,7 +1177,8 @@
                         a: null,
                         photo: true, 
                         photoText: "請玩家找尋【進入防洪樓】閣樓空間，高舉雙手，看看能否碰到閣樓的地板，並拍照紀錄", 
-                        desc: "防洪樓是為躲避淡水河洪患而建，保留了躲避水災增建的小閣樓。" 
+                        desc: "防洪樓是為躲避淡水河洪患而建，保留了躲避水災增建的小閣樓。",
+                        failHint: "・請隊員站在防洪樓內高舉雙手\n・測量是否摸得到上面的地板！"
                     },
                     { 
                         image: "images/一線天.jpg", 
@@ -1187,7 +1189,8 @@
                         a: null,
                         photo: true, 
                         photoText: "請在眷村中找到「一線天」張開雙手觸碰二側牆壁拍一張照\n隊員必須入鏡並雙手碰牆", 
-                        desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成緊鄰樣貌。" 
+                        desc: "因人口增加與居住需求，居民紛紛向前後院擴建，使原本較寬的巷道縮減形成緊鄰樣貌。",
+                        failHint: "・請確實走到一線天\n・並由隊員雙手摸兩側牆入鏡！"
                     },
                     { 
                         isSequence: true,
@@ -1202,7 +1205,7 @@
                         a: 1, 
                         photo: false, 
                         desc: "村長家歷經7次改建，從黑瓦平房、防洪樓、二樓加蓋到全面三層樓，完整體現居住演進。" 
-                    }, // 修復：此處補上遺漏的逗號
+                    },
                     { 
                         photoImage: null, 
                         q: "為什麼隨著時間過去，眷村的房屋開始出現更多門窗、鐵窗，生活空間逐漸移回屋內？", 
@@ -1210,7 +1213,8 @@
                         a: 1, 
                         photo: true, 
                         photoText: "請尋找建築上的鐵窗，由隊員\n以手做出和鐵窗上圖案相似的形狀\n回傳總部", 
-                        desc: "隨著定居長久與人口增加，生活機能全面移入屋內並加裝鐵窗，從開放聚落走向獨立住宅。" 
+                        desc: "隨著定居長久與人口增加，生活機能全面移入屋內並加裝鐵窗，從開放聚落走向獨立住宅。",
+                        failHint: "・隊員未依指示動作！\n・請確實依指示行事，以手比出和鐵窗圖案相似的形狀入鏡！"
                     }
                 ]
             },
@@ -2112,10 +2116,12 @@
             if (this.files && this.files.length > 0) {
                 const file = this.files[0]; this.value = '';
                 uploadAndListenVerification(file, "任務二：眷舍空間", (isApproved) => {
+                    let currentQ = GameState.get('l2CurrentQ');
+                    const qData = GAME_DATA.level2.questions[currentQ];
+
                     if (isApproved) {
                         playSuccessSound();
                         let photos = GameState.get('l2Photos') || [false, false, false, false, false];
-                        let currentQ = GameState.get('l2CurrentQ');
                         photos[currentQ] = true; GameState.set('l2Photos', photos);
                         showAlert("審核通過", "長官已確認線索照片！此題驗證完成。", "fa-circle-check", "text-emerald-700", () => {
                             let cq = GameState.get('l2CurrentQ');
@@ -2128,12 +2134,15 @@
                             }
                         }, "進入下一題");
                     } else {
-                        playErrorSound(); showAlert("審核未通過", "長官回報：照片模糊或角度不符，請重新拍攝！", "fa-circle-xmark", "text-primary");
+                        playErrorSound();
+                        const errorMsg = qData && qData.failHint 
+                            ? `長官回報審核未通過！\n\n${qData.failHint}` 
+                            : "長官回報：照片模糊或角度不符，請重新拍攝！";
+                        showAlert("審核未通過", errorMsg, "fa-circle-xmark", "text-primary");
                     }
                 });
             }
         });
-
         let l2SequenceIntroSeen = false;
         function renderL2() {
             let currentQ = GameState.get('l2CurrentQ');
