@@ -1810,7 +1810,7 @@
             if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
         
             let isHandled = false;
-            let timeoutId = null; // 新增逾時機制
+            let timeoutId = null;
             
             const cleanUp = () => {
                 isHandled = true;
@@ -1819,7 +1819,13 @@
             };
 
             if (!db) {
-                // 離線模擬器邏輯不變...
+                showAlert("資料傳送中", "正模擬傳送至後台進行審核...", "fa-satellite-dish fa-spin", "text-primary", null, "取消等待", 0, true);
+                setTimeout(() => {
+                    cleanUp();
+                    const modal = document.getElementById('modal-alert');
+                    if (modal) modal.classList.add('hidden');
+                    onSuccess(true, null);
+                }, 1200);
                 return;
             }
         
@@ -1832,7 +1838,7 @@
                 };
             }
 
-            const sendPayload = (base64Str = null) => {
+            const sendPayload = (photoUrlStr = null) => {
                 const teamName = GameState.get('teamName') || "匿名隊伍";
                 const payload = {
                     teamName: teamName,
@@ -1841,9 +1847,9 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     ...docData
                 };
-                if (base64Str) {
-                    payload.photoUrl = base64Str;
-                    payload.imageBase64 = base64Str;
+                if (photoUrlStr) {
+                    payload.photoUrl = photoUrlStr;
+                    payload.imageBase64 = photoUrlStr;
                 }
 
                 db.collection("submissions").add(payload).then(docRef => {
@@ -1862,7 +1868,6 @@
                         onSuccess(approved, rejectReason); 
                     };
         
-                    // 單一的高效 WebSocket 監聽，捨棄多餘的 setInterval
                     activeUploadUnsubscribe = docRef.onSnapshot({ includeMetadataChanges: false }, (doc) => {
                         if (isHandled || !doc.exists) return;
                         const data = doc.data();
@@ -1872,7 +1877,6 @@
                         console.warn("連線不穩：", err);
                     });
 
-                    // 新增：60 秒關主未回應防呆處理
                     timeoutId = setTimeout(() => {
                         if (!isHandled) {
                             cleanUp();
@@ -1887,7 +1891,7 @@
                     }
                 });
             };
-            // 將 Canvas 轉換為 Blob 並上傳至 Storage
+
             if (file) {
                 if (window.createImageBitmap) {
                     createImageBitmap(file).then(imgBitmap => {
@@ -1898,33 +1902,47 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(imgBitmap, 0, 0, canvas.width, canvas.height);
                         
-                        // 【優化】轉為 Blob 上傳，而非 Base64
                         canvas.toBlob(blob => {
+                            if (!blob) {
+                                fallbackCompress(file, 640, 0.5, sendPayload);
+                                return;
+                            }
                             const fileName = `submissions/${Date.now()}_${Math.random().toString(36).substring(2,7)}.jpg`;
                             const storageRef = firebase.storage().ref().child(fileName);
                             
-                            // 上傳至 Storage
-                            storageRef.put(blob).then(snapshot => {
-                                return snapshot.ref.getDownloadURL();
-                            }).then(downloadURL => {
-                                // 取得真正網址後，再存入 Firestore
-                                const teamName = GameState.get('teamName') || "匿名隊伍";
-                                db.collection("submissions").add({
-                                    teamName: teamName,
-                                    teamMembers: GameState.get('teamMembers') || "",
-                                    status: "pending",
-                                    photoUrl: downloadURL, // 改存真實網址
-                                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                                    ...docData
-                                }).then(/* 接續原本的 onSnapshot 邏輯 */)
-                            }).catch(err => {
-                                cleanUp();
-                                showAlert("上傳失敗", "照片傳輸失敗，請確認網路！", "fa-wifi", "text-primary");
+                            storageRef.put(blob).then(snapshot => snapshot.ref.getDownloadURL())
+                            .then(downloadURL => {
+                                sendPayload(downloadURL);
+                            }).catch(() => {
+                                fallbackCompress(file, 640, 0.5, sendPayload);
                             });
-                        }, 'image/jpeg', 0.6); // 提高一點品質，因為 Storage 不怕大
-                    });
+                        }, 'image/jpeg', 0.6);
+                    }).catch(() => fallbackCompress(file, 640, 0.5, sendPayload));
+                } else {
+                    fallbackCompress(file, 640, 0.5, sendPayload);
                 }
+            } else {
+                sendPayload();
             }
+        }
+
+        function fallbackCompress(file, maxWidth, quality, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const scale = Math.min(1, maxWidth / img.width);
+                    canvas.width = Math.round(img.width * scale); 
+                    canvas.height = Math.round(img.height * scale);
+                    const ctx = canvas.getContext('2d'); 
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    callback(canvas.toDataURL('image/jpeg', quality));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
         function fallbackCompress(file, maxWidth, quality, callback) {
             const reader = new FileReader();
             reader.onload = function(e) {
