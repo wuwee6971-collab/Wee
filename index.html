@@ -2000,7 +2000,7 @@
             }
         
             // 顯示等待中 Alert，並提供「手動重整狀態」按鈕
-            showAlert("資料審核中", "已送達指揮所，審核官查驗中...\n(關主核准後約 1~2 秒自動切換)", "fa-satellite-dish fa-spin", "text-primary", null, "取消等待", 0, true);
+            showAlert("資料審核中", "已送達指揮所，審核官查驗中...\n(關主核准後會自動切換)", "fa-satellite-dish fa-spin", "text-primary", null, "取消等待", 0, true);
         
             const sendPayload = (base64Img = null) => {
                 const payload = {
@@ -2055,7 +2055,7 @@
         
             if (file) {
                 // 採取極限壓縮 (見改造 2)
-                compressImageReliably(file, 400, 0.3, (dataUrl) => {
+                compressImageReliably(file, 600, 0.5, (dataUrl) => {
                     sendPayload(dataUrl);
                 });
             } else {
