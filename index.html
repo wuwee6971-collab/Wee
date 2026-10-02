@@ -822,7 +822,7 @@
                         </div>
                         <div class="level-card p-5 flex-1 flex flex-col overflow-hidden bg-paper/30">
                             <p class="text-sm font-bold bg-white p-4 rounded-md border border-ink/10 mb-5 shrink-0 text-justify leading-relaxed shadow-sm text-ink font-serif">
-                                小天使：「桌上有瓶明星花露水，裡面藏著哪些花香？畫面上有六種花，答案共有<b class="text-primary underline">兩種</b>，快從中把它們找出來吧！」
+                                桌上有瓶明星花露水，裡面藏著哪些花香？畫面上有六種花，答案共有<b class="text-primary underline">兩種</b>，快從中把它們找出來吧！
                             </p>
                             <div class="grid grid-cols-2 gap-4 flex-1 overflow-y-auto custom-scrollbar pb-4 pr-1" id="flower-grid">
                                 <div class="flower-card flex flex-col border border-ink/10 rounded-lg overflow-hidden bg-white shadow-sm transition-all duration-200 active:scale-95 cursor-pointer hover:shadow-md" onclick="toggleFlower(this, '秀英花')">
@@ -865,7 +865,7 @@
                         </div>
                         <div class="level-card p-6 flex-1 flex flex-col justify-between overflow-hidden bg-paper/30 relative">
                             <p class="text-sm font-bold bg-white p-4 rounded-md border border-ink/10 mb-5 leading-relaxed text-justify shrink-0 shadow-sm text-ink font-serif">
-                                小天使：「以前三重讓人記得的，可不只有花香，還有熱鬧的唱片產業。選一首你現在最想聽的曲子點播吧！」
+                                以前三重讓人記得的，可不只有花香，還有熱鬧的唱片產業。選一首你現在最想聽的曲子點播吧！
                             </p>
                             
                             <div class="space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-2" id="l6-songs-container"></div>
@@ -2274,7 +2274,7 @@
                         const wrap = document.createElement('div');
                         wrap.className = "vintage-photo cursor-zoom-in w-full min-h-[140px] max-h-[260px] overflow-hidden";
                         wrap.onclick = () => openImageLightbox(src);
-                        wrap.innerHTML = `<img src="${src}" class="max-w-full max-h-[240px] object-contain loaded" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=線索圖片'">`;
+                        wrap.innerHTML = `<img src="${src}" class="w-full h-full object-cover loaded" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=線索圖片'">`;
                         qImgContainer.appendChild(wrap);
                     });
                 } else qImgContainer.classList.add('hidden');
