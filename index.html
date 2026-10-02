@@ -1791,31 +1791,6 @@
                 container.appendChild(el);
             });
         }
-
-        window.openStampsDrawer = function() {
-            playBeep();
-            try { renderPuzzlePieces('puzzle-drawer-board', false); } catch (e) {}
-            
-            const stamps = GameState.get('stamps') || [];
-            const count = stamps.filter(Boolean).length;
-            const letterBtnContainer = document.getElementById('full-letter-btn-container');
-            
-            if (letterBtnContainer) {
-                if (count === 7) {
-                    letterBtnContainer.classList.remove('hidden');
-                } else {
-                    letterBtnContainer.classList.add('hidden');
-                }
-            }
-        
-            const modal = document.getElementById('modal-stamps');
-            const box = document.getElementById('stamps-box');
-            if (modal && box) {
-                modal.classList.remove('hidden');
-                box.classList.remove('opacity-0', 'scale-95');
-                setTimeout(() => box.classList.remove('translate-y-full'), 10);
-            }
-        };
         
         function updateStampBadgeCount() {
             const stamps = GameState.get('stamps') || [];
@@ -1834,6 +1809,32 @@
             };
         }
 
+        window.openStampsDrawer = function() {
+            playBeep();
+            try { renderPuzzlePieces('puzzle-drawer-board', false); } catch (e) {}
+            
+            const stamps = GameState.get('stamps') || [];
+            const count = stamps.filter(Boolean).length;
+            const letterBtnContainer = document.getElementById('full-letter-btn-container');
+            
+            if (letterBtnContainer) {
+                // 修復：必須集滿 7 片 且 已經輸入 TAG106 解鎖，才顯示信件按鈕
+                if (count === 7 && GameState.get('finalUnlocked')) {
+                    letterBtnContainer.classList.remove('hidden');
+                } else {
+                    letterBtnContainer.classList.add('hidden');
+                }
+            }
+        
+            const modal = document.getElementById('modal-stamps');
+            const box = document.getElementById('stamps-box');
+            if (modal && box) {
+                modal.classList.remove('hidden');
+                box.classList.remove('opacity-0', 'scale-95');
+                setTimeout(() => box.classList.remove('translate-y-full'), 10);
+            }
+        };
+        
         window.openFullLetter = function() {
             const stamps = GameState.get('stamps') || [];
             const count = stamps.filter(Boolean).length;
@@ -1847,6 +1848,12 @@
                     () => { showScreen('certificate'); },
                     "返回總部結案"
                 );
+                return;
+            }
+        
+            // 修復：防呆檢查，未輸入 TAG106 不得開啟信件
+            if (!GameState.get('finalUnlocked')) {
+                showAlert("信件尚未解鎖", "請前往最後集合地點輸入最終密碼解鎖後，方可閱讀信件！", "fa-lock", "text-primary");
                 return;
             }
         
@@ -1866,11 +1873,14 @@
                 box.classList.add('scale-100', 'opacity-100');
             }, 10);
         };
-
+        
         window.closeFullLetter = function() {
             playBeep();
             closeModalAnim('modal-full-letter', 'letter-box', () => {
-                showScreen('certificate');
+                // 修復：只有在已通過 TAG106 驗證時關閉信件才跳轉結案頁面
+                if (GameState.get('finalUnlocked')) {
+                    showScreen('certificate');
+                }
             });
         };
 
@@ -3185,6 +3195,7 @@
             if (val === "TAG106") {
                 playSuccessSound();
                 GameState.set('endTime', Date.now()); 
+                GameState.set('finalUnlocked', true); // 修復：標記已解鎖信件與通關資格
                 if (globalTimerInterval) { clearInterval(globalTimerInterval); globalTimerInterval = null; }
                 
                 if (db) {
