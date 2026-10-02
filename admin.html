@@ -268,18 +268,26 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // 2. 全域狀態管理
+       // 2. 全域狀態管理
         let currentTab = 'pending';
         let selectedRoom = 'ALL';
         let searchQuery = '';
         let queryLimit = 60;
         let currentSubmissions = [];
-        let previousPendingCount = 0;
-        let isAudioEnabled = true;
+        let previousRoomPendingCount = -1; // 改為記錄「當前關卡」的待審數（-1 表示首次載入）
+        let isNotifyEnabled = true;        // 鈴鐺開關：控制是否震動
         let unsubscribe = null;
         let pendingRejectDocId = null;
-        let audioUnlocked = false;
-        let adminPollInterval = null; // 新增：後台 2 秒主動輪詢計時器
+        let adminPollInterval = null;
+
+        // 3. 行動裝置戰術震動提示 (雙震節奏)
+        function triggerVibration() {
+            if (!isNotifyEnabled) return;
+            if ('vibrate' in navigator) {
+                // 震動 300ms -> 停 100ms -> 震動 300ms
+                navigator.vibrate([300, 100, 300]);
+            }
+        }
 
         // 3. Web Audio 音效與手勢解鎖 (符合 Autoplay Policy)
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -335,13 +343,17 @@
 
                 if (hasChanged) {
                     currentSubmissions = list;
-                    const pendingTotal = currentSubmissions.filter(s => s.status === 'pending').length;
                     
-                    // 若有新進待審核任務，播放提示音
-                    if (pendingTotal > previousPendingCount && previousPendingCount !== 0) {
-                        playChime();
+                    // 計算當前關主所選房間的待審核數量
+                    const currentRoomPending = currentSubmissions.filter(s => 
+                        s.status === 'pending' && matchRoomPredicate(s, selectedRoom)
+                    ).length;
+                    
+                    // 僅在「當前關卡待審增加」且「非首次載入」時觸發震動
+                    if (previousRoomPendingCount !== -1 && currentRoomPending > previousRoomPendingCount) {
+                        triggerVibration();
                     }
-                    previousPendingCount = pendingTotal;
+                    previousRoomPendingCount = currentRoomPending;
 
                     updateRoomBadges();
                     renderList();
@@ -377,11 +389,18 @@
                     });
                     currentSubmissions = list;
                     
-                    const pendingTotal = currentSubmissions.filter(s => s.status === 'pending').length;
-                    if (pendingTotal > previousPendingCount && previousPendingCount !== 0) {
-                        playChime();
+                    currentSubmissions = list;
+                    
+                    // 計算當前關主所選房間的待審核數量
+                    const currentRoomPending = currentSubmissions.filter(s => 
+                        s.status === 'pending' && matchRoomPredicate(s, selectedRoom)
+                    ).length;
+
+                    // 僅在「當前關卡待審增加」且「非首次載入」時觸發震動
+                    if (previousRoomPendingCount !== -1 && currentRoomPending > previousRoomPendingCount) {
+                        triggerVibration();
                     }
-                    previousPendingCount = pendingTotal;
+                    previousRoomPendingCount = currentRoomPending;
 
                     updateRoomBadges();
                     renderList();
@@ -483,6 +502,12 @@
 
         function setRoom(roomId) {
             selectedRoom = roomId;
+
+            // 切換房間時即時校準基準，避免因為關卡待審數量不同而誤觸震動
+            previousRoomPendingCount = currentSubmissions.filter(s => 
+                s.status === 'pending' && matchRoomPredicate(s, selectedRoom)
+            ).length;
+
             const rooms = ['ALL', '1', '2', '3', '4', '5', '6-angel', '6-note', '7'];
             rooms.forEach(id => {
                 const btn = document.getElementById(`room-btn-${id}`);
@@ -1057,12 +1082,18 @@
         }
 
         function toggleAudio() {
-            unlockAudio();
-            isAudioEnabled = !isAudioEnabled;
+            isNotifyEnabled = !isNotifyEnabled;
             const btn = document.getElementById('btn-audio');
-            btn.innerHTML = isAudioEnabled 
-                ? '<i class="fa-solid fa-bell text-amber-400"></i>' 
-                : '<i class="fa-solid fa-bell-slash text-stone-500"></i>';
+            
+            if (isNotifyEnabled) {
+                btn.innerHTML = '<i class="fa-solid fa-bell text-amber-400"></i>';
+                btn.title = "待審震動通知：已開啟";
+                // 開啟時輕微震動一下作為回饋
+                if ('vibrate' in navigator) navigator.vibrate(60);
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-bell-slash text-stone-500"></i>';
+                btn.title = "待審震動通知：已靜音";
+            }
         }
 
         function toggleAdminMenu() {
