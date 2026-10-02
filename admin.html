@@ -104,36 +104,28 @@
         </div>
     </main>
 
-    <!-- 退回原因快捷選單 Modal -->
+    <!-- 退回原因快捷選單 Modal (動態依關卡載入) -->
     <div id="reject-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="military-card p-5 max-w-sm w-full space-y-4 border-2 border-red-900/60 shadow-2xl">
             <div class="flex items-center justify-between border-b border-[#3b3227] pb-2">
-                <span class="font-black text-red-400 text-sm flex items-center">
-                    <i class="fa-solid fa-triangle-exclamation mr-2"></i>選擇退回原因
-                </span>
-                <button onclick="closeRejectModal()" class="text-stone-500 hover:text-stone-300 text-sm">
+                <div>
+                    <span class="font-black text-red-400 text-sm flex items-center">
+                        <i class="fa-solid fa-triangle-exclamation mr-1.5"></i>選擇退回原因
+                    </span>
+                    <!-- 新增：顯示當前審核之關卡，避免關主錯亂 -->
+                    <span id="reject-target-task" class="text-[11px] text-amber-300 font-mono font-bold block mt-0.5 truncate max-w-[240px]">目標任務：載入中...</span>
+                </div>
+                <button onclick="closeRejectModal()" class="text-stone-500 hover:text-stone-300 text-sm p-1">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
             
-            <p class="text-xs text-stone-400">請選擇回報給隊伍的退回說明，或手動輸入理由：</p>
+            <p class="text-xs text-stone-400">請點選專屬退回原因，或於下方輸入自訂說明：</p>
             
-            <div class="grid grid-cols-2 gap-2 text-xs font-bold" id="reject-quick-tags">
-                <button onclick="selectRejectReason('隊員動作不符 / 未入鏡')" class="p-2.5 bg-[#25201d] hover:bg-red-950/60 border border-[#443c33] hover:border-red-700 text-stone-300 rounded text-left">
-                    🙅 動作不符/未入鏡
-                </button>
-                <button onclick="selectRejectReason('照片模糊 / 角度不正確')" class="p-2.5 bg-[#25201d] hover:bg-red-950/60 border border-[#443c33] hover:border-red-700 text-stone-300 rounded text-left">
-                    📷 照片模糊/角度不符
-                </button>
-                <button onclick="selectRejectReason('非指定地點或構件')" class="p-2.5 bg-[#25201d] hover:bg-red-950/60 border border-[#443c33] hover:border-red-700 text-stone-300 rounded text-left">
-                    📍 非指定構件地點
-                </button>
-                <button onclick="selectRejectReason('現場接唱歌詞有誤 / 未完成')" class="p-2.5 bg-[#25201d] hover:bg-red-950/60 border border-[#443c33] hover:border-red-700 text-stone-300 rounded text-left">
-                    🎤 接唱未完成/詞有誤
-                </button>
-            </div>
+            <!-- 動態容器：清空原先寫死的 4 個按鈕，由 JS 依關卡注入 -->
+            <div class="flex flex-col gap-1.5 text-xs font-bold max-h-[220px] overflow-y-auto pr-1" id="reject-quick-tags"></div>
             
-            <input type="text" id="custom-reject-reason" placeholder="或自行輸入自訂原因..." class="w-full bg-[#12100e] border border-[#443c33] rounded px-3 py-2 text-xs text-stone-200 placeholder:text-stone-600 outline-none focus:border-red-500">
+            <input type="text" id="custom-reject-reason" placeholder="點選上方標籤或自行輸入原因..." class="w-full bg-[#12100e] border border-[#443c33] rounded px-3 py-2 text-xs text-stone-200 placeholder:text-stone-600 outline-none focus:border-red-500">
             
             <div class="grid grid-cols-2 gap-2 pt-1">
                 <button onclick="closeRejectModal()" class="py-2.5 bg-[#25201d] border border-[#443c33] text-stone-400 rounded text-xs font-bold">
@@ -600,11 +592,188 @@
             }
         }
 
-        // 10. 退回原因 Modal 操控
+        // 10. 關卡專屬退回原因庫與動態 Modal 操控
+        const LEVEL_REJECT_PRESETS = {
+            // 第一關：防砲陣地
+            L1_EXIT1: [
+                "請觀察地圖，確認鄰近甬道1號出口",
+                "請拍攝完整的出入口構件",
+                "照片模糊或過暗，請重新拍攝"
+            ],
+            L1_VENT: [
+                "請確認是否為通氣口豎井",
+                "需尋找有凸起玻璃罩且可俯瞰風扇的位置",
+                "照片角度不正確，無法辨識通風構造"
+            ],
+            L1_EXIT4: [
+                "請確認是否位於院落中的4號出口",
+                "請確認拍攝完整的構造物",
+                "照片未對焦，請重新拍攝"
+            ],
+            L1_GUN: [
+                "此處非高射砲砲座遺跡",
+                "請仔細觀察4號出口前方的地板痕跡",
+                "拍照範圍過窄，請拍攝完整地面特徵"
+            ],
+            L1_DEFAULT: [
+                "未到達指定防空構件現場",
+                "照片模糊或構件不完整，請重新拍攝",
+                "非指定的防砲陣地構造物"
+            ],
+
+            // 第二關：眷舍空間（拍照取證）
+            L2: [
+                "特級眷舍特徵不符或未拍到關鍵特徵",
+                "防洪樓：隊員需站在閣樓內並高舉雙手觸頂",
+                "一線天：隊員需入鏡並雙手觸碰兩側牆壁",
+                "鐵窗：隊員需以手做出與鐵窗花紋相似之形狀",
+                "小隊全體隊員未完整入鏡",
+                "照片模糊或反光嚴重，請重新取證"
+            ],
+
+            // 第三關：村長的家
+            L3: [
+                "地標辨認失敗，非村長家正面建築門面",
+                "請站在村長家門前重新拍攝清晰照片",
+                "照片模糊或未對焦門面"
+            ],
+
+            // 第四關：榕樹廣場（現場實體動作挑戰）
+            L4_ROPE: [
+                "跳橡皮筋挑戰未達 5 下，請重新挑戰",
+                "尚未看到隊員完成跳繩動作"
+            ],
+            L4_STUDENT: [
+                "編繩任務未完成或字謎未解出",
+                "尚未向中學生出示字謎答案"
+            ],
+            L4_GRANDMA: [
+                "尚未主動與老奶奶攀談互動",
+                "未聽取完奶奶的歷史解說"
+            ],
+            L4_DEFAULT: [
+                "尚未確認到現場挑戰動作，請確實完成後再回報",
+                "隊員未全體參與互動挑戰"
+            ],
+
+            // 第五關：群星之夜（現場實體接唱）
+            L5: [
+                "歌詞接唱有誤（歌詞字數或字詞不符）",
+                "隊員接唱聲音過小，請開口大聲唱出",
+                "接唱未完成，請找關主再次挑戰",
+                "尚未在關主面前完成開口接唱"
+            ],
+
+            // 第六關：時光膠囊（天使報到 / 心得）
+            L6_ANGEL: [
+                "尚未找到穿白色 T-shirt 的關主小天使",
+                "請全隊抵達小天使面前後再回報",
+                "認錯關主，請確認背後是否有 NTPC 字樣"
+            ],
+            L6_NOTE: [
+                "心得字數過少，請寫下這首歌給你的真實感受",
+                "內容敷衍未扣合歌曲，請認真聆聽後重寫",
+                "請分享音樂帶給你的回憶或情緒"
+            ],
+
+            // 第七關：市集攤位（二選一挑戰）
+            L7: [
+                "尚未完成沙包大戰遊戲挑戰",
+                "尚未完成復古彈珠台遊戲挑戰",
+                "未達過關標準，請再次向攤位關主挑戰",
+                "非市集指定之合作挑戰攤位"
+            ],
+
+            // 通用備援
+            DEFAULT: [
+                "照片模糊 / 角度不正確",
+                "隊員動作不符 / 未依指示入鏡",
+                "非指定任務地點或未完成任務",
+                "未達通關標準，請重新確認後送出"
+            ]
+        };
+
+        // 依據任務 levelId 判定該顯示哪一組退回標籤
+        function getPresetsByLevelId(item) {
+            const lvl = String(item.levelId || '').toUpperCase();
+            
+            // L1 細分構件
+            if (lvl.includes('1號出口') || lvl.includes('一號出口')) return LEVEL_REJECT_PRESETS.L1_EXIT1;
+            if (lvl.includes('豎井') || lvl.includes('通氣')) return LEVEL_REJECT_PRESETS.L1_VENT;
+            if (lvl.includes('4號出口') || lvl.includes('四號出口') || lvl.includes('4號出入口')) return LEVEL_REJECT_PRESETS.L1_EXIT4;
+            if (lvl.includes('砲台') || lvl.includes('5號砲台') || lvl.includes('砲座')) return LEVEL_REJECT_PRESETS.L1_GUN;
+            if (lvl.includes('L1') || lvl.includes('防砲') || lvl.includes('任務一')) return LEVEL_REJECT_PRESETS.L1_DEFAULT;
+
+            // L2 眷舍
+            if (lvl.includes('L2') || lvl.includes('眷舍') || lvl.includes('任務二')) return LEVEL_REJECT_PRESETS.L2;
+
+            // L3 村長
+            if (lvl.includes('L3') || lvl.includes('村長') || lvl.includes('任務三')) return LEVEL_REJECT_PRESETS.L3;
+
+            // L4 榕樹廣場細分
+            if (lvl.includes('兒童') || lvl.includes('跳繩')) return LEVEL_REJECT_PRESETS.L4_ROPE;
+            if (lvl.includes('中學生') || lvl.includes('編繩') || lvl.includes('字謎')) return LEVEL_REJECT_PRESETS.L4_STUDENT;
+            if (lvl.includes('奶奶') || lvl.includes('老奶奶')) return LEVEL_REJECT_PRESETS.L4_GRANDMA;
+            if (lvl.includes('L4') || lvl.includes('榕樹')) return LEVEL_REJECT_PRESETS.L4_DEFAULT;
+
+            // L5 群星接唱
+            if (lvl.includes('L5') || lvl.includes('群星') || Boolean(item.singer)) return LEVEL_REJECT_PRESETS.L5;
+
+            // L6 時光膠囊
+            if (lvl.includes('心得') || Boolean(item.note)) return LEVEL_REJECT_PRESETS.L6_NOTE;
+            if (lvl.includes('天使') || lvl.includes('報到')) return LEVEL_REJECT_PRESETS.L6_ANGEL;
+
+            // L7 市集
+            if (lvl.includes('L7') || lvl.includes('市集')) return LEVEL_REJECT_PRESETS.L7;
+
+            return LEVEL_REJECT_PRESETS.DEFAULT;
+        }
+
+        // 開啟 Modal 時，動態載入該關專屬理由
         function openRejectModal(docId) {
             pendingRejectDocId = docId;
-            document.getElementById('custom-reject-reason').value = '';
+            const target = currentSubmissions.find(s => s.id === docId);
+            
+            const taskLabel = document.getElementById('reject-target-task');
+            const customInput = document.getElementById('custom-reject-reason');
+            const container = document.getElementById('reject-quick-tags');
+            
+            customInput.value = '';
+
+            if (target) {
+                taskLabel.textContent = `隊伍：${target.teamName || '未知'} ｜ 任務：${target.levelId || '未指定'}`;
+                const presets = getPresetsByLevelId(target);
+
+                // 動態生成關卡專屬按鈕
+                container.innerHTML = presets.map((reason, idx) => `
+                    <button type="button" onclick="selectRejectReason('${escapeHtml(reason)}', this)" class="p-2.5 bg-[#25201d] hover:bg-red-950/60 border border-[#443c33] hover:border-red-700 text-stone-300 rounded text-left transition-all active:scale-98 flex items-start space-x-2">
+                        <span class="text-red-400 font-mono">#${idx + 1}</span>
+                        <span class="flex-1">${escapeHtml(reason)}</span>
+                    </button>
+                `).join('');
+            } else {
+                taskLabel.textContent = '目標任務：未知項目';
+                container.innerHTML = '';
+            }
+
             document.getElementById('reject-modal').classList.remove('hidden');
+        }
+
+        function closeRejectModal() {
+            pendingRejectDocId = null;
+            document.getElementById('reject-modal').classList.add('hidden');
+        }
+
+        function selectRejectReason(reason, btnEl) {
+            document.getElementById('custom-reject-reason').value = reason;
+            
+            // 視覺反饋：點選按鈕高亮
+            document.querySelectorAll('#reject-quick-tags button').forEach(b => {
+                b.classList.remove('border-red-500', 'bg-red-950/50');
+            });
+            if (btnEl) {
+                btnEl.classList.add('border-red-500', 'bg-red-950/50');
+            }
         }
 
         function closeRejectModal() {
