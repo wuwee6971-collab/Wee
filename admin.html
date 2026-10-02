@@ -279,6 +279,7 @@
         let unsubscribe = null;
         let pendingRejectDocId = null;
         let audioUnlocked = false;
+        let adminPollInterval = null; // 新增：後台 2 秒主動輪詢計時器
 
         // 3. Web Audio 音效與手勢解鎖 (符合 Autoplay Policy)
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -312,15 +313,59 @@
         }
 
         // 4. 即時監聽與狀態分發
+        // 核心主動輪詢比對函式（每 2 秒主動向 Firestore 抓取最新資料）
+        async function pollFreshSubmissions() {
+            try {
+                const snapshot = await db.collection("submissions")
+                    .orderBy("createdAt", "desc")
+                    .limit(queryLimit)
+                    .get();
+
+                const list = [];
+                snapshot.forEach(doc => {
+                    list.push({ id: doc.id, ...doc.data() });
+                });
+
+                // 比對資料是否有變更（長度不同、ID不同、或狀態有變）
+                const hasChanged = list.length !== currentSubmissions.length ||
+                    list.some((item, i) => {
+                        const cur = currentSubmissions[i];
+                        return !cur || cur.id !== item.id || cur.status !== item.status;
+                    });
+
+                if (hasChanged) {
+                    currentSubmissions = list;
+                    const pendingTotal = currentSubmissions.filter(s => s.status === 'pending').length;
+                    
+                    // 若有新進待審核任務，播放提示音
+                    if (pendingTotal > previousPendingCount && previousPendingCount !== 0) {
+                        playChime();
+                    }
+                    previousPendingCount = pendingTotal;
+
+                    updateRoomBadges();
+                    renderList();
+                }
+            } catch (err) {
+                console.warn("主動抓取任務失敗，稍後重試...", err);
+            }
+        }
+
         function startListening() {
+            // 清理舊的監聽與計時器
             if (unsubscribe) {
                 unsubscribe();
                 unsubscribe = null;
+            }
+            if (adminPollInterval) {
+                clearInterval(adminPollInterval);
+                adminPollInterval = null;
             }
             
             const conn = document.getElementById('conn-indicator');
             if (conn) conn.className = "w-2 h-2 rounded-full bg-amber-500";
 
+            // 軌道 1：原本的 WebSocket 被動推播（連線正常時 0.3 秒即時更新）
             unsubscribe = db.collection("submissions")
                 .orderBy("createdAt", "desc")
                 .limit(queryLimit)
@@ -332,7 +377,6 @@
                     });
                     currentSubmissions = list;
                     
-                    // 計算待審任務數量並判斷新通報提示音
                     const pendingTotal = currentSubmissions.filter(s => s.status === 'pending').length;
                     if (pendingTotal > previousPendingCount && previousPendingCount !== 0) {
                         playChime();
@@ -342,13 +386,12 @@
                     updateRoomBadges();
                     renderList();
                 }, (error) => {
-                    console.error("Firestore 同步中斷:", error);
+                    console.error("Firestore 同步受阻，切由輪詢接管:", error);
                     if (conn) conn.className = "w-2 h-2 rounded-full bg-red-500";
-                    document.getElementById('submissions-list').innerHTML = `
-                        <div class="tactical-border bg-red-950/20 border-red-900/60 p-4 text-center text-red-400 text-xs font-mono">
-                            <i class="fa-solid fa-tower-broadcast mr-1 text-red-500"></i> 通訊鏈路受阻：${escapeHtml(error.message)}
-                        </div>`;
                 });
+
+            // 軌道 2：主動輪詢（每 2000ms 強制作一次 HTTP GET，確保 2 秒內必定收到）
+            adminPollInterval = setInterval(pollFreshSubmissions, 2000);
         }
 
         function loadMoreSubmissions() {
@@ -931,15 +974,21 @@
         // 11. 核准或重啟狀態切換
         async function updateStatus(docId, newStatus) {
             try {
-                // 立即在記憶體中變更，UI 平順過渡
                 const target = currentSubmissions.find(s => s.id === docId);
                 if (target) target.status = newStatus;
                 renderList();
-
-                await db.collection("submissions").doc(docId).update({
+        
+                const updateData = {
                     status: newStatus,
                     reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                };
+        
+                // 如果審核通過，把肥大的 base64 拔掉，大幅減輕推播給玩家手機的資料量
+                if (newStatus === 'approved') {
+                    updateData.imageBase64 = firebase.firestore.FieldValue.delete();
+                }
+        
+                await db.collection("submissions").doc(docId).update(updateData);
             } catch (err) {
                 alert("狀態變更失敗：" + err.message);
                 renderList();
@@ -1045,12 +1094,29 @@
         }
 
         // 生命週期掛載
+        // 請求螢幕常亮（防止關主手機自動鎖定關螢幕）
+        async function enableScreenWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    await navigator.wakeLock.request('screen');
+                }
+            } catch (err) {
+                console.log("WakeLock not supported", err);
+            }
+        }
+
+        // 生命週期掛載
         window.addEventListener('load', () => {
             startListening();
+            enableScreenWakeLock();
         });
+
+        // 關主解鎖手機或切換回本分頁時，0 秒立即發起一次強制抓取
         document.addEventListener('visibilitychange', () => {
-            if (!document.hidden && (!unsubscribe || currentSubmissions.length === 0)) {
-                startListening();
+            if (!document.hidden) {
+                enableScreenWakeLock();
+                pollFreshSubmissions(); // 立刻強制抓取，不需等 2 秒
+                startListening();        // 重建可能被凍結的長連接
             }
         });
     </script>
