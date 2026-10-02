@@ -48,8 +48,16 @@
 
     <!-- 主內容區 -->
     <main class="w-full max-w-lg p-4 space-y-4">
+        <!-- 搜尋列 -->
+        <div class="relative w-full">
+            <input type="text" id="search-team-input" oninput="handleSearch(this.value)" placeholder="🔍 搜尋隊伍名稱或隊員姓名..." class="w-full bg-[#1c1917] border border-[#443c33] rounded px-3 py-2 text-xs text-[#e5d5b5] placeholder:text-stone-500 font-mono outline-none focus:border-amber-500 shadow-inner">
+            <button onclick="clearSearch()" id="btn-clear-search" class="hidden absolute right-2.5 top-2 text-stone-500 hover:text-stone-300 text-xs">
+                <i class="fa-solid fa-circle-xmark"></i>
+            </button>
+        </div>
+
         <!-- 關卡房間分流選單 -->
-        <div class="space-y-2 mb-3">
+        <div class="space-y-2 mb-2" id="room-filter-container">
             <div class="text-[11px] text-stone-400 font-bold flex items-center justify-between">
                 <span><i class="fa-solid fa-door-open text-[#a1824a] mr-1"></i>當前審核房間：</span>
                 <span id="current-room-label" class="text-amber-400 font-mono">全部關卡</span>
@@ -67,13 +75,16 @@
             </div>
         </div>
 
-        <!-- 分籤切換 -->
-        <div class="grid grid-cols-2 gap-2 text-xs font-bold font-mono mt-4">
-            <button id="tab-pending" onclick="switchTab('pending')" class="py-2.5 border-b-2 border-amber-500 text-amber-400 bg-[#1c1917]">
-                待審核任務
+        <!-- 三大分籤切換 -->
+        <div class="grid grid-cols-3 gap-1.5 text-xs font-bold font-mono border-b border-[#3b3227] pb-1">
+            <button id="tab-pending" onclick="switchTab('pending')" class="py-2.5 border-b-2 border-amber-500 text-amber-400 bg-[#1c1917] rounded-t">
+                待審任務
             </button>
             <button id="tab-resolved" onclick="switchTab('resolved')" class="py-2.5 border-b-2 border-transparent text-stone-400 hover:text-stone-200">
-                審核紀錄 (近50筆)
+                審核紀錄
+            </button>
+            <button id="tab-claims" onclick="switchTab('claims')" class="py-2.5 border-b-2 border-transparent text-emerald-400 hover:text-emerald-300">
+                <i class="fa-solid fa-award mr-1"></i>進度與核銷
             </button>
         </div>
 
@@ -84,7 +95,56 @@
                 正在連線至前線基地資料庫...
             </div>
         </div>
+
+        <!-- 突破筆數限制加載按鈕 -->
+        <div id="load-more-container" class="hidden text-center pt-2">
+            <button onclick="loadMoreSubmissions()" class="w-full py-2.5 bg-[#241f1c] hover:bg-[#2e2723] text-stone-300 border border-[#443c33] rounded text-xs font-mono font-bold tracking-wider active:scale-98 transition-all">
+                <i class="fa-solid fa-angles-down mr-1.5 text-amber-400"></i>載入更多歷史紀錄 (+50 筆)
+            </button>
+        </div>
     </main>
+
+    <!-- 退回原因快捷選單 Modal -->
+    <div id="reject-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="military-card p-5 max-w-sm w-full space-y-4 border-2 border-red-900/60 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-[#3b3227] pb-2">
+                <span class="font-black text-red-400 text-sm flex items-center">
+                    <i class="fa-solid fa-triangle-exclamation mr-2"></i>選擇退回原因
+                </span>
+                <button onclick="closeRejectModal()" class="text-stone-500 hover:text-stone-300 text-sm">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <p class="text-xs text-stone-400">請選擇回報給隊伍的退回說明，或手動輸入理由：</p>
+            
+            <div class="grid grid-cols-2 gap-2 text-xs font-bold" id="reject-quick-tags">
+                <button onclick="selectRejectReason('隊員動作不符 / 未入鏡')" class="p-2.5 bg-[#25201d] hover:bg-red-950/60 border border-[#443c33] hover:border-red-700 text-stone-300 rounded text-left">
+                    🙅 動作不符/未入鏡
+                </button>
+                <button onclick="selectRejectReason('照片模糊 / 角度不正確')" class="p-2.5 bg-[#25201d] hover:bg-red-950/60 border border-[#443c33] hover:border-red-700 text-stone-300 rounded text-left">
+                    📷 照片模糊/角度不符
+                </button>
+                <button onclick="selectRejectReason('非指定地點或構件')" class="p-2.5 bg-[#25201d] hover:bg-red-950/60 border border-[#443c33] hover:border-red-700 text-stone-300 rounded text-left">
+                    📍 非指定構件地點
+                </button>
+                <button onclick="selectRejectReason('現場接唱歌詞有誤 / 未完成')" class="p-2.5 bg-[#25201d] hover:bg-red-950/60 border border-[#443c33] hover:border-red-700 text-stone-300 rounded text-left">
+                    🎤 接唱未完成/詞有誤
+                </button>
+            </div>
+            
+            <input type="text" id="custom-reject-reason" placeholder="或自行輸入自訂原因..." class="w-full bg-[#12100e] border border-[#443c33] rounded px-3 py-2 text-xs text-stone-200 placeholder:text-stone-600 outline-none focus:border-red-500">
+            
+            <div class="grid grid-cols-2 gap-2 pt-1">
+                <button onclick="closeRejectModal()" class="py-2.5 bg-[#25201d] border border-[#443c33] text-stone-400 rounded text-xs font-bold">
+                    取消
+                </button>
+                <button onclick="confirmReject()" class="py-2.5 btn-reject rounded text-xs font-black tracking-wider">
+                    確定退回
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- 圖片放大燈箱 Modal -->
     <div id="lightbox-modal" class="fixed inset-0 z-50 bg-black/90 hidden flex flex-col items-center justify-center p-4" onclick="closeLightbox()">
@@ -110,10 +170,13 @@
         // 2. 全域狀態變數
         let currentTab = 'pending';
         let selectedRoom = 'ALL';
+        let searchQuery = '';
+        let queryLimit = 50;
         let currentSubmissions = [];
         let previousPendingCount = 0;
         let isAudioEnabled = true;
         let unsubscribe = null;
+        let pendingRejectDocId = null;
 
         // 3. 提示音效 Web Audio
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -136,7 +199,7 @@
             }
         }
 
-        // 4. 即時監聽 Firestore
+        // 4. 即時監聽 Firestore（支援動態筆數）
         function startListening() {
             if (unsubscribe) {
                 unsubscribe();
@@ -145,7 +208,7 @@
             
             unsubscribe = db.collection("submissions")
                 .orderBy("createdAt", "desc")
-                .limit(50)
+                .limit(queryLimit)
                 .onSnapshot((snapshot) => {
                     const list = [];
                     snapshot.forEach(doc => {
@@ -154,7 +217,6 @@
                     currentSubmissions = list;
                     
                     const pendingList = currentSubmissions.filter(s => s.status === 'pending');
-                    
                     if (pendingList.length > previousPendingCount) {
                         try { playChime(); } catch(err) {}
                     }
@@ -170,22 +232,57 @@
                 });
         }
 
-        // 5. 分籤與房間切換
-        function switchTab(tab) {
-            currentTab = tab;
-            const tabP = document.getElementById('tab-pending');
-            const tabR = document.getElementById('tab-resolved');
-            if (tab === 'pending') {
-                tabP.className = "py-2.5 border-b-2 border-amber-500 text-amber-400 bg-[#1c1917]";
-                tabR.className = "py-2.5 border-b-2 border-transparent text-stone-400 hover:text-stone-200";
-            } else {
-                tabR.className = "py-2.5 border-b-2 border-amber-500 text-amber-400 bg-[#1c1917]";
-                tabP.className = "py-2.5 border-b-2 border-transparent text-stone-400 hover:text-stone-200";
+        function loadMoreSubmissions() {
+            queryLimit += 50;
+            startListening();
+        }
+
+        // 5. 搜尋功能
+        function handleSearch(val) {
+            searchQuery = val.trim().toLowerCase();
+            const clearBtn = document.getElementById('btn-clear-search');
+            if (clearBtn) {
+                if (searchQuery) clearBtn.classList.remove('hidden');
+                else clearBtn.classList.add('hidden');
             }
             renderList();
         }
 
-        // 5. 房間分流切換
+        function clearSearch() {
+            const input = document.getElementById('search-team-input');
+            if (input) input.value = '';
+            searchQuery = '';
+            document.getElementById('btn-clear-search').classList.add('hidden');
+            renderList();
+        }
+
+        // 6. 分籤與房間分流切換
+        function switchTab(tab) {
+            currentTab = tab;
+            const tabP = document.getElementById('tab-pending');
+            const tabR = document.getElementById('tab-resolved');
+            const tabC = document.getElementById('tab-claims');
+            const roomBox = document.getElementById('room-filter-container');
+            const loadMoreBox = document.getElementById('load-more-container');
+
+            [tabP, tabR, tabC].forEach(t => t.className = "py-2.5 border-b-2 border-transparent text-stone-400 hover:text-stone-200");
+
+            if (tab === 'pending') {
+                tabP.className = "py-2.5 border-b-2 border-amber-500 text-amber-400 bg-[#1c1917] rounded-t";
+                roomBox.classList.remove('hidden');
+                loadMoreBox.classList.add('hidden');
+            } else if (tab === 'resolved') {
+                tabR.className = "py-2.5 border-b-2 border-amber-500 text-amber-400 bg-[#1c1917] rounded-t";
+                roomBox.classList.remove('hidden');
+                loadMoreBox.classList.remove('hidden');
+            } else {
+                tabC.className = "py-2.5 border-b-2 border-emerald-500 text-emerald-400 bg-[#1c1917] rounded-t";
+                roomBox.classList.add('hidden'); // 核銷看板不需按房間過濾
+                loadMoreBox.classList.add('hidden');
+            }
+            renderList();
+        }
+
         function setRoom(roomId) {
             selectedRoom = roomId;
             ['ALL', '1', '2', '3', '4', '5', '6-angel', '6-note', '7'].forEach(id => {
@@ -213,17 +310,23 @@
             renderList();
         }
 
-        // 6. 核心列表渲染函式
+        // 7. 核心渲染函式
         function renderList() {
             const container = document.getElementById('submissions-list');
             if (!container) return;
 
-            // A. 分籤過濾 (待審核 vs 已處理)
+            // 專屬分支：各隊通關進度總覽與紀念品核銷專區
+            if (currentTab === 'claims') {
+                renderClaimsDashboard(container);
+                return;
+            }
+
+            // A. 分籤過濾
             let filtered = currentSubmissions.filter(item => {
                 return currentTab === 'pending' ? item.status === 'pending' : item.status !== 'pending';
             });
 
-            // 輔助函式：判斷是否符合所選房間
+            // B. 房間過濾
             const matchRoom = (item) => {
                 if (selectedRoom === 'ALL') return true;
                 const lvl = String(item.levelId || '').toUpperCase();
@@ -237,25 +340,31 @@
                 if (selectedRoom === '7') return lvl.includes('七') || lvl.includes('7') || lvl.includes('L7') || lvl.includes('市集');
                 return true;
             };
-
-            // B. 房間過濾
             filtered = filtered.filter(matchRoom);
 
-            // C. 更新右上角待審核數量
+            // C. 關鍵字搜尋過濾（隊名、隊員名單）
+            if (searchQuery) {
+                filtered = filtered.filter(item => {
+                    const tName = String(item.teamName || '').toLowerCase();
+                    const tMembers = String(item.teamMembers || '').toLowerCase();
+                    return tName.includes(searchQuery) || tMembers.includes(searchQuery);
+                });
+            }
+
+            // 更新待審核計數器
             const pendingInRoom = currentSubmissions.filter(s => s.status === 'pending' && matchRoom(s));
             document.getElementById('pending-counter').textContent = pendingInRoom.length;
 
-            // D. 無資料畫面
             if (filtered.length === 0) {
                 container.innerHTML = `
                     <div class="military-card p-10 text-center text-stone-500">
                         <i class="fa-solid fa-inbox text-4xl mb-3 opacity-40"></i>
-                        <p class="text-sm font-bold">${currentTab === 'pending' ? '此關卡房間目前無待審核任務' : '此關卡無歷史審核紀錄'}</p>
+                        <p class="text-sm font-bold">${searchQuery ? '查無符合搜尋條件之隊伍' : (currentTab === 'pending' ? '目前無待審核任務' : '目前無審核紀錄')}</p>
                     </div>`;
                 return;
             }
 
-            // E. 渲染卡片
+            // 渲染審核卡片
             container.innerHTML = filtered.map(item => {
                 const timeStr = item.createdAt ? new Date(item.createdAt.toDate ? item.createdAt.toDate() : item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '--:--:--';
                 const imgSrc = item.photoUrl || item.imageBase64 || '';
@@ -279,26 +388,20 @@
                     const isSongNote = Boolean(item.note);
 
                     let detailHtml = '';
-
                     if (isL5) {
-                        // L5 專屬：僅顯示歌手與驗收提示（不顯示答案小抄）
                         detailHtml = `
                         <div class="w-full mt-3 p-3 bg-[#12100e] border border-amber-600/50 rounded-md text-left text-xs shadow-inner">
                             <div class="text-[#a1824a] text-xs font-bold flex items-center justify-between border-b border-[#3b3227] pb-1.5">
                                 <span><i class="fa-solid fa-microphone-lines text-amber-400 mr-1.5"></i>現場實體接唱驗收</span>
                                 <span class="text-amber-300 font-bold">${escapeHtml(item.singer || '歌手')}</span>
                             </div>
-                            <div class="text-stone-400 text-xs mt-2 leading-relaxed">
-                                隊員已完成現場接唱，確認無誤即可點擊「核准通過」。
-                            </div>
+                            <div class="text-stone-400 text-xs mt-2 leading-relaxed">隊員已完成現場開口唱，確認後即可點擊「核准通過」。</div>
                         </div>`;
                     } else if (isSongNote) {
-                        // L6 時代金曲心得
                         detailHtml = `
                         <div class="w-full mt-3 p-3 bg-[#12100e] border border-amber-600/60 rounded-md text-[#dcd4c3] text-sm text-left shadow-inner">
                             <div class="text-[#a1824a] text-[10px] mb-1 font-bold flex items-center">
-                                <i class="fa-solid fa-pen-fancy text-amber-400 mr-1.5"></i>
-                                <span>玩家音樂回憶與心得：</span>
+                                <i class="fa-solid fa-pen-fancy text-amber-400 mr-1.5"></i><span>玩家音樂回憶與心得：</span>
                             </div>
                             <div class="whitespace-pre-line leading-relaxed text-amber-100 font-serif">${escapeHtml(item.note)}</div>
                         </div>`;
@@ -309,31 +412,29 @@
                         <div class="w-10 h-10 rounded-full bg-[#1c1917] border border-[#443c33] flex items-center justify-center mb-2 shadow-inner">
                             <i class="fa-solid ${isL5 ? 'fa-microphone text-emerald-400' : (isSongNote ? 'fa-record-vinyl text-amber-400' : 'fa-clipboard-check text-[#a1824a]')} text-xl"></i>
                         </div>
-                        <span class="text-[#e5d5b5] font-black tracking-widest text-sm">
-                            ${isL5 ? '現場實體接唱申請' : (isSongNote ? '時代金曲心得回傳' : '現場任務通關回報')}
-                        </span>
+                        <span class="text-[#e5d5b5] font-black tracking-widest text-sm">${isL5 ? '現場實體接唱申請' : (isSongNote ? '時代金曲心得回傳' : '現場任務通關回報')}</span>
                         ${detailHtml}
                     </div>`;
                 }
 
-                    mediaContent = `
-                    <div class="w-full p-5 bg-[#2b2520] rounded border border-[#332c25] flex flex-col items-center justify-center text-center">
-                        <div class="w-10 h-10 rounded-full bg-[#1c1917] border border-[#443c33] flex items-center justify-center mb-2 shadow-inner">
-                            <i class="fa-solid ${isSongNote ? 'fa-record-vinyl text-amber-400' : 'fa-clipboard-check text-[#a1824a]'} text-xl"></i>
-                        </div>
-                        <span class="text-[#e5d5b5] font-black tracking-widest text-sm">${isSongNote ? '時代金曲心得回傳' : (isL5Answer ? '群星接唱回覆' : '現場任務通關回報')}</span>
-                        ${textDetailHtml}
-                    </div>`;
-                }
+                // 駁回理由顯示
+                const rejectReasonHtml = item.rejectReason ? `
+                    <div class="text-xs bg-red-950/40 border border-red-900/60 p-2 rounded text-red-300 flex items-start space-x-1.5">
+                        <i class="fa-solid fa-circle-exclamation text-red-400 mt-0.5"></i>
+                        <span>退回理由：<b>${escapeHtml(item.rejectReason)}</b></span>
+                    </div>` : '';
 
                 return `
                 <div class="military-card p-4 space-y-3">
-                    <div class="flex items-center justify-between border-b border-[#332c25] pb-2">
-                        <div class="flex items-center space-x-2">
-                            <i class="fa-solid fa-users text-[#a1824a] text-sm"></i>
-                            <span class="font-black text-[#e5d5b5] text-base">${escapeHtml(item.teamName || '未知隊伍')}</span>
+                    <div class="flex items-start justify-between border-b border-[#332c25] pb-2">
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fa-solid fa-users text-[#a1824a] text-sm"></i>
+                                <span class="font-black text-[#e5d5b5] text-base">${escapeHtml(item.teamName || '未知隊伍')}</span>
+                            </div>
+                            ${item.teamMembers ? `<div class="text-[11px] text-stone-400 mt-0.5 tracking-wide"><i class="fa-solid fa-id-card text-stone-500 mr-1 text-[10px]"></i>隊員：${escapeHtml(item.teamMembers)}</div>` : ''}
                         </div>
-                        <div class="flex items-center space-x-2">
+                        <div class="flex items-center space-x-2 shrink-0">
                             <span class="text-[10px] font-mono text-stone-400">${timeStr}</span>
                             ${badgeHtml}
                         </div>
@@ -344,10 +445,11 @@
                     </div>
 
                     ${mediaContent}
+                    ${rejectReasonHtml}
 
                     ${item.status === 'pending' ? `
                     <div class="grid grid-cols-2 gap-3 pt-1">
-                        <button onclick="updateStatus('${item.id}', 'rejected')" class="py-3 btn-reject font-black text-sm tracking-wider flex items-center justify-center space-x-1 rounded-sm">
+                        <button onclick="openRejectModal('${item.id}')" class="py-3 btn-reject font-black text-sm tracking-wider flex items-center justify-center space-x-1 rounded-sm">
                             <i class="fa-solid fa-xmark"></i><span>退回不准</span>
                         </button>
                         <button onclick="updateStatus('${item.id}', 'approved')" class="py-3 btn-approve font-black text-sm tracking-wider flex items-center justify-center space-x-1 rounded-sm">
@@ -373,120 +475,171 @@
             }).join('');
         }
 
-            // C. 更新右上角待審核數量
-            const pendingInRoom = currentSubmissions.filter(s => {
-                if (s.status !== 'pending') return false;
-                if (selectedRoom === 'ALL') return true;
-                const lvl = String(s.levelId || '').toUpperCase();
-                if (selectedRoom === '1') return lvl.includes('一') || lvl.includes('1') || lvl.includes('L1') || lvl.includes('防砲');
-                if (selectedRoom === '2') return lvl.includes('二') || lvl.includes('2') || lvl.includes('L2') || lvl.includes('眷舍');
-                if (selectedRoom === '3') return lvl.includes('三') || lvl.includes('3') || lvl.includes('L3') || lvl.includes('村長');
-                if (selectedRoom === '4') return lvl.includes('四') || lvl.includes('4') || lvl.includes('L4') || lvl.includes('兒童') || lvl.includes('中學生') || lvl.includes('奶奶');
-                if (selectedRoom === '5') return lvl.includes('五') || lvl.includes('5') || lvl.includes('L5') || lvl.includes('群星');
-                if (selectedRoom === '6') return lvl.includes('六') || lvl.includes('6') || lvl.includes('L6') || lvl.includes('小天使') || lvl.includes('心得') || lvl.includes('時光');
-                if (selectedRoom === '7') return lvl.includes('七') || lvl.includes('7') || lvl.includes('L7') || lvl.includes('市集');
-                return true;
+        // 8. 結案核銷與隊伍進度看板專區渲染
+        function renderClaimsDashboard(container) {
+            // 聚合各隊通關進度
+            const teamMap = {};
+            currentSubmissions.forEach(sub => {
+                const tName = sub.teamName || '未命名隊伍';
+                if (!teamMap[tName]) {
+                    teamMap[tName] = {
+                        name: tName,
+                        members: sub.teamMembers || '',
+                        approvedLevels: new Set(),
+                        giftClaimed: sub.giftClaimed || false,
+                        giftClaimedTime: sub.giftClaimedTime || '',
+                        lastActive: sub.createdAt ? (sub.createdAt.toDate ? sub.createdAt.toDate() : new Date(sub.createdAt)) : null,
+                        lastDocId: sub.id
+                    };
+                }
+                if (sub.teamMembers && !teamMap[tName].members) teamMap[tName].members = sub.teamMembers;
+                if (sub.giftClaimed) {
+                    teamMap[tName].giftClaimed = true;
+                    teamMap[tName].giftClaimedTime = sub.giftClaimedTime;
+                }
+                if (sub.status === 'approved') {
+                    const lvlStr = String(sub.levelId || '');
+                    for (let i = 1; i <= 7; i++) {
+                        if (lvlStr.includes(`L${i}`) || lvlStr.includes(`任務${i}`) || lvlStr.includes(`第${i}`)) {
+                            teamMap[tName].approvedLevels.add(i);
+                        }
+                    }
+                }
             });
-            document.getElementById('pending-counter').textContent = pendingInRoom.length;
 
-            // D. 無資料畫面
-            if (filtered.length === 0) {
+            let teams = Object.values(teamMap);
+            if (searchQuery) {
+                teams = teams.filter(t => t.name.toLowerCase().includes(searchQuery) || t.members.toLowerCase().includes(searchQuery));
+            }
+
+            if (teams.length === 0) {
                 container.innerHTML = `
                     <div class="military-card p-10 text-center text-stone-500">
-                        <i class="fa-solid fa-inbox text-4xl mb-3 opacity-40"></i>
-                        <p class="text-sm font-bold">${currentTab === 'pending' ? '此關卡房間目前無待審核任務' : '此關卡無歷史審核紀錄'}</p>
+                        <i class="fa-solid fa-users-slash text-4xl mb-3 opacity-40"></i>
+                        <p class="text-sm font-bold">目前無任何隊伍進度紀錄</p>
                     </div>`;
                 return;
             }
 
-            // E. 渲染卡片
-            container.innerHTML = filtered.map(item => {
-                const timeStr = item.createdAt ? new Date(item.createdAt.toDate ? item.createdAt.toDate() : item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '--:--:--';
-                const imgSrc = item.photoUrl || item.imageBase64 || '';
-                
-                let badgeHtml = '';
-                if (item.status === 'pending') badgeHtml = `<span class="text-[10px] font-mono px-2 py-0.5 rounded font-black tag-pending">待審核</span>`;
-                else if (item.status === 'approved') badgeHtml = `<span class="text-[10px] font-mono px-2 py-0.5 rounded font-black bg-emerald-950 text-emerald-300 border border-emerald-700">已核准</span>`;
-                else badgeHtml = `<span class="text-[10px] font-mono px-2 py-0.5 rounded font-black bg-red-950 text-red-300 border border-red-700">已退回</span>`;
-
-                // 判斷是圖片驗證還是直接純文字驗證
-                let mediaContent = '';
-                if (imgSrc) {
-                    // 有圖片的渲染邏輯
-                    mediaContent = `
-                    <div class="w-full aspect-[4/3] bg-black/60 rounded border border-[#332c25] overflow-hidden flex items-center justify-center cursor-pointer relative group" onclick="openLightbox('${imgSrc}')">
-                        <img src="${imgSrc}" class="w-full h-full object-cover" loading="lazy">
-                        <div class="absolute bottom-2 right-2 bg-black/70 px-2 py-1 rounded text-[10px] text-white flex items-center space-x-1">
-                            <i class="fa-solid fa-magnifying-glass-plus"></i><span>點擊放大</span>
-                        </div>
-                    </div>`;
-                } else {
-                    // 無圖片 (Direct Verification) 渲染邏輯，若有 extraData (如心得 note) 則一併顯示
-                    const noteHtml = item.note ? `
-                        <div class="w-full mt-3 p-3 bg-[#12100e] border border-[#574c3d] rounded-md text-[#dcd4c3] text-sm text-left shadow-inner">
-                            <div class="text-[#a1824a] text-[10px] mb-1 font-bold"><i class="fa-solid fa-pen-nib mr-1"></i>玩家心得 / 備註：</div>
-                            <div class="whitespace-pre-line leading-relaxed italic">${escapeHtml(item.note)}</div>
-                        </div>` : '';
-
-                    mediaContent = `
-                    <div class="w-full p-6 bg-[#2b2520] rounded border border-[#332c25] flex flex-col items-center justify-center text-center">
-                        <div class="w-12 h-12 rounded-full bg-[#1c1917] border border-[#443c33] flex items-center justify-center mb-3 shadow-inner">
-                            <i class="fa-solid fa-clipboard-check text-2xl text-[#a1824a]"></i>
-                        </div>
-                        <span class="text-[#e5d5b5] font-black tracking-widest text-sm mb-1">現場無照片通關申請</span>
-                        <span class="text-stone-400 text-xs">（已由系統直達傳送）</span>
-                        ${noteHtml}
-                    </div>`;
-                }
+            container.innerHTML = teams.map(t => {
+                const count = t.approvedLevels.size;
+                const isFinished = count >= 7 || t.approvedLevels.has(7);
+                const lastTimeStr = t.lastActive ? t.lastActive.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
 
                 return `
-                <div class="military-card p-4 space-y-3">
-                    <div class="flex items-center justify-between border-b border-[#332c25] pb-2">
-                        <div class="flex items-center space-x-2">
-                            <i class="fa-solid fa-users text-[#a1824a] text-sm"></i>
-                            <span class="font-black text-[#e5d5b5] text-base">${escapeHtml(item.teamName || '未知隊伍')}</span>
+                <div class="military-card p-4 space-y-3 border-l-4 ${isFinished ? 'border-l-emerald-500' : 'border-l-amber-500'}">
+                    <div class="flex items-start justify-between border-b border-[#332c25] pb-2">
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <b class="text-[#e5d5b5] text-base font-black">${escapeHtml(t.name)}</b>
+                                ${isFinished ? '<span class="text-[10px] bg-emerald-900/60 text-emerald-300 border border-emerald-700 px-1.5 py-0.5 rounded font-mono font-bold">已抵達終點</span>' : ''}
+                            </div>
+                            ${t.members ? `<div class="text-xs text-stone-400 mt-0.5"><i class="fa-solid fa-id-card text-stone-500 mr-1"></i>隊員：${escapeHtml(t.members)}</div>` : ''}
                         </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="text-[10px] font-mono text-stone-400">${timeStr}</span>
-                            ${badgeHtml}
+                        <span class="text-[11px] font-mono text-stone-400">最後回報：${lastTimeStr}</span>
+                    </div>
+
+                    <!-- 關卡進度指示條 -->
+                    <div>
+                        <div class="flex justify-between text-[11px] font-mono text-stone-400 mb-1">
+                            <span>解密進度：${count}/7 關</span>
+                            <span class="text-amber-400 font-bold">${Math.round((count/7)*100)}%</span>
+                        </div>
+                        <div class="grid grid-cols-7 gap-1">
+                            ${[1,2,3,4,5,6,7].map(lvl => `
+                                <div class="py-1 text-center text-[10px] font-mono font-bold rounded ${t.approvedLevels.has(lvl) ? 'bg-emerald-800 text-emerald-200 border border-emerald-600' : 'bg-[#292524] text-stone-600 border border-[#443c33]'}">
+                                    L${lvl}
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
 
-                    <div class="text-xs text-stone-400 font-bold">
-                        任務目標：<span class="text-[#e5d5b5]">${escapeHtml(item.levelId || '未指定關卡')}</span>
-                    </div>
-
-                    ${mediaContent}
-
-                    ${item.status === 'pending' ? `
-                    <div class="grid grid-cols-2 gap-3 pt-1">
-                        <button onclick="updateStatus('${item.id}', 'rejected')" class="py-3 btn-reject font-black text-sm tracking-wider flex items-center justify-center space-x-1 rounded-sm">
-                            <i class="fa-solid fa-xmark"></i><span>退回不准</span>
-                        </button>
-                        <button onclick="updateStatus('${item.id}', 'approved')" class="py-3 btn-approve font-black text-sm tracking-wider flex items-center justify-center space-x-1 rounded-sm">
-                            <i class="fa-solid fa-check"></i><span>核准通過</span>
+                    <!-- 紀念品核銷按鈕 -->
+                    <div class="pt-2 border-t border-[#332c25] flex items-center justify-between">
+                        <div class="text-xs font-mono">
+                            ${t.giftClaimed ? `
+                                <span class="text-emerald-400 font-bold flex items-center">
+                                    <i class="fa-solid fa-circle-check mr-1"></i>已領取禮品 (${t.giftClaimedTime || '已核銷'})
+                                </span>` : `
+                                <span class="text-stone-500">未核銷兌獎</span>`}
+                        </div>
+                        <button onclick="toggleGiftClaim('${escapeHtml(t.name)}', ${!t.giftClaimed})" class="px-3 py-1.5 rounded text-xs font-black tracking-wider ${t.giftClaimed ? 'bg-[#292524] text-stone-400 hover:text-stone-200 border border-[#443c33]' : 'bg-emerald-700 hover:bg-emerald-600 text-white shadow-sm'}">
+                            ${t.giftClaimed ? '取消核銷' : '<i class="fa-solid fa-gift mr-1"></i>登記領獎'}
                         </button>
                     </div>
-                    <div class="text-right pt-1">
-                        <button onclick="deleteSubmission('${item.id}', '${imgSrc}')" class="text-xs text-red-400/80 hover:text-red-300 underline">
-                            <i class="fa-solid fa-trash-can mr-1"></i>刪除此單張紀錄
-                        </button>
-                    </div>
-                    ` : `
-                    <div class="flex items-center justify-between pt-1">
-                        <button onclick="deleteSubmission('${item.id}', '${imgSrc}')" class="text-xs text-red-400/80 hover:text-red-300 underline">
-                            <i class="fa-solid fa-trash-can mr-1"></i>刪除此單張紀錄
-                        </button>
-                        <button onclick="updateStatus('${item.id}', 'pending')" class="text-xs text-stone-400 hover:text-amber-400 underline">
-                            重新判定此項
-                        </button>
-                    </div>
-                    `}
                 </div>`;
             }).join('');
         }
 
-        // 7. 操作資料庫
+        // 9. 登記/取消紀念品核銷
+        async function toggleGiftClaim(teamName, newClaimedState) {
+            try {
+                const now = new Date();
+                const timeTag = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+                
+                // 批次更新該隊所有紀錄中的領獎欄位
+                const snapshot = await db.collection("submissions").where("teamName", "==", teamName).get();
+                const batch = db.batch();
+                snapshot.forEach(doc => {
+                    batch.update(doc.ref, {
+                        giftClaimed: newClaimedState,
+                        giftClaimedTime: newClaimedState ? timeTag : null
+                    });
+                });
+                await batch.commit();
+
+                currentSubmissions.forEach(s => {
+                    if (s.teamName === teamName) {
+                        s.giftClaimed = newClaimedState;
+                        s.giftClaimedTime = newClaimedState ? timeTag : null;
+                    }
+                });
+                renderList();
+            } catch (err) {
+                alert("核銷變更失敗：" + err.message);
+            }
+        }
+
+        // 10. 退回原因 Modal 操控
+        function openRejectModal(docId) {
+            pendingRejectDocId = docId;
+            document.getElementById('custom-reject-reason').value = '';
+            document.getElementById('reject-modal').classList.remove('hidden');
+        }
+
+        function closeRejectModal() {
+            pendingRejectDocId = null;
+            document.getElementById('reject-modal').classList.add('hidden');
+        }
+
+        function selectRejectReason(reason) {
+            document.getElementById('custom-reject-reason').value = reason;
+        }
+
+        async function confirmReject() {
+            if (!pendingRejectDocId) return;
+            const customVal = document.getElementById('custom-reject-reason').value.trim();
+            const reason = customVal || "長官回報：未達通關要求，請重新確認後送出！";
+            
+            try {
+                await db.collection("submissions").doc(pendingRejectDocId).update({
+                    status: 'rejected',
+                    rejectReason: reason,
+                    reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                const target = currentSubmissions.find(s => s.id === pendingRejectDocId);
+                if (target) {
+                    target.status = 'rejected';
+                    target.rejectReason = reason;
+                }
+                closeRejectModal();
+                renderList();
+            } catch (err) {
+                alert("退回失敗：" + err.message);
+            }
+        }
+
+        // 11. 更新審核狀態
         async function updateStatus(docId, newStatus) {
             try {
                 await db.collection("submissions").doc(docId).update({
@@ -497,7 +650,7 @@
                 if (target) target.status = newStatus;
                 renderList();
             } catch (err) {
-                alert("【狀態變更失敗】\n" + err.message);
+                alert("狀態變更失敗：" + err.message);
             }
         }
 
@@ -514,7 +667,7 @@
                 currentSubmissions = currentSubmissions.filter(s => s.id !== docId);
                 renderList();
             } catch (err) {
-                alert("【刪除失敗】\n" + err.message);
+                alert("刪除失敗：" + err.message);
             }
         }
 
@@ -538,11 +691,11 @@
                 renderList();
                 alert(`已成功清空共 ${snapshot.size} 筆歷史紀錄！`);
             } catch (err) {
-                alert("【清空失敗】\n" + err.message);
+                alert("清空失敗：" + err.message);
             }
         }
 
-        // 8. 燈箱與輔助功能
+        // 12. 燈箱與輔助功能
         function openLightbox(src) {
             if (!src) return;
             document.getElementById('lightbox-img').src = src;
@@ -562,15 +715,9 @@
             return String(str).replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[s]);
         }
 
-        // 9. 頁面載入與喚醒事件
-        window.addEventListener('load', () => {
-            startListening();
-        });
-
+        window.addEventListener('load', startListening);
         document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) {
-                startListening();
-            }
+            if (!document.hidden) startListening();
         });
     </script>
 </body>
