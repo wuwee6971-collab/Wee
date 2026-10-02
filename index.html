@@ -1378,7 +1378,7 @@
             apiKey: "AIzaSyCxIinbYw3OhJhKksVHsqPaYCv0-fLUR3s",
             authDomain: "weee-57379.firebaseapp.com",
             projectId: "weee-57379",
-            storageBucket: "weee-57379.firebasestorage.app",
+            storageBucket: "weee-57379.appspot.com",
             messagingSenderId: "26784647",
             appId: "1:26784647:web:e3c682e0915fe43ddf5922"
         };
@@ -1825,8 +1825,12 @@
                     ...docData
                 };
                 if (photoUrlStr) {
-                    payload.photoUrl = photoUrlStr;
-                    payload.imageBase64 = photoUrlStr;
+                    // 若為 Base64 備援字串只存 imageBase64，若為網址則存 photoUrl
+                    if (photoUrlStr.startsWith('data:image')) {
+                        payload.imageBase64 = photoUrlStr;
+                    } else {
+                        payload.photoUrl = photoUrlStr;
+                    }
                 }
 
                 db.collection("submissions").add(payload).then(docRef => {
@@ -1870,6 +1874,20 @@
             };
 
             if (file) {
+                const uploadToStorage = (blob) => {
+                    const fileName = `submissions/${Date.now()}_${Math.random().toString(36).substring(2, 7)}.jpg`;
+                    const storageRef = firebase.storage().ref().child(fileName);
+                    const metadata = { contentType: 'image/jpeg' };
+
+                    storageRef.put(blob, metadata)
+                        .then(snapshot => snapshot.ref.getDownloadURL())
+                        .then(downloadURL => sendPayload(downloadURL))
+                        .catch(err => {
+                            console.warn("Storage 上傳失敗，啟用 Base64 降級：", err);
+                            fallbackCompress(file, 640, 0.5, sendPayload);
+                        });
+                };
+
                 if (window.createImageBitmap) {
                     createImageBitmap(file).then(imgBitmap => {
                         const canvas = document.createElement('canvas');
@@ -1884,15 +1902,7 @@
                                 fallbackCompress(file, 640, 0.5, sendPayload);
                                 return;
                             }
-                            const fileName = `submissions/${Date.now()}_${Math.random().toString(36).substring(2,7)}.jpg`;
-                            const storageRef = firebase.storage().ref().child(fileName);
-                            
-                            storageRef.put(blob).then(snapshot => snapshot.ref.getDownloadURL())
-                            .then(downloadURL => {
-                                sendPayload(downloadURL);
-                            }).catch(() => {
-                                fallbackCompress(file, 640, 0.5, sendPayload);
-                            });
+                            uploadToStorage(blob);
                         }, 'image/jpeg', 0.6);
                     }).catch(() => fallbackCompress(file, 640, 0.5, sendPayload));
                 } else {
@@ -1904,36 +1914,23 @@
         }
 
         function fallbackCompress(file, maxWidth, quality, callback) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const scale = Math.min(1, maxWidth / img.width);
-                    canvas.width = Math.round(img.width * scale); 
-                    canvas.height = Math.round(img.height * scale);
-                    const ctx = canvas.getContext('2d'); 
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    callback(canvas.toDataURL('image/jpeg', quality));
-                };
-                img.src = e.target.result;
+            const objectUrl = URL.createObjectURL(file);
+            const img = new Image();
+            img.onload = function() {
+                URL.revokeObjectURL(objectUrl);
+                const canvas = document.createElement('canvas');
+                const scale = Math.min(1, maxWidth / img.width);
+                canvas.width = Math.round(img.width * scale);
+                canvas.height = Math.round(img.height * scale);
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                callback(canvas.toDataURL('image/jpeg', quality));
             };
-            reader.readAsDataURL(file);
-        }
-        function fallbackCompress(file, maxWidth, quality, callback) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const scale = Math.min(1, maxWidth / img.width);
-                    canvas.width = Math.round(img.width * scale); canvas.height = Math.round(img.height * scale);
-                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    callback(canvas.toDataURL('image/jpeg', quality));
-                };
-                img.src = e.target.result;
+            img.onerror = function() {
+                URL.revokeObjectURL(objectUrl);
+                callback(null);
             };
-            reader.readAsDataURL(file);
+            img.src = objectUrl;
         }
 
         function shuffleArray(array) {
