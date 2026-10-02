@@ -722,7 +722,7 @@
                         <img src="images/公園.jpg" class="mb-4 rounded-md shadow-sm" onerror="this.src='https://placehold.co/400x300?text=公園圖'">
                         <img src="images/主視覺1.jpg" class="mb-4 rounded-md shadow-sm" onerror="this.src='https://placehold.co/400x300?text=主視覺圖'">
                         <img src="images/主視覺2.jpg" class="mb-4 rounded-md shadow-sm" onerror="this.src='https://placehold.co/400x300?text=主視覺圖'">
-                        <p class="text-base font-bold text-ink mb-8 font-serif leading-relaxed text-justify">主持人為我們帶來</p>
+                        <p class="text-base font-bold text-ink mb-8 font-serif leading-relaxed text-justify">主持人為我們帶來歌曲</p>
                         
                         <form class="space-y-4" onsubmit="event.preventDefault(); checkL5Arrival();">
                             <input type="text" id="l5-check-password" placeholder="輸入" class="w-full bg-paper border border-ink/20 rounded-md px-4 py-4 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-ink shadow-inner transition-all text-center">
@@ -2512,42 +2512,70 @@
             }
         };
 
+        // ==========================================
+        // LEVEL 5 完整邏輯（已改為送交後台審核 + 修復切換照片延遲）
+        // ==========================================
         window.renderL5 = function(index) {
             GameState.set('l5CurrentQ', index);
             const qData = GAME_DATA.level5.questions[index];
             document.getElementById('l5-q-counter').textContent = `群星挑戰 ${index + 1} / ${GAME_DATA.level5.questions.length}`;
-            document.getElementById('l5-char-img').src = qData.characterImg || '';
+
+            // 修復照片延遲切換：切換時先透明化，圖片載入完成後再顯現
+            const charImg = document.getElementById('l5-char-img');
+            charImg.style.transition = 'opacity 0.25s ease';
+            charImg.style.opacity = '0';
+            charImg.onload = () => { charImg.style.opacity = '1'; };
+            charImg.src = qData.characterImg || '';
+
             document.getElementById('l5-question-text').textContent = qData.q;
             
-            const cont = document.getElementById('l5-options-container'); cont.innerHTML = '';
+            const cont = document.getElementById('l5-options-container'); 
+            cont.innerHTML = '';
+            
             const input = document.createElement('input');
-            input.type = "text"; input.placeholder = "請輸入";
+            input.type = "text"; 
+            input.placeholder = "請輸入歌詞接唱...";
             input.className = "w-full bg-paper border border-ink/20 rounded-md px-4 py-4 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-ink shadow-inner transition-all mb-4 text-center";
             cont.appendChild(input);
             
             const submitBtn = document.createElement('button');
             submitBtn.className = "btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em]";
-            submitBtn.innerHTML = "確認送出 <i class='fa-solid fa-check ml-2'></i>";
+            submitBtn.innerHTML = "確認送出審核 <i class='fa-solid fa-paper-plane ml-2'></i>";
             submitBtn.onclick = () => {
-                if (input.value.trim() !== "") { checkL5Answer(index, input.value.trim()); } 
-                else { playErrorSound(); showAlert("提示", "請輸入答案！", "fa-triangle-exclamation"); }
+                const val = input.value.trim();
+                if (val !== "") { 
+                    checkL5Answer(index, val); 
+                } else { 
+                    playErrorSound(); 
+                    showAlert("提示", "請輸入接唱內容！", "fa-triangle-exclamation"); 
+                }
             };
             cont.appendChild(submitBtn);
         };
 
         function checkL5Answer(index, val) {
+            playBeep();
             const qData = GAME_DATA.level5.questions[index];
-            let isCorrect = qData.a ? (val.includes(qData.a) || qData.a.includes(val)) : true;
-            if (isCorrect) {
-                playSuccessSound();
-                if (index + 1 < GAME_DATA.level5.questions.length) {
-                    showAlert("接唱成功！", "太厲害了，繼續挑戰下一首！", "fa-microphone-lines", "text-emerald-700", () => renderL5(index + 1));
+            const qTitle = `L5-群星接唱第${index + 1}題`;
+
+            // 送交後台人工審核
+            submitDirectVerification(qTitle, { answer: val, questionText: qData.q }, (isApproved) => {
+                if (isApproved) {
+                    playSuccessSound();
+                    if (index + 1 < GAME_DATA.level5.questions.length) {
+                        showAlert("審核通過！", "接唱正確，指揮所已核准！前往下一位歌手。", "fa-microphone-lines", "text-emerald-700", () => {
+                            renderL5(index + 1);
+                        });
+                    } else {
+                        showAlert("群星之夜挑戰成功", "所有歌曲皆已通過長官查驗！", "fa-star", "text-gold-dark", () => {
+                            handleLevelSuccess(5);
+                        });
+                    }
                 } else {
-                    showAlert("群星之夜挑戰成功", "所有歌曲都接唱完成了！你真棒！", "fa-star", "text-gold-dark", () => handleLevelSuccess(5));
+                    playErrorSound();
+                    showAlert("審核未通過", "長官回報：歌詞不相符或未填寫正確，請再次確認後重試！", "fa-circle-xmark", "text-primary");
                 }
-            } else {
-                playErrorSound(); showAlert("接唱失敗", "歌詞好像不太對，請再試試看！", "fa-circle-xmark", "text-primary");
-            }
+            });
         }
 
         // ==========================================
@@ -2611,9 +2639,13 @@
         };
 
         function renderL6Songs() {
-            const container = document.getElementById('l6-songs-container'); container.innerHTML = '';
+            const container = document.getElementById('l6-songs-container'); 
+            container.innerHTML = '';
             const audioEl = document.getElementById('l6-audio-player'); 
             const prog = document.getElementById('l6-progress');
+            
+            // 抓取回饋按鈕元素
+            const getFeedbackBtn = () => document.querySelector('#l6-player button');
             
             audioEl.ontimeupdate = () => { 
                 if (audioEl.duration) { 
@@ -2622,14 +2654,27 @@
                 } 
             };
             
+            // 播放結束才解鎖心得按鈕並自動彈出輸入框
             audioEl.onended = () => {
                 prog.style.width = '100%';
+                const fBtn = getFeedbackBtn();
+                if (fBtn) {
+                    fBtn.disabled = false;
+                    fBtn.classList.remove('opacity-50', 'pointer-events-none');
+                    fBtn.innerHTML = `<i class="fa-solid fa-pen-fancy mr-2"></i>聽完了，寫下音樂回憶`;
+                }
                 setTimeout(triggerSongFeedback, 300);
             };
 
             audioEl.onerror = () => {
                 console.warn("音訊載入失敗，提供直接回饋選項");
-                showAlert("音訊載入提醒", "若現場網路不佳無法播放，您可以直接填寫心得完成任務！", "fa-circle-exclamation", "text-primary", triggerSongFeedback, "直接填寫心得");
+                const fBtn = getFeedbackBtn();
+                if (fBtn) {
+                    fBtn.disabled = false;
+                    fBtn.classList.remove('opacity-50', 'pointer-events-none');
+                    fBtn.innerHTML = `<i class="fa-solid fa-pen-fancy mr-2"></i>音訊無法播放，直接填寫心得`;
+                }
+                showAlert("音訊載入提醒", "若現場網路不佳無法播放，可直接填寫心得完成任務！", "fa-circle-exclamation", "text-primary", triggerSongFeedback, "直接填寫心得");
             };
             
             GAME_DATA.level6.songs.forEach((song) => {
@@ -2645,10 +2690,25 @@
                     </div>`;
                 btn.onclick = () => {
                     if (!GameState.get('soundEnabled')) return showAlert("靜音鎖定", "請先點擊右上角開啟音效喇叭。");
-                    initAudio(); playBeep(800, 0.1); audioEl.pause(); audioEl.currentTime = 0; prog.style.width = '0%';
-                    const pUI = document.getElementById('l6-player'); pUI.classList.remove('hidden');
+                    initAudio(); 
+                    playBeep(800, 0.1); 
+                    audioEl.pause(); 
+                    audioEl.currentTime = 0; 
+                    prog.style.width = '0%';
+                    
+                    const pUI = document.getElementById('l6-player'); 
+                    pUI.classList.remove('hidden');
                     document.getElementById('l6-song-title').textContent = song.title; 
                     document.getElementById('l6-lyrics').textContent = song.lyric;
+
+                    // 歌曲開始播放時鎖定按鈕，防止未聽完即送出
+                    const fBtn = getFeedbackBtn();
+                    if (fBtn) {
+                        fBtn.disabled = true;
+                        fBtn.classList.add('opacity-50', 'pointer-events-none');
+                        fBtn.innerHTML = `<i class="fa-solid fa-music mr-2 animate-pulse"></i>請完整聆聽時代金曲...`;
+                    }
+
                     audioEl.src = song.audio; 
                     audioEl.play().catch(e => { console.log("Audio play blocked", e); });
                 };
