@@ -2964,6 +2964,126 @@
                 showAlert("密碼錯誤", "最終密碼不正確！\n請抵達現場後向工作人員（NPC）索取最終密碼。", "fa-circle-xmark", "text-primary");
             }
         };
+        // ==========================================
+        // 補丁 1：首頁啟動事件與驗證任務代碼
+        // ==========================================
+        document.getElementById('btn-start-game')?.addEventListener('click', () => {
+            const teamNameInput = document.getElementById('input-team-name');
+            const teamMembersInput = document.getElementById('input-team-members');
+            const name = teamNameInput.value.trim();
+            
+            if (!name) {
+                showAlert("請輸入隊伍名稱", "隊伍代號為必填項目，請輸入後再啟動調查！", "fa-triangle-exclamation", "text-primary");
+                return;
+            }
+            
+            playBeep(600, 0.05);
+            GameState.set('teamName', name);
+            GameState.set('teamMembers', teamMembersInput.value.trim());
+            showScreen('intro-chars');
+        });
+        
+        // 任務代碼驗證（可自訂 8 碼代碼，例如 AIRFORCE 或 19451006）
+        window.verifyLevelCode = function() {
+            const input = document.getElementById('input-level-code');
+            const code = input ? input.value.trim().toUpperCase() : "";
+            
+            if (code.length >= 4) { // 允許特定代碼或大於4碼通過
+                playSuccessSound();
+                if (!GameState.get('startTime')) {
+                    GameState.set('startTime', Date.now());
+                }
+                if (globalTimerInterval) clearInterval(globalTimerInterval);
+                globalTimerInterval = setInterval(updateTimerDisplay, 1000);
+                updateTimerDisplay();
+                showScreen('main');
+            } else {
+                playErrorSound();
+                showAlert("代碼無效", "請檢查任務小卡上的任務代碼是否輸入正確！", "fa-circle-xmark", "text-primary");
+            }
+        };
+        
+        // ==========================================
+        // 補丁 2：計時器與重新開始功能
+        // ==========================================
+        function updateTimerDisplay() {
+            const timerEl = document.getElementById('main-timer');
+            const startTime = GameState.get('startTime');
+            if (!timerEl || !startTime) return;
+            
+            const TOTAL_TIME_MS = 90 * 60 * 1000; // 90 分鐘
+            const elapsed = Date.now() - startTime;
+            const remaining = Math.max(0, TOTAL_TIME_MS - elapsed);
+            
+            const hours = Math.floor(remaining / (1000 * 60 * 60));
+            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+            
+            timerEl.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            if (remaining <= 0 && !GameState.get('timeExpiredHandled')) {
+                GameState.set('timeExpiredHandled', true);
+                if (globalTimerInterval) clearInterval(globalTimerInterval);
+                showAlert("委託時間截止", "90分鐘調查時間已達上限，系統將自動引導您前往最終會合座標！", "fa-hourglass-end", "text-primary", () => {
+                    showScreen('level-7');
+                });
+            }
+        }
+        
+        function confirmRestartGame() {
+            showAlert("確定重新開始？", "此動作將會清除所有目前調查進度與歷史碎片紀錄！", "fa-triangle-exclamation", "text-primary", () => {
+                GameState.reset();
+            }, "確定清除", 0, true);
+        }
+        
+        // ==========================================
+        // 補丁 3：結案憑證渲染與核銷綁定
+        // ==========================================
+        function renderCertificate() {
+            const startTime = GameState.get('startTime') || Date.now();
+            const endTime = GameState.get('endTime') || Date.now();
+            const durationMs = Math.max(0, endTime - startTime);
+            
+            const totalMinutes = Math.floor(durationMs / 60000);
+            const totalSecs = Math.floor((durationMs % 60000) / 1000);
+            
+            const statusEl = document.getElementById('cert-status');
+            const timeEl = document.getElementById('cert-time');
+            const rankEl = document.getElementById('cert-rank');
+            const msgEl = document.getElementById('cert-msg');
+            
+            if (statusEl) statusEl.textContent = "任務成功（全數結案）";
+            if (timeEl) timeEl.textContent = `${totalMinutes}分 ${totalSecs}秒`;
+            
+            let rank = "S (傳奇調查官)";
+            let rankDesc = "你們展現了驚人的觀察力與歷史洞悉力，在短時間內找齊所有信件碎片，撫平了半個世紀的歲月遺憾。";
+            if (totalMinutes > 60) {
+                rank = "A (優秀特派員)";
+                rankDesc = "經歷了重重考驗，你們堅持走訪了空軍一村的每個角落，完整傳遞了志遠託付的深情。";
+            }
+            
+            if (rankEl) rankEl.textContent = rank;
+            if (msgEl) msgEl.textContent = rankDesc;
+        }
+        
+        // 結案畫面按鈕綁定
+        document.getElementById('btn-claim-gift')?.addEventListener('click', () => {
+            showAlert("工作人員核銷", "現場核銷需輸入工作人員專用密碼：", "fa-user-shield", "text-primary", (pwd) => {
+                if (pwd === "8888" || pwd === "NTPC") {
+                    playSuccessSound();
+                    const btn = document.getElementById('btn-claim-gift');
+                    btn.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i>已成功兌獎核銷`;
+                    btn.disabled = true;
+                    btn.classList.replace('primary-btn', 'bg-emerald-700');
+                    showAlert("核銷成功", "紀念品已成功核銷，感謝您參與三重空軍一村實境解謎！", "fa-gift", "text-emerald-700");
+                } else {
+                    playErrorSound();
+                    showAlert("核銷密碼錯誤", "請洽現場服務台由工作人員輸入核銷碼。", "fa-lock", "text-primary");
+                }
+            }, "核銷驗證", 0, true, "請輸入4碼核銷碼");
+        });
+        
+        document.getElementById('btn-restart-game')?.addEventListener('click', confirmRestartGame);
     </script>
 </body>
 </html>
