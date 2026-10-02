@@ -1884,17 +1884,19 @@
             if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
 
             let isHandled = false;
+            let pollInterval = null;
             let timeoutId = null;
 
             const cleanUp = () => {
                 isHandled = true;
+                if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
                 if (timeoutId) { clearTimeout(timeoutId); timeoutId = null; }
                 if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
             };
 
             const docRef = db ? db.collection("submissions").doc() : null;
 
-            showAlert("現場查驗中", "已送出回報，請向現場關主出示任務！\n(審核通過將自動切換畫面)", "fa-tower-broadcast fa-fade", "text-primary", null, "取消等待", 0, true);
+            showAlert("現場查驗中", "已送出回報，請向現場關主出示任務！\n(審核通過約 1~2 秒自動切換)", "fa-tower-broadcast fa-fade", "text-primary", null, "取消等待", 0, true);
 
             const cancelBtn = document.getElementById('alert-cancel-btn');
             if (cancelBtn) {
@@ -1921,12 +1923,28 @@
                 onSuccess(approved, rejectReason);
             };
 
+            // 1. 被動 WebSocket 推播
             activeUploadUnsubscribe = docRef.onSnapshot({ includeMetadataChanges: false }, (doc) => {
                 if (isHandled || !doc.exists) return;
                 const data = doc.data();
                 if (data.status === "approved") handleResult(true);
                 else if (data.status === "rejected") handleResult(false, data.rejectReason);
-            }, (err) => console.warn("直通監聽警告:", err));
+            }, (err) => console.warn("直通監聽警告，切換為主動輪詢:", err));
+
+            // 2. 主動輪詢 (每 2.5 秒抓一次，防斷線卡住)
+            pollInterval = setInterval(async () => {
+                if (isHandled) return;
+                try {
+                    const freshDoc = await docRef.get();
+                    if (freshDoc.exists) {
+                        const data = freshDoc.data();
+                        if (data.status === "approved") handleResult(true);
+                        else if (data.status === "rejected") handleResult(false, data.rejectReason);
+                    }
+                } catch (e) {
+                    console.warn("主動檢查暫態失敗，稍後重試...", e);
+                }
+            }, 2500);
 
             const payload = {
                 teamName: GameState.get('teamName') || "匿名隊伍",
@@ -1956,80 +1974,77 @@
         function _executeFirebaseSubmission(docData, onSuccess, file = null) {
             if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
             let isHandled = false;
+            let pollInterval = null;
             let timeoutId = null;
-
+        
             const cleanUp = () => {
                 isHandled = true;
+                if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
                 if (timeoutId) { clearTimeout(timeoutId); timeoutId = null; }
                 if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
             };
-
+        
+            // 核心審核結果處理函式
+            const handleResult = (approved, rejectReason = null) => {
+                if (isHandled) return;
+                cleanUp();
+                const modal = document.getElementById('modal-alert');
+                if (modal) modal.classList.add('hidden');
+                onSuccess(approved, rejectReason);
+            };
+        
             if (!db) {
-                showAlert("資料傳送中", "正模擬傳送至後台進行審核...", "fa-satellite-dish fa-spin", "text-primary", null, "取消等待", 0, true);
-                setTimeout(() => {
-                    cleanUp();
-                    const modal = document.getElementById('modal-alert');
-                    if (modal) modal.classList.add('hidden');
-                    onSuccess(true, null);
-                }, 1200);
+                // Fallback 模擬模式 (維持原樣)
+                setTimeout(() => { cleanUp(); onSuccess(true, null); }, 1200);
                 return;
             }
-
-            showAlert("資料傳送中", "正在處理照片並傳送至指揮所...", "fa-satellite-dish fa-spin", "text-primary", null, "取消等待", 0, true);
-
-            const cancelBtn = document.getElementById('alert-cancel-btn');
-            if (cancelBtn) {
-                cancelBtn.onclick = () => {
-                    cleanUp(); closeModalAnim('modal-alert', 'alert-box');
-                };
-            }
-
+        
+            // 顯示等待中 Alert，並提供「手動重整狀態」按鈕
+            showAlert("資料審核中", "已送達指揮所，審核官查驗中...\n(關主核准後約 1~2 秒自動切換)", "fa-satellite-dish fa-spin", "text-primary", null, "取消等待", 0, true);
+        
             const sendPayload = (base64Img = null) => {
-                const teamName = GameState.get('teamName') || "匿名隊伍";
                 const payload = {
-                    teamName: teamName,
+                    teamName: GameState.get('teamName') || "匿名隊伍",
                     teamMembers: GameState.get('teamMembers') || "",
                     status: "pending",
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     ...docData
                 };
-
-                if (base64Img) {
-                    payload.imageBase64 = base64Img;
-                }
-
+                if (base64Img) payload.imageBase64 = base64Img;
+        
                 db.collection("submissions").add(payload).then(docRef => {
                     if (isHandled) return;
-
-                    const alertDesc = document.getElementById('alert-desc');
-                    const alertIcon = document.getElementById('alert-icon');
-                    if (alertDesc) alertDesc.textContent = "已送達指揮所，審核官查驗中...\n(請保持畫面，審核通過將立即通知)";
-                    if (alertIcon) alertIcon.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-5xl text-primary"></i>';
-
-                    const handleResult = (approved, rejectReason = null) => {
-                        if (isHandled) return;
-                        cleanUp();
-                        const modal = document.getElementById('modal-alert');
-                        if (modal) modal.classList.add('hidden');
-                        onSuccess(approved, rejectReason);
-                    };
-
-                    activeUploadUnsubscribe = docRef.onSnapshot({ includeMetadataChanges: false }, (doc) => {
+        
+                    // 1. 被動監聽 (原有機制)
+                    activeUploadUnsubscribe = docRef.onSnapshot((doc) => {
                         if (isHandled || !doc.exists) return;
                         const data = doc.data();
                         if (data.status === "approved") handleResult(true);
                         else if (data.status === "rejected") handleResult(false, data.rejectReason);
-                    }, (err) => {
-                        console.warn("連線不穩：", err);
-                    });
-
+                    }, (err) => console.warn("長連接中斷，切換為主動輪詢:", err));
+        
+                    // 2. 主動輪詢 (解決相機背景斷線的關鍵保險，每 2.5 秒主動查一次)
+                    pollInterval = setInterval(async () => {
+                        if (isHandled) return;
+                        try {
+                            const freshDoc = await docRef.get();
+                            if (freshDoc.exists) {
+                                const data = freshDoc.data();
+                                if (data.status === "approved") handleResult(true);
+                                else if (data.status === "rejected") handleResult(false, data.rejectReason);
+                            }
+                        } catch (e) {
+                            console.warn("主動檢查暫態失敗，稍後重試...", e);
+                        }
+                    }, 2500);
+        
+                    // 逾時防護 (45 秒)
                     timeoutId = setTimeout(() => {
                         if (!isHandled) {
                             cleanUp();
-                            showAlert("長官忙碌中", "前線指揮所目前較為忙碌，未能即時審核。\n請確認網路狀態，或直接尋找現場【白T小天使】協助通關！", "fa-user-clock", "text-primary");
+                            showAlert("請洽現場關主", "前線指揮所未能即時接收，若您已完成挑戰，請直接向現場工作人員出示畫面手動通關！", "fa-user-clock", "text-primary");
                         }
-                    }, 60000);
-
+                    }, 45000);
                 }).catch(error => {
                     if (!isHandled) {
                         cleanUp();
@@ -2037,14 +2052,10 @@
                     }
                 });
             };
-
+        
             if (file) {
-                compressImageReliably(file, 600, 0.5, (dataUrl) => {
-                    if (!dataUrl) {
-                        console.warn("相片解析異常，直接送出文字任務");
-                        sendPayload();
-                        return;
-                    }
+                // 採取極限壓縮 (見改造 2)
+                compressImageReliably(file, 400, 0.3, (dataUrl) => {
                     sendPayload(dataUrl);
                 });
             } else {
