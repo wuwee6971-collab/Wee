@@ -1785,10 +1785,9 @@
 
         function _executeFirebaseSubmission(docData, onSuccess, file = null) {
             if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
-        
             let isHandled = false;
             let timeoutId = null;
-            
+
             const cleanUp = () => {
                 isHandled = true;
                 if (timeoutId) { clearTimeout(timeoutId); timeoutId = null; }
@@ -1805,9 +1804,9 @@
                 }, 1200);
                 return;
             }
-        
-            showAlert("資料傳送中", "正在將您的回報傳送至指揮所...", "fa-satellite-dish fa-spin", "text-primary", null, "取消等待", 0, true);
-            
+
+            showAlert("資料傳送中", "正在處理照片並傳送至指揮所...", "fa-satellite-dish fa-spin", "text-primary", null, "取消等待", 0, true);
+
             const cancelBtn = document.getElementById('alert-cancel-btn');
             if (cancelBtn) {
                 cancelBtn.onclick = () => {
@@ -1815,7 +1814,7 @@
                 };
             }
 
-            const sendPayload = (photoUrlStr = null) => {
+            const sendPayload = (photoData = null) => {
                 const teamName = GameState.get('teamName') || "匿名隊伍";
                 const payload = {
                     teamName: teamName,
@@ -1824,31 +1823,31 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     ...docData
                 };
-                if (photoUrlStr) {
-                    // 若為 Base64 備援字串只存 imageBase64，若為網址則存 photoUrl
-                    if (photoUrlStr.startsWith('data:image')) {
-                        payload.imageBase64 = photoUrlStr;
+
+                if (photoData) {
+                    if (photoData.startsWith('data:image')) {
+                        payload.imageBase64 = photoData;
                     } else {
-                        payload.photoUrl = photoUrlStr;
+                        payload.photoUrl = photoData;
                     }
                 }
 
                 db.collection("submissions").add(payload).then(docRef => {
                     if (isHandled) return;
-        
+
                     const alertDesc = document.getElementById('alert-desc');
                     const alertIcon = document.getElementById('alert-icon');
                     if (alertDesc) alertDesc.textContent = "已送達指揮所，審核官查驗中...\n(請保持畫面，審核通過將立即通知)";
                     if (alertIcon) alertIcon.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-5xl text-primary"></i>';
-        
+
                     const handleResult = (approved, rejectReason = null) => {
                         if (isHandled) return;
-                        cleanUp(); 
+                        cleanUp();
                         const modal = document.getElementById('modal-alert');
                         if (modal) modal.classList.add('hidden');
-                        onSuccess(approved, rejectReason); 
+                        onSuccess(approved, rejectReason);
                     };
-        
+
                     activeUploadUnsubscribe = docRef.onSnapshot({ includeMetadataChanges: false }, (doc) => {
                         if (isHandled || !doc.exists) return;
                         const data = doc.data();
@@ -1863,8 +1862,8 @@
                             cleanUp();
                             showAlert("長官忙碌中", "前線指揮所目前較為忙碌，未能即時審核。\n請確認網路狀態，或直接尋找現場【白T小天使】協助通關！", "fa-user-clock", "text-primary");
                         }
-                    }, 60000); 
-        
+                    }, 60000);
+
                 }).catch(error => {
                     if (!isHandled) {
                         cleanUp();
@@ -1874,62 +1873,70 @@
             };
 
             if (file) {
-                const uploadToStorage = (blob) => {
-                    const fileName = `submissions/${Date.now()}_${Math.random().toString(36).substring(2, 7)}.jpg`;
-                    const storageRef = firebase.storage().ref().child(fileName);
-                    const metadata = { contentType: 'image/jpeg' };
+                // 執行輕量前端縮圖（寬高限 600px，大小僅約 35KB）
+                compressImageReliably(file, 600, 0.5, (dataUrl, blob) => {
+                    if (!dataUrl) {
+                        console.warn("相片解析異常，直接送出文字任務");
+                        sendPayload();
+                        return;
+                    }
 
-                    storageRef.put(blob, metadata)
-                        .then(snapshot => snapshot.ref.getDownloadURL())
-                        .then(downloadURL => sendPayload(downloadURL))
-                        .catch(err => {
-                            console.warn("Storage 上傳失敗，啟用 Base64 降級：", err);
-                            fallbackCompress(file, 640, 0.5, sendPayload);
-                        });
-                };
-
-                if (window.createImageBitmap) {
-                    createImageBitmap(file).then(imgBitmap => {
-                        const canvas = document.createElement('canvas');
-                        const scale = Math.min(1, 640 / imgBitmap.width);
-                        canvas.width = Math.round(imgBitmap.width * scale);
-                        canvas.height = Math.round(imgBitmap.height * scale);
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(imgBitmap, 0, 0, canvas.width, canvas.height);
-                        
-                        canvas.toBlob(blob => {
-                            if (!blob) {
-                                fallbackCompress(file, 640, 0.5, sendPayload);
-                                return;
-                            }
-                            uploadToStorage(blob);
-                        }, 'image/jpeg', 0.6);
-                    }).catch(() => fallbackCompress(file, 640, 0.5, sendPayload));
-                } else {
-                    fallbackCompress(file, 640, 0.5, sendPayload);
-                }
+                    // 優先嘗試 Storage；若 Storage 出現任何問題（包含 CORS/未啟用），立即使用 Base64 送出
+                    try {
+                        if (firebase.storage && blob) {
+                            const fileName = `submissions/${Date.now()}_${Math.random().toString(36).substring(2, 7)}.jpg`;
+                            const storageRef = firebase.storage().ref().child(fileName);
+                            storageRef.put(blob, { contentType: 'image/jpeg' })
+                                .then(snapshot => snapshot.ref.getDownloadURL())
+                                .then(url => sendPayload(url))
+                                .catch(err => {
+                                    console.warn("Storage 遭拒或網路異常，切換至 Base64 直傳：", err);
+                                    sendPayload(dataUrl);
+                                });
+                        } else {
+                            sendPayload(dataUrl);
+                        }
+                    } catch (err) {
+                        console.warn("Storage 呼叫異常，直接使用 Base64：", err);
+                        sendPayload(dataUrl);
+                    }
+                });
             } else {
                 sendPayload();
             }
         }
 
-        function fallbackCompress(file, maxWidth, quality, callback) {
+        // 高相容性手機縮圖函式（支援 iPhone/Android 原生相機）
+        function compressImageReliably(file, maxWidth, quality, callback) {
             const objectUrl = URL.createObjectURL(file);
             const img = new Image();
+
             img.onload = function() {
                 URL.revokeObjectURL(objectUrl);
                 const canvas = document.createElement('canvas');
-                const scale = Math.min(1, maxWidth / img.width);
+                const scale = Math.min(1, maxWidth / Math.max(img.width, img.height));
                 canvas.width = Math.round(img.width * scale);
                 canvas.height = Math.round(img.height * scale);
+
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                callback(canvas.toDataURL('image/jpeg', quality));
+
+                const dataUrl = canvas.toDataURL('image/jpeg', quality);
+
+                if (canvas.toBlob) {
+                    canvas.toBlob(blob => {
+                        callback(dataUrl, blob);
+                    }, 'image/jpeg', quality);
+                } else {
+                    callback(dataUrl, null);
+                }
             };
+
             img.onerror = function() {
                 URL.revokeObjectURL(objectUrl);
-                callback(null);
+                callback(null, null);
             };
+
             img.src = objectUrl;
         }
 
