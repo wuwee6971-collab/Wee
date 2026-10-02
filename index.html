@@ -779,40 +779,104 @@
                     </div>
                 </div>
 
-                <!-- L5 ARRIVAL: 群星之夜 抵達頁面 -->
-                <div id="screen-l5-arrival" class="screen-panel hidden p-6 flex flex-col justify-center">
-                    <div class="level-card p-8 flex flex-col justify-center">
-                        <p class="text-base font-bold text-ink mb-4 font-serif leading-relaxed text-justify">請穿越96通廊找到蘋果前的群星會</p>
-                        <img src="images/公園.jpg" class="mb-4 rounded-md shadow-sm" onerror="this.src='https://placehold.co/400x300?text=公園圖'">
-                        <img src="images/主視覺1.jpg" class="mb-4 rounded-md shadow-sm" onerror="this.src='https://placehold.co/400x300?text=主視覺圖'">
-                        <img src="images/主視覺2.jpg" class="mb-4 rounded-md shadow-sm" onerror="this.src='https://placehold.co/400x300?text=主視覺圖'">
-                        <p class="text-base font-bold text-ink mb-8 font-serif leading-relaxed text-justify">主持人為我們帶來歌曲</p>
+                <!-- LEVEL 5: 群星之夜 (4階段整合流程) -->
+                <div id="screen-level-5" class="screen-panel hidden p-6 flex flex-col">
+                    
+                    <!-- L5-P1: 前言故事與天台廣場歷史 -->
+                    <div id="l5-p1" class="level-card p-6 flex flex-col min-h-full">
+                        <h2 class="text-center text-primary text-2xl mb-4 font-black border-b border-dashed border-ink/20 pb-4 tracking-widest shrink-0 font-serif">黃金娛樂時光</h2>
                         
-                        <form class="space-y-4" onsubmit="event.preventDefault(); checkL5Arrival();">
-                            <input type="text" id="l5-check-password" placeholder="輸入" class="w-full bg-paper border border-ink/20 rounded-md px-4 py-4 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-ink shadow-inner transition-all text-center">
-                            <button type="submit" id="l5-check-confirm-btn" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em]">確認</button>
-                        </form>
+                        <div class="text-base leading-[1.9] font-bold text-ink text-justify flex-1 font-serif overflow-y-auto custom-scrollbar pr-2 pb-2">
+                            <div class="w-full mb-4 vintage-photo min-h-[190px] max-h-[300px] flex items-center justify-center shrink-0 overflow-hidden cursor-zoom-in" onclick="openImageLightbox('images/l5-1.jpg')">
+                                <img src="images/l5-1.jpg" alt="老唱片與歌廳記憶" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=老唱片與歌廳記憶'" class="max-w-full max-h-[290px] w-auto h-auto object-contain loaded">
+                            </div>
+                            
+                            <p class="mb-5">當黑膠唱片旋轉、霓虹燈光閃爍，空氣中流淌著老歌與電影的熟悉旋律。這裡不只是歷史的記憶，更是我們今晚一同尋找青春與鄉愁的舞台。</p>
+                            
+                            <div class="w-full mb-4 vintage-photo min-h-[190px] max-h-[300px] flex items-center justify-center shrink-0 overflow-hidden cursor-zoom-in" onclick="openImageLightbox('images/l5-2.jpg')">
+                                <img src="images/l5-2.jpg" alt="天台廣場繁華盛景" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=天台廣場繁華盛景'" class="max-w-full max-h-[290px] w-auto h-auto object-contain loaded">
+                            </div>
+                            <div class="w-full mb-4 vintage-photo min-h-[190px] max-h-[300px] flex items-center justify-center shrink-0 overflow-hidden cursor-zoom-in" onclick="openImageLightbox('images/l5-3.jpg')">
+                                <img src="images/l5-3.jpg" alt="天台廣場繁華盛景" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=天台廣場繁華盛景'" class="max-w-full max-h-[290px] w-auto h-auto object-contain loaded">
+                            </div>
+                            
+                            <p class="mb-5">1950至1980年代，三重天台廣場曾是北台灣最繁華的娛樂地標，歌廳、戲院、夜總會林立。第一代外省移民在眷村裡，用歌聲撫平離鄉背井的鄉愁。</p>
+                            
+                            <div class="w-full mb-4 vintage-photo min-h-[240px] max-h-[380px] flex items-center justify-center shrink-0 overflow-hidden cursor-zoom-in" onclick="openImageLightbox('images/l5-4.jpg')">
+                                <img src="images/l5-4.jpg" alt="接歌挑戰現場" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=接歌挑戰現場'" class="max-w-full max-h-[370px] w-auto h-auto object-contain loaded">
+                            </div>
+                            <div class="w-full mb-4 vintage-photo min-h-[240px] max-h-[380px] flex items-center justify-center shrink-0 overflow-hidden cursor-zoom-in" onclick="openImageLightbox('images/l5-5.jpg')">
+                                <img src="images/l5-5.jpg" alt="接歌挑戰現場" onerror="this.src='https://placehold.co/600x340/e5d5b5/7c343d?text=接歌挑戰現場'" class="max-w-full max-h-[370px] w-auto h-auto object-contain loaded">
+                            </div>
+                            
+                            <p>今晚，我們將透過一場「接歌挑戰」，帶領大家走入這段熱鬧又帶點感傷的青春歲月。</p>
+                        </div>
+                        
+                        <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="transitionSubPage(5, 1, 2)">
+                            下一步：穿越通廊 <i class="fa-solid fa-arrow-right ml-2"></i>
+                        </button>
                     </div>
-                </div>
 
-                <!-- LEVEL 5: 群星之夜 測驗題 -->
-                <div id="screen-level-5" class="screen-panel hidden p-6 flex flex-col space-y-6">
-                    <div class="level-card p-6 flex-1 flex flex-col relative">
-                        <div class="text-center mb-6 shrink-0 relative flex justify-between items-center border-b border-dashed border-ink/30 pb-4">
-                            <span class="px-5 py-2 bg-ink/5 border border-ink/10 rounded-md text-sm font-black text-ink mx-auto tracking-widest font-mono" id="l5-q-counter">群星挑戰 1 / 4</span>
+                    <!-- L5-P2: 穿越96通廊與抵達現場密碼驗證 -->
+                    <div id="l5-p2" class="hidden flex flex-col min-h-full">
+                        <div class="flex items-center justify-between mb-4 shrink-0">
+                            <button onclick="transitionSubPage(5, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">抵達驗證</h2>
                         </div>
-                        
-                        <div class="flex-1 flex flex-col items-center justify-center mt-2 relative">
-                            <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-paper shadow-[0_8px_16px_rgba(0,0,0,0.2)] z-10 -mb-12 bg-white flex items-center justify-center">
-                                <img id="l5-char-img" src="" class="max-w-full max-h-full object-cover">
+                        <div class="level-card p-6 flex-1 flex flex-col justify-center overflow-hidden">
+                            <div class="bleed-top-p8 hero-banner-box aspect-[16/9] border-b-2 border-primary mb-5">
+                                <img src="images/主視覺1.jpg" class="loaded" alt="群星會主視覺" onerror="this.src='images/公園.jpg'">
                             </div>
-                            <div class="bg-paper-dark p-6 rounded-lg border border-ink/10 w-full pt-16 shadow-inner text-center">
-                                <p id="l5-question-text" class="text-base font-bold text-ink leading-[1.8] font-serif whitespace-pre-line text-justify"></p>
-                            </div>
+
+                            <h3 class="text-xl font-black text-primary font-serif tracking-widest text-center mb-2">穿越96通廊・抵達群星會</h3>
+                            <p class="text-sm font-bold text-ink/80 mb-6 font-serif leading-relaxed text-center">
+                                請穿越96通廊找到大蘋果前的群星會現場。<br>聆聽主持人帶來的時代金曲，向工作人員索取通關密語。
+                            </p>
+                            
+                            <form class="space-y-4" onsubmit="event.preventDefault(); checkL5Arrival();">
+                                <input type="text" id="l5-check-password" placeholder="輸入通關密語" class="w-full bg-paper border border-ink/20 rounded-md px-4 py-3.5 text-base font-bold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-ink shadow-inner transition-all text-center">
+                                <button type="submit" id="l5-check-confirm-btn" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em]">確認啟動挑戰</button>
+                            </form>
                         </div>
-                        
-                        <div id="l5-options-container" class="mt-8 space-y-4 shrink-0 flex flex-col pb-2"></div>
                     </div>
+
+                    <!-- L5-P3: 遊戲規則說明 -->
+                    <div id="l5-p3" class="hidden flex flex-col min-h-full">
+                        <div class="flex items-center justify-between mb-4 shrink-0">
+                            <button onclick="transitionSubPage(5, 3, 2)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">遊戲規則</h2>
+                        </div>
+                        <div class="level-card p-8 flex-1 flex flex-col justify-center">
+                            <ol class="list-decimal pl-5 space-y-6 text-base font-bold text-ink/90 text-justify leading-[1.8] font-serif">
+                                <li><b>接歌挑戰：</b>關主將隨機播放眷村年代的老歌。</li>
+                                <li><b>搶答接唱：</b>當音樂播到副歌突然暫停時，請接唱下一句或哼出大致旋律。</li>
+                                <li><b>求助機制：</b>不會唱也沒關係！可以向現場其他玩家「求助」，互相幫助。</li>
+                                <li><b>通關條件：</b>全體合力完成 3 首歌，即可獲得密碼！</li>
+                            </ol>
+                            <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8 shrink-0" onclick="transitionSubPage(5, 3, 4)">前往接歌挑戰</button>
+                        </div>
+                    </div>
+
+                    <!-- L5-P4: 實際接唱題目卡 -->
+                    <div id="l5-p4" class="hidden flex flex-col min-h-full">
+                        <div class="level-card p-6 flex-1 flex flex-col relative justify-between">
+                            <div class="text-center mb-4 shrink-0 relative flex justify-between items-center border-b border-dashed border-ink/30 pb-3">
+                                <span class="px-5 py-2 bg-ink/5 border border-ink/10 rounded-md text-sm font-black text-ink mx-auto tracking-widest font-mono" id="l5-q-counter">群星挑戰 1 / 4</span>
+                            </div>
+                            
+                            <div class="flex-1 flex flex-col items-center justify-center mt-2 relative">
+                                <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-paper shadow-[0_8px_16px_rgba(0,0,0,0.2)] z-10 -mb-12 bg-white flex items-center justify-center">
+                                    <img id="l5-char-img" src="" class="max-w-full max-h-full object-cover">
+                                </div>
+                                <div class="bg-paper-dark p-6 rounded-lg border border-ink/10 w-full pt-16 shadow-inner text-center">
+                                    <p id="l5-question-text" class="text-base font-bold text-ink leading-[1.8] font-serif whitespace-pre-line text-justify"></p>
+                                </div>
+                            </div>
+                            
+                            <div id="l5-options-container" class="mt-6 space-y-3 shrink-0 flex flex-col pb-2"></div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- LEVEL 6: 時光膠囊 -->
@@ -2150,7 +2214,10 @@
             if (screenId === 'level-2') renderL2();
             if (screenId === 'level-3') renderL3();
             if (screenId === 'level-4') { forceSubPageInit(4, 1, 5); renderL4Tasks(); }
-            if (screenId === 'level-5') renderL5(GameState.get('l5CurrentQ') || 0);
+            if (screenId === 'level-5') { 
+                forceSubPageInit(5, 1, 4); 
+                renderL5(GameState.get('l5CurrentQ') || 0); 
+            }
             if (screenId === 'level-6') { forceSubPageInit(6, 1, 5); renderL6Songs(); }
             if (screenId === 'level-7') {
                 // 問題 2 修復：切換至最後密碼頁面時即時渲染碎片拼圖板
@@ -2806,9 +2873,12 @@
         window.checkL5Arrival = function() {
             const val = document.getElementById('l5-check-password').value.trim();
             if (val === "外婆橋") {
-                playSuccessSound(); GameState.set('l5CurrentQ', 0); showScreen('level-5');
+                playSuccessSound();
+                GameState.set('l5CurrentQ', 0);
+                transitionSubPage(5, 2, 3); // 密碼通過，前往 P3 規則說明
             } else {
-                playErrorSound(); showAlert("密碼錯誤", "請輸入正確的通關密語！", "fa-circle-xmark", "text-primary");
+                playErrorSound();
+                showAlert("密碼錯誤", "請輸入正確的通關密語！", "fa-circle-xmark", "text-primary");
             }
         };
 
@@ -3179,53 +3249,53 @@
         // 補丁 3（對齊版）：雙情境結案憑證與 Firestore 雲端核銷
         // ==========================================
         function renderCertificate() {
-    if (globalTimerInterval) { clearInterval(globalTimerInterval); globalTimerInterval = null; }
-    
-    const startTime = GameState.get('startTime') || Date.now();
-    const endTime = GameState.get('endTime') || Date.now();
-    const elapsed = Math.floor((endTime - startTime) / 1000);
-    
-    const h = String(Math.floor(elapsed / 3600)).padStart(2, '0'); 
-    const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0'); 
-    const s = String(elapsed % 60).padStart(2, '0');
-    const timeStr = `${h}:${m}:${s}`; 
-    
-    const isTimeout = Boolean(GameState.get('timeExpiredHandled')) || elapsed > 5400;
-    const stamps = GameState.get('stamps') || [];
-    const collectedCount = stamps.filter(Boolean).length;
-
-    const certTimeEl = document.getElementById('cert-time');
-    const certStatusEl = document.getElementById('cert-status');
-    const certRankEl = document.getElementById('cert-rank');
-    const msgEl = document.getElementById('cert-msg');
-
-    if (!isTimeout && collectedCount === 7) {
-        // 時限內全數完成
-        certTimeEl.textContent = `${timeStr} (時限內)`;
-        certStatusEl.textContent = '檔案完全解密';
-        certStatusEl.className = 'text-emerald-700 font-black text-right';
-        certRankEl.textContent = '【S級結案】';
-        msgEl.innerHTML = '恭喜在時限內完成所有委託！<br>7 塊歷史碎片全數尋回，跨越時空的思念得以完整圓滿。';
-    } else {
-        // 超過時間，強制作業終止
-        certTimeEl.textContent = `${timeStr} (逾時終止)`;
-        certStatusEl.textContent = `調查未完成 (僅尋獲 ${collectedCount}/7 碎片)`;
-        certStatusEl.className = 'text-amber-700 font-black text-right';
-        certRankEl.textContent = '【時限中斷】';
-        msgEl.innerHTML = `調查時間已達上限，系統已強制終止搜索行動。<br>遺憾未能替阿秀找齊全部的歷史碎片（尋獲進度 ${collectedCount}/7），半世紀前的思念仍有殘缺留存於巷弄中。<br>感謝你們的參與，請向現場人員報到完成撤收紀錄。`;
-    }
-    
-    const claimBtn = document.getElementById('btn-claim-gift');
-    if (GameState.get('giftClaimed') === true) {
-        claimBtn.disabled = true; 
-        claimBtn.className = "btn-base w-full py-4 bg-stone-200 border border-stone-300 text-stone-500 font-black text-sm cursor-not-allowed shadow-none";
-        claimBtn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-700 mr-2"></i>已於 ${GameState.get('giftClaimedTime') || ''} 兌換完畢`;
-    } else {
-        claimBtn.disabled = false; 
-        claimBtn.className = "btn-base primary-btn w-full py-4 font-black text-base tracking-[0.15em] flex justify-center space-x-2";
-        claimBtn.innerHTML = `<i class="fa-solid fa-stamp"></i><span>現場人員點擊核銷</span>`;
-    }
-}
+                if (globalTimerInterval) { clearInterval(globalTimerInterval); globalTimerInterval = null; }
+                
+                const startTime = GameState.get('startTime') || Date.now();
+                const endTime = GameState.get('endTime') || Date.now();
+                const elapsed = Math.floor((endTime - startTime) / 1000);
+                
+                const h = String(Math.floor(elapsed / 3600)).padStart(2, '0'); 
+                const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0'); 
+                const s = String(elapsed % 60).padStart(2, '0');
+                const timeStr = `${h}:${m}:${s}`; 
+                
+                const isTimeout = Boolean(GameState.get('timeExpiredHandled')) || elapsed > 5400;
+                const stamps = GameState.get('stamps') || [];
+                const collectedCount = stamps.filter(Boolean).length;
+            
+                const certTimeEl = document.getElementById('cert-time');
+                const certStatusEl = document.getElementById('cert-status');
+                const certRankEl = document.getElementById('cert-rank');
+                const msgEl = document.getElementById('cert-msg');
+            
+                if (!isTimeout && collectedCount === 7) {
+                    // 時限內全數完成
+                    certTimeEl.textContent = `${timeStr} (時限內)`;
+                    certStatusEl.textContent = '檔案完全解密';
+                    certStatusEl.className = 'text-emerald-700 font-black text-right';
+                    certRankEl.textContent = '【S級結案】';
+                    msgEl.innerHTML = '恭喜在時限內完成所有委託！<br>7 塊歷史碎片全數尋回，跨越時空的思念得以完整圓滿。';
+                } else {
+                    // 超過時間，強制作業終止
+                    certTimeEl.textContent = `${timeStr} (逾時終止)`;
+                    certStatusEl.textContent = `調查未完成 (僅尋獲 ${collectedCount}/7 碎片)`;
+                    certStatusEl.className = 'text-amber-700 font-black text-right';
+                    certRankEl.textContent = '【時限中斷】';
+                    msgEl.innerHTML = `調查時間已達上限，系統已強制終止搜索行動。<br>遺憾未能替阿秀找齊全部的歷史碎片（尋獲進度 ${collectedCount}/7），半世紀前的思念仍有殘缺留存於巷弄中。<br>感謝你們的參與，請向現場人員報到完成撤收紀錄。`;
+                }
+                
+                const claimBtn = document.getElementById('btn-claim-gift');
+                if (GameState.get('giftClaimed') === true) {
+                    claimBtn.disabled = true; 
+                    claimBtn.className = "btn-base w-full py-4 bg-stone-200 border border-stone-300 text-stone-500 font-black text-sm cursor-not-allowed shadow-none";
+                    claimBtn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-700 mr-2"></i>已於 ${GameState.get('giftClaimedTime') || ''} 兌換完畢`;
+                } else {
+                    claimBtn.disabled = false; 
+                    claimBtn.className = "btn-base primary-btn w-full py-4 font-black text-base tracking-[0.15em] flex justify-center space-x-2";
+                    claimBtn.innerHTML = `<i class="fa-solid fa-stamp"></i><span>現場人員點擊核銷</span>`;
+                }
+            }
         
         // 現場人員核銷監聽（對齊 Firestore 雲端批次標記）
         document.getElementById('btn-claim-gift')?.addEventListener('click', () => {
@@ -3262,7 +3332,23 @@
         });
         
         document.getElementById('btn-restart-game')?.addEventListener('click', confirmRestartGame);
-
+        document.getElementById('btn-goto-current').addEventListener('click', () => {
+            initAudio(); playBeep(600, 0.05);
+            let seq = GameState.get('customSequence') || [7, 6, 1, 4, 2, 5, 3]; 
+            let idx = GameState.get('currentStageIndex') || 0; 
+            let stamps = GameState.get('stamps') || [];
+            
+            // 7 關全過才允許跳往最終密碼頁
+            if (stamps.filter(Boolean).length === 7 || idx >= 7) {
+                showScreen('level-7');
+                return;
+            }
+        
+            const targetLvl = seq[idx];
+            if (targetLvl === 3) showScreen('l3-intro');
+            else if (targetLvl === 7) showScreen('l7-market-task');
+            else showScreen(`level-${targetLvl}`);
+        });
         </script>
 </body>
 </html>
