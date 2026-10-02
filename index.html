@@ -700,7 +700,6 @@
 
                             <div class="task-card flex flex-col" id="l4-task-card-3">
                                 <!-- 任務三 -->
-                                <div class="task-card flex flex-col" id="l4-task-card-3">
                                     <div class="flex items-center border-b border-ink/10 pb-3 mb-3">
                                         <div class="w-12 h-12 rounded bg-gold/20 flex items-center justify-center text-gold-dark text-xl shrink-0 mr-3 border border-gold/30 font-mono font-black">3</div>
                                         <div>
@@ -710,7 +709,6 @@
                                     </div>
                                     <p class="text-sm font-bold text-ink/80 leading-relaxed mb-4">主動前往攀談，聽取奶奶的歷史解說並完成知識測驗。</p>
                                     <button class="btn-base military-btn w-full py-3 text-sm font-black tracking-widest mt-auto" onclick="openL4Quiz()">前往回答測驗</button>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -2625,12 +2623,12 @@
         function renderL4Tasks() {
             const tasksState = GameState.get('l4Tasks') || [false, false, false];
             const taskNames = ['L4-任務一兒童', 'L4-任務二中學生', 'L4-任務三奶奶'];
-        
+
             for (let i = 0; i < 3; i++) {
                 const card = document.getElementById(`l4-task-card-${i + 1}`);
                 if (!card) continue;
                 const btn = card.querySelector('button');
-        
+
                 if (tasksState[i]) {
                     card.classList.add('completed');
                     btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i>已完成審核`;
@@ -2638,7 +2636,7 @@
                 } else {
                     card.classList.remove('completed');
                     btn.className = "btn-base military-btn w-full py-3 text-sm font-black tracking-widest mt-auto";
-                    
+
                     if (i === 2) {
                         btn.innerHTML = `前往回答測驗`;
                         btn.onclick = () => openL4Quiz();
@@ -2650,7 +2648,7 @@
                     }
                 }
             }
-        
+
             const stamps = GameState.get('stamps') || [];
             if (tasksState.every(t => t) && !stamps[3]) {
                 setTimeout(() => {
