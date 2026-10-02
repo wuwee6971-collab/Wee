@@ -2660,26 +2660,6 @@
                 }, 600);
             }
         }
-        
-            const stamps = GameState.get('stamps') || [];
-            if (tasksState.every(t => t) && !stamps[3]) {
-                setTimeout(() => {
-                    showAlert("榕樹廣場挑戰成功", "您已成功協助鄰居們完成所有任務，重溫了當年的純真回憶！", "fa-people-roof", "text-emerald-700", () => {
-                        handleLevelSuccess(4);
-                    });
-                }, 600);
-            }
-        }
-        
-            const stamps = GameState.get('stamps') || [];
-            if (tasksState.every(t => t) && !stamps[3]) {
-                setTimeout(() => {
-                    showAlert("榕樹廣場挑戰成功", "您已成功協助鄰居們完成所有任務，重溫了當年的純真回憶！", "fa-people-roof", "text-emerald-700", () => {
-                        handleLevelSuccess(4);
-                    });
-                }, 600);
-            }
-        }
 
         window.submitL4Task = function(taskIdx, levelIdStr, btnEl) {
             playBeep();
