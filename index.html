@@ -817,20 +817,26 @@
                         </button>
                     </div>
 
-                    <!-- L5-P2: 穿越96通廊與抵達現場密碼驗證 -->
+                    <!-- L5-P2: 抵達現場與輸入密碼驗證 -->
                     <div id="l5-p2" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-4 shrink-0">
-                            <button onclick="transitionSubPage(5, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">抵達驗證</h2>
+                            <button onclick="transitionSubPage(5, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <h2 class="font-black text-primary text-lg font-serif tracking-[0.15em] text-center flex-1 pr-10">抵達現場</h2>
                         </div>
-                        <div class="level-card p-6 flex-1 flex flex-col justify-center overflow-hidden">
-                            <div class="bleed-top-p8 hero-banner-box aspect-[16/9] border-b-2 border-primary mb-5">
-                                <img src="images/主視覺1.jpg" class="loaded" alt="群星會主視覺" onerror="this.src='images/公園.jpg'">
-                            </div>
-
-                            <h3 class="text-xl font-black text-primary font-serif tracking-widest text-center mb-2">穿越96通廊・抵達群星會</h3>
-                            <p class="text-sm font-bold text-ink/80 mb-6 font-serif leading-relaxed text-center">
-                                請穿越96通廊找到大蘋果前的群星會現場。<br>聆聽主持人帶來的時代金曲，向工作人員索取通關密語。
+                    
+                        <div class="level-card p-6 flex-1 flex flex-col justify-center overflow-y-auto custom-scrollbar">
+                            <p class="text-base font-bold text-ink mb-4 font-serif leading-relaxed text-justify">
+                                請穿越96通廊找到蘋果前的群星會
+                            </p>
+                            
+                            <img src="images/公園.jpg" class="mb-3 rounded-md shadow-sm w-full object-contain" onerror="this.src='https://placehold.co/400x250/e5d5b5/7c343d?text=公園圖'">
+                            <img src="images/主視覺1.jpg" class="mb-3 rounded-md shadow-sm w-full object-contain" onerror="this.src='https://placehold.co/400x250/e5d5b5/7c343d?text=主視覺圖1'">
+                            <img src="images/主視覺2.jpg" class="mb-3 rounded-md shadow-sm w-full object-contain" onerror="this.src='https://placehold.co/400x250/e5d5b5/7c343d?text=主視覺圖2'">
+                            
+                            <p class="text-base font-bold text-ink mb-6 font-serif leading-relaxed text-justify">
+                                主持人為我們帶來歌曲
                             </p>
                             
                             <form class="space-y-4" onsubmit="event.preventDefault(); checkL5Arrival();">
