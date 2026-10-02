@@ -1923,7 +1923,7 @@
 
             const docRef = db ? db.collection("submissions").doc() : null;
 
-            showAlert("現場查驗中", "已送出回報，請向現場關主出示任務！\n(審核通過約 1~2 秒自動切換)", "fa-tower-broadcast fa-fade", "text-primary", null, "取消等待", 0, true);
+            showAlert("現場查驗中", "已送出回報，請向現場關主出示任務！\n審核通過會自動切換", "fa-tower-broadcast fa-fade", "text-primary", null, "取消等待", 0, true);
 
             const cancelBtn = document.getElementById('alert-cancel-btn');
             if (cancelBtn) {
@@ -2022,7 +2022,7 @@
         
             if (!db) {
                 // Fallback 模擬模式 (維持原樣)
-                setTimeout(() => { cleanUp(); onSuccess(true, null); }, 1200);
+                setTimeout(() => { cleanUp(); onSuccess(true, null); }, 10000);
                 return;
             }
         
@@ -2069,7 +2069,7 @@
                     timeoutId = setTimeout(() => {
                         if (!isHandled) {
                             cleanUp();
-                            showAlert("請洽現場關主", "前線指揮所未能即時接收，若您已完成挑戰，請直接向現場工作人員出示畫面手動通關！", "fa-user-clock", "text-primary");
+                            showAlert("請洽現場關主", "前線指揮所未能即時接收！", "fa-user-clock", "text-primary");
                         }
                     }, 45000);
                 }).catch(error => {
