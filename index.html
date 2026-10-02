@@ -2560,7 +2560,7 @@
                         showAlert(`【${o.opt.text}】`, feedbackHtml, "fa-bowl-rice", "text-gold-dark", () => {
                             let cq = GameState.get('l3CurrentQ');
                             if (cq < 4) { GameState.set('l3CurrentQ', cq + 1); showL3Question(); }
-                            else { showAlert("調查成功", "每一道料理都不只是滋味，更是一段跨越海峽的生活記憶。\n\n眷村廚房匯聚了大江南北的家鄉味，也成為文化交流的場所。", "", "text-gold-dark", () => handleLevelSuccess(3)); }
+                            else { showAlert("調查成功", "從四川的麻辣香氣、湖南的辣椒鮮味，\n到江南的清甜湯品與北方的麵食文化，\n每一道料理都不只是味道，更是一段跨越距離的生活記憶。\n當不同省份的人們帶著家鄉味來到台灣，\n眷村廚房也成為文化交流的場所。", "", "text-gold-dark", () => handleLevelSuccess(3)); }
                         }, "品鑑下一道");
                     } else {
                         playErrorSound(); 
