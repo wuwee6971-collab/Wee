@@ -43,9 +43,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     
+    <!-- 僅保留 Firebase App 與 Firestore SDK (已移除 Storage) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
     <style>
         /* ==========================================
@@ -317,7 +317,7 @@
                     </div>
                 </div>
                 
-                <!-- SCREEN: INTRO CHARACTERS (前導人物介紹) -->
+                <!-- SCREEN: INTRO CHARACTERS -->
                 <div id="screen-intro-chars" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-6 flex flex-col min-h-full">
                         <div class="flex items-center mb-4 shrink-0">
@@ -374,7 +374,7 @@
                     </div>
                 </div>
                 
-                <!-- SCREEN: INTRO STORY (前導故事前言) -->
+                <!-- SCREEN: INTRO STORY -->
                 <div id="screen-intro-story" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 flex flex-col justify-center min-h-full">
                         <div class="flex items-center mb-4 shrink-0">
@@ -618,24 +618,19 @@
                     </div>
                 </div>
 
-                <!-- LEVEL 4: 榕樹廣場 (更新版：媽媽翠芳單頁 + 3個無拍照後台審核任務) -->
+                <!-- LEVEL 4: 榕樹廣場 -->
                 <div id="screen-level-4" class="screen-panel hidden p-6 flex flex-col">
-                    
-                    <!-- L4-P1: 故事前言 (插圖) -->
                     <div id="l4-p1" class="level-card p-8 flex flex-col justify-center min-h-full">
                         <div class="text-base leading-[2] font-bold text-ink text-justify flex-1 font-serif flex flex-col justify-center">
                             <p>大時代的動盪，讓無數家庭在戰亂中遷徙來台。窄小的屋舍、悶熱的夏日，讓鄰居們習慣搬著竹椅聚在村子裡的巨大榕樹下乘涼、聊家常。</p>
-                            
                             <div class="vintage-photo w-full min-h-[140px] max-h-[260px] overflow-hidden my-6 shadow-sm border-[4px] border-paper">
                                 <img src="images/榕樹廣場1.jpg" class="max-w-full max-h-[240px] w-auto h-auto object-contain loaded" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=榕樹廣場前言照'">
                             </div>
-                            
                             <p>對我們而言，這棵老榕樹下的廣場不只是公共客廳，更是凝聚所有人情感、度過童年時光的避風港。今天，請跟著我們一起走入這座充滿人情味的榕樹廣場，回到那段克難卻溫暖的歲月。</p>
                         </div>
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8 shrink-0" onclick="transitionSubPage(4, 1, 2)">展開圖鑑</button>
                     </div>
                     
-                    <!-- L4-P2: 尋找媽媽・翠芳 獨立頁面 -->
                     <div id="l4-p2" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(4, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
@@ -645,7 +640,6 @@
                             <div class="bg-primary/10 border border-primary/20 text-primary text-base font-bold text-center px-4 py-3 rounded mb-8 tracking-wider w-full shadow-inner leading-relaxed">
                                 請尋找眷村裡的媽媽翠芳，<br>她可能在<b class="text-stamp">紅色大門</b>旁。
                             </div>
-                            
                             <div class="char-card-grid flex flex-col w-64 shadow-lg border-[3px] border-ink/20 transform rotate-1 bg-white">
                                 <div class="char-img-box aspect-square skeleton-bg vintage-photo !border-[4px] !border-b-[12px] m-4 shadow-sm bg-paper-dark">
                                     <img src="images/人物照_0.png" alt="媽媽翠芳" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg'); this.src='https://placehold.co/200/e5d5b5/7c343d?text=媽媽・翠芳'">
@@ -661,19 +655,15 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6 shrink-0" onclick="transitionSubPage(4, 2, 3)">前往任務牆</button>
                     </div>
 
-                    <!-- L4-P3: 3個任務牆 (取代原先選擇題) -->
                     <div id="l4-p3" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-4 shrink-0">
                             <button onclick="transitionSubPage(4, 3, 2)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
                             <h2 class="font-black text-primary text-xl font-serif tracking-[0.15em] text-center flex-1 pr-10">3個任務</h2>
                         </div>
-                        
                         <p class="text-sm font-bold text-ink/80 text-center mb-5 tracking-wide px-2 shrink-0 border-b border-dashed border-ink/20 pb-3 leading-relaxed">
                             歡迎來到榕樹廣場！在接下來你們將扮演眷村裡的鄰家小孩，請協助完成以下挑戰。
                         </p>
-                        
                         <div class="flex-1 flex flex-col space-y-4 overflow-y-auto custom-scrollbar pb-6 pr-1">
-                            <!-- 任務一 -->
                             <div class="task-card flex flex-col" id="l4-task-card-1">
                                 <div class="flex items-center border-b border-ink/10 pb-3 mb-3">
                                     <div class="w-12 h-12 rounded bg-gold/20 flex items-center justify-center text-gold-dark text-xl shrink-0 mr-3 border border-gold/30 font-mono font-black">1</div>
@@ -686,7 +676,6 @@
                                 <button class="btn-base military-btn w-full py-3 text-sm font-black tracking-widest mt-auto" onclick="submitL4Task(0, 'L4-任務一兒童', this)">點擊回報完成</button>
                             </div>
                             
-                            <!-- 任務二 -->
                             <div class="task-card flex flex-col" id="l4-task-card-2">
                                 <div class="flex items-center border-b border-ink/10 pb-3 mb-3">
                                     <div class="w-12 h-12 rounded bg-gold/20 flex items-center justify-center text-gold-dark text-xl shrink-0 mr-3 border border-gold/30 font-mono font-black">2</div>
@@ -699,7 +688,6 @@
                                 <button class="btn-base military-btn w-full py-3 text-sm font-black tracking-widest mt-auto" onclick="submitL4Task(1, 'L4-任務二中學生', this)">點擊回報完成</button>
                             </div>
 
-                            <!-- 任務三 (保留老奶奶卡片) -->
                             <div class="task-card flex flex-col" id="l4-task-card-3">
                                 <div class="flex items-center border-b border-ink/10 pb-3 mb-3">
                                     <div class="w-12 h-12 rounded bg-gold/20 flex items-center justify-center text-gold-dark text-xl shrink-0 mr-3 border border-gold/30 font-mono font-black">3</div>
@@ -751,10 +739,8 @@
                     </div>
                 </div>
 
-                <!-- LEVEL 6: 時光膠囊 (重構版：老照片+白T小天使審核+明星花露水前導+金曲心得Modal) -->
+                <!-- LEVEL 6: 時光膠囊 -->
                 <div id="screen-level-6" class="screen-panel hidden p-6 flex flex-col">
-                    
-                    <!-- L6-P1: 前言頁 -->
                     <div id="l6-p1" class="level-card p-8 flex flex-col justify-center min-h-full">
                         <div class="text-base leading-[2] font-bold text-ink text-justify flex-1 font-serif flex flex-col justify-center">
                             <h2 class="text-2xl font-black text-primary mb-6 text-center border-b border-dashed border-ink/20 pb-4 tracking-widest">時光膠囊</h2>
@@ -774,7 +760,6 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-8 shrink-0" onclick="transitionSubPage(6, 1, 2)">認識角色</button>
                     </div>
 
-                    <!-- L6-P2: 關主小天使驗證 -->
                     <div id="l6-p2" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(6, 2, 1)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
@@ -799,7 +784,6 @@
                         <button class="btn-base military-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-6 shrink-0" onclick="verifyL6Angel()">找到了！！</button>
                     </div>
 
-                    <!-- L6-P3: 明星花露水 三重花香產業 前導介紹 -->
                     <div id="l6-p3" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-4 shrink-0">
                             <h2 class="font-black text-primary text-xl font-serif tracking-[0.15em] text-center w-full">三重花香產業</h2>
@@ -815,18 +799,15 @@
                             <div class="vintage-photo w-full min-h-[160px] max-h-[240px] overflow-hidden mb-5 shadow-sm border-[3px]">
                                 <img src="images/時光膠囊1.jpg" class="max-w-full h-auto loaded object-cover" onerror="this.src='https://placehold.co/400x300/e5d5b5/7c343d?text=三重老地圖'">
                             </div>
-                            
                             <p class="text-sm font-bold text-ink/90 leading-[1.9] text-justify font-serif mb-6">
                                 為什麼在三重種植呢？因為當時製茶場集中在台北大稻埕，又有大片土地可以種植，可以在採收後直接水路輸運，送到大稻埕碼頭。當時除了秀英花，也種植茉莉花、黃梔花。
                             </p>
-                            
                             <div class="vintage-photo w-full min-h-[180px] max-h-[260px] overflow-hidden mb-5 shadow-sm border-[3px]">
                                 <img src="images/明星花露水1.jpg" class="max-w-full h-auto loaded object-contain" onerror="this.src='https://placehold.co/300x400/e5d5b5/7c343d?text=明星花露水'">
                             </div>
                             <div class="vintage-photo w-full min-h-[180px] max-h-[260px] overflow-hidden mb-5 shadow-sm border-[3px]">
                                 <img src="images/明星花露水2.jpg" class="max-w-full h-auto loaded object-contain" onerror="this.src='https://placehold.co/300x400/e5d5b5/7c343d?text=明星花露水'">
                             </div>
-                            
                             <p class="text-sm font-bold text-ink/90 leading-[1.9] text-justify font-serif mb-2">
                                 秀英花除了在冬、春製茶季時加工成花茶香片，也是重要的香水原料之一。曾經的大眾香水「明星花露水」在1951年從上海跟著政府遷臺之後，就曾以秀英花作為主要成分。現在讓我們跟著關卡小天使，一起聞聞重製版的「明星花露水」吧！
                             </p>
@@ -834,7 +815,6 @@
                         <button class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-5 shrink-0" onclick="transitionSubPage(6, 3, 4)">進入香氛鑑定</button>
                     </div>
 
-                    <!-- L6-P4: 香氛鑑定 (猜花香) -->
                     <div id="l6-p4" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(6, 4, 3)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
@@ -878,7 +858,6 @@
                         </div>
                     </div>
 
-                    <!-- L6-P5: 點播時代金曲 -->
                     <div id="l6-p5" class="hidden flex flex-col min-h-full">
                         <div class="flex items-center justify-between mb-6 shrink-0">
                             <button onclick="transitionSubPage(6, 5, 4)" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-10 h-10 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
@@ -909,7 +888,7 @@
                     </div>
                 </div>
 
-                <!-- L7 MARKET TASK (市集攤位二選一任務，攔截頁) -->
+                <!-- L7 MARKET TASK -->
                 <div id="screen-l7-market-task" class="screen-panel hidden p-6 flex flex-col">
                     <div class="level-card p-6 flex flex-col min-h-full">
                         <div class="text-center mb-6 shrink-0 relative border-b border-dashed border-ink/20 pb-4">
@@ -918,7 +897,6 @@
                         </div>
                         
                         <div class="flex-1 flex flex-col space-y-5 overflow-y-auto custom-scrollbar pb-6 pr-1">
-                            <!-- 遊戲 A -->
                             <div class="task-card flex flex-col border-[3px] border-primary/20 bg-paper/20">
                                 <div class="flex justify-between items-start mb-3">
                                     <h3 class="font-black text-primary text-lg tracking-widest border-b border-primary/30 pb-1">遊戲 A</h3>
@@ -929,7 +907,6 @@
                                 <button class="btn-base bg-paper border border-primary/30 text-primary py-2.5 font-bold tracking-widest rounded text-sm hover:bg-primary/10" onclick="openImageLightbox('images/7-3.jpg')">查看詳細說明</button>
                             </div>
 
-                            <!-- 遊戲 B -->
                             <div class="task-card flex flex-col border-[3px] border-military/20 bg-paper/20">
                                 <div class="flex justify-between items-start mb-3">
                                     <h3 class="font-black text-military text-lg tracking-widest border-b border-military/30 pb-1">遊戲 B</h3>
@@ -947,7 +924,7 @@
                     </div>
                 </div>
 
-                <!-- LEVEL 7: 最終地點 (市集攤位 - 經緯度與TAG106輸入頁) -->
+                <!-- LEVEL 7: 最終地點 -->
                 <div id="screen-level-7" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card l7 p-6 sm:p-8 flex flex-col justify-center items-center text-center bg-[#1A1A1A] backdrop-blur-md relative border border-gold/30 rounded-xl space-y-5">
                         <i class="fa-solid fa-envelope-open-text text-5xl text-gold opacity-90 drop-shadow-[0_0_15px_rgba(221,191,146,0.4)]"></i>
@@ -1029,7 +1006,7 @@
             <button id="btn-nav-stamps" class="hover:text-primary transition-all flex items-center space-x-2 py-2 px-4 rounded-full text-primary active:scale-95 active:bg-paper tracking-wider" onclick="openStampsDrawer()"><i class="fa-solid fa-puzzle-piece"></i><span>信件碎片</span></button>
         </div>
 
-        <!-- MODAL: ALERT (支援輸入框擴充) -->
+        <!-- MODAL: ALERT -->
         <div id="modal-alert" class="fixed inset-0 bg-ink/70 z-[999] flex items-center justify-center p-6 hidden backdrop-blur-md transition-opacity duration-300">
             <div class="vintage-paper p-8 rounded-xl max-w-[340px] w-full text-center space-y-6 shadow-glass border border-gold/40 flex flex-col relative transform transition-all scale-95 opacity-0" id="alert-box" style="transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
                 <div class="absolute -right-4 -top-4 w-14 h-14 bg-stamp text-white rounded-full flex items-center justify-center font-black shadow-lg border-2 border-white transform rotate-12 z-20 pointer-events-none opacity-90 border-dashed">
@@ -1110,7 +1087,7 @@
 
     <script>
         // ==========================================
-        // 核心設定與資料 (已修復語法錯誤與補齊逗號)
+        // 核心設定與資料
         // ==========================================
         const GAME_DATA = {
             levels: [
@@ -1378,7 +1355,6 @@
             apiKey: "AIzaSyCxIinbYw3OhJhKksVHsqPaYCv0-fLUR3s",
             authDomain: "weee-57379.firebaseapp.com",
             projectId: "weee-57379",
-            storageBucket: "weee-57379.appspot.com",
             messagingSenderId: "26784647",
             appId: "1:26784647:web:e3c682e0915fe43ddf5922"
         };
@@ -1392,7 +1368,7 @@
         } catch (e) { console.warn("Firebase 初始化失敗：", e); }
 
         // ==========================================
-        // 完整圖片預載與生命週期管理
+        // 圖片預載
         // ==========================================
         const PRELOAD_IMAGE_LIST = [
             "images/林志遠.jpg", "images/阿秀.jpg", "images/小助手.jpg", "images/人物照_0.png",
@@ -1498,7 +1474,7 @@
         else window.addEventListener('DOMContentLoaded', startAppLifecycle);
 
         // ==========================================
-        // 核心功能 (Utils & Alert 防呆修復)
+        // 核心 UI & 彈窗模組
         // ==========================================
         window.showAlert = function(title, desc, iconClass = "", colorClass = "text-primary", callback = null, btnText = "確認", autoCloseDelay = 0, showCancel = false, withInput = false) {
             document.getElementById('alert-title').textContent = title;
@@ -1584,7 +1560,6 @@
                     box.classList.add('scale-95', 'opacity-0');
                 }
             }
-            // 將原本的 300 縮短為 150，加速關閉流暢度
             setTimeout(() => {
                 modal.classList.add('hidden');
                 if (callback) callback();
@@ -1692,18 +1667,14 @@
         };
 
         // ==========================================
-        // 雙軌後台審核機制 (優化輪詢與監聽)
+        // 純 Firestore + Base64 快速審核機制 (無 Storage 依賴)
         // ==========================================
         let activeUploadUnsubscribe = null;
-        let activeUploadPollTimer = null;
 
         function uploadAndListenVerification(file, levelName, onSuccess) {
             _executeFirebaseSubmission({ levelId: levelName, type: 'photo' }, onSuccess, file);
         }
 
-        // ==========================================
-        // 極速非圖片審核引擎 (同步 ID + 零延遲直通)
-        // ==========================================
         function submitDirectVerification(levelName, extraData = {}, onSuccess) {
             if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
 
@@ -1716,10 +1687,8 @@
                 if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
             };
 
-            // 1. 同步在本地生成 Document Reference (0 毫秒，不需等伺服器往返)
             const docRef = db ? db.collection("submissions").doc() : null;
 
-            // 2. 顯示輕量化等待提示 (非圖片任務不擋住視線)
             showAlert("現場查驗中", "已送出回報，請向現場關主出示任務！\n(審核通過將自動切換畫面)", "fa-tower-broadcast fa-fade", "text-primary", null, "取消等待", 0, true);
 
             const cancelBtn = document.getElementById('alert-cancel-btn');
@@ -1742,13 +1711,11 @@
             const handleResult = (approved, rejectReason = null) => {
                 if (isHandled) return;
                 cleanUp();
-                // 立即關閉等待彈窗，不浪費動畫時間
                 const modal = document.getElementById('modal-alert');
                 if (modal) modal.classList.add('hidden');
                 onSuccess(approved, rejectReason);
             };
 
-            // 3. 立即掛上監聽 (比原本快 200~300ms)
             activeUploadUnsubscribe = docRef.onSnapshot({ includeMetadataChanges: false }, (doc) => {
                 if (isHandled || !doc.exists) return;
                 const data = doc.data();
@@ -1756,7 +1723,6 @@
                 else if (data.status === "rejected") handleResult(false, data.rejectReason);
             }, (err) => console.warn("直通監聽警告:", err));
 
-            // 4. 背景非同步寫入 Firestore
             const payload = {
                 teamName: GameState.get('teamName') || "匿名隊伍",
                 teamMembers: GameState.get('teamMembers') || "",
@@ -1774,7 +1740,6 @@
                 }
             });
 
-            // 45 秒防呆超時
             timeoutId = setTimeout(() => {
                 if (!isHandled) {
                     cleanUp();
@@ -1814,7 +1779,7 @@
                 };
             }
 
-            const sendPayload = (photoData = null) => {
+            const sendPayload = (base64Img = null) => {
                 const teamName = GameState.get('teamName') || "匿名隊伍";
                 const payload = {
                     teamName: teamName,
@@ -1824,12 +1789,9 @@
                     ...docData
                 };
 
-                if (photoData) {
-                    if (photoData.startsWith('data:image')) {
-                        payload.imageBase64 = photoData;
-                    } else {
-                        payload.photoUrl = photoData;
-                    }
+                // 直接存入 imageBase64 欄位
+                if (base64Img) {
+                    payload.imageBase64 = base64Img;
                 }
 
                 db.collection("submissions").add(payload).then(docRef => {
@@ -1873,40 +1835,21 @@
             };
 
             if (file) {
-                // 執行輕量前端縮圖（寬高限 600px，大小僅約 35KB）
-                compressImageReliably(file, 600, 0.5, (dataUrl, blob) => {
+                // 壓縮至最長邊 600px，品質 0.5，產生的字串大小僅約 35KB，遠低於 Firestore 1MB 限制
+                compressImageReliably(file, 600, 0.5, (dataUrl) => {
                     if (!dataUrl) {
                         console.warn("相片解析異常，直接送出文字任務");
                         sendPayload();
                         return;
                     }
-
-                    // 優先嘗試 Storage；若 Storage 出現任何問題（包含 CORS/未啟用），立即使用 Base64 送出
-                    try {
-                        if (firebase.storage && blob) {
-                            const fileName = `submissions/${Date.now()}_${Math.random().toString(36).substring(2, 7)}.jpg`;
-                            const storageRef = firebase.storage().ref().child(fileName);
-                            storageRef.put(blob, { contentType: 'image/jpeg' })
-                                .then(snapshot => snapshot.ref.getDownloadURL())
-                                .then(url => sendPayload(url))
-                                .catch(err => {
-                                    console.warn("Storage 遭拒或網路異常，切換至 Base64 直傳：", err);
-                                    sendPayload(dataUrl);
-                                });
-                        } else {
-                            sendPayload(dataUrl);
-                        }
-                    } catch (err) {
-                        console.warn("Storage 呼叫異常，直接使用 Base64：", err);
-                        sendPayload(dataUrl);
-                    }
+                    sendPayload(dataUrl);
                 });
             } else {
                 sendPayload();
             }
         }
 
-        // 高相容性手機縮圖函式（支援 iPhone/Android 原生相機）
+        // 高相容性 Canvas 縮圖，轉為乾淨的 Base64
         function compressImageReliably(file, maxWidth, quality, callback) {
             const objectUrl = URL.createObjectURL(file);
             const img = new Image();
@@ -1922,19 +1865,12 @@
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
                 const dataUrl = canvas.toDataURL('image/jpeg', quality);
-
-                if (canvas.toBlob) {
-                    canvas.toBlob(blob => {
-                        callback(dataUrl, blob);
-                    }, 'image/jpeg', quality);
-                } else {
-                    callback(dataUrl, null);
-                }
+                callback(dataUrl);
             };
 
             img.onerror = function() {
                 URL.revokeObjectURL(objectUrl);
-                callback(null, null);
+                callback(null);
             };
 
             img.src = objectUrl;
@@ -2011,8 +1947,6 @@
 
         async function transitionSubPage(level, fromPage, toPage) {
             playBeep();
-            
-            // 進入香氛鑑定時，重置選取狀態
             if (level === 6 && toPage === 4) {
                 l6SelectedFlowers = [];
                 document.querySelectorAll('#flower-grid .flower-card').forEach(c => c.classList.remove('ring-4', 'ring-primary'));
@@ -2118,7 +2052,6 @@
                 GameState.set('endTime', Date.now()); 
                 if (globalTimerInterval) { clearInterval(globalTimerInterval); globalTimerInterval = null; }
 
-                // 同步完賽紀錄至資料庫供後台統計
                 if (db) {
                     const teamName = GameState.get('teamName') || "匿名隊伍";
                     db.collection("submissions").add({
@@ -2137,6 +2070,7 @@
                 showAlert("調查成功", msg, "", "", () => showScreen('main'), "返回總部");
             }
         }
+
         function renderMain() {
             let seq = GameState.get('customSequence');
             let idx = GameState.get('currentStageIndex');
@@ -2146,7 +2080,7 @@
         }
 
         // ==========================================
-        // LEVEL 1 完整邏輯
+        // LEVEL 1
         // ==========================================
         let currentL1TargetIdx = null;
         document.getElementById('l1-camera-input').addEventListener('change', function() {
@@ -2155,7 +2089,6 @@
                 const loc = GAME_DATA.level1.locations[currentL1TargetIdx];
                 const targetNumber = loc.code || ['1', '9', '4', '5'][currentL1TargetIdx];
 
-                // 修改：參數增加 (isApproved, rejectReason)
                 uploadAndListenVerification(file, `任務一：${loc.title}`, (isApproved, rejectReason) => {
                     if (isApproved) {
                         playSuccessSound();
@@ -2165,13 +2098,9 @@
                         showAlert("審核通過", `長官已確認【${loc.title}】之構件特徵！\n\n${loc.desc}\n\n★ 解密通關密碼：【<b class="text-3xl text-primary font-mono">${targetNumber}</b>】`, "fa-circle-check", "text-emerald-700", null, "收到！");
                     } else {
                         playErrorSound();
-                        // 融合關主回報原因與關卡提示
                         let errorMsg = `【長官批退原因】\n<b class="text-primary text-base">「${rejectReason || '構件特徵辨識未通過'}」</b>\n\n`;
-                        if (loc.failHint) {
-                            errorMsg += `【現場偵察提示】\n${loc.failHint}`;
-                        } else {
-                            errorMsg += `請至現場再次確認【${loc.title}】特徵後重新拍攝！`;
-                        }
+                        if (loc.failHint) errorMsg += `【現場偵察提示】\n${loc.failHint}`;
+                        else errorMsg += `請至現場再次確認【${loc.title}】特徵後重新拍攝！`;
                         showAlert("任務退回重審", errorMsg, "fa-circle-xmark", "text-primary");
                     }
                 });
@@ -2234,12 +2163,11 @@
         function updateL1Display() { let input = GameState.get('l1Input') || []; document.querySelectorAll('#l1-code-container .code-box').forEach((box, i) => { box.textContent = input[i] || ''; }); }
 
         // ==========================================
-        // LEVEL 2 完整邏輯 (修復重複拍照與巢狀樣式)
+        // LEVEL 2
         // ==========================================
         document.getElementById('l2-camera-input').addEventListener('change', function() {
             if (this.files && this.files.length > 0) {
                 const file = this.files[0]; this.value = '';
-                // 修改：參數增加 (isApproved, rejectReason)
                 uploadAndListenVerification(file, "任務二：眷舍空間", (isApproved, rejectReason) => {
                     let currentQ = GameState.get('l2CurrentQ');
                     const qData = GAME_DATA.level2.questions[currentQ];
@@ -2260,18 +2188,15 @@
                         }, "進入下一題");
                     } else {
                         playErrorSound();
-                        // 優先顯示關主退回理由
                         let errorMsg = `【長官查驗未通過】\n<b class="text-primary text-base">「${rejectReason || '照片取證角度或動作不符'}」</b>\n\n`;
-                        if (qData && qData.failHint) {
-                            errorMsg += `【取證備忘】\n${qData.failHint}`;
-                        } else {
-                            errorMsg += `請確認隊員動作與建築特徵完整入鏡後重拍！`;
-                        }
+                        if (qData && qData.failHint) errorMsg += `【取證備忘】\n${qData.failHint}`;
+                        else errorMsg += `請確認隊員動作與建築特徵完整入鏡後重拍！`;
                         showAlert("照片審核退回", errorMsg, "fa-circle-xmark", "text-primary");
                     }
                 });
             }
         });
+
         let l2SequenceIntroSeen = false;
         function renderL2() {
             let currentQ = GameState.get('l2CurrentQ');
@@ -2344,7 +2269,6 @@
                 const imgList = qData.images || (qData.image ? [qData.image] : []);
                 if (imgList.length > 0) {
                     qImgContainer.classList.remove('hidden');
-                    // 修復：單張時外層不用加重複相框 class，避免雙層邊框
                     qImgContainer.className = imgList.length > 1 ? "mb-6 w-full grid grid-cols-2 gap-3 shrink-0" : "mb-6 w-full shrink-0 min-h-[160px] max-h-[300px]";
                     imgList.forEach((src) => {
                         const wrap = document.createElement('div');
@@ -2472,13 +2396,12 @@
         window.prevL2Question = function() { playBeep(); let cq = GameState.get('l2CurrentQ'); if (cq > 0) { GameState.set('l2CurrentQ', cq - 1); renderL2(); } };
 
         // ==========================================
-        // LEVEL 3 完整邏輯
+        // LEVEL 3
         // ==========================================
         window.startL3Mission = function() { playBeep(); showScreen('level-3'); };
         document.getElementById('l3-camera-input').addEventListener('change', function() {
             if (this.files && this.files.length > 0) {
                 const file = this.files[0]; this.value = '';
-                // 修改：參數增加 (isApproved, rejectReason)
                 uploadAndListenVerification(file, "任務三：村長的家", (isApproved, rejectReason) => {
                     if (isApproved) {
                         playSuccessSound();
@@ -2593,7 +2516,7 @@
         };
 
         // ==========================================
-        // LEVEL 4 完整邏輯
+        // LEVEL 4
         // ==========================================
         function renderL4Tasks() {
             const tasksState = GameState.get('l4Tasks') || [false, false, false];
@@ -2630,7 +2553,6 @@
                     let tasks = GameState.get('l4Tasks') || [false, false, false];
                     tasks[taskIdx] = true;
                     GameState.set('l4Tasks', tasks);
-                    // 局部更新卡片狀態，不彈窗阻擋
                     renderL4Tasks();
                 } else {
                     playErrorSound();
@@ -2641,7 +2563,7 @@
         };
 
         // ==========================================
-        // LEVEL 5 完整邏輯
+        // LEVEL 5
         // ==========================================
         window.checkL5Arrival = function() {
             const val = document.getElementById('l5-check-password').value.trim();
@@ -2651,12 +2573,12 @@
                 playErrorSound(); showAlert("密碼錯誤", "請輸入正確的通關密語！", "fa-circle-xmark", "text-primary");
             }
         };
+
         window.renderL5 = function(index) {
             GameState.set('l5CurrentQ', index);
             const qData = GAME_DATA.level5.questions[index];
             document.getElementById('l5-q-counter').textContent = `群星挑戰 ${index + 1} / ${GAME_DATA.level5.questions.length}`;
 
-            // 修復照片切換殘影：先隱藏再淡入
             const charImg = document.getElementById('l5-char-img');
             charImg.style.transition = 'opacity 0.25s ease';
             charImg.style.opacity = '0';
@@ -2687,9 +2609,8 @@
             }, (isApproved, rejectReason) => {
                 if (isApproved) {
                     playSuccessSound();
-                    // 通過時不再跳「確認」彈窗，直接切換到下一位歌手或結案
                     if (index + 1 < GAME_DATA.level5.questions.length) {
-                        renderL5(index + 1); // 秒切下一題！
+                        renderL5(index + 1);
                     } else {
                         showAlert("群星之夜挑戰成功", "恭喜通過所有歌手的實體接唱考驗！", "fa-star", "text-gold-dark", () => {
                             handleLevelSuccess(5);
@@ -2702,10 +2623,10 @@
                 }
             });
         };
-        // ==========================================
-        // LEVEL 6 完整邏輯 (修復播放中斷卡關、音訊錯誤處理)
-        // ==========================================
 
+        // ==========================================
+        // LEVEL 6
+        // ==========================================
         let l6SelectedFlowers = [];
         window.toggleFlower = function(el, fName) {
             playBeep();
@@ -2728,13 +2649,11 @@
             }
         };
 
-        // 尋找白T小天使：通過直接切換到故事頁，省去 1 次點擊
         window.verifyL6Angel = function() {
             playBeep();
             submitDirectVerification("L6-尋找關主小天使", {}, (isApproved, rejectReason) => {
                 if (isApproved) {
                     playSuccessSound();
-                    // 直通切換，不彈出確認按鈕
                     transitionSubPage(6, 2, 3);
                 } else {
                     playErrorSound();
@@ -2744,7 +2663,6 @@
             });
         };
 
-        // 時代金曲心得：通過直接通關
         window.triggerSongFeedback = function() {
             const audioEl = document.getElementById('l6-audio-player');
             if (audioEl) audioEl.pause();
@@ -2753,7 +2671,7 @@
                 submitDirectVerification("L6-金曲心得", { note: feedbackText }, (isApproved, rejectReason) => {
                     if (isApproved) {
                         playSuccessSound();
-                        handleLevelSuccess(6); // 直通結算本關！
+                        handleLevelSuccess(6);
                     } else {
                         playErrorSound();
                         const reason = rejectReason || "心得內容未達標或未符合提問，請再多寫一點真實感受！";
@@ -2772,7 +2690,6 @@
             const audioEl = document.getElementById('l6-audio-player'); 
             const prog = document.getElementById('l6-progress');
             
-            // 抓取回饋按鈕元素
             const getFeedbackBtn = () => document.querySelector('#l6-player button');
             
             audioEl.ontimeupdate = () => { 
@@ -2782,7 +2699,6 @@
                 } 
             };
             
-            // 播放結束才解鎖心得按鈕並自動彈出輸入框
             audioEl.onended = () => {
                 prog.style.width = '100%';
                 const fBtn = getFeedbackBtn();
@@ -2829,7 +2745,6 @@
                     document.getElementById('l6-song-title').textContent = song.title; 
                     document.getElementById('l6-lyrics').textContent = song.lyric;
 
-                    // 歌曲開始播放時鎖定按鈕，防止未聽完即送出
                     const fBtn = getFeedbackBtn();
                     if (fBtn) {
                         fBtn.disabled = true;
@@ -2845,7 +2760,7 @@
         }
 
         // ==========================================
-        // LEVEL 7 完整邏輯
+        // LEVEL 7
         // ==========================================
         document.getElementById('btn-goto-current').addEventListener('click', () => {
             initAudio(); playBeep(600, 0.05);
@@ -2872,7 +2787,6 @@
                 if (isApproved) {
                     playSuccessSound();
                     GameState.set('l7MarketDone', true);
-                    // 直通跳轉至最終地點
                     showScreen('level-7');
                 } else {
                     playErrorSound();
@@ -2881,6 +2795,7 @@
                 }
             });
         };
+
         window.verifyL7Passcode = function() {
             const input = document.getElementById('l7-input-code');
             const val = input ? input.value.trim().toUpperCase() : "";
@@ -2894,7 +2809,7 @@
         };
 
         // ==========================================
-        // 全域功能 (任務代碼、計時器、結案證明)
+        // 全域功能
         // ==========================================
         window.verifyLevelCode = function() {
             playBeep();
@@ -3034,7 +2949,6 @@
                 GameState.set('giftClaimed', true); 
                 GameState.set('giftClaimedTime', timeTag); 
                 
-                // 即時將領獎紀錄同步至後台資料庫
                 if (db) {
                     const teamName = GameState.get('teamName') || "匿名隊伍";
                     db.collection("submissions").where("teamName", "==", teamName).get().then(snapshot => {
