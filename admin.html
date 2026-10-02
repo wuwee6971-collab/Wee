@@ -808,18 +808,34 @@
             }
         }
 
-        // 11. 更新審核狀態
+        // 優化後台更新狀態：點擊瞬間局部更新畫面，極大化順暢度
         async function updateStatus(docId, newStatus) {
             try {
+                // 1. 樂觀 UI 更新 (Optimistic UI)：立刻在畫面上改變狀態，不等待 DB 返回
+                const targetCard = document.getElementById(`card-${docId}`);
+                if (targetCard) {
+                    // 加上淡出或狀態改變的視覺效果
+                    targetCard.style.opacity = '0.5';
+                    targetCard.style.pointerEvents = 'none';
+                }
+
+                // 2. 背景非同步寫入資料庫
                 await db.collection("submissions").doc(docId).update({
                     status: newStatus,
                     reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                const target = currentSubmissions.find(s => s.id === docId);
-                if (target) target.status = newStatus;
-                renderList();
+                
+                // (註：因為有 onSnapshot 監聽，資料庫更新後 startListening 會自動觸發最新的狀態，
+                // 但如果搭配稍後的進階優化，這裡的體驗已經非常流暢了)
+                
             } catch (err) {
                 alert("狀態變更失敗：" + err.message);
+                // 失敗時恢復 UI
+                const targetCard = document.getElementById(`card-${docId}`);
+                if (targetCard) {
+                    targetCard.style.opacity = '1';
+                    targetCard.style.pointerEvents = 'auto';
+                }
             }
         }
 
