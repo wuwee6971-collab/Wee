@@ -1604,16 +1604,26 @@
                             globalTimerInterval = setInterval(updateTimerDisplay, 1000);
                             updateTimerDisplay();
 
+                            // 🛠️ 自我修復：清除或攔截舊快取中殘留的錯誤名稱 'l5-arrival'
+                            let savedScreen = GameState.get('currentScreen') || 'main';
+                            if (savedScreen === 'l5-arrival') {
+                                savedScreen = 'level-5';
+                                GameState.set('currentScreen', 'level-5');
+                            }
+
                             if (GameState.get('timeExpiredHandled')) {
                                 showScreen('level-7');
                             } else if (GameState.get('stamps').filter(Boolean).length === 7) {
                                 showScreen('level-7');
                             } else {
-                                const savedScreen = GameState.get('currentScreen') || 'main';
                                 showScreen(savedScreen);
                             }
                         } else {
-                            const savedScreen = GameState.get('currentScreen') || 'intro-chars';
+                            let savedScreen = GameState.get('currentScreen') || 'intro-chars';
+                            if (savedScreen === 'l5-arrival') {
+                                savedScreen = 'level-5';
+                                GameState.set('currentScreen', 'level-5');
+                            }
                             showScreen(savedScreen);
                         }
                     } else {
@@ -2191,12 +2201,23 @@
         }
 
         async function showScreen(screenId) {
+            // 🛠️ 1. 自我修復：將殘留或誤傳的 'l5-arrival' 自動轉正為 'level-5'
+            if (screenId === 'l5-arrival') screenId = 'level-5';
+
             stopAllMedia();
+
+            // 🛠️ 2. 防呆回退：若找不到目標 DOM，退回主畫面避免全螢幕空白
+            let targetScreen = document.getElementById(`screen-${screenId}`);
+            if (!targetScreen) {
+                console.warn(`找不到 #screen-${screenId}，已自動退回主畫面`);
+                screenId = 'main';
+                targetScreen = document.getElementById('screen-main');
+            }
+
             GameState.set('currentScreen', screenId);
             const viewport = document.getElementById('game-viewport');
             const currentActive = viewport.querySelector('.screen-panel.screen-active, .screen-panel:not(.hidden)');
-            const targetScreen = document.getElementById(`screen-${screenId}`);
-        
+            
             if (currentActive && currentActive !== targetScreen) {
                 currentActive.classList.remove('screen-active');
                 currentActive.classList.add('screen-exit');
@@ -2210,7 +2231,7 @@
                     if (s !== targetScreen) s.classList.add('hidden');
                 });
             }
-        
+
             if (targetScreen) {
                 targetScreen.classList.remove('hidden');
                 targetScreen.classList.add('screen-enter');
@@ -2219,10 +2240,10 @@
                 targetScreen.classList.add('screen-active');
                 viewport.scrollTop = 0;
             }
-        
+
             document.getElementById('modal-stamps').classList.add('hidden');
             updateHeader(screenId);
-        
+
             if (screenId === 'certificate') renderCertificate();
             if (screenId === 'main') renderMain();
             if (screenId === 'level-1') { forceSubPageInit(1, 1, 2); renderL1(); }
@@ -2237,7 +2258,7 @@
             if (screenId === 'level-7') {
                 renderPuzzlePieces('l7-inline-puzzle-board', false);
             }
-        
+
             updateStampBadgeCount();
         }
 
@@ -3089,8 +3110,13 @@
         // ==========================================
         // LEVEL 7
         // ==========================================
+        
+        // ==========================================
+        // 拆開任務信封（主畫面導向當前正確關卡）
+        // ==========================================
         document.getElementById('btn-goto-current')?.addEventListener('click', () => {
-            initAudio(); playBeep(600, 0.05);
+            initAudio(); 
+            playBeep(600, 0.05);
             let seq = GameState.get('customSequence') || [7, 6, 1, 4, 2, 5, 3]; 
             let idx = GameState.get('currentStageIndex') || 0; 
             let stamps = GameState.get('stamps') || [];
@@ -3101,12 +3127,15 @@
             }
 
             const targetLvl = seq[idx];
-            if (targetLvl === 3) showScreen('l3-intro');
-            else if (targetLvl === 5) showScreen('l5-arrival');
-            else if (targetLvl === 7) showScreen('l7-market-task');
-            else showScreen(`level-${targetLvl}`);
+            if (targetLvl === 3) {
+                showScreen('l3-intro');
+            } else if (targetLvl === 7) {
+                showScreen('l7-market-task');
+            } else {
+                // 🛠️ 第 5 關與其他關卡統一導向正確的 DOM (screen-level-5)
+                showScreen(`level-${targetLvl}`);
+            }
         });
-
         window.submitL7MarketTask = function() {
             playBeep();
             submitDirectVerification("L7-市集任務二選一", {}, (isApproved, rejectReason) => {
@@ -3144,7 +3173,7 @@
                 openFullLetter();
             } else {
                 playErrorSound();
-                showAlert("密碼錯誤", "最終密碼不正確！\n請抵達現場後向工作人員（NPC）索取最終密碼。", "fa-circle-xmark", "text-primary");
+                showAlert("密碼錯誤", "最終密碼不正確！\n請抵達現場後向工作人員索取最終密碼。", "fa-circle-xmark", "text-primary");
             }
         };
 
