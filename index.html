@@ -1457,7 +1457,6 @@
                 ]
             },
             puzzles: [
-                puzzles: [
                             { id: 1, class: 'piece-1', text: '阿秀，拍勢啦<br>我可能沒辦法遵守回家的約定了。' },
                             { id: 2, class: 'piece-2', text: '每次走到巷口，聞到那個味道，<br>我就知道，我到家了。' },
                             { id: 3, class: 'piece-3', text: '我總想著，等一切結束，<br>要陪你慢慢吃一輩子的飯。' },
@@ -1837,7 +1836,7 @@
             if (count < 6) {
                 showAlert(
                     "調查強制中止",
-                    `委託時限已截止，未能找齊所有的歷史碎片（目前僅調閱 ${count}/7 片）。\n\n時空錨點已關閉，無法拼湊出完整的信件，請全體隊員立即返回集合點完成結案手續。`,
+                    `委託時限已截止，未能找齊所有的歷史碎片（目前僅調閱 ${count}/6 片）。\n\n時空錨點已關閉，無法拼湊出完整的信件，請全體隊員立即返回集合點完成結案手續。`,
                     "fa-hourglass-end",
                     "text-primary",
                     () => { showScreen('certificate'); },
@@ -3199,21 +3198,6 @@
         // ==========================================
         // 拆開任務信封（主畫面導向當前正確關卡）
         // ==========================================
-        // 修正後：
-        window.submitL7MarketTask = function() {
-            playBeep();
-            submitDirectVerification("L7-市集攤位挑戰", { level: 7, levelKey: "L7" }, (isApproved, rejectReason) => {
-                if (isApproved) {
-                    playSuccessSound();
-                    GameState.set('l7MarketDone', true);
-                    handleLevelSuccess(7);
-                } else {
-                    playErrorSound();
-                    const reason = rejectReason || "長官回報尚未確認通關！請完成市集挑戰後再次送出。";
-                    showAlert("市集審核退回", `【攤位關主回報】\n<b class="text-primary text-base">「${reason}」</b>`, "fa-circle-xmark", "text-primary");
-                }
-            });
-        };
 
         window.verifyL7Passcode = function() {
             const input = document.getElementById('l7-input-code');
