@@ -234,8 +234,7 @@
         .piece-3 { top: 5%; left: 68%; width: 32%; height: 42%; clip-path: polygon(5% 5%, 100% 0, 95% 95%, 0 100%); transform: rotate(-0.5deg); }
         .piece-4 { top: 40%; left: 0%; width: 38%; height: 60%; clip-path: polygon(0 5%, 90% 0, 100% 100%, 5% 95%); transform: rotate(0.5deg); }
         .piece-5 { top: 42%; left: 32%; width: 35%; height: 58%; clip-path: polygon(5% 0, 100% 5%, 95% 100%, 0 95%); transform: rotate(-1deg); }
-        .piece-6 { top: 40%; left: 62%; width: 25%; height: 62%; clip-path: polygon(0 5%, 95% 0, 100% 100%, 5% 95%); transform: rotate(1deg); }
-        .piece-7 { top: 44%; left: 78%; width: 22%; height: 56%; clip-path: polygon(5% 0, 100% 5%, 90% 100%, 0 95%); transform: rotate(-1.5deg); }
+        .piece-6 { top: 40%; left: 62%; width: 38%; height: 62%; clip-path: polygon(0 5%, 100% 0, 100% 100%, 5% 95%); transform: rotate(1deg); }
 
         .food-feedback-box { width: 100%; max-height: 220px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 8px; margin: 12px 0; background-color: #E8DFCC; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); border: 2px solid rgba(44, 30, 22, 0.1); }
         .food-feedback-box img { max-width: 100%; max-height: 200px; width: auto; height: auto; object-fit: contain; }
@@ -294,7 +293,7 @@
                     <i id="sound-icon" class="fa-solid fa-volume-high text-gold text-lg"></i>
                 </button>
                 <div class="font-mono text-xs font-black flex items-center bg-primary-dark px-2.5 py-1.5 rounded border border-ink/30 shadow-inner cursor-pointer hover:bg-ink/50 transition-colors active:scale-95" onclick="openStampsDrawer()">
-                    <i class="fa-solid fa-puzzle-piece text-gold mr-1.5"></i><span id="header-puzzle-text" class="tracking-widest">0/7</span>
+                    <i class="fa-solid fa-puzzle-piece text-gold mr-1.5"></i><span id="header-puzzle-text" class="tracking-widest">0/6</span>
                 </div>
             </div>
         </div>
@@ -409,8 +408,8 @@
                 <div id="screen-story" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-8 flex flex-col justify-center min-h-full">
                         <h2 class="text-2xl font-black text-primary mb-6 text-center font-serif tracking-widest border-b border-dashed border-ink/20 pb-4">信件碎片</h2>
-                        <div class="grid grid-cols-4 gap-3 mb-8 place-items-center">
-                            <div class="w-14 h-14 bg-paper-dark border border-ink/10 flex items-center justify-center rounded shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-xl"></i></div>
+                        <!-- 修改後 -->
+                        <div class="grid grid-cols-3 gap-3 mb-8 place-items-center">
                             <div class="w-14 h-14 bg-paper-dark border border-ink/10 flex items-center justify-center rounded shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-xl"></i></div>
                             <div class="w-14 h-14 bg-paper-dark border border-ink/10 flex items-center justify-center rounded shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-xl"></i></div>
                             <div class="w-14 h-14 bg-paper-dark border border-ink/10 flex items-center justify-center rounded shadow-inner"><i class="fa-solid fa-lock text-ink/30 text-xl"></i></div>
@@ -435,7 +434,7 @@
                         </button>
                         <h2 class="text-2xl font-black text-primary mb-8 text-center font-serif tracking-widest border-b border-dashed border-ink/20 pb-4 mt-4">頁面操作說明</h2>
                         <ul class="space-y-6 text-base font-bold text-ink/90 leading-[1.8] font-serif">
-                            <li class="flex items-start"><i class="fa-solid fa-stopwatch text-primary mt-1 mr-3 text-lg shrink-0"></i><span><strong>剩餘時間</strong>：委託總時間為 90 分鐘，計時器將顯示於主畫面。</span></li>
+                            <li class="flex items-start"><i class="fa-solid fa-stopwatch text-primary mt-1 mr-3 text-lg shrink-0"></i><span><strong>剩餘時間</strong>：委託總時間為 80 分鐘，計時器將顯示於主畫面。</span></li>
                             <li class="flex items-start"><i class="fa-solid fa-envelope-open-text text-primary mt-1 mr-3 text-lg shrink-0"></i><span><strong>信件碎片</strong>：點擊下方「信件碎片」按鈕，可隨時檢視收集進度與內容。</span></li>
                             <li class="flex items-start"><i class="fa-solid fa-house text-primary mt-1 mr-3 text-lg shrink-0"></i><span><strong>返回總部</strong>：點擊下方「回主畫面」，可隨時返回總部確認下一個任務地點。</span></li>
                         </ul>
@@ -461,7 +460,7 @@
                 <div id="screen-main" class="screen-panel hidden p-6 flex flex-col space-y-6 justify-center">
                     <div class="level-card p-6 text-center flex flex-col items-center justify-center">
                         <div class="text-xs font-bold text-ink/60 mb-2 tracking-widest uppercase">委託剩餘時間</div>
-                        <div id="main-timer" class="text-5xl font-mono font-black text-primary tracking-wider drop-shadow-sm">01:30:00</div>
+                        <div id="main-timer" class="text-5xl font-mono font-black text-primary tracking-wider drop-shadow-sm">01:20:00</div>
                     </div>
                     <div class="level-card p-8 text-center bg-paper/50">
                         <div class="text-xs font-bold text-ink/60 mb-3 tracking-widest">下一步，請前往</div>
@@ -1056,42 +1055,6 @@
                     </div>
                 </div>
 
-                <!-- L7 MARKET TASK -->
-                <div id="screen-l7-market-task" class="screen-panel hidden p-6 flex flex-col">
-                    <div class="level-card p-6 flex flex-col min-h-full">
-                        <div class="text-center mb-6 shrink-0 relative border-b border-dashed border-ink/20 pb-4">
-                            <h2 class="text-2xl font-black text-primary font-serif tracking-widest">市集攤位挑戰</h2>
-                            <p class="text-sm font-bold text-ink/70 mt-2 tracking-wide">請找尋市集中的以下關卡，並完成其中一項</p>
-                        </div>
-                        
-                        <div class="flex-1 flex flex-col space-y-5 overflow-y-auto custom-scrollbar pb-6 pr-1">
-                            <div class="task-card flex flex-col border-[3px] border-primary/20 bg-paper/20">
-                                <div class="flex justify-between items-start mb-3">
-                                    <h3 class="font-black text-primary text-lg tracking-widest border-b border-primary/30 pb-1">遊戲 A：沙包大戰</h3>
-                                </div>
-                                <div class="bleed-p6 -mt-3 mb-3 border-b-2 border-primary/20 aspect-[16/9] overflow-hidden bg-stone-900 cursor-zoom-in" onclick="openImageLightbox('images/7-1.jpg')">
-                                    <img src="images/7-1.jpg" class="w-full h-full object-cover loaded" alt="沙包大戰圖片" onerror="this.src='https://placehold.co/400x200/e5d5b5/7c343d?text=沙包大戰圖片'">
-                                </div>
-                                <button type="button" class="btn-base bg-paper border border-primary/30 text-primary py-2.5 font-bold tracking-widest rounded text-sm hover:bg-primary/10" onclick="openImageLightbox('images/7-3.jpg')">查看詳細說明</button>
-                            </div>
-
-                            <div class="task-card flex flex-col border-[3px] border-military/20 bg-paper/20">
-                                <div class="flex justify-between items-start mb-3">
-                                    <h3 class="font-black text-military text-lg tracking-widest border-b border-military/30 pb-1">遊戲 B：復古彈珠台</h3>
-                                </div>
-                                <div class="bleed-p6 -mt-3 mb-3 border-b-2 border-military/20 aspect-[16/9] overflow-hidden bg-stone-900 cursor-zoom-in" onclick="openImageLightbox('images/7-2.jpg')">
-                                    <img src="images/7-2.jpg" class="w-full h-full object-cover loaded" alt="復古彈珠台圖片" onerror="this.src='https://placehold.co/400x200/e5d5b5/7c343d?text=復古彈珠台圖片'">
-                                </div>
-                                <button type="button" class="btn-base bg-paper border border-primary/30 text-primary py-2.5 font-bold tracking-widest rounded text-sm hover:bg-primary/10" onclick="openImageLightbox('images/7-4.jpg')">查看詳細說明</button>
-                            </div>
-                        </div>
-
-                        <button type="button" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.15em] mt-auto shrink-0" onclick="submitL7MarketTask()">
-                            已完成挑戰，送出確認 <i class="fa-solid fa-check ml-2"></i>
-                        </button>
-                    </div>
-                </div>
-
                 <!-- 最終集合地點 -->
                 <div id="screen-level-7" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card l7 p-6 sm:p-8 flex flex-col justify-center items-center text-center bg-[#1A1A1A] backdrop-blur-md relative border border-gold/30 rounded-xl space-y-4">
@@ -1124,7 +1087,7 @@
 
                         <div class="w-full my-2">
                             <div class="text-xs font-serif font-bold text-gold/90 text-center mb-2 tracking-widest flex items-center justify-center gap-1">
-                                <i class="fa-solid fa-puzzle-piece text-gold"></i><span>已拼湊信件碎片 (<span id="l7-collected-count">0</span>/7)</span>
+                                <i class="fa-solid fa-puzzle-piece text-gold"></i><span>已拼湊信件碎片 (<span id="l7-collected-count">0</span>/6)</span>
                             </div>
                             <div id="l7-inline-puzzle-board" class="bg-black/60 rounded-lg overflow-hidden shadow-inner border border-gold/20 w-full aspect-[4/3] relative"></div>
                         </div>
@@ -1294,9 +1257,14 @@
         // 核心設定與資料
         const GAME_DATA = {
             levels: [
-                { id: 1, name: '防砲陣地' }, { id: 2, name: '眷村空間與建築' }, { id: 3, name: '村長的家' },
-                { id: 4, name: '榕樹廣場' }, { id: 5, name: '群星之夜' }, { id: 6, name: '時光膠囊' }, { id: 7, name: '市集攤位' }
-            ],
+                        { id: 1, name: '防砲陣地' }, 
+                        { id: 2, name: '眷村空間與建築' }, 
+                        { id: 3, name: '村長的家' },
+                        { id: 4, name: '榕樹廣場' }, 
+                        { id: 5, name: '群星之夜' }, 
+                        { id: 6, name: '時光膠囊' }
+                        // 移除 { id: 7, name: '市集攤位' }
+                    ],
             level1: {
                 locations: [
                     { 
@@ -1489,14 +1457,15 @@
                 ]
             },
             puzzles: [
-                { id: 1, class: 'piece-1', text: '阿秀，拍勢啦<br>我可能沒辦法遵守回家的約定了。' },
-                { id: 2, class: 'piece-2', text: '每次走到巷口，聞到那個味道，<br>我就知道，我到家了。' },
-                { id: 3, class: 'piece-3', text: '我總想著，等一切結束，<br>要陪你慢慢吃一輩子的飯。' },
-                { id: 4, class: 'piece-4', text: '答應我，你要好好生活，<br>替我多看看我們的家。' },
-                { id: 5, class: 'piece-5', text: '別難過，因為不管我飛得多遠，<br>我從來沒有忘記回家的方向。' },
-                { id: 6, class: 'piece-6', text: '阿秀，我永遠愛你。' },
-                { id: 7, class: 'piece-7', text: '「半世戎馬，一生清風」<br>—— 永遠想回家的志遠' }
-            ]
+                puzzles: [
+                            { id: 1, class: 'piece-1', text: '阿秀，拍勢啦<br>我可能沒辦法遵守回家的約定了。' },
+                            { id: 2, class: 'piece-2', text: '每次走到巷口，聞到那個味道，<br>我就知道，我到家了。' },
+                            { id: 3, class: 'piece-3', text: '我總想著，等一切結束，<br>要陪你慢慢吃一輩子的飯。' },
+                            { id: 4, class: 'piece-4', text: '答應我，你要好好生活，<br>替我多看看我們的家。' },
+                            { id: 5, class: 'piece-5', text: '別難過，因為不管我飛得多遠，<br>我從來沒有忘記回家的方向。' },
+                            // 第 6 片加入結尾簽名
+                            { id: 6, class: 'piece-6', text: '阿秀，我永遠愛你。<br>「半世戎馬，一生清風」<br>—— 永遠想回家的志遠' }
+                        ]
         };
 
         window.openImageLightbox = function(src) {
@@ -1519,10 +1488,12 @@
         };
 
         const GameState = (function() {
-            const STORAGE_KEY = 'sanchong_game_state_v26_perfect';
+            const STORAGE_KEY = 'sanchong_game_state_v27_80m'; // 建議更換版本號防舊資料干擾
             let state = {
-                teamName: null, currentScreen: 'entry', startLevel: 7, customSequence: [7, 6, 1, 4, 2, 5, 3],
-                startTime: null, endTime: null, stamps: [false, false, false, false, false, false, false],
+                teamName: null, currentScreen: 'entry', startLevel: 1, 
+                customSequence: [6, 1, 4, 2, 5, 3], // 移除 7
+                startTime: null, endTime: null, 
+                stamps: [false, false, false, false, false, false], // 改為 6 個 false
                 currentStageIndex: 0, soundEnabled: true,
                 l1Input: [], l1Collected: [false, false, false, false], l1Errors: 0,
                 l2Photos: [false, false, false, false, false], 
@@ -1606,7 +1577,7 @@
             "images/明星花露水1.jpg", "images/明星花露水2.jpg",
             
             // Level 7: 市集攤位與結尾
-            "images/7-1.jpg", "images/7-2.jpg", "images/7-3.jpg", "images/7-4.jpg", "images/111.jpg"
+            "images/111.jpg"
         ];
 
         function startAppLifecycle() {
@@ -1654,7 +1625,7 @@
 
                             if (GameState.get('timeExpiredHandled')) {
                                 showScreen('level-7');
-                            } else if (GameState.get('stamps').filter(Boolean).length === 7) {
+                            } else if (GameState.get('stamps').filter(Boolean).length === 6) {
                                 showScreen('level-7');
                             } else {
                                 showScreen(savedScreen);
@@ -1820,8 +1791,8 @@
             const stamps = GameState.get('stamps') || [];
             const count = stamps.filter(Boolean).length;
             const puzzleTextEl = document.getElementById('header-puzzle-text');
-            if (puzzleTextEl) puzzleTextEl.textContent = `${count}/7`;
-
+            if (puzzleTextEl) puzzleTextEl.textContent = `${count}/6`; // 改為 6
+        
             const l7CountEl = document.getElementById('l7-collected-count');
             if (l7CountEl) l7CountEl.textContent = count;
         }
@@ -1842,10 +1813,10 @@
             const letterBtnContainer = document.getElementById('full-letter-btn-container');
             
             if (letterBtnContainer) {
-                // 修復：必須集滿 7 片 且 已經輸入 TAG106 解鎖，才顯示信件按鈕
-                if (count === 7 && GameState.get('finalUnlocked')) {
-                    letterBtnContainer.classList.remove('hidden');
-                } else {
+                // 修復：必須集滿 6 片 且 已經輸入 TAG106 解鎖，才顯示信件按鈕
+                    if (count === 6 && GameState.get('finalUnlocked')) {
+                        letterBtnContainer.classList.remove('hidden');
+                    } else {
                     letterBtnContainer.classList.add('hidden');
                 }
             }
@@ -1863,7 +1834,7 @@
             const stamps = GameState.get('stamps') || [];
             const count = stamps.filter(Boolean).length;
         
-            if (count < 7) {
+            if (count < 6) {
                 showAlert(
                     "調查強制中止",
                     `委託時限已截止，未能找齊所有的歷史碎片（目前僅調閱 ${count}/7 片）。\n\n時空錨點已關閉，無法拼湊出完整的信件，請全體隊員立即返回集合點完成結案手續。`,
@@ -2217,7 +2188,6 @@
             else if (screenId === 'main') titleEl.textContent = "任務總部";
             else if (screenId === 'l3-intro') titleEl.textContent = "村長的家";
             else if (screenId === 'l5-arrival') titleEl.textContent = "群星之夜";
-            else if (screenId === 'l7-market-task') titleEl.textContent = "市集攤位";
             else if (screenId === 'level-7') titleEl.textContent = "最後集合地點"; 
             else if (screenId === 'certificate') titleEl.textContent = "結案報告";
             else {
@@ -2348,28 +2318,29 @@
 
         function handleLevelSuccess(lvlNum) {
             playSuccessSound();
-            let stamps = GameState.get('stamps') || [false, false, false, false, false, false, false];
+            let stamps = GameState.get('stamps') || [false, false, false, false, false, false];
             stamps[lvlNum - 1] = true;
             GameState.set('stamps', stamps);
             updateStampBadgeCount();
         
-            let seq = GameState.get('customSequence') || [7, 6, 1, 4, 2, 5, 3];
+            let seq = GameState.get('customSequence') || [6, 1, 4, 2, 5, 3];
             let idx = GameState.get('currentStageIndex') || 0;
             
             if (seq[idx] === lvlNum) {
                 GameState.set('currentStageIndex', idx + 1);
             }
-
+        
             const totalCompleted = stamps.filter(Boolean).length;
         
-            if (totalCompleted === 7) {
-                showAlert("所有歷史碎片已集齊！", "恭喜你們找齊了全部 7 塊歷史碎片！\n阿秀的記憶與信件已拼湊完整。\n\n請前往最後的時空座標與長官會合，索取最終密碼以解鎖《跨越時空的信》！", "fa-envelope-open-text", "text-gold-dark", () => {
+            // 集滿 6 片直接前往最終集合地點
+            if (totalCompleted === 6) {
+                showAlert("所有歷史碎片已集齊！", "恭喜你們找齊了全部 6 塊歷史碎片！\n阿秀的記憶與信件已拼湊完整。\n\n請前往最後的時空座標與長官會合，索取最終密碼以解鎖《跨越時空的信》！", "fa-envelope-open-text", "text-gold-dark", () => {
                     showScreen('level-7'); 
                 }, "前往最後集合地點");
             } else {
                 let msg = "獲得一塊歷史碎片，\n準備前往下一個任務地點。";
                 if (lvlNum === 1) msg = "警報響起，任務成功！\n我們將蒐集到的暗號數字重組成關鍵年份「1945 年」——這是防砲陣地完成歷史使命的轉折點。";
-                if (lvlNum === 7) msg = "市集攤位挑戰成功！\n成功獲得市集中的歷史碎片，準備前往下一個任務地點。";
+                // 刪除 lvlNum === 7 的判斷
                 showAlert("調查成功", msg, "fa-circle-check", "text-emerald-700", () => {
                     showScreen('main');
                 }, "返回總部");
@@ -2377,15 +2348,16 @@
         }
 
         function renderMain() {
-            let seq = GameState.get('customSequence') || [7, 6, 1, 4, 2, 5, 3];
+            let seq = GameState.get('customSequence') || [6, 1, 4, 2, 5, 3];
             let idx = GameState.get('currentStageIndex') || 0;
             let stamps = GameState.get('stamps') || [];
             const totalCompleted = stamps.filter(Boolean).length;
-
+        
             const activeTitleEl = document.getElementById('main-active-title');
             const gotoBtn = document.getElementById('btn-goto-current');
-
-            if (totalCompleted === 7 || idx >= 7) {
+        
+            // 7 改為 6
+            if (totalCompleted === 6 || idx >= 6) {
                 activeTitleEl.textContent = "最後集合地點";
                 gotoBtn.innerHTML = `<i class="fa-solid fa-map-location-dot mr-2"></i>前往最終集合座標`;
             } else {
@@ -2395,6 +2367,31 @@
                 gotoBtn.innerHTML = `拆開任務信封`;
             }
         }
+        
+        // 拆信按鈕事件
+        document.getElementById('btn-goto-current')?.addEventListener('click', () => {
+            initAudio(); 
+            playBeep(600, 0.05);
+            let seq = GameState.get('customSequence') || [6, 1, 4, 2, 5, 3]; 
+            let idx = GameState.get('currentStageIndex') || 0; 
+            let stamps = GameState.get('stamps') || [];
+            
+            // 7 改為 6
+            if (stamps.filter(Boolean).length === 6 || idx >= 6) {
+                showScreen('level-7');
+                return;
+            }
+        
+            const targetLvl = seq[idx];
+            if (targetLvl === 3) {
+                showScreen('l3-intro');
+            } else {
+                // 移除 targetLvl === 7 判斷，直接導向 level-1 ~ level-6
+                showScreen(`level-${targetLvl}`);
+            }
+        });
+        
+        // 刪除 window.submitL7MarketTask 函式
 
         // ==========================================
         // LEVEL 1
@@ -3198,36 +3195,10 @@
                 container.appendChild(btn);
             });
         }
-
-        // ==========================================
-        // LEVEL 7
-        // ==========================================
         
         // ==========================================
         // 拆開任務信封（主畫面導向當前正確關卡）
         // ==========================================
-        document.getElementById('btn-goto-current')?.addEventListener('click', () => {
-            initAudio(); 
-            playBeep(600, 0.05);
-            let seq = GameState.get('customSequence') || [7, 6, 1, 4, 2, 5, 3]; 
-            let idx = GameState.get('currentStageIndex') || 0; 
-            let stamps = GameState.get('stamps') || [];
-            
-            if (stamps.filter(Boolean).length === 7 || idx >= 7) {
-                showScreen('level-7');
-                return;
-            }
-
-            const targetLvl = seq[idx];
-            if (targetLvl === 3) {
-                showScreen('l3-intro');
-            } else if (targetLvl === 7) {
-                showScreen('l7-market-task');
-            } else {
-                // 🛠️ 第 5 關與其他關卡統一導向正確的 DOM (screen-level-5)
-                showScreen(`level-${targetLvl}`);
-            }
-        });
         // 修正後：
         window.submitL7MarketTask = function() {
             playBeep();
@@ -3296,28 +3267,23 @@
             const code = codeInput ? codeInput.value.trim().toUpperCase() : "";
             
             const codeMap = {
-                '3G100301': 1, '3G100302': 2, '3G100303': 3, '3G100304': 4,
-                '3G100305': 5, '3G100306': 6, '3G100307': 7
-            };
+                '3G100301': 1, '3G100302': 2, '3G100303': 3, 
+                '3G100304': 4, '3G100305': 5, '3G100306': 6
+            }; // 移除 3G100307: 7
             
             if (codeMap[code]) {
                 playSuccessSound();
                 const startLvl = codeMap[code];
                 GameState.set('startLevel', startLvl);
         
+                const coreSeq = [6, 1, 4, 2, 5, 3];
+                const startIdx = coreSeq.indexOf(startLvl);
                 let newSeq = [];
-                if (startLvl === 7) {
-                    newSeq = [7];
-                } else {
-                    const coreSeq = [6, 1, 4, 2, 5, 3];
-                    const startIdx = coreSeq.indexOf(startLvl);
-                    for (let i = 0; i < 6; i++) {
-                        newSeq.push(coreSeq[(startIdx + i) % 6]);
-                    }
-                    newSeq.push(7);
+                for (let i = 0; i < 6; i++) {
+                    newSeq.push(coreSeq[(startIdx + i) % 6]);
                 }
         
-                GameState.set('customSequence', newSeq);
+                GameState.set('customSequence', newSeq); // 6關巡迴，不帶市集
                 GameState.set('currentStageIndex', 0);
                 GameState.set('startTime', Date.now());
                 GameState.set('endTime', null);
@@ -3338,7 +3304,7 @@
             if (!GameState.get('startTime')) return;
             const now = GameState.get('endTime') ? GameState.get('endTime') : Date.now();
             const elapsed = Math.floor((now - GameState.get('startTime')) / 1000);
-            let remain = (90 * 60) - elapsed;
+            let remain = (80 * 60) - elapsed; // 改為 80 * 60 (4800秒)
         
             if (remain <= 0) {
                 remain = 0;
@@ -3350,7 +3316,7 @@
                     showScreen('level-7');
                     showAlert(
                         "委託時間已達上限",
-                        "90 分鐘調查時間已結束！\n系統已自動為您切換至最後集合地點。\n\n★ 請依據經緯度座標前往集合，並尋找長官/NPC 取得最終密碼！",
+                        "80 分鐘調查時間已結束！\n系統已自動為您切換至最後集合地點。\n\n★ 請依據經緯度座標前往集合，並尋找長官/NPC 取得最終密碼！", // 80 分鐘
                         "fa-clock",
                         "text-primary"
                     );
@@ -3389,7 +3355,8 @@
             const s = String(elapsed % 60).padStart(2, '0');
             const timeStr = `${h}:${m}:${s}`; 
             
-            const isTimeout = Boolean(GameState.get('timeExpiredHandled')) || elapsed > 5400;
+            // 5400 改為 4800 (80分鐘)
+            const isTimeout = Boolean(GameState.get('timeExpiredHandled')) || elapsed > 4800;
             const stamps = GameState.get('stamps') || [];
             const collectedCount = stamps.filter(Boolean).length;
         
@@ -3398,30 +3365,32 @@
             const certRankEl = document.getElementById('cert-rank');
             const msgEl = document.getElementById('cert-msg');
         
-            if (!isTimeout && collectedCount === 7) {
+            // 7 改為 6
+            if (!isTimeout && collectedCount === 6) {
                 certTimeEl.textContent = `${timeStr} (時限內)`;
                 certStatusEl.textContent = '檔案完全解密';
                 certStatusEl.className = 'text-emerald-700 font-black text-right';
                 certRankEl.textContent = '【S級結案】';
-                msgEl.innerHTML = '恭喜在時限內完成所有委託！<br>7 塊歷史碎片全數尋回，跨越時空的思念得以完整圓滿。';
+                msgEl.innerHTML = '恭喜在時限內完成所有委託！<br>6 塊歷史碎片全數尋回，跨越時空的思念得以完整圓滿。';
             } else {
                 certTimeEl.textContent = `${timeStr} (逾時終止)`;
-                certStatusEl.textContent = `調查未完成 (僅尋獲 ${collectedCount}/7 碎片)`;
+                certStatusEl.textContent = `調查未完成 (僅尋獲 ${collectedCount}/6 碎片)`;
                 certStatusEl.className = 'text-amber-700 font-black text-right';
                 certRankEl.textContent = '【時限中斷】';
-                msgEl.innerHTML = `調查時間已達上限，系統已強制終止搜索行動。<br>遺憾未能替阿秀找齊全部的歷史碎片（尋獲進度 ${collectedCount}/7），半世紀前的思念仍有殘缺留存於巷弄中。<br>感謝你們的參與，請向現場人員報到完成撤收紀錄。`;
+                msgEl.innerHTML = `調查時間已達上限，系統已強制終止搜索行動。<br>遺憾未能替阿秀找齊全部的歷史碎片（尋獲進度 ${collectedCount}/6），半世紀前的思念仍有殘缺留存於巷弄中。<br>感謝你們的參與，請向現場人員報到完成撤收紀錄。`;
             }
             
-            const claimBtn = document.getElementById('btn-claim-gift');
-            if (GameState.get('giftClaimed') === true) {
-                claimBtn.disabled = true; 
-                claimBtn.className = "btn-base w-full py-4 bg-stone-200 border border-stone-300 text-stone-500 font-black text-sm cursor-not-allowed shadow-none";
-                claimBtn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-700 mr-2"></i>已於 ${GameState.get('giftClaimedTime') || ''} 兌換完畢`;
-            } else {
-                claimBtn.disabled = false; 
-                claimBtn.className = "btn-base primary-btn w-full py-4 font-black text-base tracking-[0.15em] flex justify-center space-x-2";
-                claimBtn.innerHTML = `<i class="fa-solid fa-stamp"></i><span>現場人員點擊核銷</span>`;
-            }
+                    const claimBtn = document.getElementById('btn-claim-gift');
+                    if (GameState.get('giftClaimed') === true) {
+                        claimBtn.disabled = true; 
+                        claimBtn.className = "btn-base w-full py-4 bg-stone-200 border border-stone-300 text-stone-500 font-black text-sm cursor-not-allowed shadow-none";
+                        claimBtn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-700 mr-2"></i>已於 ${GameState.get('giftClaimedTime') || ''} 兌換完畢`;
+                    } else {
+                        claimBtn.disabled = false; 
+                        claimBtn.className = "btn-base primary-btn w-full py-4 font-black text-base tracking-[0.15em] flex justify-center space-x-2";
+                        claimBtn.innerHTML = `<i class="fa-solid fa-stamp"></i><span>現場人員點擊核銷</span>`;
+                    }
+        
         }
 
         document.getElementById('btn-claim-gift')?.addEventListener('click', () => {
