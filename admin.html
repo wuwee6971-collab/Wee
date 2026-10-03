@@ -423,18 +423,37 @@
             startListening();
         }
 
-        // 5. 房間匹配工具
+        // 5. 房間匹配工具（已修正：防止「二選一」污染第二關）
         function matchRoomPredicate(item, room) {
             if (room === 'ALL') return true;
             const lvl = String(item.levelId || '').toUpperCase();
-            if (room === '1') return lvl.includes('一') || lvl.includes('1') || lvl.includes('L1') || lvl.includes('防砲');
-            if (room === '2') return lvl.includes('二') || lvl.includes('2') || lvl.includes('L2') || lvl.includes('眷舍');
-            if (room === '3') return lvl.includes('三') || lvl.includes('3') || lvl.includes('L3') || lvl.includes('村長');
-            if (room === '4') return lvl.includes('四') || lvl.includes('4') || lvl.includes('L4') || lvl.includes('兒童') || lvl.includes('中學生') || lvl.includes('奶奶');
-            if (room === '5') return lvl.includes('五') || lvl.includes('5') || lvl.includes('L5') || lvl.includes('群星');
-            if (room === '6-angel') return (lvl.includes('六') || lvl.includes('6') || lvl.includes('L6')) && (lvl.includes('天使') || !item.note);
-            if (room === '6-note') return (lvl.includes('六') || lvl.includes('6') || lvl.includes('L6')) && (Boolean(item.note) || lvl.includes('心得'));
-            if (room === '7') return lvl.includes('七') || lvl.includes('7') || lvl.includes('L7') || lvl.includes('市集');
+            
+            if (room === '1') {
+                return lvl.includes('L1') || lvl.includes('防砲') || lvl.startsWith('任務一') || lvl.includes('甬道') || lvl.includes('豎井') || lvl.includes('砲台');
+            }
+            if (room === '2') {
+                // 排除市集與第七關，避免「二選一」誤入
+                if (lvl.includes('L7') || lvl.includes('市集')) return false;
+                return lvl.includes('L2') || lvl.includes('眷舍') || lvl.startsWith('任務二') || lvl.includes('特級') || lvl.includes('防洪樓') || lvl.includes('一線天') || lvl.includes('鐵窗');
+            }
+            if (room === '3') {
+                return lvl.includes('L3') || lvl.includes('村長') || lvl.startsWith('任務三');
+            }
+            if (room === '4') {
+                return lvl.includes('L4') || lvl.includes('榕樹') || lvl.includes('兒童') || lvl.includes('中學生') || lvl.includes('奶奶');
+            }
+            if (room === '5') {
+                return lvl.includes('L5') || lvl.includes('群星') || Boolean(item.singer);
+            }
+            if (room === '6-angel') {
+                return (lvl.includes('L6') || lvl.includes('六')) && (lvl.includes('天使') || !item.note);
+            }
+            if (room === '6-note') {
+                return (lvl.includes('L6') || lvl.includes('六')) && (Boolean(item.note) || lvl.includes('心得'));
+            }
+            if (room === '7') {
+                return lvl.includes('L7') || lvl.includes('市集') || lvl.includes('沙包') || lvl.includes('彈珠');
+            }
             return true;
         }
 
@@ -710,8 +729,20 @@
                 }
                 if (sub.status === 'approved') {
                     const lvlStr = String(sub.levelId || '');
+                    const cnNums = ['', '一', '二', '三', '四', '五', '六', '七'];
                     for (let i = 1; i <= 7; i++) {
-                        if (lvlStr.includes(`L${i}`) || lvlStr.includes(`任務${i}`) || lvlStr.includes(`第${i}`)) {
+                        // 同時支援 L2、任務2、任務二、第2、第二
+                        if (
+                            lvlStr.includes(`L${i}`) || 
+                            lvlStr.includes(`任務${i}`) || 
+                            lvlStr.includes(`任務${cnNums[i]}`) ||
+                            lvlStr.includes(`第${i}`) ||
+                            lvlStr.includes(`第${cnNums[i]}`)
+                        ) {
+                            // 特別防護：防止「任務二選一」誤算為第二關
+                            if (i === 2 && (lvlStr.includes('L7') || lvlStr.includes('市集'))) {
+                                continue;
+                            }
                             teamMap[tName].approvedLevels.add(i);
                         }
                     }
