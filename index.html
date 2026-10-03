@@ -354,60 +354,64 @@
                 <!-- SCREEN: INTRO CHARACTERS -->
                 <div id="screen-intro-chars" class="screen-panel hidden p-6 flex flex-col justify-center">
                     <div class="level-card p-6 flex flex-col min-h-full">
+                        <!-- 頂部標題列 -->
                         <div class="flex items-center mb-4 shrink-0">
-                            <button type="button" onclick="showScreen('entry')" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-9 h-9 flex items-center justify-center rounded text-ink"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button type="button" onclick="showScreen('entry')" class="btn-base bg-paper border border-ink/20 shadow-retro-sm w-9 h-9 flex items-center justify-center rounded text-ink">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
                             <h2 class="flex-1 text-center font-black text-primary text-xl pr-9 font-serif tracking-[0.15em]">人物圖鑑</h2>
                         </div>
+                
+                        <!-- 角色列表垂直滾動區 -->
                         <div class="flex-1 flex flex-col space-y-3 overflow-y-auto custom-scrollbar pr-1">
-                            <div class="char-card-flex shrink-0">
-                                <div class="char-img-box w-20 h-20 border-r border-ink/10 flex items-center justify-center text-primary/40 bg-paper-dark">
-                                    <i class="fa-solid fa-user-astronaut text-2xl"></i>
+                
+                            <!-- 1. 玩家 (你) -->
+                            <div class="char-card-flex shrink-0 flex items-stretch">
+                                <div class="char-img-box w-[84px] h-[126px] shrink-0 border-r border-ink/10 flex items-center justify-center text-primary/40 bg-paper-dark">
+                                    <i class="fa-solid fa-user-astronaut text-3xl"></i>
                                 </div>
-                                <!-- 玩家 (你) -->
-                                <div class="char-card-flex shrink-0">
-                                    <div class="char-img-box w-24 aspect-[2/3] shrink-0 border-r border-ink/10 skeleton-bg vintage-photo !border-2 flex items-center justify-center bg-[#e5d5b5]">
-                                        <!-- 玩家預設圖示保持在直式框內置中 -->
-                                        <span class="text-3xl text-ink/40 font-serif">👤</span>
-                                    </div>
-                                    <div class="p-3.5 text-ink flex-1 flex flex-col justify-center bg-white">
-                                        <b class="text-sm font-serif text-primary mb-1">玩家 (你)</b>
-                                        <span class="text-xs font-bold leading-[1.6] text-ink/80">劇情的推動者與歷史的見證者。穿梭於現代與五十年代之間，搜集線索、拼湊真相。</span>
-                                    </div>
+                                <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white min-w-0">
+                                    <b class="text-sm font-serif text-primary mb-1">玩家 (你)</b>
+                                    <span class="text-xs font-bold leading-[1.6] text-ink/80">劇情的推動者與歷史的見證者。穿梭於現代與五十年代之間，搜集線索、拼湊真相。</span>
                                 </div>
-                                
-                                <!-- 林志遠 -->
-                                <div class="char-card-flex shrink-0">
-                                    <div class="char-img-box w-24 aspect-[2/3] shrink-0 border-r border-ink/10 skeleton-bg vintage-photo !border-2 overflow-hidden">
-                                        <img src="images/林志遠.jpg" alt="林志遠" class="w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg'); this.src='https://placehold.co/1024x1536/e5d5b5/7c343d?text=志遠'">
-                                    </div>
-                                    <div class="p-3.5 text-ink flex-1 flex flex-col justify-center bg-white">
-                                        <b class="text-sm font-serif text-primary mb-1">林志遠 (軍人)</b>
-                                        <span class="text-xs font-bold leading-[1.6] text-ink/80">深情、堅毅、富有責任感。對國家忠誠，對妻子懷抱無盡溫柔與歉疚。</span>
-                                    </div>
+                            </div>
+                
+                            <!-- 2. 林志遠 -->
+                            <div class="char-card-flex shrink-0 flex items-stretch">
+                                <div class="char-img-box w-[84px] h-[126px] shrink-0 border-r border-ink/10 skeleton-bg vintage-photo !border-2 overflow-hidden">
+                                    <img src="images/林志遠.jpg" alt="林志遠" class="w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg'); this.src='https://placehold.co/1024x1536/e5d5b5/7c343d?text=志遠'">
                                 </div>
-                                
-                                <!-- 阿秀 -->
-                                <div class="char-card-flex shrink-0">
-                                    <div class="char-img-box w-24 aspect-[2/3] shrink-0 border-r border-ink/10 skeleton-bg vintage-photo !border-2 overflow-hidden">
-                                        <img src="images/阿秀.jpg" alt="阿秀" class="w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg'); this.src='https://placehold.co/1024x1536/e5d5b5/7c343d?text=阿秀'">
-                                    </div>
-                                    <div class="p-3.5 text-ink flex-1 flex flex-col justify-center bg-white">
-                                        <b class="text-sm font-serif text-primary mb-1">阿秀 (軍人妻子)</b>
-                                        <span class="text-xs font-bold leading-[1.6] text-ink/80">外柔內剛、執著而深情。儘管歲月流逝，仍選擇獨自堅守紅磚瓦屋，等待丈夫歸來。</span>
-                                    </div>
+                                <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white min-w-0">
+                                    <b class="text-sm font-serif text-primary mb-1">林志遠 (軍人)</b>
+                                    <span class="text-xs font-bold leading-[1.6] text-ink/80">深情、堅毅、富有責任感。對國家忠誠，對妻子懷抱無盡溫柔與歉疚。</span>
                                 </div>
-                                
-                                <!-- 小助手 -->
-                                <div class="char-card-flex shrink-0">
-                                    <div class="char-img-box w-24 aspect-[2/3] shrink-0 border-r border-ink/10 skeleton-bg vintage-photo !border-2 overflow-hidden">
-                                        <img src="images/小助手.jpg" alt="小助手" class="w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg'); this.src='https://placehold.co/1024x1536/e5d5b5/7c343d?text=小助手'">
-                                    </div>
-                                    <div class="p-3.5 text-ink flex-1 flex flex-col justify-center bg-white">
-                                        <b class="text-sm font-serif text-primary mb-1">小助手</b>
-                                        <span class="text-xs font-bold leading-[1.6] text-ink/80">身著背後有NTPC的白T小天使，可以在你有困難時會給予協助。</span>
-                                    </div>
+                            </div>
+                
+                            <!-- 3. 阿秀 -->
+                            <div class="char-card-flex shrink-0 flex items-stretch">
+                                <div class="char-img-box w-[84px] h-[126px] shrink-0 border-r border-ink/10 skeleton-bg vintage-photo !border-2 overflow-hidden">
+                                    <img src="images/阿秀.jpg" alt="阿秀" class="w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg'); this.src='https://placehold.co/1024x1536/e5d5b5/7c343d?text=阿秀'">
                                 </div>
+                                <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white min-w-0">
+                                    <b class="text-sm font-serif text-primary mb-1">阿秀 (軍人妻子)</b>
+                                    <span class="text-xs font-bold leading-[1.6] text-ink/80">外柔內剛、執著而深情。儘管歲月流逝，仍選擇獨自堅守紅磚瓦屋，等待丈夫歸來。</span>
+                                </div>
+                            </div>
+                
+                            <!-- 4. 小助手 -->
+                            <div class="char-card-flex shrink-0 flex items-stretch">
+                                <div class="char-img-box w-[84px] h-[126px] shrink-0 border-r border-ink/10 skeleton-bg vintage-photo !border-2 overflow-hidden">
+                                    <img src="images/小助手.jpg" alt="小助手" class="w-full h-full object-cover" onload="this.parentElement.classList.remove('skeleton-bg'); this.classList.add('loaded')" onerror="this.parentElement.classList.remove('skeleton-bg'); this.src='https://placehold.co/1024x1536/e5d5b5/7c343d?text=小助手'">
+                                </div>
+                                <div class="p-3 text-ink flex-1 flex flex-col justify-center bg-white min-w-0">
+                                    <b class="text-sm font-serif text-primary mb-1">小助手</b>
+                                    <span class="text-xs font-bold leading-[1.6] text-ink/80">身著背後有NTPC的白T小天使，可以在你有困難時會給予協助。</span>
+                                </div>
+                            </div>
+                
                         </div>
+                
+                        <!-- 底部按鈕 -->
                         <button type="button" class="btn-base primary-btn w-full py-4 font-black text-lg tracking-[0.2em] mt-4 shrink-0" onclick="showScreen('intro-story')">
                             下一步：故事前言 <i class="fa-solid fa-arrow-right ml-2"></i>
                         </button>
