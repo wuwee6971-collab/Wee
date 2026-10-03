@@ -1997,10 +1997,15 @@
                 }
             }, 2500);
 
+            // 根據傳入的 levelName 自動判斷 level 數字 (例如 "L7-..." 抓出 7)
+            let detectedLevel = extraData.level || (levelName.startsWith("L") ? parseInt(levelName.charAt(1)) : null);
+
             const payload = {
                 teamName: GameState.get('teamName') || "匿名隊伍",
                 teamMembers: GameState.get('teamMembers') || "",
                 levelId: levelName,
+                level: detectedLevel,
+                levelKey: detectedLevel ? `L${detectedLevel}` : "OTHER",
                 type: 'direct',
                 status: "pending",
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -2035,7 +2040,6 @@
                 if (activeUploadUnsubscribe) { activeUploadUnsubscribe(); activeUploadUnsubscribe = null; }
             };
         
-            // 核心審核結果處理函式
             const handleResult = (approved, rejectReason = null) => {
                 if (isHandled) return;
                 cleanUp();
@@ -2045,19 +2049,38 @@
             };
         
             if (!db) {
-                // Fallback 模擬模式 (維持原樣)
                 setTimeout(() => { cleanUp(); onSuccess(true, null); }, 10000);
                 return;
             }
         
-            // 顯示等待中 Alert，並提供「手動重整狀態」按鈕
             showAlert("資料審核中", "已送達指揮所，審核官查驗中...\n(關主核准後會自動切換)", "fa-satellite-dish fa-spin", "text-primary", null, "取消等待", 0, true);
         
+            // 🛠️ 修復 1：綁定取消與返回事件，點擊後確實中止輪詢與長連接
+            const cancelBtn = document.getElementById('alert-cancel-btn');
+            const alertBtn = document.getElementById('alert-btn');
+            if (cancelBtn) {
+                cancelBtn.onclick = () => { cleanUp(); closeModalAnim('modal-alert', 'alert-box'); };
+            }
+            if (alertBtn) {
+                alertBtn.onclick = () => { cleanUp(); closeModalAnim('modal-alert', 'alert-box'); };
+            }
+        
             const sendPayload = (base64Img = null) => {
+                // 🛠️ 修復 2：自動推導 level 純數字與 levelKey，確保 L1、L2、L3 格式標準化
+                const lvlStr = String(docData.levelId || '');
+                let detectedLevel = docData.level || null;
+                if (!detectedLevel) {
+                    if (lvlStr.includes('1') || lvlStr.includes('一') || lvlStr.includes('L1')) detectedLevel = 1;
+                    else if (lvlStr.includes('2') || lvlStr.includes('二') || lvlStr.includes('L2')) detectedLevel = 2;
+                    else if (lvlStr.includes('3') || lvlStr.includes('三') || lvlStr.includes('L3')) detectedLevel = 3;
+                }
+
                 const payload = {
                     teamName: GameState.get('teamName') || "匿名隊伍",
                     teamMembers: GameState.get('teamMembers') || "",
                     status: "pending",
+                    level: detectedLevel,
+                    levelKey: detectedLevel ? `L${detectedLevel}` : "OTHER",
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     ...docData
                 };
@@ -2066,7 +2089,7 @@
                 db.collection("submissions").add(payload).then(docRef => {
                     if (isHandled) return;
         
-                    // 1. 被動監聽 (原有機制)
+                    // 1. 被動 WebSocket 監聽
                     activeUploadUnsubscribe = docRef.onSnapshot((doc) => {
                         if (isHandled || !doc.exists) return;
                         const data = doc.data();
@@ -2074,7 +2097,7 @@
                         else if (data.status === "rejected") handleResult(false, data.rejectReason);
                     }, (err) => console.warn("長連接中斷，切換為主動輪詢:", err));
         
-                    // 2. 主動輪詢 (解決相機背景斷線的關鍵保險，每 2.5 秒主動查一次)
+                    // 2. 主動輪詢保險（每 2.5 秒向伺服器拉取一次，防止相機切換時長連接被凍結）
                     pollInterval = setInterval(async () => {
                         if (isHandled) return;
                         try {
@@ -2089,11 +2112,11 @@
                         }
                     }, 2500);
         
-                    // 逾時防護 (45 秒)
+                    // 3. 逾時防護 (45 秒)
                     timeoutId = setTimeout(() => {
                         if (!isHandled) {
                             cleanUp();
-                            showAlert("請洽現場關主", "前線指揮所未能即時接收！", "fa-user-clock", "text-primary");
+                            showAlert("請洽現場關主", "前線指揮所未能即時接收，請直接向現場關主出示手機畫面！", "fa-user-clock", "text-primary");
                         }
                     }, 45000);
                 }).catch(error => {
@@ -2105,7 +2128,6 @@
             };
         
             if (file) {
-                // 採取極限壓縮 (見改造 2)
                 compressImageReliably(file, 800, 0.7, (dataUrl) => {
                     sendPayload(dataUrl);
                 });
@@ -2463,8 +2485,17 @@
         document.getElementById('l2-camera-input').addEventListener('change', function() {
             if (this.files && this.files.length > 0) {
                 const file = this.files[0]; this.value = '';
-                uploadAndListenVerification(file, "任務二：眷舍空間", (isApproved, rejectReason) => {
-                    let currentQ = GameState.get('l2CurrentQ');
+                const currentQ = GameState.get('l2CurrentQ');
+                const subTaskNames = ["特級眷舍", "防洪樓", "一線天", "演變排序", "鐵窗圖案"];
+                const taskTitle = `L2-眷村建築 (${subTaskNames[currentQ] || '拍照取證'})`;
+
+                // 🛠️ 明確標記 level: 2 與 levelKey: "L2"
+                _executeFirebaseSubmission({ 
+                    levelId: taskTitle, 
+                    level: 2, 
+                    levelKey: "L2", 
+                    type: 'photo' 
+                }, (isApproved, rejectReason) => {
                     const qData = GAME_DATA.level2.questions[currentQ];
 
                     if (isApproved) {
@@ -2488,10 +2519,9 @@
                         else errorMsg += `請確認隊員動作與建築特徵完整入鏡後重拍！`;
                         showAlert("照片審核退回", errorMsg, "fa-circle-xmark", "text-primary");
                     }
-                });
+                }, file);
             }
         });
-
         let l2SequenceIntroSeen = false;
         function renderL2() {
             let currentQ = GameState.get('l2CurrentQ');
@@ -3198,16 +3228,17 @@
                 showScreen(`level-${targetLvl}`);
             }
         });
+        // 修正後：
         window.submitL7MarketTask = function() {
             playBeep();
-            submitDirectVerification("L7-市集任務二選一", {}, (isApproved, rejectReason) => {
+            submitDirectVerification("L7-市集攤位挑戰", { level: 7, levelKey: "L7" }, (isApproved, rejectReason) => {
                 if (isApproved) {
                     playSuccessSound();
                     GameState.set('l7MarketDone', true);
                     handleLevelSuccess(7);
                 } else {
                     playErrorSound();
-                    const reason = rejectReason || "長官回報尚未確認通關！請完成市集遊戲 A 或 B 後再次送出。";
+                    const reason = rejectReason || "長官回報尚未確認通關！請完成市集挑戰後再次送出。";
                     showAlert("市集審核退回", `【攤位關主回報】\n<b class="text-primary text-base">「${reason}」</b>`, "fa-circle-xmark", "text-primary");
                 }
             });
