@@ -180,8 +180,8 @@
         }
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         .skeleton-bg::after { 
-            content: '檔案調閱中...'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; 
-            font-weight: 700; color: #832729; opacity: 0.6; font-size: 0.875rem; letter-spacing: 0.05em; z-index: 1; 
+            content: '調閱中...'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; 
+            font-weight: 700; color: #832729; opacity: 0.6; font-size: 0.75rem; letter-spacing: 0.05em; z-index: 1; 
         }
 
         .char-card-flex { 
@@ -190,9 +190,10 @@
             border-radius: 8px; overflow: hidden; background: #FFFFFF; 
             box-shadow: 0 4px 12px rgba(44, 30, 22, 0.08); min-height: 90px;
         }
-        .char-img-box { 
-            background: #E8DFCC; display: flex; align-items: center; justify-content: center; 
-            overflow: hidden; position: relative; flex-shrink: 0; 
+        .char-img-box img { 
+            width: 100% !important; 
+            height: 100% !important; 
+            object-fit: cover !important; 
         }
         .char-img-box img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain !important; }
 
