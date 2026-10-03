@@ -171,10 +171,6 @@
                     <span>L6 心得</span>
                     <span id="room-badge-6-note" class="text-[9px] px-1 rounded bg-black/40 text-stone-400">0</span>
                 </button>
-                <button onclick="setRoom('7')" id="room-btn-7" class="py-1.5 px-2 rounded-sm border border-[#383127] bg-[#1a1715] text-stone-400 hover:text-stone-200 flex items-center justify-between">
-                    <span>L7 市集</span>
-                    <span id="room-badge-7" class="text-[9px] px-1 rounded bg-black/40 text-stone-400">0</span>
-                </button>
             </div>
         </div>
 
@@ -451,16 +447,13 @@
             if (room === '6-note') {
                 return (lvl.includes('L6') || lvl.includes('六')) && (Boolean(item.note) || lvl.includes('心得'));
             }
-            if (room === '7') {
-                return lvl.includes('L7') || lvl.includes('市集') || lvl.includes('沙包') || lvl.includes('彈珠');
-            }
             return true;
         }
 
         // 更新房間按鈕待審 Badge 統計
         function updateRoomBadges() {
             const pendingList = currentSubmissions.filter(s => s.status === 'pending');
-            const rooms = ['ALL', '1', '2', '3', '4', '5', '6-angel', '6-note', '7'];
+            const rooms = ['ALL', '1', '2', '3', '4', '5', '6-angel', '6-note'];
             rooms.forEach(r => {
                 const el = document.getElementById(`room-badge-${r}`);
                 if (!el) return;
@@ -527,7 +520,7 @@
                 s.status === 'pending' && matchRoomPredicate(s, selectedRoom)
             ).length;
 
-            const rooms = ['ALL', '1', '2', '3', '4', '5', '6-angel', '6-note', '7'];
+            const rooms = ['ALL', '1', '2', '3', '4', '5', '6-angel', '6-note'];
             rooms.forEach(id => {
                 const btn = document.getElementById(`room-btn-${id}`);
                 if (!btn) return;
@@ -546,8 +539,7 @@
                 '4': 'L4 / 榕樹廣場',
                 '5': 'L5 / 群星之夜',
                 '6-angel': 'L6 / 天使報到',
-                '6-note': 'L6 / 時代金曲心得',
-                '7': 'L7 / 市集攤位'
+                '6-note': 'L6 / 時代金曲心得'
             };
             document.getElementById('current-room-label').textContent = labels[roomId] || '未知房間';
             renderList();
@@ -729,9 +721,8 @@
                 }
                 if (sub.status === 'approved') {
                     const lvlStr = String(sub.levelId || '');
-                    const cnNums = ['', '一', '二', '三', '四', '五', '六', '七'];
-                    for (let i = 1; i <= 7; i++) {
-                        // 同時支援 L2、任務2、任務二、第2、第二
+                    const cnNums = ['', '一', '二', '三', '四', '五', '六'];
+                    for (let i = 1; i <= 6; i++) {
                         if (
                             lvlStr.includes(`L${i}`) || 
                             lvlStr.includes(`任務${i}`) || 
@@ -739,10 +730,6 @@
                             lvlStr.includes(`第${i}`) ||
                             lvlStr.includes(`第${cnNums[i]}`)
                         ) {
-                            // 特別防護：防止「任務二選一」誤算為第二關
-                            if (i === 2 && (lvlStr.includes('L7') || lvlStr.includes('市集'))) {
-                                continue;
-                            }
                             teamMap[tName].approvedLevels.add(i);
                         }
                     }
@@ -770,8 +757,8 @@
                 </div>
             ` + teams.map(t => {
                 const count = t.approvedLevels.size;
-                const isFinished = count >= 7 || t.approvedLevels.has(7);
-                const lastTimeStr = t.lastActive ? t.lastActive.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
+                const isFinished = count >= 6; // 集滿 6 關即算完成
+const lastTimeStr = t.lastActive ? t.lastActive.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
                 const teamSafeAttr = encodeURIComponent(t.name);
 
                 return `
@@ -786,14 +773,14 @@
                         </div>
                         <span class="text-[10px] font-mono text-stone-500">最後動態: ${lastTimeStr}</span>
                     </div>
-
+                
                     <div>
                         <div class="flex justify-between text-[11px] font-mono text-stone-400 mb-1.5">
-                            <span>作戰進度：${count}/7 關卡</span>
-                            <span class="${isFinished ? 'text-emerald-400' : 'text-amber-400'} font-bold font-hud">${Math.round((count/7)*100)}%</span>
+                            <span>作戰進度：${count}/6 關卡</span>
+                            <span class="${isFinished ? 'text-emerald-400' : 'text-amber-400'} font-bold font-hud">${Math.round((count/6)*100)}%</span>
                         </div>
-                        <div class="grid grid-cols-7 gap-1">
-                            ${[1,2,3,4,5,6,7].map(lvl => `
+                        <div class="grid grid-cols-6 gap-1">
+                            ${[1,2,3,4,5,6].map(lvl => `
                                 <div class="py-1 text-center text-[10px] font-mono font-bold rounded ${t.approvedLevels.has(lvl) ? 'bg-emerald-800/80 text-emerald-200 border border-emerald-600' : 'bg-[#12100e] text-stone-600 border border-[#2b251f]'}">
                                     L${lvl}
                                 </div>
@@ -922,12 +909,6 @@
                 "內容敷衍未扣合歌曲，請認真聆聽後重寫",
                 "請分享音樂帶給你的回憶或情緒"
             ],
-            L7: [
-                "尚未完成沙包大戰遊戲挑戰",
-                "尚未完成復古彈珠台遊戲挑戰",
-                "未達過關標準，請再次向攤位關主挑戰",
-                "非市集指定之合作挑戰攤位"
-            ],
             DEFAULT: [
                 "照片模糊 / 角度不正確",
                 "隊員動作不符 / 未依指示入鏡",
@@ -952,7 +933,6 @@
             if (lvl.includes('L5') || lvl.includes('群星') || Boolean(item.singer)) return LEVEL_REJECT_PRESETS.L5;
             if (lvl.includes('心得') || Boolean(item.note)) return LEVEL_REJECT_PRESETS.L6_NOTE;
             if (lvl.includes('天使') || lvl.includes('報到')) return LEVEL_REJECT_PRESETS.L6_ANGEL;
-            if (lvl.includes('L7') || lvl.includes('市集')) return LEVEL_REJECT_PRESETS.L7;
             return LEVEL_REJECT_PRESETS.DEFAULT;
         }
 
