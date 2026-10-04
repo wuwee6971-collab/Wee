@@ -2345,6 +2345,14 @@
             stamps[lvlNum - 1] = true;
             GameState.set('stamps', stamps);
             updateStampBadgeCount();
+            // 即時同步該關卡至 teams 文件
+            const currentTeam = GameState.get('teamName');
+            if (db && currentTeam) {
+                db.collection("teams").doc(currentTeam).set({
+                    passedLevels: firebase.firestore.FieldValue.arrayUnion(lvlNum),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true }).catch(e => console.warn("通關進度同步失敗:", e));
+            }
         
             // 👉 新增這段：整關通過時，送出標準通關信號給後台指揮所
             if (db) {
@@ -3278,6 +3286,16 @@
             if (teamMembersInput) {
                 GameState.set('teamMembers', teamMembersInput.value.trim());
             }
+            // 寫入/更新 teams 輕量隊伍文件
+            if (db) {
+                db.collection("teams").doc(name).set({
+                    teamName: name,
+                    teamMembers: teamMembersInput ? teamMembersInput.value.trim() : "",
+                    passedLevels: [],
+                    giftClaimed: false,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true }).catch(e => console.warn("隊伍建立同步失敗:", e));
+            }
             showScreen('intro-chars');
         });
         
@@ -3426,14 +3444,14 @@
                     GameState.set('giftClaimedTime', timeTag);
     
                     if (db) {
-                        const teamName = GameState.get('teamName') || "匿名隊伍";
-                        db.collection("submissions").where("teamName", "==", teamName).get().then(snapshot => {
-                            const batch = db.batch();
-                            snapshot.forEach(doc => {
-                                batch.update(doc.ref, { giftClaimed: true, giftClaimedTime: timeTag });
-                            });
-                            batch.commit();
-                        }).catch(e => console.warn("領獎核銷雲端同步失敗:", e));
+                        const teamName = GameState.get('teamName');
+                        if (teamName) {
+                            db.collection("teams").doc(teamName).set({
+                                giftClaimed: true,
+                                giftClaimedTime: timeTag,
+                                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                            }, { merge: true }).catch(e => console.warn("領獎核銷同步失敗:", e));
+                        }
                     }
     
                     playSuccessSound();
