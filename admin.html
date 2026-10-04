@@ -724,21 +724,24 @@
             return set.has(lvl) || set.has(String(lvl)) || set.has(`L${lvl}`) || set.has(`任務${lvl}`);
         }
 
+        // 9. 結案核銷與進度儀表板
         function renderClaimsDashboard(container) {
             let teams = teamsList.map(t => ({
                 id: t.id,
                 name: t.teamName || t.id,
                 members: t.teamMembers || '',
                 approvedLevels: new Set(t.passedLevels || []),
+                // 👉 讀取前台最終解密標記
+                finalCompleted: Boolean(t.finalCompleted || (t.passedLevels && (t.passedLevels.includes(7) || t.passedLevels.includes('7')))),
                 giftClaimed: Boolean(t.giftClaimed),
                 giftClaimedTime: t.giftClaimedTime || '',
                 lastActive: t.updatedAt ? (t.updatedAt.toDate ? t.updatedAt.toDate() : new Date(t.updatedAt)) : null
             }));
-
+        
             if (searchQuery) {
                 teams = teams.filter(t => t.name.toLowerCase().includes(searchQuery) || t.members.toLowerCase().includes(searchQuery));
             }
-
+        
             if (teams.length === 0) {
                 container.innerHTML = `
                     <div class="tactical-border bg-[#161412] p-12 text-center text-stone-500 rounded">
@@ -747,7 +750,7 @@
                     </div>`;
                 return;
             }
-
+        
             container.innerHTML = `
                 <div class="bg-amber-950/20 border border-amber-900/40 p-2.5 rounded text-[11px] text-amber-300 font-mono mb-2 flex items-center justify-between">
                     <span><i class="fa-solid fa-circle-info mr-1.5"></i>即時讀取自 teams 隊伍核心狀態庫</span>
@@ -758,37 +761,44 @@
                 [1, 2, 3, 4, 5, 6].forEach(lvl => {
                     if (isLevelPassed(t.approvedLevels, lvl)) passedCount++;
                 });
-
-                const isFinished = passedCount >= 6;
+        
+                // 👉 改為必須完成最終解密（finalCompleted），才判定為全通關
+                const isFinished = t.finalCompleted;
                 const lastTimeStr = t.lastActive ? t.lastActive.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
-
+        
                 return `
                 <div class="tactical-border bg-[#161412] p-3.5 space-y-3 rounded border-l-4 ${isFinished ? 'border-l-emerald-500' : 'border-l-amber-500'}">
                     <div class="flex items-start justify-between border-b border-[#2b251f] pb-2">
                         <div>
                             <div class="flex items-center space-x-2">
                                 <b class="text-[#ede3cd] text-base font-hud font-bold">${escapeHtml(t.name)}</b>
-                                ${isFinished ? '<span class="text-[9px] bg-emerald-950 text-emerald-300 border border-emerald-700 px-1.5 py-0.5 rounded font-mono">任務完成</span>' : ''}
+                                ${isFinished 
+                                    ? '<span class="text-[9px] bg-emerald-950 text-emerald-300 border border-emerald-700 px-1.5 py-0.5 rounded font-mono font-bold">全線通關</span>' 
+                                    : '<span class="text-[9px] bg-amber-950/60 text-amber-400 border border-amber-700/60 px-1.5 py-0.5 rounded font-mono">作戰中</span>'}
                             </div>
                             ${t.members ? `<div class="text-xs text-stone-400 mt-0.5 font-mono"><i class="fa-solid fa-id-card text-stone-500 mr-1 text-[10px]"></i>成員：${escapeHtml(t.members)}</div>` : ''}
                         </div>
                         <span class="text-[10px] font-mono text-stone-500">最後動態: ${lastTimeStr}</span>
                     </div>
-
+        
                     <div>
                         <div class="flex justify-between text-[11px] font-mono text-stone-400 mb-1.5">
-                            <span>作戰進度：${passedCount}/6 關卡</span>
-                            <span class="${isFinished ? 'text-emerald-400' : 'text-amber-400'} font-bold font-hud">${Math.round((passedCount/6)*100)}%</span>
+                            <span>${isFinished ? '作戰進度：全線通關（已解開最終密碼）' : (passedCount >= 6 ? '作戰進度：6 關已過（前往終點中...）' : `作戰進度：${passedCount}/6 關卡`)}</span>
+                            <span class="${isFinished ? 'text-emerald-400' : 'text-amber-400'} font-bold font-hud">${isFinished ? '100%' : `${Math.round((passedCount/6)*90)}%`}</span>
                         </div>
-                        <div class="grid grid-cols-6 gap-1">
+                        <div class="grid grid-cols-7 gap-1">
                             ${[1,2,3,4,5,6].map(lvl => `
                                 <div class="py-1 text-center text-[10px] font-mono font-bold rounded ${isLevelPassed(t.approvedLevels, lvl) ? 'bg-emerald-800/80 text-emerald-200 border border-emerald-600' : 'bg-[#12100e] text-stone-600 border border-[#2b251f]'}">
                                     L${lvl}
                                 </div>
                             `).join('')}
+                            <!-- 終點關卡燈號 -->
+                            <div class="py-1 text-center text-[10px] font-mono font-bold rounded ${isFinished ? 'bg-emerald-600 text-white border border-emerald-400 font-black' : 'bg-[#12100e] text-stone-600 border border-[#2b251f]'}">
+                                終
+                            </div>
                         </div>
                     </div>
-
+        
                     <div class="pt-2 border-t border-[#2b251f] flex items-center justify-between">
                         <div class="text-xs font-mono">
                             ${t.giftClaimed ? `
