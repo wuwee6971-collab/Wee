@@ -713,15 +713,15 @@
                         </p>
                         
                         <div class="flex-1 flex flex-col space-y-4 overflow-y-auto custom-scrollbar pb-6 pr-1">
-                            <!-- 任務一 卡片 (在地兒童) -->
+                           <!-- 任務一 卡片 (在地兒童) -->
                             <div id="l4-card-1" class="task-card flex flex-col cursor-pointer hover:border-primary/50 transition-all active:scale-[0.98]" onclick="openL4TaskDetail(0)">
                                 <div class="flex justify-between items-center border-b border-ink/10 pb-2 mb-3">
                                     <span class="text-xs font-mono font-black text-primary bg-primary/10 px-2.5 py-1 rounded">任務一</span>
                                     <span class="l4-status-badge text-xs font-bold text-ink/40">點擊查看詳情 <i class="fa-solid fa-chevron-right ml-1"></i></span>
                                 </div>
-                                <!-- 圖片容器改為置中包含完整圖片 -->
-                                <div class="bleed-p6 -mt-3 mb-3 h-64 overflow-hidden bg-paper-dark/60 border-b border-ink/10 flex items-center justify-center p-2">
-                                    <img src="images/小孩人物照.jpg" alt="在地兒童" class="max-w-full max-h-full w-auto h-full object-contain loaded" onerror="this.src='https://placehold.co/400x225/e5d5b5/7c343d?text=Kid+在地兒童'">
+                                <!-- 貼齊左右兩側滿版橫幅 -->
+                                <div class="bleed-p6 -mt-3 mb-3 aspect-[16/9] overflow-hidden bg-paper-dark border-b border-ink/10">
+                                    <img src="images/小孩人物照.jpg" alt="在地兒童" class="w-full h-full object-cover loaded" onerror="this.src='https://placehold.co/400x225/e5d5b5/7c343d?text=Kid+在地兒童'">
                                 </div>
                                 <div class="text-center">
                                     <b class="text-base font-serif text-ink block mb-1">在地兒童</b>
@@ -730,15 +730,15 @@
                                 </div>
                             </div>
                             
-                            <!-- 任務二 卡片 (中學生：871*1880 瘦長比例完整呈現) -->
+                            <!-- 任務二 卡片 (中學生：貼齊左右兩側滿版) -->
                             <div id="l4-card-2" class="task-card flex flex-col cursor-pointer hover:border-primary/50 transition-all active:scale-[0.98]" onclick="openL4TaskDetail(1)">
                                 <div class="flex justify-between items-center border-b border-ink/10 pb-2 mb-3">
                                     <span class="text-xs font-mono font-black text-primary bg-primary/10 px-2.5 py-1 rounded">任務二</span>
                                     <span class="l4-status-badge text-xs font-bold text-ink/40">點擊查看詳情 <i class="fa-solid fa-chevron-right ml-1"></i></span>
                                 </div>
-                                <!-- 圖片容器改為置中包含完整圖片 -->
-                                <div class="bleed-p6 -mt-3 mb-3 h-64 overflow-hidden bg-paper-dark/60 border-b border-ink/10 flex items-center justify-center p-2">
-                                    <img src="images/中學生2.jpg" alt="中學生" class="max-w-full max-h-full w-auto h-full object-contain loaded" onerror="this.src='https://placehold.co/400x225/e5d5b5/7c343d?text=中學生'">
+                                <!-- 貼齊左右兩側，object-top 確保頭部特徵與軍綠包不被遮擋 -->
+                                <div class="bleed-p6 -mt-3 mb-3 aspect-[16/9] overflow-hidden bg-paper-dark border-b border-ink/10">
+                                    <img src="images/中學生2.jpg" alt="中學生" class="w-full h-full object-cover object-top loaded" onerror="this.src='https://placehold.co/400x225/e5d5b5/7c343d?text=中學生'">
                                 </div>
                                 <div class="text-center">
                                     <b class="text-base font-serif text-ink block mb-1">中學生</b>
@@ -747,15 +747,15 @@
                                 </div>
                             </div>
                             
-                            <!-- 任務三 卡片 (老奶奶：1108*1477 直式比例完整呈現) -->
+                            <!-- 任務三 卡片 (老奶奶：貼齊左右兩側滿版) -->
                             <div id="l4-card-3" class="task-card flex flex-col cursor-pointer hover:border-primary/50 transition-all active:scale-[0.98]" onclick="openL4Quiz()">
                                 <div class="flex justify-between items-center border-b border-ink/10 pb-2 mb-3">
                                     <span class="text-xs font-mono font-black text-primary bg-primary/10 px-2.5 py-1 rounded">任務三</span>
                                     <span class="l4-status-badge text-xs font-bold text-ink/40">前往測驗 <i class="fa-solid fa-arrow-right ml-1"></i></span>
                                 </div>
-                                <!-- 圖片容器改為置中包含完整圖片 -->
-                                <div class="bleed-p6 -mt-3 mb-3 h-64 overflow-hidden bg-paper-dark/60 border-b border-ink/10 flex items-center justify-center p-2">
-                                    <img src="images/奶奶人物照.jpg" alt="老奶奶" class="max-w-full max-h-full w-auto h-full object-contain loaded" onerror="this.src='https://placehold.co/400x225/e5d5b5/7c343d?text=老奶奶'">
+                                <!-- 貼齊左右兩側，object-top 確保老奶奶碎花上衣與臉部清楚可見 -->
+                                <div class="bleed-p6 -mt-3 mb-3 aspect-[16/9] overflow-hidden bg-paper-dark border-b border-ink/10">
+                                    <img src="images/奶奶人物照.jpg" alt="老奶奶" class="w-full h-full object-cover object-top loaded" onerror="this.src='https://placehold.co/400x225/e5d5b5/7c343d?text=老奶奶'">
                                 </div>
                                 <div class="text-center">
                                     <b class="text-base font-serif text-ink block mb-1">老奶奶</b>
