@@ -2346,6 +2346,18 @@
             GameState.set('stamps', stamps);
             updateStampBadgeCount();
         
+            // 👉 新增這段：整關通過時，送出標準通關信號給後台指揮所
+            if (db) {
+                db.collection("submissions").add({
+                    teamName: GameState.get('teamName') || "匿名隊伍",
+                    teamMembers: GameState.get('teamMembers') || "",
+                    levelId: `STAGE_COMPLETED_L${lvlNum}`, // 唯一標準識別碼
+                    stagePassed: lvlNum,
+                    status: "approved",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(e => console.warn("通關進度同步失敗:", e));
+            }
+        
             let seq = GameState.get('customSequence') || [6, 1, 4, 2, 5, 3];
             let idx = GameState.get('currentStageIndex') || 0;
             
