@@ -2025,7 +2025,6 @@
         
             showAlert("資料審核中", "已送達指揮所，審核官查驗中...\n(關主核准後會自動切換)", "fa-satellite-dish fa-spin", "text-primary", null, "取消等待", 0, true);
         
-            // 🛠️ 修復 1：綁定取消與返回事件，點擊後確實中止輪詢與長連接
             const cancelBtn = document.getElementById('alert-cancel-btn');
             const alertBtn = document.getElementById('alert-btn');
             if (cancelBtn) {
@@ -2035,18 +2034,19 @@
                 alertBtn.onclick = () => { cleanUp(); closeModalAnim('modal-alert', 'alert-box'); };
             }
 
+            // ✅ 合併修復後的單一 sendPayload 函式
             const sendPayload = (base64Img = null) => {
-            // ✅ 本地相片緊急備份：存入玩家手機瀏覽器暫存區
-            if (base64Img) {
-                window.lastCapturedPhoto = base64Img;
-                try {
-                    sessionStorage.setItem('last_photo_backup', base64Img);
-                } catch (e) {
-                    console.warn("本機暫存空間已滿，維持記憶體暫存");
+                // 本地相片緊急備份
+                if (base64Img) {
+                    window.lastCapturedPhoto = base64Img;
+                    try {
+                        sessionStorage.setItem('last_photo_backup', base64Img);
+                    } catch (e) {
+                        console.warn("本機暫存空間已滿，維持記憶體暫存");
+                    }
                 }
-            }
-            const sendPayload = (base64Img = null) => {
-                // 🛠️ 修復 2：自動推導 level 純數字與 levelKey，確保 L1、L2、L3 格式標準化
+
+                // 自動推導關卡層級
                 const lvlStr = String(docData.levelId || '');
                 let detectedLevel = docData.level || null;
                 if (!detectedLevel) {
@@ -2069,15 +2069,7 @@
                 db.collection("submissions").add(payload).then(docRef => {
                     if (isHandled) return;
         
-                    // 1. 被動 WebSocket 監聽
-                    activeUploadUnsubscribe = docRef.onSnapshot((doc) => {
-                        if (isHandled || !doc.exists) return;
-                        const data = doc.data();
-                        if (data.status === "approved") handleResult(true);
-                        else if (data.status === "rejected") handleResult(false, data.rejectReason);
-                    }, (err) => console.warn("長連接中斷，切換為主動輪詢:", err));
-        
-                    // 1. 被動 WebSocket 監聽（加入 metadata 判定）
+                    // 被動監聽
                     activeUploadUnsubscribe = docRef.onSnapshot({ includeMetadataChanges: true }, (doc) => {
                         if (isHandled || !doc.exists) return;
                         const data = doc.data();
@@ -2085,25 +2077,24 @@
                         else if (data.status === "rejected") handleResult(false, data.rejectReason);
                     }, (err) => console.warn("長連接異常，輪詢維持運作中"));
                     
-                    // 2. 主動輪詢每 1 秒抓一次，雙軌並行
+                    // 主動輪詢（雙軌並行）
                     pollInterval = setInterval(async () => {
                         if (isHandled) return;
                         try {
-                            const freshDoc = await docRef.get({ source: 'server' }); // 強制向伺服器拉最新狀態，不讀快取
+                            const freshDoc = await docRef.get({ source: 'server' });
                             if (freshDoc.exists) {
                                 const data = freshDoc.data();
                                 if (data.status === "approved") handleResult(true);
                                 else if (data.status === "rejected") handleResult(false, data.rejectReason);
                             }
                         } catch (e) {
-                            // 若網路不穩則降級讀預設快取
                             docRef.get().then(d => {
                                 if (d.exists && d.data().status === "approved") handleResult(true);
                             }).catch(() => {});
                         }
                     }, 1000);
         
-                    // 3. 逾時防護 (45 秒)
+                    // 45 秒逾時保護
                     timeoutId = setTimeout(() => {
                         if (!isHandled) {
                             cleanUp();
@@ -2126,7 +2117,7 @@
                 sendPayload();
             }
         }
-
+        
         function compressImageReliably(file, maxWidth, quality, callback) {
             const objectUrl = URL.createObjectURL(file);
             const img = new Image();
