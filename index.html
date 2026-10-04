@@ -2034,7 +2034,17 @@
             if (alertBtn) {
                 alertBtn.onclick = () => { cleanUp(); closeModalAnim('modal-alert', 'alert-box'); };
             }
-        
+
+            const sendPayload = (base64Img = null) => {
+            // ✅ 本地相片緊急備份：存入玩家手機瀏覽器暫存區
+            if (base64Img) {
+                window.lastCapturedPhoto = base64Img;
+                try {
+                    sessionStorage.setItem('last_photo_backup', base64Img);
+                } catch (e) {
+                    console.warn("本機暫存空間已滿，維持記憶體暫存");
+                }
+            }
             const sendPayload = (base64Img = null) => {
                 // 🛠️ 修復 2：自動推導 level 純數字與 levelKey，確保 L1、L2、L3 格式標準化
                 const lvlStr = String(docData.levelId || '');
@@ -2067,20 +2077,31 @@
                         else if (data.status === "rejected") handleResult(false, data.rejectReason);
                     }, (err) => console.warn("長連接中斷，切換為主動輪詢:", err));
         
-                    // 2. 主動輪詢保險（每 2.5 秒向伺服器拉取一次，防止相機切換時長連接被凍結）
+                    // 1. 被動 WebSocket 監聽（加入 metadata 判定）
+                    activeUploadUnsubscribe = docRef.onSnapshot({ includeMetadataChanges: true }, (doc) => {
+                        if (isHandled || !doc.exists) return;
+                        const data = doc.data();
+                        if (data.status === "approved") handleResult(true);
+                        else if (data.status === "rejected") handleResult(false, data.rejectReason);
+                    }, (err) => console.warn("長連接異常，輪詢維持運作中"));
+                    
+                    // 2. 主動輪詢每 1 秒抓一次，雙軌並行
                     pollInterval = setInterval(async () => {
                         if (isHandled) return;
                         try {
-                            const freshDoc = await docRef.get();
+                            const freshDoc = await docRef.get({ source: 'server' }); // 強制向伺服器拉最新狀態，不讀快取
                             if (freshDoc.exists) {
                                 const data = freshDoc.data();
                                 if (data.status === "approved") handleResult(true);
                                 else if (data.status === "rejected") handleResult(false, data.rejectReason);
                             }
                         } catch (e) {
-                            console.warn("主動檢查暫態失敗，稍後重試...", e);
+                            // 若網路不穩則降級讀預設快取
+                            docRef.get().then(d => {
+                                if (d.exists && d.data().status === "approved") handleResult(true);
+                            }).catch(() => {});
                         }
-                    }, 2500);
+                    }, 1000);
         
                     // 3. 逾時防護 (45 秒)
                     timeoutId = setTimeout(() => {
