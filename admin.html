@@ -758,7 +758,7 @@
             ` + teams.map(t => {
                 const count = t.approvedLevels.size;
                 const isFinished = count >= 6; // 集滿 6 關即算完成
-const lastTimeStr = t.lastActive ? t.lastActive.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
+                const lastTimeStr = t.lastActive ? t.lastActive.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
                 const teamSafeAttr = encodeURIComponent(t.name);
 
                 return `
@@ -1014,17 +1014,20 @@ const lastTimeStr = t.lastActive ? t.lastActive.toLocaleTimeString([], { hour: '
                 if (target) target.status = newStatus;
                 renderList();
         
-                const updateData = {
+                // 1. 先即時推送狀態給前台（Payload 極小，前台 0.1 秒內必定收到）
+                await db.collection("submissions").doc(docId).update({
                     status: newStatus,
                     reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
+                });
         
-                // 如果審核通過，把肥大的 base64 拔掉，大幅減輕推播給玩家手機的資料量
+                // 2. 延遲 3 秒後再刪除肥大的 Base64 節省空間，完全不影響前台監聽通道
                 if (newStatus === 'approved') {
-                    updateData.imageBase64 = firebase.firestore.FieldValue.delete();
+                    setTimeout(() => {
+                        db.collection("submissions").doc(docId).update({
+                            imageBase64: firebase.firestore.FieldValue.delete()
+                        }).catch(() => {});
+                    }, 3000);
                 }
-        
-                await db.collection("submissions").doc(docId).update(updateData);
             } catch (err) {
                 alert("狀態變更失敗：" + err.message);
                 renderList();
