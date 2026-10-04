@@ -701,6 +701,7 @@
         // 9. 結案核銷與進度儀表板
         function renderClaimsDashboard(container) {
             const teamMap = {};
+            // 替換 admin.html 中 renderClaimsDashboard 內的關卡累計區塊：
             currentSubmissions.forEach(sub => {
                 const tName = sub.teamName || '未命名小隊';
                 if (!teamMap[tName]) {
@@ -719,18 +720,17 @@
                     teamMap[tName].giftClaimed = true;
                     teamMap[tName].giftClaimedTime = sub.giftClaimedTime;
                 }
+            
                 if (sub.status === 'approved') {
-                    const lvlStr = String(sub.levelId || '');
-                    const cnNums = ['', '一', '二', '三', '四', '五', '六'];
-                    for (let i = 1; i <= 6; i++) {
-                        if (
-                            lvlStr.includes(`L${i}`) || 
-                            lvlStr.includes(`任務${i}`) || 
-                            lvlStr.includes(`任務${cnNums[i]}`) ||
-                            lvlStr.includes(`第${i}`) ||
-                            lvlStr.includes(`第${cnNums[i]}`)
-                        ) {
-                            teamMap[tName].approvedLevels.add(i);
+                    // 1. 優先使用標準通關欄位
+                    if (sub.stagePassed && sub.stagePassed >= 1 && sub.stagePassed <= 6) {
+                        teamMap[tName].approvedLevels.add(sub.stagePassed);
+                    } else {
+                        // 2. 備用：嚴格識別通關標籤
+                        const lvlStr = String(sub.levelId || '');
+                        const match = lvlStr.match(/STAGE_COMPLETED_L([1-6])/);
+                        if (match) {
+                            teamMap[tName].approvedLevels.add(parseInt(match[1]));
                         }
                     }
                 }
