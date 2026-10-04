@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Noto+Serif+TC:wght@600;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
-    
-    <!-- Firebase SDK (Firestore Only) -->
+
+    <!-- Firebase SDK (Firestore Compat) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
@@ -34,7 +34,7 @@
         }
 
         .font-hud { font-family: 'Chakra Petch', sans-serif; }
-        
+
         .tactical-border {
             border: 1px solid var(--border-tactical);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.03);
@@ -95,12 +95,12 @@
                 <span id="pending-counter" class="text-amber-400 font-bold font-hud text-sm">0</span>
             </div>
 
-            <!-- 音效開關 -->
-            <button onclick="toggleAudio()" id="btn-audio" title="提示音切換" class="w-8 h-8 rounded border border-[#443c33] bg-[#1c1917] hover:bg-[#25201c] text-stone-300 flex items-center justify-center text-xs tactical-btn">
+            <!-- 音效與震動切換 -->
+            <button onclick="toggleAudio()" id="btn-audio" title="待審提示切換" class="w-8 h-8 rounded border border-[#443c33] bg-[#1c1917] hover:bg-[#25201c] text-stone-300 flex items-center justify-center text-xs tactical-btn">
                 <i class="fa-solid fa-bell text-amber-400"></i>
             </button>
 
-            <!-- 操作菜單 (避免清空按鈕誤觸) -->
+            <!-- 操作菜單 -->
             <div class="relative">
                 <button onclick="toggleAdminMenu()" id="btn-admin-menu" class="w-8 h-8 rounded border border-[#443c33] bg-[#1c1917] hover:bg-[#25201c] text-stone-300 flex items-center justify-center text-xs tactical-btn">
                     <i class="fa-solid fa-ellipsis-vertical"></i>
@@ -137,7 +137,7 @@
                 <span class="flex items-center"><i class="fa-solid fa-layer-group text-amber-500/80 mr-1.5"></i>戰區分流檢視</span>
                 <span id="current-room-label" class="text-amber-400 font-mono font-bold">ALL / 全區巡邏</span>
             </div>
-            
+
             <div class="grid grid-cols-3 gap-1.5 text-xs font-hud">
                 <button onclick="setRoom('ALL')" id="room-btn-ALL" class="py-1.5 px-2 rounded-sm border border-amber-600 bg-amber-600/20 text-amber-300 font-bold flex items-center justify-between">
                     <span>全部關卡</span>
@@ -218,15 +218,15 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            
+
             <p class="text-[11px] text-stone-400 leading-relaxed">請選擇駁回原因（點擊可快速填入並審查）：</p>
             <div class="flex flex-col gap-1.5 text-xs font-mono max-h-[220px] overflow-y-auto pr-1" id="reject-quick-tags"></div>
-            
+
             <div class="space-y-1">
                 <label class="text-[10px] text-stone-500 font-mono">或手動撰寫駁回指令：</label>
                 <input type="text" id="custom-reject-reason" placeholder="請輸入具體說明..." class="w-full bg-[#100e0d] border border-[#3b332a] focus:border-red-500 rounded px-2.5 py-2 text-xs text-stone-200 placeholder:text-stone-600 outline-none">
             </div>
-            
+
             <div class="grid grid-cols-2 gap-2 pt-1">
                 <button onclick="closeRejectModal()" class="py-2.5 bg-[#25201d] border border-[#443c33] text-stone-400 hover:text-stone-200 rounded text-xs font-bold">
                     取消返航
@@ -264,61 +264,81 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-       // 2. 全域狀態管理
+        // 2. 全域狀態管理
         let currentTab = 'pending';
         let selectedRoom = 'ALL';
         let searchQuery = '';
-        let queryLimit = 60; // 維持 60 即可，不再受 Base64 拖慢
+        let queryLimit = 60;
         let currentSubmissions = [];
-        let teamsList = [];  // 👉 新增這行：專門存放輕量隊伍狀態
-        let previousRoomPendingCount = -1; // 改為記錄「當前關卡」的待審數（-1 表示首次載入）
-        let isNotifyEnabled = true;        // 鈴鐺開關：控制是否震動
+        let teamsList = [];
+        let previousRoomPendingCount = -1;
+        let isNotifyEnabled = true;
+        let audioUnlocked = false;
+        let audioCtx = null;
         let unsubscribe = null;
+        let teamsUnsubscribe = null;
         let pendingRejectDocId = null;
         let adminPollInterval = null;
 
-        // 3. 行動裝置戰術震動提示 (雙震節奏)
+        // 3. Web Audio 與震動系統
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            return audioCtx;
+        }
+
+        function unlockAudio() {
+            const ctx = getAudioContext();
+            if (ctx && !audioUnlocked && ctx.state === 'suspended') {
+                ctx.resume().then(() => { audioUnlocked = true; });
+            } else if (ctx && ctx.state === 'running') {
+                audioUnlocked = true;
+            }
+        }
+        document.addEventListener('touchstart', unlockAudio, { passive: true });
+        document.addEventListener('click', unlockAudio, { passive: true });
+
         function triggerVibration() {
             if (!isNotifyEnabled) return;
             if ('vibrate' in navigator) {
-                // 震動 300ms -> 停 100ms -> 震動 300ms
-                navigator.vibrate([300, 100, 300]);
+                try {
+                    navigator.vibrate([300, 100, 300]);
+                } catch (e) {}
             }
         }
-
-        // 3. Web Audio 音效與手勢解鎖 (符合 Autoplay Policy)
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        const audioCtx = new AudioContextClass();
-
-        function unlockAudio() {
-            if (!audioUnlocked && audioCtx.state === 'suspended') {
-                audioCtx.resume().then(() => { audioUnlocked = true; });
-            }
-        }
-        document.addEventListener('touchstart', unlockAudio, { once: true });
-        document.addEventListener('click', unlockAudio, { once: true });
 
         function playChime() {
-            if (!isAudioEnabled) return;
+            if (!isNotifyEnabled) return;
             try {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                if (ctx.state === 'suspended') ctx.resume();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5 音調
-                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+                osc.frequency.setValueAtTime(880, ctx.currentTime);
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
                 osc.connect(gain);
-                gain.connect(audioCtx.destination);
+                gain.connect(ctx.destination);
                 osc.start();
-                osc.stop(audioCtx.currentTime + 0.35);
+                osc.stop(ctx.currentTime + 0.35);
             } catch (e) {
                 console.warn("音訊提示未能播放:", e);
             }
         }
 
-        // 4. 即時監聽與狀態分發
-        // 核心主動輪詢比對函式（每 2 秒主動向 Firestore 抓取最新資料）
+        function notifyNewSubmission() {
+            if (!isNotifyEnabled) return;
+            triggerVibration();
+            playChime();
+        }
+
+        // 4. 即時監聽與備援輪詢
         async function pollFreshSubmissions() {
             try {
                 const snapshot = await db.collection("submissions")
@@ -331,7 +351,6 @@
                     list.push({ id: doc.id, ...doc.data() });
                 });
 
-                // 比對資料是否有變更（長度不同、ID不同、或狀態有變）
                 const hasChanged = list.length !== currentSubmissions.length ||
                     list.some((item, i) => {
                         const cur = currentSubmissions[i];
@@ -340,15 +359,13 @@
 
                 if (hasChanged) {
                     currentSubmissions = list;
-                    
-                    // 計算當前關主所選房間的待審核數量
+
                     const currentRoomPending = currentSubmissions.filter(s => 
                         s.status === 'pending' && matchRoomPredicate(s, selectedRoom)
                     ).length;
-                    
-                    // 僅在「當前關卡待審增加」且「非首次載入」時觸發震動
+
                     if (previousRoomPendingCount !== -1 && currentRoomPending > previousRoomPendingCount) {
-                        triggerVibration();
+                        notifyNewSubmission();
                     }
                     previousRoomPendingCount = currentRoomPending;
 
@@ -361,20 +378,23 @@
         }
 
         function startListening() {
-            // 清理舊的監聽與計時器
             if (unsubscribe) {
                 unsubscribe();
                 unsubscribe = null;
+            }
+            if (teamsUnsubscribe) {
+                teamsUnsubscribe();
+                teamsUnsubscribe = null;
             }
             if (adminPollInterval) {
                 clearInterval(adminPollInterval);
                 adminPollInterval = null;
             }
-            
+
             const conn = document.getElementById('conn-indicator');
             if (conn) conn.className = "w-2 h-2 rounded-full bg-amber-500";
 
-            // 軌道 1：原本的 WebSocket 被動推播（連線正常時 0.3 秒即時更新）
+            // 軌道 1：WebSocket 毫秒級被動推播
             unsubscribe = db.collection("submissions")
                 .orderBy("createdAt", "desc")
                 .limit(queryLimit)
@@ -385,17 +405,13 @@
                         list.push({ id: doc.id, ...doc.data() });
                     });
                     currentSubmissions = list;
-                    
-                    currentSubmissions = list;
-                    
-                    // 計算當前關主所選房間的待審核數量
+
                     const currentRoomPending = currentSubmissions.filter(s => 
                         s.status === 'pending' && matchRoomPredicate(s, selectedRoom)
                     ).length;
 
-                    // 僅在「當前關卡待審增加」且「非首次載入」時觸發震動
                     if (previousRoomPendingCount !== -1 && currentRoomPending > previousRoomPendingCount) {
-                        triggerVibration();
+                        notifyNewSubmission();
                     }
                     previousRoomPendingCount = currentRoomPending;
 
@@ -406,15 +422,16 @@
                     if (conn) conn.className = "w-2 h-2 rounded-full bg-red-500";
                 });
 
-            // 軌道 2：主動輪詢（每 2000ms 強制作一次 HTTP GET，確保 2 秒內必定收到）
-            adminPollInterval = setInterval(pollFreshSubmissions, 2000);
-            // 即時監聽輕量 teams 集合（體積極小，不帶圖片）
-            db.collection("teams").orderBy("updatedAt", "desc").onSnapshot((snapshot) => {
+            // 監聽隊伍資料庫
+            teamsUnsubscribe = db.collection("teams").orderBy("updatedAt", "desc").onSnapshot((snapshot) => {
                 const list = [];
                 snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
                 teamsList = list;
                 if (currentTab === 'claims') renderList();
             }, (err) => console.warn("Teams 監聽受阻:", err));
+
+            // 軌道 2：低頻主動輪詢備援 (30 秒一次，避免快速耗盡 Spark 配額)
+            adminPollInterval = setInterval(pollFreshSubmissions, 30000);
         }
 
         function loadMoreSubmissions() {
@@ -427,16 +444,15 @@
             startListening();
         }
 
-        // 5. 房間匹配工具（已修正：防止「二選一」污染第二關）
+        // 5. 房間匹配工具
         function matchRoomPredicate(item, room) {
             if (room === 'ALL') return true;
             const lvl = String(item.levelId || '').toUpperCase();
-            
+
             if (room === '1') {
                 return lvl.includes('L1') || lvl.includes('防砲') || lvl.startsWith('任務一') || lvl.includes('甬道') || lvl.includes('豎井') || lvl.includes('砲台');
             }
             if (room === '2') {
-                // 排除市集與第七關，避免「二選一」誤入
                 if (lvl.includes('L7') || lvl.includes('市集')) return false;
                 return lvl.includes('L2') || lvl.includes('眷舍') || lvl.startsWith('任務二') || lvl.includes('特級') || lvl.includes('防洪樓') || lvl.includes('一線天') || lvl.includes('鐵窗');
             }
@@ -458,7 +474,6 @@
             return true;
         }
 
-        // 更新房間按鈕待審 Badge 統計
         function updateRoomBadges() {
             const pendingList = currentSubmissions.filter(s => s.status === 'pending');
             const rooms = ['ALL', '1', '2', '3', '4', '5', '6-angel', '6-note'];
@@ -523,7 +538,6 @@
         function setRoom(roomId) {
             selectedRoom = roomId;
 
-            // 切換房間時即時校準基準，避免因為關卡待審數量不同而誤觸震動
             previousRoomPendingCount = currentSubmissions.filter(s => 
                 s.status === 'pending' && matchRoomPredicate(s, selectedRoom)
             ).length;
@@ -538,7 +552,7 @@
                     btn.className = "py-1.5 px-2 rounded-sm border border-[#383127] bg-[#1a1715] text-stone-400 hover:text-stone-200 flex items-center justify-between";
                 }
             });
-            
+
             const labels = {
                 'ALL': 'ALL / 全區巡邏',
                 '1': 'L1 / 防砲陣地',
@@ -577,7 +591,6 @@
                 });
             }
 
-            // 更新當前房間待審計數
             const pendingInRoom = currentSubmissions.filter(s => s.status === 'pending' && matchRoomPredicate(s, selectedRoom));
             document.getElementById('pending-counter').textContent = pendingInRoom.length;
 
@@ -606,7 +619,6 @@
 
                 let mediaContent = '';
                 if (hasImage) {
-                    // 安全渲染：使用 data-doc-id 綁定，避免超長 Base64 inline 注入
                     mediaContent = `
                         <div class="w-full aspect-[4/3] bg-black/70 rounded border border-[#383127] overflow-hidden flex items-center justify-center cursor-pointer relative group" onclick="openLightboxByDocId('${item.id}')">
                             <img src="${item.imageBase64 || item.photoUrl}" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" loading="lazy" alt="任務證物">
@@ -707,8 +719,14 @@
         }
 
         // 9. 結案核銷與進度儀表板
+        function isLevelPassed(set, lvl) {
+            if (!set || !(set instanceof Set)) return false;
+            return set.has(lvl) || set.has(String(lvl)) || set.has(`L${lvl}`) || set.has(`任務${lvl}`);
+        }
+
         function renderClaimsDashboard(container) {
             let teams = teamsList.map(t => ({
+                id: t.id,
                 name: t.teamName || t.id,
                 members: t.teamMembers || '',
                 approvedLevels: new Set(t.passedLevels || []),
@@ -736,10 +754,13 @@
                     <span class="text-stone-400">總計 ${teams.length} 隊</span>
                 </div>
             ` + teams.map(t => {
-                const count = t.approvedLevels.size;
-                const isFinished = count >= 6;
+                let passedCount = 0;
+                [1, 2, 3, 4, 5, 6].forEach(lvl => {
+                    if (isLevelPassed(t.approvedLevels, lvl)) passedCount++;
+                });
+
+                const isFinished = passedCount >= 6;
                 const lastTimeStr = t.lastActive ? t.lastActive.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
-                const teamSafeAttr = encodeURIComponent(t.name);
 
                 return `
                 <div class="tactical-border bg-[#161412] p-3.5 space-y-3 rounded border-l-4 ${isFinished ? 'border-l-emerald-500' : 'border-l-amber-500'}">
@@ -753,15 +774,15 @@
                         </div>
                         <span class="text-[10px] font-mono text-stone-500">最後動態: ${lastTimeStr}</span>
                     </div>
-                
+
                     <div>
                         <div class="flex justify-between text-[11px] font-mono text-stone-400 mb-1.5">
-                            <span>作戰進度：${count}/6 關卡</span>
-                            <span class="${isFinished ? 'text-emerald-400' : 'text-amber-400'} font-bold font-hud">${Math.round((count/6)*100)}%</span>
+                            <span>作戰進度：${passedCount}/6 關卡</span>
+                            <span class="${isFinished ? 'text-emerald-400' : 'text-amber-400'} font-bold font-hud">${Math.round((passedCount/6)*100)}%</span>
                         </div>
                         <div class="grid grid-cols-6 gap-1">
                             ${[1,2,3,4,5,6].map(lvl => `
-                                <div class="py-1 text-center text-[10px] font-mono font-bold rounded ${t.approvedLevels.has(lvl) ? 'bg-emerald-800/80 text-emerald-200 border border-emerald-600' : 'bg-[#12100e] text-stone-600 border border-[#2b251f]'}">
+                                <div class="py-1 text-center text-[10px] font-mono font-bold rounded ${isLevelPassed(t.approvedLevels, lvl) ? 'bg-emerald-800/80 text-emerald-200 border border-emerald-600' : 'bg-[#12100e] text-stone-600 border border-[#2b251f]'}">
                                     L${lvl}
                                 </div>
                             `).join('')}
@@ -776,7 +797,7 @@
                                 </span>` : `
                                 <span class="text-stone-500 flex items-center"><i class="fa-regular fa-circle mr-1.5"></i>尚未兌領禮品</span>`}
                         </div>
-                        <button onclick="toggleGiftClaimSafe('${teamSafeAttr}', ${!t.giftClaimed})" class="px-3 py-1.5 rounded text-xs font-hud font-bold tracking-wider tactical-btn ${t.giftClaimed ? 'bg-[#25201d] text-stone-400 hover:text-stone-200 border border-[#443c33]' : 'bg-emerald-700 hover:bg-emerald-600 text-white shadow-sm border border-emerald-500'}">
+                        <button onclick="toggleGiftClaim('${escapeHtml(t.id)}', ${!t.giftClaimed})" class="px-3 py-1.5 rounded text-xs font-hud font-bold tracking-wider tactical-btn ${t.giftClaimed ? 'bg-[#25201d] text-stone-400 hover:text-stone-200 border border-[#443c33]' : 'bg-emerald-700 hover:bg-emerald-600 text-white shadow-sm border border-emerald-500'}">
                             ${t.giftClaimed ? '註銷領取' : '<i class="fa-solid fa-gift mr-1"></i>登記領獎'}
                         </button>
                     </div>
@@ -784,18 +805,12 @@
             }).join('');
         }
 
-        // 安全處理隊伍領獎切換
-        async function toggleGiftClaimSafe(encodedTeamName, newClaimedState) {
-            const teamName = decodeURIComponent(encodedTeamName);
-            await toggleGiftClaim(teamName, newClaimedState);
-        }
-
-        async function toggleGiftClaim(teamName, newClaimedState) {
+        async function toggleGiftClaim(teamDocId, newClaimedState) {
             try {
                 const now = new Date();
                 const timeTag = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-                
-                await db.collection("teams").doc(teamName).set({
+
+                await db.collection("teams").doc(teamDocId).set({
                     giftClaimed: newClaimedState,
                     giftClaimedTime: newClaimedState ? timeTag : null,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -806,7 +821,7 @@
             }
         }
 
-        // 10. 駁回標準詞庫矩陣 (完整保留所有關卡細項)
+        // 10. 駁回標準詞庫矩陣
         const LEVEL_REJECT_PRESETS = {
             L1_EXIT1: [
                 "請觀察地圖，確認鄰近甬道1號出口",
@@ -908,11 +923,11 @@
         function openRejectModal(docId) {
             pendingRejectDocId = docId;
             const target = currentSubmissions.find(s => s.id === docId);
-            
+
             const taskLabel = document.getElementById('reject-target-task');
             const customInput = document.getElementById('custom-reject-reason');
             const container = document.getElementById('reject-quick-tags');
-            
+
             customInput.value = '';
 
             if (target) {
@@ -953,11 +968,10 @@
             const customVal = document.getElementById('custom-reject-reason').value.trim();
             const reason = customVal || "長官裁定：未達通關要求標準，請校正後重新回報！";
             const docId = pendingRejectDocId;
-            
+
             closeRejectModal();
 
             try {
-                // 本地預先標記狀態避免閃爍
                 const target = currentSubmissions.find(s => s.id === docId);
                 if (target) {
                     target.status = 'rejected';
@@ -976,19 +990,32 @@
             }
         }
 
-        // 11. 核准或重啟狀態切換
+        // 11. 核准或重啟狀態切換 (同步寫入 teams.passedLevels)
         async function updateStatus(docId, newStatus) {
             try {
                 const target = currentSubmissions.find(s => s.id === docId);
                 if (target) target.status = newStatus;
                 renderList();
-        
-                // 1. 先即時推送狀態給前台（Payload 極小，前台 0.1 秒內必定收到）
+
                 await db.collection("submissions").doc(docId).update({
                     status: newStatus,
                     reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-        
+
+                if (newStatus === 'approved' && target) {
+                    const teamIdentifier = target.teamId || target.teamName;
+                    if (teamIdentifier) {
+                        const match = String(target.levelId || '').match(/\d+/);
+                        const lvlNum = match ? parseInt(match[0], 10) : null;
+                        if (lvlNum) {
+                            await db.collection("teams").doc(teamIdentifier).set({
+                                passedLevels: firebase.firestore.FieldValue.arrayUnion(lvlNum),
+                                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                            }, { merge: true }).catch(err => console.warn("隊伍進度同步略過:", err));
+                        }
+                    }
+                }
+
             } catch (err) {
                 alert("狀態變更失敗：" + err.message);
                 renderList();
@@ -1008,7 +1035,7 @@
             }
         }
 
-        // 13. 大量資料批次刪除 (Chunks 處理防止 500 Limit 爆炸)
+        // 13. 大量資料批次刪除
         async function clearAllSubmissions() {
             toggleAdminMenu();
             const inputPass = prompt("【高危警告】此操作將清空基地所有歷史紀錄！\n請輸入驗證碼「C」以確認執行：");
@@ -1023,7 +1050,6 @@
                     return;
                 }
 
-                // 拆分為每批次 400 筆刪除
                 const docs = snapshot.docs;
                 const chunkSize = 400;
                 for (let i = 0; i < docs.length; i += chunkSize) {
@@ -1041,7 +1067,7 @@
             }
         }
 
-        // 14. 燈箱檢視（由 DocId 安全提取圖片，防禦超長 Base64）
+        // 14. 燈箱檢視
         function openLightboxByDocId(docId) {
             const item = currentSubmissions.find(s => s.id === docId);
             if (!item) return;
@@ -1059,15 +1085,16 @@
         function toggleAudio() {
             isNotifyEnabled = !isNotifyEnabled;
             const btn = document.getElementById('btn-audio');
-            
+            if (!btn) return;
+
             if (isNotifyEnabled) {
                 btn.innerHTML = '<i class="fa-solid fa-bell text-amber-400"></i>';
-                btn.title = "待審震動通知：已開啟";
-                // 開啟時輕微震動一下作為回饋
-                if ('vibrate' in navigator) navigator.vibrate(60);
+                btn.title = "待審通知（音效+震動）：已開啟";
+                triggerVibration();
+                playChime();
             } else {
                 btn.innerHTML = '<i class="fa-solid fa-bell-slash text-stone-500"></i>';
-                btn.title = "待審震動通知：已靜音";
+                btn.title = "待審通知：已靜音";
             }
         }
 
@@ -1076,7 +1103,6 @@
             menu.classList.toggle('hidden');
         }
 
-        // 點擊空白處關閉選單
         window.addEventListener('click', (e) => {
             if (!e.target.closest('#btn-admin-menu') && !e.target.closest('#admin-dropdown')) {
                 const menu = document.getElementById('admin-dropdown');
@@ -1099,30 +1125,23 @@
             })[s]);
         }
 
-        // 生命週期掛載
-        // 請求螢幕常亮（防止關主手機自動鎖定關螢幕）
         async function enableScreenWakeLock() {
             try {
                 if ('wakeLock' in navigator) {
                     await navigator.wakeLock.request('screen');
                 }
-            } catch (err) {
-                console.log("WakeLock not supported", err);
-            }
+            } catch (err) {}
         }
 
-        // 生命週期掛載
         window.addEventListener('load', () => {
             startListening();
             enableScreenWakeLock();
         });
 
-        // 關主解鎖手機或切換回本分頁時，0 秒立即發起一次強制抓取
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden) {
                 enableScreenWakeLock();
-                pollFreshSubmissions(); // 立刻強制抓取，不需等 2 秒
-                startListening();        // 重建可能被凍結的長連接
+                pollFreshSubmissions();
             }
         });
     </script>
