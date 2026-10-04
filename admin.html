@@ -1020,14 +1020,6 @@
                     reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
         
-                // 2. 延遲 3 秒後再刪除肥大的 Base64 節省空間，完全不影響前台監聽通道
-                if (newStatus === 'approved') {
-                    setTimeout(() => {
-                        db.collection("submissions").doc(docId).update({
-                            imageBase64: firebase.firestore.FieldValue.delete()
-                        }).catch(() => {});
-                    }, 3000);
-                }
             } catch (err) {
                 alert("狀態變更失敗：" + err.message);
                 renderList();
