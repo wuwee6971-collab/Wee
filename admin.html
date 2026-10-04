@@ -1247,7 +1247,7 @@
 async function clearAllTeamClaims() {
     toggleAdminMenu();
     const inputPass = prompt("【高危警告】此操作將徹底刪除「所有隊伍檔案」與「進度核銷紀錄」！\n請輸入驗證碼「CLEAR」以確認執行：");
-    if (inputPass !== "CLEAR") {
+    if (inputPass !== "C") {
         if (inputPass !== null) alert("驗證碼不吻合，操作已取消。");
         return;
     }
