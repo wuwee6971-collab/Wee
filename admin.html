@@ -121,6 +121,10 @@
                         <i class="fa-solid fa-file-zipper"></i>
                         <span>打包下載所有照片</span>
                     </button>
+                    <button onclick="downloadAllNotes()" id="btn-download-notes" class="w-full px-3 py-2 text-left hover:bg-[#28221d] text-sky-400 flex items-center space-x-2">
+                        <i class="fa-solid fa-file-csv"></i>
+                        <span>匯出心得記錄 (CSV)</span>
+                    </button>
                 
                     <div class="border-t border-[#342e27] my-1"></div>
                     <button onclick="clearAllSubmissions()" class="w-full px-3 py-2 text-left hover:bg-red-950/40 text-red-400 flex items-center space-x-2">
@@ -1400,6 +1404,82 @@
                 alert(`進度確認完成！已校準共 ${teamsList.length} 支隊伍狀態${fixCount > 0 ? `（自動修復補齊 ${fixCount} 隊遺漏關卡）` : '，全員進度均與審核紀錄相符'}。`);
             } catch (err) {
                 alert("進度確認過程遭遇錯誤：" + err.message);
+            } finally {
+                if (btn) btn.innerHTML = originalText;
+            }
+        }
+        // 匯出各隊時代金曲聆聽反思與心得 (.csv)
+        async function downloadAllNotes() {
+            toggleAdminMenu();
+            const btn = document.getElementById('btn-download-notes');
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>擷取心得中...</span>';
+        
+            try {
+                const snapshot = await db.collection("submissions").get();
+                if (snapshot.empty) {
+                    alert("目前尚無任何任務回報紀錄。");
+                    if (btn) btn.innerHTML = originalText;
+                    return;
+                }
+        
+                const notesList = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    // 抓取帶有 note 欄位的心得回報
+                    if (data.note && typeof data.note === 'string' && data.note.trim()) {
+                        const dateObj = data.createdAt ? (data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt)) : null;
+                        const timeStr = dateObj ? dateObj.toLocaleString('zh-TW', { hour12: false }) : '';
+                        
+                        notesList.push({
+                            teamName: data.teamName || '未命名小隊',
+                            teamMembers: data.teamMembers || '',
+                            status: data.status === 'approved' ? '已核准' : (data.status === 'rejected' ? '已駁回' : '待審查'),
+                            time: timeStr,
+                            note: data.note.trim()
+                        });
+                    }
+                });
+        
+                if (notesList.length === 0) {
+                    alert("資料庫中查無任何隊伍填寫之心得紀錄！");
+                    if (btn) btn.innerHTML = originalText;
+                    return;
+                }
+        
+                // CSV 格式化（轉義雙引號並以引號包覆欄位）
+                const formatCSVCell = (str) => `"${String(str || '').replace(/"/g, '""')}"`;
+                
+                let csvContent = '\uFEFF'; // 加入 UTF-8 BOM，防止 Excel 開啟時出現中文亂碼
+                csvContent += ["回報時間", "小隊代號", "隊員名單", "審核狀態", "心得內容"].map(formatCSVCell).join(',') + '\r\n';
+        
+                notesList.forEach(item => {
+                    const row = [
+                        formatCSVCell(item.time),
+                        formatCSVCell(item.teamName),
+                        formatCSVCell(item.teamMembers),
+                        formatCSVCell(item.status),
+                        formatCSVCell(item.note)
+                    ];
+                    csvContent += row.join(',') + '\r\n';
+                });
+        
+                // 觸發瀏覽器下載
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const now = new Date();
+                const dateStr = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}_${now.getHours().toString().padStart(2,'0')}${now.getMinutes().toString().padStart(2,'0')}`;
+                
+                const a = document.createElement("a");
+                a.href = URL.createObjectURL(blob);
+                a.download = `空軍一村_金曲心得紀錄_${dateStr}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(a.href);
+        
+                alert(`匯出成功！共計匯出 ${notesList.length} 筆心得紀錄。`);
+            } catch (err) {
+                alert("心得匯出失敗：" + err.message);
             } finally {
                 if (btn) btn.innerHTML = originalText;
             }
