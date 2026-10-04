@@ -13,7 +13,8 @@
     <!-- Firebase SDK (Firestore Compat) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
+    <!-- JSZip 打包下載庫 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         :root {
             --bg-radar: #0c0b0a;
@@ -110,11 +111,19 @@
                         <i class="fa-solid fa-arrows-rotate text-amber-500/80"></i>
                         <span>重新整理通訊</span>
                     </button>
+                
+                    <!-- 👉 新增：打包下載所有照片按鈕 -->
+                    <button onclick="downloadAllPhotos()" id="btn-download-photos" class="w-full px-3 py-2 text-left hover:bg-[#28221d] text-amber-400 flex items-center space-x-2">
+                        <i class="fa-solid fa-file-zipper"></i>
+                        <span>打包下載所有照片</span>
+                    </button>
+                
                     <div class="border-t border-[#342e27] my-1"></div>
                     <button onclick="clearAllSubmissions()" class="w-full px-3 py-2 text-left hover:bg-red-950/40 text-red-400 flex items-center space-x-2">
                         <i class="fa-solid fa-triangle-exclamation"></i>
                         <span>清空全部記錄</span>
                     </button>
+                </div>
                 </div>
             </div>
         </div>
@@ -1154,6 +1163,82 @@
                 pollFreshSubmissions();
             }
         });
+        // 打包下載後台所有證物照片 (.zip)
+        async function downloadAllPhotos() {
+            toggleAdminMenu();
+        
+            if (typeof JSZip === 'undefined') {
+                alert("JSZip 壓縮庫尚未載入完成，請確認網路連線或重新整理頁面。");
+                return;
+            }
+        
+            const downloadBtn = document.getElementById('btn-download-photos');
+            const originalText = downloadBtn ? downloadBtn.innerHTML : '';
+            if (downloadBtn) {
+                downloadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>正在擷取照片...</span>';
+            }
+        
+            try {
+                // 從 submissions 集合抓取所有歷史回報紀錄
+                const snapshot = await db.collection("submissions").get();
+                if (snapshot.empty) {
+                    alert("目前尚無任何任務回報紀錄。");
+                    if (downloadBtn) downloadBtn.innerHTML = originalText;
+                    return;
+                }
+        
+                const zip = new JSZip();
+                let photoCount = 0;
+        
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const imgSrc = data.imageBase64 || data.photoUrl;
+        
+                    // 僅處理帶有圖片的單據
+                    if (imgSrc && typeof imgSrc === 'string') {
+                        photoCount++;
+                        const safeTeam = String(data.teamName || '未知小隊').replace(/[\\/:*?"<>|]/g, '_');
+                        const safeLevel = String(data.levelId || '未註明關卡').replace(/[\\/:*?"<>|]/g, '_');
+                        const fileName = `${safeTeam}_${safeLevel}_${doc.id.slice(-4)}.jpg`;
+        
+                        if (imgSrc.startsWith('data:image')) {
+                            // 移除 Base64 Data URL 前綴並直接存入 zip
+                            const base64Data = imgSrc.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+                            zip.file(fileName, base64Data, { base64: true });
+                        }
+                    }
+                });
+        
+                if (photoCount === 0) {
+                    alert("資料庫中查無任何包含相片之任務回報！");
+                    if (downloadBtn) downloadBtn.innerHTML = originalText;
+                    return;
+                }
+        
+                if (downloadBtn) {
+                    downloadBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>壓縮打包中 (${photoCount} 張)...</span>`;
+                }
+        
+                // 產生 Zip 壓縮檔並觸發下載
+                const content = await zip.generateAsync({ type: "blob" });
+                const now = new Date();
+                const dateStr = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}_${now.getHours().toString().padStart(2,'0')}${now.getMinutes().toString().padStart(2,'0')}`;
+                
+                const a = document.createElement("a");
+                a.href = URL.createObjectURL(content);
+                a.download = `空軍一村_任務照片_${dateStr}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(a.href);
+        
+                alert(`打包完成！共匯出 ${photoCount} 張照片。`);
+            } catch (err) {
+                alert("照片下載程序發生錯誤：" + err.message);
+            } finally {
+                if (downloadBtn) downloadBtn.innerHTML = originalText;
+            }
+        }
     </script>
 </body>
 </html>
