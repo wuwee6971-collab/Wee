@@ -268,8 +268,9 @@
         let currentTab = 'pending';
         let selectedRoom = 'ALL';
         let searchQuery = '';
-        let queryLimit = 60;
+        let queryLimit = 60; // 維持 60 即可，不再受 Base64 拖慢
         let currentSubmissions = [];
+        let teamsList = [];  // 👉 新增這行：專門存放輕量隊伍狀態
         let previousRoomPendingCount = -1; // 改為記錄「當前關卡」的待審數（-1 表示首次載入）
         let isNotifyEnabled = true;        // 鈴鐺開關：控制是否震動
         let unsubscribe = null;
@@ -407,6 +408,13 @@
 
             // 軌道 2：主動輪詢（每 2000ms 強制作一次 HTTP GET，確保 2 秒內必定收到）
             adminPollInterval = setInterval(pollFreshSubmissions, 2000);
+            // 即時監聽輕量 teams 集合（體積極小，不帶圖片）
+            db.collection("teams").orderBy("updatedAt", "desc").onSnapshot((snapshot) => {
+                const list = [];
+                snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
+                teamsList = list;
+                if (currentTab === 'claims') renderList();
+            }, (err) => console.warn("Teams 監聽受阻:", err));
         }
 
         function loadMoreSubmissions() {
@@ -700,43 +708,15 @@
 
         // 9. 結案核銷與進度儀表板
         function renderClaimsDashboard(container) {
-            const teamMap = {};
-            // 替換 admin.html 中 renderClaimsDashboard 內的關卡累計區塊：
-            currentSubmissions.forEach(sub => {
-                const tName = sub.teamName || '未命名小隊';
-                if (!teamMap[tName]) {
-                    teamMap[tName] = {
-                        name: tName,
-                        members: sub.teamMembers || '',
-                        approvedLevels: new Set(),
-                        giftClaimed: sub.giftClaimed || false,
-                        giftClaimedTime: sub.giftClaimedTime || '',
-                        lastActive: sub.createdAt ? (sub.createdAt.toDate ? sub.createdAt.toDate() : new Date(sub.createdAt)) : null,
-                        lastDocId: sub.id
-                    };
-                }
-                if (sub.teamMembers && !teamMap[tName].members) teamMap[tName].members = sub.teamMembers;
-                if (sub.giftClaimed) {
-                    teamMap[tName].giftClaimed = true;
-                    teamMap[tName].giftClaimedTime = sub.giftClaimedTime;
-                }
-            
-                if (sub.status === 'approved') {
-                    // 1. 優先使用標準通關欄位
-                    if (sub.stagePassed && sub.stagePassed >= 1 && sub.stagePassed <= 6) {
-                        teamMap[tName].approvedLevels.add(sub.stagePassed);
-                    } else {
-                        // 2. 備用：嚴格識別通關標籤
-                        const lvlStr = String(sub.levelId || '');
-                        const match = lvlStr.match(/STAGE_COMPLETED_L([1-6])/);
-                        if (match) {
-                            teamMap[tName].approvedLevels.add(parseInt(match[1]));
-                        }
-                    }
-                }
-            });
+            let teams = teamsList.map(t => ({
+                name: t.teamName || t.id,
+                members: t.teamMembers || '',
+                approvedLevels: new Set(t.passedLevels || []),
+                giftClaimed: Boolean(t.giftClaimed),
+                giftClaimedTime: t.giftClaimedTime || '',
+                lastActive: t.updatedAt ? (t.updatedAt.toDate ? t.updatedAt.toDate() : new Date(t.updatedAt)) : null
+            }));
 
-            let teams = Object.values(teamMap);
             if (searchQuery) {
                 teams = teams.filter(t => t.name.toLowerCase().includes(searchQuery) || t.members.toLowerCase().includes(searchQuery));
             }
@@ -752,12 +732,12 @@
 
             container.innerHTML = `
                 <div class="bg-amber-950/20 border border-amber-900/40 p-2.5 rounded text-[11px] text-amber-300 font-mono mb-2 flex items-center justify-between">
-                    <span><i class="fa-solid fa-circle-info mr-1.5"></i>進度依當前檢索之歷史通訊計算</span>
-                    <button onclick="loadMoreSubmissions()" class="underline text-stone-400 hover:text-amber-200">加載更多確保準確</button>
+                    <span><i class="fa-solid fa-circle-info mr-1.5"></i>即時讀取自 teams 隊伍核心狀態庫</span>
+                    <span class="text-stone-400">總計 ${teams.length} 隊</span>
                 </div>
             ` + teams.map(t => {
                 const count = t.approvedLevels.size;
-                const isFinished = count >= 6; // 集滿 6 關即算完成
+                const isFinished = count >= 6;
                 const lastTimeStr = t.lastActive ? t.lastActive.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
                 const teamSafeAttr = encodeURIComponent(t.name);
 
@@ -815,23 +795,12 @@
                 const now = new Date();
                 const timeTag = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
                 
-                const snapshot = await db.collection("submissions").where("teamName", "==", teamName).get();
-                const batch = db.batch();
-                snapshot.forEach(doc => {
-                    batch.update(doc.ref, {
-                        giftClaimed: newClaimedState,
-                        giftClaimedTime: newClaimedState ? timeTag : null
-                    });
-                });
-                await batch.commit();
+                await db.collection("teams").doc(teamName).set({
+                    giftClaimed: newClaimedState,
+                    giftClaimedTime: newClaimedState ? timeTag : null,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
 
-                currentSubmissions.forEach(s => {
-                    if (s.teamName === teamName) {
-                        s.giftClaimed = newClaimedState;
-                        s.giftClaimedTime = newClaimedState ? timeTag : null;
-                    }
-                });
-                renderList();
             } catch (err) {
                 alert("核銷變更遭遇通訊錯誤：" + err.message);
             }
