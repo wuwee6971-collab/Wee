@@ -3249,7 +3249,7 @@
             if (val === "TAG106") {
                 playSuccessSound();
                 GameState.set('endTime', Date.now()); 
-                GameState.set('finalUnlocked', true); // 修復：標記已解鎖信件與通關資格
+                GameState.set('finalUnlocked', true); 
                 if (globalTimerInterval) { clearInterval(globalTimerInterval); globalTimerInterval = null; }
                 
                 if (db) {
@@ -3261,6 +3261,13 @@
                         status: "approved",
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     }).catch(e => console.warn("完賽同步失敗:", e));
+        
+                    // 👉【新增這段】即時將全通關狀態與第 7 關同步至 teams 核心庫
+                    db.collection("teams").doc(teamName).set({
+                        finalCompleted: true,
+                        passedLevels: firebase.firestore.FieldValue.arrayUnion(7),
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true }).catch(e => console.warn("隊伍全通關狀態同步失敗:", e));
                 }
                 
                 openFullLetter();
